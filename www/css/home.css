@@ -1,0 +1,29 @@
+#home_page .posts {
+	padding-bottom: 0px;
+}
+
+#home_page h2 {
+	text-align: center;
+	margin: 20px;
+}
+
+#home_page .sns-link {
+	width: 100%;
+	border: 1px solid lightgrey;
+	padding: 10px 0px 10px 0px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+#home_page .sns-link a {
+	width: 32.5%;
+	text-decoration: none;
+	display: inline-block;
+	text-align: center;
+	color: grey;
+	border-right: 1px solid lightgrey;
+}
+
+#home_page .sns-link a#sns-share {
+	border: none;
+}
