@@ -1,8 +1,46 @@
-wcm.controller("WriteController", function($scope, $state, $ionicModal, $cordovaFile, $cordovaFileTransfer, $timeout, $cordovaGeolocation, $ionicLoading, $http) {
+wcm.controller("WriteController", function($scope,  $state, $cordovaCamera, $cordovaFile, $cordovaFileTransfer, $timeout, $cordovaGeolocation, $ionicLoading, $http) {
 
     var latlng ;
 
     $scope.$on('$ionicView.afterEnter', function(){
+
+      var platform;
+      if(typeof device != 'undefined'){
+        platform = device.platform;;
+      }else{
+        $scope.currentLocation();
+        return;
+      }
+      var options = { 
+          quality : 100, 
+          destinationType : Camera.DestinationType.FILE_URI, 
+          sourceType : Camera.PictureSourceType.CAMERA, 
+          // allowEdit : true,  //사진 찍은 후 edit 여부
+          encodingType: Camera.EncodingType.JPEG,
+          cameraDirection: 0, //back : 0 , front : 1
+          targetWidth: 300,
+          targetHeight: 300,
+          popoverOptions: CameraPopoverOptions,   //ios only 
+          sourceType: Camera.PictureSourceType.CAMERA
+          // sourceType: Camera.PictureSourceType.PHOTOLIBRARY
+          // saveToPhotoAlbum: true  /*android 일 경우 해당 옵션을 사용하면 capture되지 않음*/
+      };
+      if(platform == 'iOS'){
+        options['saveToPhotoAlbum'] = true;
+      }
+
+      $cordovaCamera.getPicture(options).then(function(imagePath){
+        // alert('getPicture!');
+        // $scope.imgURI = "data:image/jpeg;base64," + imageData;
+        $scope.imgURI = imagePath;
+        $scope.currentLocation();
+      }, function(error){
+        alert('getPicture error : ' + error);
+        //An error occured
+      });
+    });
+    
+    $scope.currentLocation = function(){
 
       if(document.getElementById("card_location").innerText != 'location') return;
 
@@ -41,7 +79,7 @@ wcm.controller("WriteController", function($scope, $state, $ionicModal, $cordova
           $ionicLoading.hide();
           console.log(err);
       });
-    });
+    }
 
     $scope.showMap = function() {
 
@@ -90,6 +128,7 @@ wcm.controller("WriteController", function($scope, $state, $ionicModal, $cordova
       }
       /*서버에 파일 저장하기 끝*/
 
+      /*DB저장하기*/
       var title = document.getElementById("card_title").value
       var description = document.getElementById("card_des").value
       // var location = document.getElementById("card_location").innerText;
@@ -104,7 +143,6 @@ wcm.controller("WriteController", function($scope, $state, $ionicModal, $cordova
                   img_path: img_path
           };
       var postData = 'cardData='+JSON.stringify(formData);
-
       var request = $http({
           method: "post",
           url: mServerAPI + "/card",

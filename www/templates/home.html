@@ -1,0 +1,13 @@
+<ion-view view-title="WeMakeChanges">
+  <ion-content>
+  <ion-refresher on-refresh="doRefresh()">
+  </ion-refresher>
+   <ion-list>
+      <ion-item ng-repeat="cards in cards">
+        {{cards.title}} /
+        {{cards.description}}
+        <img src="{{cards.img_path}}" style="width:50px; height:50px">
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

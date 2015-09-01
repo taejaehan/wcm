@@ -27,8 +27,9 @@
 
     <!-- your app's js -->
     <script src="js/app.js"></script>
-    <script src="js/mapController.js"></script>
+    <script src="js/homeController.js"></script>
     <script src="js/writeController.js"></script>
+    <script src="js/mapController.js"></script>
   </head>
   <body ng-app="starter" ng-controller="HomeController">
 
@@ -44,7 +45,7 @@
         <ion-tab title="Home" icon="ion-home" href="#/tab/home">
           <ion-nav-view name="home-tab"></ion-nav-view>
         </ion-tab>
-        <ion-tab title="Camera" icon="ion-camera" ui-sref="tabs.write" ng-click="takePicture()"->
+        <ion-tab title="Camera" icon="ion-camera" ui-sref="tabs.write" >
           <ion-nav-view name="write-tab"></ion-nav-view>
         </ion-tab>
         <ion-tab title="Profile" icon="ion-person" ui-sref="tabs.profile">
@@ -53,81 +54,5 @@
       </ion-tabs>
     </script>
 
-    <script id="templates/home.html" type="text/ng-template">
-      <ion-view view-title="WeMakeChanges">
-        <ion-content>
-        <ion-refresher on-refresh="doRefresh()">
-        </ion-refresher>
-         <ion-list>
-            <ion-item ng-repeat="cards in cards">
-              {{cards.title}} /
-              {{cards.description}}
-              <img src="{{cards.img_path}}" style="width:50px; height:50px">
-            </ion-item>
-          </ion-list>
-        </ion-content>
-      </ion-view>
-    </script>
-
-    <script id="templates/write.html" type="text/ng-template">
-      <ion-view view-title="Write">
-        <ion-nav-buttons side="right">
-          <button class="button button-icon" ng-click="uploadCard()">
-              <i class="icon ion-checkmark"></i>
-          </button>
-        </ion-nav-buttons>
-        <form name="itemEdit" novalidate>
-        <ion-content>
-          <div class="row" ng-class="{'no-padding-top': !data.editItem}">
-            <div class="col">
-              <label class="item item-input large">
-                <input id="card_title" type="text" placeholder="Title" ng-model="userdata.title" name="title">
-              </label>
-            </div>
-          </div>
-          <div class="row description-row">
-            <div class="col">
-              <label class="item item-input text">
-                <textarea id="card_des" placeholder="Description" rows="5" ng-model="userdata.description" ng-Required="true" name="description" lose-focus-on-return></textarea>
-              </label>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
-              <ion-item id="card_location" ng-click="showMap()" lat="" long="">
-                location
-              </ion-item>
-            </div>
-          </div> 
-          <div class="row charity-row">
-            <div class="col col-10 vert-center">
-              <div class="charity large"></div>
-            </div>
-          </div>
-          <img id="card_img" ng-show="imgURI !== undefined" ng-src="{{imgURI}}">
-          <img ng-show="imgURI === undefined" ng-src="http://placehold.it/300x300">
-        </ion-content>
-        </form>
-      </ion-view>
-    </script>
-
-    <script id="templates/location.html" type="text/ng-template">
-      <ion-view view-title="Location">
-        <ion-content>
-          <input id="pac-input" class="controls" type="text" placeholder="Search Box">
-          <div id="map" data-tap-disabled="true"></div>
-          <a id="find-me" ng-click="centerOnMe()" class="button button-icon icon ion-navigate">Find Me</a>
-        </ion-content>
-      </ion-view>
-    </script>
-
-    <script id="templates/profile.html" type="text/ng-template">
-      <ion-view view-title="Profile">
-        <ion-content>
-          Profile
-        </ion-content>
-      </ion-view>
-    </script>
-    
   </body>
 </html>
