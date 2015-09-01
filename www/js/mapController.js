@@ -1,0 +1,166 @@
+wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocation, $ionicLoading, $compile) {
+
+    var map , marker, infowindow;
+    $scope.$on('$ionicView.afterEnter', function(){
+
+      //받아온 위/경도로 맵을 생성
+      var latlngStr = $stateParams.latlng.slice(1,-1).split(',',2);
+      var currentLatlng = {lat: parseFloat(latlngStr[0]), lng: parseFloat(latlngStr[1])};
+      var mapOptions = {
+        center: currentLatlng,
+        zoom: 16,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      };
+     map = new google.maps.Map(document.getElementById("map"),
+          mapOptions);
+
+      //marker를 생성
+      marker = new google.maps.Marker({
+        position: currentLatlng,
+        map: map,
+        title: 'Uluru (Ayers Rock)',
+        draggable: true,
+      });
+
+      //marker dragend listener
+      google.maps.event.addListener(marker, 'dragend', function() { 
+        var latlng = marker.getPosition();
+        $scope.setLocationName(latlng);
+      });
+
+       // Marker + infowindow + angularjs compiled ng-click
+      var contentString = "<div><a ng-click='clickTest()'></a></div>";
+      var compiled = $compile(contentString)($scope);
+
+      infowindow = new google.maps.InfoWindow({
+        content: compiled[0]
+      });
+      // google.maps.event.addListener(marker, 'click', function() {
+      //   infowindow.open(map,marker);
+      // });
+      $scope.setLocationName(currentLatlng);
+
+      // find me 넣기
+      var findMe = document.getElementById('find-me');
+      map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(findMe);
+
+       // serch 박스 넣기
+      var input = document.getElementById('pac-input');
+      var searchBox = new google.maps.places.SearchBox(input);
+      map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+      // Bias the SearchBox results towards current map's viewport.
+      map.addListener('bounds_changed', function() {
+        searchBox.setBounds(map.getBounds());
+      });
+      // Listen for the event fired when the user selects a prediction and retrieve
+      // more details for that place.
+      searchBox.addListener('places_changed', function() {
+        var places = searchBox.getPlaces();
+
+        if (places.length == 0) {
+          return;
+        }
+
+        // For each place, get the icon, name and location.
+        var bounds = new google.maps.LatLngBounds();
+        places.forEach(function(place) {
+          // var icon = {
+          //   url: place.icon,
+          //   size: new google.maps.Size(71, 71),
+          //   origin: new google.maps.Point(0, 0),
+          //   anchor: new google.maps.Point(17, 34),
+          //   scaledSize: new google.maps.Size(25, 25)
+          // };
+
+          marker.setOptions({
+            map: map,
+            // icon: icon,
+            title: place.name,
+            draggable: true,
+            position: place.geometry.location,
+            animation: google.maps.Animation.DROP,
+          });
+
+          $scope.setLocationName(place.geometry.location);
+
+          if (place.geometry.viewport) {
+            // Only geocodes have viewport.
+            bounds.union(place.geometry.viewport);
+          } else {
+            bounds.extend(place.geometry.location);
+          }
+        });
+        map.fitBounds(bounds);
+      });
+
+      $scope.map = map;
+    }); 
+    
+    //내 위치 찾기
+    $scope.centerOnMe = function() {
+        $ionicLoading.show({
+            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!'
+        });
+         
+        var posOptions = {
+            enableHighAccuracy: true,
+            timeout: 20000,
+            maximumAge: 0
+        };
+        $cordovaGeolocation.getCurrentPosition(posOptions).then(function (position) {
+            var lat  = position.coords.latitude;
+            var long = position.coords.longitude;
+             
+            var myLatlng = new google.maps.LatLng(lat, long);
+             
+            var mapOptions = {
+                center: myLatlng,
+                zoom: 16,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            }; 
+
+            marker.setOptions({
+              position: myLatlng,
+              animation: google.maps.Animation.DROP,
+            });         
+             
+            map.setOptions(mapOptions);    
+
+            $scope.setLocationName(myLatlng);
+
+            $scope.map = map;   
+            $ionicLoading.hide();           
+             
+        }, function(err) {
+            $ionicLoading.hide();
+            console.log(err);
+        });
+    }
+
+    //마커 상단에 위치 이름 표시
+    $scope.setLocationName = function(latlng) {
+      var geocoder = new google.maps.Geocoder;
+      geocoder.geocode({'location': latlng}, function(results, status) {
+        if (status === google.maps.GeocoderStatus.OK) {
+          if (results[1]) {
+            map.setZoom(16);
+            marker.setOptions({
+              position: latlng,
+              map: map
+            });
+            infowindow.setContent(results[1].formatted_address);
+            infowindow.open(map, marker);
+            document.getElementById("card_location").innerText = results[1].formatted_address;
+            document.getElementById("card_location").setAttribute('lat' , lat);
+            document.getElementById("card_location").setAttribute('long' , long);
+          } else {
+            window.alert('No results found');
+          }
+        } else {
+          window.alert('Geocoder failed due to: ' + status);
+        }
+      });
+    }
+                  
+});
