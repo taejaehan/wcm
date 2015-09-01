@@ -96,12 +96,6 @@ wcm.controller("WriteController", function($scope, $state, $ionicModal, $cordova
       var location_lat =  document.getElementById("card_location").getAttribute('lat');
       var location_long = document.getElementById("card_location").getAttribute('long');
       var img_path = mServerUrl+"/upload/"+newFileName;
-
-      // console.log("title : " + title);
-      // console.log("description : " + description);
-      // console.log("location : " +  location);
-      // console.log("imgSrc : "  + imgSrc);
-
       var formData = {
                   title: title,
                   description: description,
@@ -122,15 +116,6 @@ wcm.controller("WriteController", function($scope, $state, $ionicModal, $cordova
       /* Successful HTTP post request or not */
       request.success(function(data) {
           alert('data :  ' + data);
-          // if(data == "1"){
-          //  $scope.responseMessage = "Successfully Created Account";
-          // }
-          // if(data == "2"){
-          //  $scope.responseMessage = "Create Account failed";
-          // }
-          // else if(data == "0") {
-          //  $scope.responseMessage = "Email Already Exist"
-          // }  
       });
 
     }

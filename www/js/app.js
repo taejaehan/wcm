@@ -74,9 +74,6 @@ wcm.controller("HomeController", function($scope, $state, $cordovaCamera, $http,
     
       console.log('Refreshing!');
       $timeout( function() {
-        //simulate async response
-        // $scope.cards.push('New Item ' + Math.floor(Math.random() * 1000) + 4);
-
         var request = $http({
             method: "get",
             url: mServerAPI + "/card",
@@ -139,7 +136,6 @@ wcm.controller("HomeController", function($scope, $state, $cordovaCamera, $http,
           alert('getPicture error : ' + error);
           //An error occured
         });
-
 
       //   $scope.selectPicture = function() { 
       //   var options = {

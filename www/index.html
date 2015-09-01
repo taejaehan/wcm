@@ -56,9 +56,7 @@
     <script id="templates/home.html" type="text/ng-template">
       <ion-view view-title="WeMakeChanges">
         <ion-content>
-          Home22
         <ion-refresher on-refresh="doRefresh()">
-                 
         </ion-refresher>
          <ion-list>
             <ion-item ng-repeat="cards in cards">
@@ -80,7 +78,6 @@
         </ion-nav-buttons>
         <form name="itemEdit" novalidate>
         <ion-content>
-          <input type="file" name="fileToUpload" id="fileToUpload">
           <div class="row" ng-class="{'no-padding-top': !data.editItem}">
             <div class="col">
               <label class="item item-input large">
@@ -109,7 +106,6 @@
           </div>
           <img id="card_img" ng-show="imgURI !== undefined" ng-src="{{imgURI}}">
           <img ng-show="imgURI === undefined" ng-src="http://placehold.it/300x300">
-          <button class="button button-block button-positive button-dark" ng-click="uploadCard(userdata)">SignUp</button><br>
         </ion-content>
         </form>
       </ion-view>
@@ -132,26 +128,6 @@
         </ion-content>
       </ion-view>
     </script>
-
-    <script id="templates/aaa.html" type="text/ng-template">
-      /*<ion-pane ng-controller="MapController">
-        <ion-header-bar class="bar-dark">
-          <h1 class="title">wcm</h1>
-          <button class="button button-icon" ng-click="takePicture()">
-            <i class="icon ion-camera"></i>
-          </button>
-        </ion-header-bar>
-        <ion-content>
-          <img ng-show="imgURI !== undefined" ng-src="{{imgURI}}">
-          <img ng-show="imgURI === undefined" ng-src="http://placehold.it/300x300">
-          <input id="pac-input" class="controls" type="text" placeholder="Search Box">
-          <div id="map" data-tap-disabled="true"></div>
-        </ion-content>
-        <ion-footer-bar class="bar-dark">
-          <a ng-click="centerOnMe()" class="button button-icon icon ion-navigate">Find Me</a>
-        </ion-footer-bar>
-      </ion-pane>*/
-    </script>
-
+    
   </body>
 </html>
