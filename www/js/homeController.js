@@ -1,14 +1,11 @@
 wcm.controller("HomeController", function($scope, $state, $cordovaCamera, $http, $timeout) {
   
-  var user = JSON.parse(window.localStorage['user'] || '{}');
-  
   $scope.$on('$ionicView.afterEnter', function(){
     $scope.doRefresh();
   });
 
   $scope.page = 0;
   $scope.cards = [];
-  $scope.username = user.properties.nickname;
 
   $scope.doRefresh = function() {
     

@@ -1,7 +1,7 @@
 // var mServerUrl = 'http://192.168.20.45:3000/wcm_php';
 // var mServerAPI = mServerUrl + '/controllers/api.php';
 var mServerUrl = 'http://wcm.localhost';
-var mServerAPI = mServerUrl + '/index.php';
+var mServerAPI = mServerUrl + '';
 
 var wcm = angular.module('starter', ['ionic', 'ngCordova'])
 
@@ -74,7 +74,8 @@ wcm.config(function($stateProvider, $urlRouterProvider) {
       url: "/profile",
       views: {
         'profile-tab': {
-          templateUrl: "templates/profile.html"
+          templateUrl: "templates/profile.html",
+          controller: 'ProfileController'
         }
       }
     })
