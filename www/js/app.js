@@ -1,9 +1,13 @@
-var mServerUrl = 'http://192.168.20.45:3000/wcm_php';
-var mServerAPI = mServerUrl + '/controllers/api.php';
+// var mServerUrl = 'http://192.168.20.45:3000/wcm_php';
+// var mServerAPI = mServerUrl + '/controllers/api.php';
+var mServerUrl = 'http://wcm.localhost';
+var mServerAPI = mServerUrl + '/index.php';
+
 var wcm = angular.module('starter', ['ionic', 'ngCordova'])
 
 wcm.run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
+
 
     console.log("$ionicPlatform ready");
 
@@ -20,10 +24,10 @@ wcm.run(function($ionicPlatform) {
 
 wcm.config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
-    .state("welcome", {
-      url: "/welcome",
-        templateUrl: "templates/welcome.html",
-        controller: "WelcomeController"
+    .state("login", {
+      url: "/login",
+        templateUrl: "templates/login.html",
+        controller: "LoginController"
     })
     .state('tabs', {
       url: "/tab",
@@ -40,10 +44,11 @@ wcm.config(function($stateProvider, $urlRouterProvider) {
       }
     })
     .state("tabs.post", {
-      url: "/post",
+      url: "/home/:postId",
       views: {
         'home-tab': {
-          templateUrl: "templates/post.html"
+          templateUrl: "templates/post.html",
+          controller: 'PostController'
         }
       }
     })
@@ -74,5 +79,6 @@ wcm.config(function($stateProvider, $urlRouterProvider) {
       }
     })
 
-   $urlRouterProvider.otherwise("/tab/home");
+   $urlRouterProvider.otherwise("/login");
 });
+

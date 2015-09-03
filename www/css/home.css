@@ -1,5 +1,10 @@
+#home_page {
+	background-color: gainsboro;
+}
+
 #home_page .posts {
-	padding-bottom: 0px;
+	padding: 0px 10px 0px 10px;
+	margin-bottom: 10px;
 }
 
 #home_page h2 {
@@ -7,23 +12,46 @@
 	margin: 20px;
 }
 
+#home_page .profile {
+	margin: 10px 0px 10px 0px;
+}
+
+#home_page .profile img {
+	width: 40px;
+	height: 40px;
+	border-radius: 5px;
+	float: left;
+	margin-right: 10px;
+}
+
+#home_page .profile p.username {
+	color: black;
+	font-weight: bolder;
+}
+
+#home_page .profile p.date {
+	font-size: 12px;
+}
+
+
+#home_page hr {
+	margin-bottom: 10px;
+}
+
 #home_page .sns-link {
 	width: 100%;
-	border: 1px solid lightgrey;
-	padding: 10px 0px 10px 0px;
-	margin-top: 20px;
-	margin-bottom: 20px;
+	margin-bottom: 10px;
 }
 
 #home_page .sns-link a {
-	width: 32.5%;
+	width: 33%;
 	text-decoration: none;
 	display: inline-block;
 	text-align: center;
 	color: grey;
-	border-right: 1px solid lightgrey;
+	font-size: 14px;
 }
 
-#home_page .sns-link a#sns-share {
-	border: none;
+#home_page button.more {
+	width: 100%;
 }
