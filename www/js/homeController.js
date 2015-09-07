@@ -1,11 +1,21 @@
 wcm.controller("HomeController", function($scope, $state, $cordovaCamera, $http, $timeout) {
   
+  $scope.show=true;
+
   $scope.$on('$ionicView.afterEnter', function(){
     $scope.doRefresh();
   });
 
   $scope.page = 0;
   $scope.cards = [];
+
+  if (window.localStorage['user'] != null) {
+
+    var user = JSON.parse(window.localStorage['user'] || '{}');
+    $scope.username = user.properties.nickname;
+    $scope.userimage = user.properties.thumbnail_image;
+  }
+  
 
   $scope.doRefresh = function() {
     
@@ -28,11 +38,13 @@ wcm.controller("HomeController", function($scope, $state, $cordovaCamera, $http,
               $scope.cards.push(object);
           }
           $scope.page++;
+          $scope.$broadcast('scroll.infiniteScrollComplete');
       });
 
       //Stop the ion-refresher from spinning
       $scope.$broadcast('scroll.refreshComplete');  
     }, 1000);
   };
+
 
 });

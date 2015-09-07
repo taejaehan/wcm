@@ -6,10 +6,9 @@ var mServerAPI = mServerUrl + '';
 var wcm = angular.module('starter', ['ionic', 'ngCordova'])
 
 wcm.run(function($ionicPlatform) {
+  Kakao.init('2b1444fba3c133df8405882491640b80');
+
   $ionicPlatform.ready(function() {
-
-
-    console.log("$ionicPlatform ready");
 
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)

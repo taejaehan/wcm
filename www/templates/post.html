@@ -18,6 +18,21 @@
         <a href="#" id="sns-share"><i class="fa fa-share"></i> 공유하기</a>
       </div>
 
+       <div id="comment_section" ng-show="show">
+
+        <form class="comment-form" ng-submit="addComment()">
+          <input type="text" id="comment" ng-model="comment" placeholder="댓글을 입력하세요...">
+        </form>
+
+        <div ng-repeat="comment in comments track by $index" class="comment-list">
+          <img ng-src="{{ userimage }}" class="profile-image">
+          <strong class="name">{{ username }}</strong>
+          <p class="comment">{{ comment }}</p>
+        </div>
+
+      </div>
+
+
       <div id="map"></div>
 
     </div>

@@ -7,35 +7,39 @@
    <ion-list>
      <div id="home_page">
 
-        <ion-item ng-repeat="card in cards" class="posts">
+        <ion-item collection-repeat="card in cards" class="posts">
 
-          <div class="profile">
-            <img src="{{ card.img_path }}">
-            <p class="username">username</p>
-            <p class="date">{{ card.create_time }}</p>
-          </div>
-
-          <div class="content">
-            <a href="#/tab/home/{{ card.id }}"><img src="{{ card.img_path }}" style="width:100%; height:250px;"></a>
-            <h2><strong>{{card.title}}</strong></h2>
-          </div>
-
-          <div class="progress">
-            <div class="progress-bar progress-bar-danger progress-bar-striped" role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100" style="width: 33%">
+          <div class="post-body">
+            <div class="profile">
+              <img ng-src="{{card.img_path }}">
+              <p class="username">username</p>
+              <p class="date">{{ card.create_time }}</p>
             </div>
+
+            <div class="content">
+              <a href="#/tab/home/{{ card.id }}"><img ng-src="{{ card.img_path}}" style="width:100%; height:250px;"></a>
+              <h2><strong>{{card.title}}</strong></h2>
+            </div>
+
+            <div class="progress">
+              <div class="progress-bar progress-bar-danger progress-bar-striped" role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100" style="width: 33%">
+              </div>
+            </div>
+
+            <hr> 
+
+            <div class="sns-link">
+              <a href="#"><i class="fa fa-thumbs-up"></i> 좋아요</a>
+              <a href="#" ng-click="show = !show" ng-class="{ active: show }"><i class="fa fa-commenting"></i> 댓글달기</a>
+              <a href="#" id="sns-share"><i class="fa fa-share"></i> 공유하기</a>
+            </div>
+
           </div>
-
-          <hr> 
-
-          <div class="sns-link">
-            <a href="#"><i class="fa fa-thumbs-up"></i> 좋아요</a>
-            <a href="#"><i class="fa fa-commenting"></i> 댓글달기</a>
-            <a href="#" id="sns-share"><i class="fa fa-share"></i> 공유하기</a>
-          </div>
-
+          
         </ion-item>
 
-        <button class="button btn-default more" ng-click="doRefresh()">more see</button>
+        <ion-infinite-scroll on-infinite="doRefresh()" distance="10%">
+        </ion-infinite-scroll>
 
       </div>
     </ion-list>

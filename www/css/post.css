@@ -33,3 +33,39 @@
 	color: grey;
 	font-size: 14px;
 }
+
+#detail_page #comment_section {
+	width: 100%;
+	margin-bottom: 10px;
+	z-index: 100;
+}
+
+#detail_page .comment-form {
+	background-color: WhiteSmoke ;
+	width: 100%;
+	padding: 10px 0px 10px 0px;
+	padding-bottom: 10px;
+}
+
+#detail_page .comment-form input {
+	width: 94%;
+	display: inline-block;
+	margin: 0px 10px 0px 10px;
+}
+
+#detail_page .comment-list {
+	margin-bottom: 15px;
+}
+
+#detail_page .comment-list p {
+	display: block;
+	text-align: left;
+	margin-bottom: 0px;
+}
+
+#detail_page .comment-list .profile-image {
+	width: 40px;
+	height: 40px;
+	float: left;
+	margin-right: 10px;
+}
