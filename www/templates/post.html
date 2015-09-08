@@ -14,7 +14,7 @@
       <hr>
       <div class="sns-link">
         <a href="#"><i class="fa fa-thumbs-up"></i> 좋아요</a>
-        <a href="#"><i class="fa fa-commenting"></i> 댓글달기</a>
+        <a href="#"><i class="fa fa-commenting"></i> 댓글({{comments_count}})</a>
         <a href="#" id="sns-share"><i class="fa fa-share"></i> 공유하기</a>
       </div>
 
@@ -22,12 +22,15 @@
 
         <form class="comment-form" ng-submit="addComment()">
           <input type="text" id="comment" ng-model="comment" placeholder="댓글을 입력하세요...">
+          <button class="btn btn-default">done</button>
         </form>
 
         <div ng-repeat="comment in comments track by $index" class="comment-list">
-          <img ng-src="{{ userimage }}" class="profile-image">
-          <strong class="name">{{ username }}</strong>
-          <p class="comment">{{ comment }}</p>
+          <img ng-src="{{ comment.userimage }}" class="profile-image">
+          <strong class="name">{{ comment.username }}</strong>
+          <p class="comment">{{ comment.content }}</p>
+          <p>{{ comment.updated_at }}</p>
+
         </div>
 
       </div>

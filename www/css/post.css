@@ -26,7 +26,7 @@
 }
 
 #detail_page .sns-link a {
-	width: 32.5%;
+	width: 32%;
 	text-decoration: none;
 	display: inline-block;
 	text-align: center;
@@ -36,7 +36,7 @@
 
 #detail_page #comment_section {
 	width: 100%;
-	margin-bottom: 10px;
+	margin-bottom: 20px;
 	z-index: 100;
 }
 
@@ -48,12 +48,19 @@
 }
 
 #detail_page .comment-form input {
-	width: 94%;
+	width: 71%;
 	display: inline-block;
 	margin: 0px 10px 0px 10px;
 }
 
+#detail_page .comment-form button {
+	display: inline-block;
+	float: right;
+	margin-right: 8px;
+}
+
 #detail_page .comment-list {
+	margin-top: 15px;
 	margin-bottom: 15px;
 }
 
