@@ -1,4 +1,4 @@
-<ion-view view-title="Write">
+<ion-view view-title="업로드">
   <ion-nav-buttons side="right">
     <button class="button button-icon" ng-click="uploadCard()">
         <i class="icon ion-checkmark"></i>
@@ -7,15 +7,15 @@
   <form name="itemEdit" novalidate>
   <ion-content>
 
-    <div class='form-group'>
+    <div class="form-group" id="wrtie_page">
         <div class="col">
           <label class="item item-input large">
-            <input id="card_title"   type="text" placeholder="Title" ng-model="userdata.title" name="title">
+            <input id="card_title"   type="text" placeholder="제목을 입력하세요." ng-model="userdata.title" name="title">
           </label>
         </div>
         <div class="col">
           <label class="item item-input text">
-            <textarea id="card_des" placeholder="Description" rows="5" ng-model="userdata.description" ng-Required="true" name="description" lose-focus-on-return></textarea>
+            <textarea id="card_des" placeholder="상세 내용을 입력하세요." rows="5" ng-model="userdata.description" ng-Required="true" name="description" lose-focus-on-return></textarea>
           </label>
         </div>
 

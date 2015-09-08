@@ -3,13 +3,15 @@
 
   <ion-refresher on-refresh="doRefresh()">
   </ion-refresher>
+    <ion-list>
 
-   <ion-list>
-     <div id="home_page">
+      <!-- ========================== home_page ========================== -->
+      <div id="home_page">
 
         <ion-item collection-repeat="card in cards" class="posts">
-
+          
           <div class="post-body">
+            
             <div class="profile">
               <img ng-src="{{card.img_path }}">
               <p class="username">username</p>
@@ -29,19 +31,24 @@
             <hr> 
 
             <div class="sns-link">
-              <a href="#"><i class="fa fa-thumbs-up"></i> 좋아요</a>
-              <a href="#/tab/home/{{ card.id }}" ng-click="show = !show" ng-class="{ active: show }"><i class="fa fa-commenting"></i> 댓글</a>
+              <a href="#">
+                <i class="fa fa-thumbs-up"></i> 좋아요 {{ card.like_count }}개
+              </a>
+              <a href="#/tab/home/{{ card.id }}"><i class="fa fa-commenting"></i> 댓글 {{ card.comments_count }}개 </a>
               <a href="#" id="sns-share"><i class="fa fa-share"></i> 공유하기</a>
             </div>
 
           </div>
-          
+
         </ion-item>
 
         <ion-infinite-scroll on-infinite="doRefresh()" distance="10%">
         </ion-infinite-scroll>
 
       </div>
+      <!-- ========================== home_page end ========================== -->
+
+
     </ion-list>
   </ion-content>
 </ion-view>

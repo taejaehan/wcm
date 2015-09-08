@@ -153,7 +153,7 @@ wcm.controller("WriteController", function($scope,  $state, $cordovaCamera, $cor
       });
       /* Successful HTTP post request or not */
       request.success(function(data) {
-          alert('data :  ' + data);
+        $state.go("tabs.home");
       });
 
     }

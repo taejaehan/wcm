@@ -1,5 +1,6 @@
 <ion-view>
   <ion-content padding="true">
+
   	<div id="detail_page">
 
       <img src="{{ postImage }}">
@@ -13,12 +14,15 @@
       </div>
       <hr>
       <div class="sns-link">
-        <a href="#"><i class="fa fa-thumbs-up"></i> 좋아요</a>
-        <a href="#"><i class="fa fa-commenting"></i> 댓글({{comments_count}})</a>
+        <a href="#" ng-click="toggleLike(watch = !watch)" ng-class="{'active' : watch, 'non-active' : !watch}">
+          <i class="fa fa-thumbs-up"></i> 좋아요 {{like_count }}개
+        </a>
+        <a href="#"><i class="fa fa-commenting"></i> 댓글 {{comments_count}}개</a>
         <a href="#" id="sns-share"><i class="fa fa-share"></i> 공유하기</a>
       </div>
 
-       <div id="comment_section" ng-show="show">
+      <!-- ========================== comment section ========================== -->
+      <div id="comment_section">
 
         <form class="comment-form" ng-submit="addComment()">
           <input type="text" id="comment" ng-model="comment" placeholder="댓글을 입력하세요...">
@@ -27,14 +31,15 @@
 
         <div ng-repeat="comment in comments track by $index" class="comment-list">
           <img ng-src="{{ comment.userimage }}" class="profile-image">
-          <strong class="name">{{ comment.username }}</strong>
-          <p class="comment">{{ comment.content }}</p>
-          <p>{{ comment.updated_at }}</p>
-
+          <div class="description">
+            <strong>{{ comment.username }}</strong>
+            <p>{{ comment.content }}</p>
+            <small>{{ comment.updated_at }}</small>
+          </div>
         </div>
 
       </div>
-
+      <!-- ========================== comment section end ========================== -->
 
       <div id="map"></div>
 
