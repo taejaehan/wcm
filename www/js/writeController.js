@@ -5,11 +5,17 @@ wcm.controller("WriteController", function($scope, $state, $cordovaCamera, $cord
   // ==================================== Camera ======================================  
 
     $scope.$on('$ionicView.afterEnter', function(){
-
-      if($scope.imgURI == null){
-        $scope.takePicture();
-      }else{
-        $scope.currentLocation();
+      //add
+      if($stateParams.postId == null){
+        if($scope.imgURI == null){
+          $scope.takePicture();
+        }else{
+          $scope.currentLocation();
+        }
+      }
+      //edit
+      else{
+        $scope.getCard();
       }
     });
 
@@ -258,35 +264,30 @@ wcm.controller("WriteController", function($scope, $state, $cordovaCamera, $cord
   // ==================================== Edit card ======================================  
 
   /* Get card info */
+  $scope.getCard = function() {
+    $scope.postId = $stateParams.postId;
+    var request = $http({
+      method: "get",
+      url: mServerAPI + "/cardDetail/" + $scope.postId,
+      crossDomain : true,
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+      cache: false
+    });
 
-  $scope.postId = $stateParams.postId;
-
-  var request = $http({
-    method: "get",
-    url: mServerAPI + "/cardDetail/" + $scope.postId,
-    crossDomain : true,
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
-    cache: false
-  });
-
-  request.success(function(data) {
-    $scope.postTitle = data.cards[0].title;
-    $scope.postDescription = data.cards[0].description;
-    $scope.postImage = data.cards[0].img_path;
-    $scope.lat = data.cards[0].location_lat;
-    $scope.lng = data.cards[0].location_long;
-
-  });
-
+    request.success(function(data) {
+      $scope.postTitle = data.cards[0].title;
+      $scope.postDescription = data.cards[0].description;
+      $scope.postImage = data.cards[0].img_path;
+      $scope.lat = data.cards[0].location_lat;
+      $scope.lng = data.cards[0].location_long;
+    });
+  }
   /* Get card info END */
 
-
   /* Post card info */
-
   $scope.editCard = function() {
 
     /* Upload image file */
-
     var newFileName;
     if($scope.imgURI != null){
       
@@ -350,9 +351,6 @@ wcm.controller("WriteController", function($scope, $state, $cordovaCamera, $cord
 
   }
 
-  /* Post card info END */
-
-  // ==================================== Edit card END ======================================
 
 });
 
