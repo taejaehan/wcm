@@ -1,12 +1,12 @@
-// var mServerUrl = 'http://192.168.20.45:3000/wcm_php';
-// var mServerAPI = mServerUrl + '/controllers/api.php';
-var mServerUrl = 'http://wcm.localhost';
-var mServerAPI = mServerUrl + '';
+var mServerUrl = 'http://192.168.20.45:3000/wcm_php';
+var mServerAPI = mServerUrl + '/controllers/index.php';
+// var mServerUrl = 'http://wcm.localhost';
+// var mServerAPI = mServerUrl + '';
 
-var wcm = angular.module('starter', ['ionic', 'ngCordova'])
+var wcm = angular.module('starter', ['ionic', 'ngCordova']);
 
 wcm.run(function($ionicPlatform) {
-  Kakao.init('2b1444fba3c133df8405882491640b80');
+  // Kakao.init('2b1444fba3c133df8405882491640b80');
 
   $ionicPlatform.ready(function() {
 
@@ -79,6 +79,7 @@ wcm.config(function($stateProvider, $urlRouterProvider) {
       }
     })
 
-   $urlRouterProvider.otherwise("/login");
+    $urlRouterProvider.otherwise("/tab/home");
+   // $urlRouterProvider.otherwise("/login");
 });
 

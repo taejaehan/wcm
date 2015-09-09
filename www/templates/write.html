@@ -1,37 +1,98 @@
-<ion-view view-title="업로드">
+<ion-view view-title="Write">
   <ion-nav-buttons side="right">
-    <button class="button button-icon" ng-click="uploadCard()">
+    <button type="submit" class="button button-icon" ng-click="uploadCard(cardForm)">
         <i class="icon ion-checkmark"></i>
     </button>
   </ion-nav-buttons>
-  <form name="itemEdit" novalidate>
+  <form name="cardForm" novalidate="" class="css-form" >
   <ion-content>
+    
+    <!-- Title -->
+    <div class='form-group'>
+      <label class="item item-input"  
+         ng-class="{ 'has-errors' : cardForm.title.$invalid , 'no-errors' : cardForm.title.$valid }" >
+      <!-- <span class="input-label">Title</span>   -->
+      <input id="card_title"
+         type="text"  
+         name="title"
+         placeholder="Title"
+         ng-model="cardData.title" 
+         required>
+      </label>
+      <div class="error-container"  
+         ng-show="cardForm.title.$error"
+         ng-messages="cardForm.title.$error">
+         <div ng-messages-include="error-list.html"></div>
+      </div>
+      
+      <!-- Description -->
+      <label class="item item-input"  
+         ng-class="{ 'has-errors' : cardForm.description.$invalid  && cardForm.$submitted, 'no-errors' : cardForm.description.$valid  && cardForm.$submitted}">
+        <textarea id="card_des"
+         rows="5" 
+         name="description"
+         placeholder="Description"
+         ng-model="cardData.description" 
+         required></textarea>
+      </label>  
+      <div class="error-container"  
+         ng-show="cardForm.description.$error && cardForm.$submitted"
+         ng-messages="cardForm.description.$error">
+         <div ng-messages-include="error-list.html"></div>
+      </div>
 
-    <div class="form-group" id="wrtie_page">
-        <div class="col">
-          <label class="item item-input large">
-            <input id="card_title"   type="text" placeholder="제목을 입력하세요." ng-model="userdata.title" name="title">
-          </label>
+      
+      <!-- Location -->
+      <label class="item item-input"  
+         ng-class="{ 'has-errors' : cardForm.location.$invalid && cardForm.$submitted, 'no-errors' : cardForm.location.$valid  && cardForm.$submitted}">
+      <!-- <span class="input-label">Location</span>   -->
+      <i class="fa fa-map-marker" style="margin-right:10px"></i>
+      <input id="card_location"
+         type="text"  
+         name="location"
+         placeholder="Location"
+         ng-model="cardData.location"
+         lat="" 
+         long=""
+         style="cursor:pointer" 
+         ng-click="showMap()"
+         required>
+      </label>
+      <div class="error-container"  
+         ng-show="cardForm.location.$error && cardForm.$submitted"
+         ng-messages="cardForm.location.$error">
+         <div ng-messages-include="error-list.html"></div>
+      </div> 
+
+      
+      
+      <label class="item item-input"  
+         ng-class="{ 'has-errors-img' : cardForm.file.$invalid && cardForm.$submitted, 'no-errors-img' : cardForm.file.$valid  && cardForm.$submitted}">
+      <div id="picture_list">
+        <img id="card_img" ng-show="imgURI !== undefined" ng-src="{{imgURI}}">
+        <img ng-show="imgURI === undefined" ng-src="http://placehold.it/100x100">
+        <button id="change_pic" class="button button-icon" ng-click="takePicture()">
+            <i class="icon ion-ios-reverse-camera"></i>
+        </button>
+      </div>
+      <input id="card_file"
+         type="hidden"  
+         name="file"
+         ng-model="cardData.file"
+         required>
+      </label>
+      <div class="error-container last-error-container"  
+          ng-show="cardForm.file.$error && cardForm.$submitted"
+          ng-messages="cardForm.file.$error">
+         <div ng-messages-include="error-list.html"></div>
+      </div> 
+
+      <script id="error-list.html" type="text/ng-template">  
+        <div class="error" ng-message="required">
+          <i class="ion-information-circled"></i> 
+          This field is required!
         </div>
-        <div class="col">
-          <label class="item item-input text">
-            <textarea id="card_des" placeholder="상세 내용을 입력하세요." rows="5" ng-model="userdata.description" ng-Required="true" name="description" lose-focus-on-return></textarea>
-          </label>
-        </div>
-
-        <div class="col">
-          <ion-item id="card_location" ng-click="showMap()" lat="" long="">
-            <i class="fa fa-map-marker"></i> location
-          </ion-item>
-        </div>
-
-        <div class="col col-10 vert-center">
-          <div class="charity large"></div>
-        </div>
-
-      <img id="card_img" ng-show="imgURI !== undefined" ng-src="{{imgURI}}">
-      <img ng-show="imgURI === undefined" ng-src="http://placehold.it/300x300">
-
+      </script>   
     </div>
   </ion-content>
   </form>

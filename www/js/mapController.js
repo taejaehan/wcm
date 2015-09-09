@@ -151,9 +151,11 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
             });
             infowindow.setContent(results[1].formatted_address);
             infowindow.open(map, marker);
-            document.getElementById("card_location").innerText = results[1].formatted_address;
-            document.getElementById("card_location").setAttribute('lat' , lat);
-            document.getElementById("card_location").setAttribute('long' , long);
+            document.getElementById("card_location").value = results[1].formatted_address;
+            document.getElementById("card_location").validity.valid = true;
+            document.getElementById("card_location").setAttribute('lat' , latlng.lat);
+            document.getElementById("card_location").setAttribute('long' , latlng.long);
+            // $scope.cardForm.location.$setValidity("nouser", true);
           } else {
             window.alert('No results found');
           }

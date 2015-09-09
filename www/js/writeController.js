@@ -1,16 +1,28 @@
-wcm.controller("WriteController", function($scope,  $state, $cordovaCamera, $cordovaFile, $cordovaFileTransfer, $timeout, $cordovaGeolocation, $ionicLoading, $http) {
+wcm.controller("WriteController", function($scope,  $state, $cordovaCamera, $cordovaFile, $cordovaFileTransfer, $timeout, $cordovaGeolocation, $ionicLoading, $http, $ionicPopup) {
 
     var latlng ;
 
     $scope.$on('$ionicView.afterEnter', function(){
 
+      if($scope.imgURI == null){
+        $scope.takePicture();
+      }else{
+        $scope.currentLocation();
+      }
+    });
+
+    /*사진 찍기*/
+    $scope.takePicture = function(){
+
+      //device가 undefined이면 사진을 찍지 않고 바로 위치정보로 넘어감
       var platform;
       if(typeof device != 'undefined'){
         platform = device.platform;;
       }else{
         $scope.currentLocation();
         return;
-      }
+      };
+
       var options = { 
           quality : 100, 
           destinationType : Camera.DestinationType.FILE_URI, 
@@ -30,19 +42,26 @@ wcm.controller("WriteController", function($scope,  $state, $cordovaCamera, $cor
       }
 
       $cordovaCamera.getPicture(options).then(function(imagePath){
-        // alert('getPicture!');
         // $scope.imgURI = "data:image/jpeg;base64," + imageData;
         $scope.imgURI = imagePath;
+        $scope.cardForm.file.$setTouched();
+        $scope.cardForm.file.$setViewValue(imagePath);
+
         $scope.currentLocation();
       }, function(error){
-        alert('getPicture error : ' + error);
         //An error occured
+        $ionicPopup.alert({
+           title: 'getPicture error',
+           template: error
+         });
+        $scope.currentLocation();
       });
-    });
-    
-    $scope.currentLocation = function(){
+    }
 
-      if(document.getElementById("card_location").innerText != 'location') return;
+    /*현재 위치 가져오기*/
+    $scope.currentLocation = function(){
+;
+      if(document.getElementById("card_location").value != '') return;
 
       $ionicLoading.show({
           template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!'
@@ -63,14 +82,29 @@ wcm.controller("WriteController", function($scope,  $state, $cordovaCamera, $cor
           geocoder.geocode({'location': latlng}, function(results, status) {
             if (status === google.maps.GeocoderStatus.OK) {
               if (results[1]) {
-                document.getElementById("card_location").innerText = results[1].formatted_address;
+                console.log('results[1].formatted_address) : ' + results[1].formatted_address);
                 document.getElementById("card_location").setAttribute('lat' , lat);
                 document.getElementById("card_location").setAttribute('long' , long);
+                document.getElementById("card_location").value = results[1].formatted_address;
+
+                // 해당 input을 valid시킴
+                // $scope.cardForm.location.$setDirty();
+                $scope.cardForm.location.$setTouched();
+                $scope.cardForm.location.$setViewValue(results[1].formatted_address);
+
+                console.log('$scope.cardForm.location.$valid : ' + $scope.cardForm.location.$valid);
+
               } else {
-                window.alert('No results found');
+               $ionicPopup.alert({
+                 title: 'google map error',
+                 template: 'No results found'
+               });
               }
             } else {
-              window.alert('Geocoder failed due to: ' + status);
+              $ionicPopup.alert({
+                 title: 'google map error',
+                 template: status
+               });
             }
           });
           $ionicLoading.hide();           
@@ -81,17 +115,39 @@ wcm.controller("WriteController", function($scope,  $state, $cordovaCamera, $cor
       });
     }
 
+    /*맵 보여주기*/
     $scope.showMap = function() {
 
       $state.go('tabs.location', { 'latlng': latlng});
     }
 
+     $scope.cardData = {
+        "title" : "",
+        "description" : "",
+        "location":"",
+        "imgPath":""
+      };
 
-    $scope.uploadCard = function(userdata) {
+    /*작성한 카드 업로드*/
+    $scope.uploadCard = function(form) {
 
+      //form 밖의 버튼이므로 submit이 처리되지 않으므로 submit처리하여 invalid error를 보여준다
+      $scope.cardForm.$setSubmitted();
 
+      if(form.$invalid){
+        $ionicPopup.alert({
+           title: 'Invalid',
+           template: 'Fill in all the fields'
+         });
+        return;
+      }
+
+      $ionicLoading.show({
+          template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Uploading'
+      });
+
+     //서버에 파일 저장하기
       var newFileName;
-      /*서버에 파일 저장하기 시작*/
       if($scope.imgURI != null){
         
         var imagePath = $scope.imgURI;
@@ -113,48 +169,66 @@ wcm.controller("WriteController", function($scope,  $state, $cordovaCamera, $cor
             mimeType: "image/jpg"
         };
         $cordovaFileTransfer.upload(url, targetPath, options).then(function(result) {
-            console.log("SUCCESS: " + JSON.stringify(result.response));
-            alert("success");
-            alert(JSON.stringify(result.response));
+            console.log(JSON.stringify(result.response));
+            //DB 저장하기 시작
+            var title = document.getElementById("card_title").value;
+            var description = document.getElementById("card_des").value;
+            // var location = document.getElementById("card_location").value;
+            var location_lat =  document.getElementById("card_location").getAttribute('lat');
+            var location_long = document.getElementById("card_location").getAttribute('long');
+            var img_path = mServerUrl+"/upload/"+newFileName;
+            var formData = {
+                        title: title,
+                        description: description,
+                        location_lat: location_lat,
+                        location_long: location_long,
+                        img_path: img_path
+                };
+            var postData = 'cardData='+JSON.stringify(formData);
+            var request = $http({
+                method: "post",
+                url: mServerAPI + "/card",
+                crossDomain : true,
+                data: postData,
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+                cache: false
+            });
+            request.success(function(data) {
+                //reset inputs
+                $scope.cardForm.$setPristine();
+                $scope.cardForm.title.$setViewValue('');
+                document.getElementById('card_title').value = '';
+                $scope.cardForm.description.$setViewValue('');
+                document.getElementById('card_des').value = '';
+                $scope.cardForm.location.$setViewValue('');
+                document.getElementById('card_location').value = '';
+                $scope.cardForm.file.$setUntouched();
+                $scope.cardForm.file.$setViewValue('');
+                $scope.imgURI = undefined;
+
+                //go to the home
+                $state.go('tabs.home');
+                
+                $ionicLoading.hide();
+
+                $ionicPopup.alert({
+                  title: 'Success',
+                   template: 'data :  ' + data
+                });
+            });
+            //DB 저장하기 끝
+
         }, function(err) {
-            console.log("ERROR: " + JSON.stringify(err));
-            alert(JSON.stringify(err));
+          $ionicLoading.hide();
+          console.log(JSON.stringify(err));
         }, function (progress) {
-            // constant progress updates
-            $timeout(function () {
+          $ionicLoading.hide();
+          // constant progress updates
+          $timeout(function () {
             $scope.downloadProgress = (progress.loaded / progress.total) * 100;
           })
         });
       }
-      /*서버에 파일 저장하기 끝*/
-
-      /*DB저장하기*/
-      var title = document.getElementById("card_title").value
-      var description = document.getElementById("card_des").value
-      // var location = document.getElementById("card_location").innerText;
-      var location_lat =  document.getElementById("card_location").getAttribute('lat');
-      var location_long = document.getElementById("card_location").getAttribute('long');
-      var img_path = mServerUrl+"/upload/"+newFileName;
-      var formData = {
-                  title: title,
-                  description: description,
-                  location_lat: location_lat,
-                  location_long: location_long,
-                  img_path: img_path
-          };
-      var postData = 'cardData='+JSON.stringify(formData);
-      var request = $http({
-          method: "post",
-          url: mServerAPI + "/card",
-          crossDomain : true,
-          data: postData,
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-          cache: false
-      });
-      /* Successful HTTP post request or not */
-      request.success(function(data) {
-        $state.go("tabs.home");
-      });
 
     }
 });
