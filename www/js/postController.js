@@ -27,6 +27,8 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
 
   });
 
+  // ==================================== post like_count ======================================
+
   $scope.toggleLike = function(e) {
 
     e === true ? $scope.like_count ++ : $scope.like_count --;
@@ -37,7 +39,7 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
 
     var request = $http({
         method: "post",
-        url: mServerAPI + "/cardDetail/" + $scope.postId,
+        url: mServerAPI + "/cardDetail/" + $scope.postId + "/like",
         crossDomain : true,
         data: postData,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
@@ -45,6 +47,7 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
     });
   }
 
+  // ==================================== post like_count END ======================================
 
   // ==================================== reverse geocording ======================================
 
@@ -90,8 +93,9 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
     });
   }
 
+  // ==================================== reverse geocording END ======================================
 
-  // ==================================== get comments ======================================
+  // ==================================== Get comments ======================================
 
   var request2 = $http({
       method: "get",
@@ -122,8 +126,9 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
       }
   });
 
+  // ==================================== Get comments END ======================================
 
-  // ==================================== post comment ======================================
+  // ==================================== Post comment ======================================
 
   $scope.addComment =function() {
   
@@ -174,23 +179,9 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
     });
   }
 
-
-
-
+  // ==================================== Post comment END ======================================
 
 });
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

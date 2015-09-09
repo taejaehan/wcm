@@ -51,6 +51,15 @@ wcm.config(function($stateProvider, $urlRouterProvider) {
         }
       }
     })
+    .state('tabs.edit', {
+      url: "/home/:postId/edit",
+      views: {
+        'home-tab': {
+          templateUrl: "templates/edit.html",
+          controller : "WriteController"
+        }
+      }
+    })
     .state('tabs.write', {
       url: "/write",
       views: {

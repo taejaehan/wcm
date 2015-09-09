@@ -1,6 +1,8 @@
-wcm.controller("WriteController", function($scope,  $state, $cordovaCamera, $cordovaFile, $cordovaFileTransfer, $timeout, $cordovaGeolocation, $ionicLoading, $http, $ionicPopup) {
+wcm.controller("WriteController", function($scope, $state, $cordovaCamera, $cordovaFile, $cordovaFileTransfer, $timeout, $cordovaGeolocation, $ionicLoading, $http, $stateParams, $ionicPopup) {
 
-    var latlng ;
+  var latlng ;
+
+  // ==================================== Camera ======================================  
 
     $scope.$on('$ionicView.afterEnter', function(){
 
@@ -58,9 +60,13 @@ wcm.controller("WriteController", function($scope,  $state, $cordovaCamera, $cor
       });
     }
 
+  // ==================================== Camera END ====================================== 
+
+  // ==================================== Location ====================================== 
+
     /*현재 위치 가져오기*/
     $scope.currentLocation = function(){
-;
+
       if(document.getElementById("card_location").value != '') return;
 
       $ionicLoading.show({
@@ -117,16 +123,19 @@ wcm.controller("WriteController", function($scope,  $state, $cordovaCamera, $cor
 
     /*맵 보여주기*/
     $scope.showMap = function() {
-
       $state.go('tabs.location', { 'latlng': latlng});
     }
 
-     $scope.cardData = {
-        "title" : "",
-        "description" : "",
-        "location":"",
-        "imgPath":""
-      };
+  // ==================================== Location END ======================================  
+
+  // ==================================== Post card ====================================== 
+
+    $scope.cardData = {
+                        "title" : "",
+                        "description" : "",
+                        "location":"",
+                        "imgPath":""
+                      };
 
     /*작성한 카드 업로드*/
     $scope.uploadCard = function(form) {
@@ -151,8 +160,7 @@ wcm.controller("WriteController", function($scope,  $state, $cordovaCamera, $cor
       if($scope.imgURI != null){
         
         var imagePath = $scope.imgURI;
-        // var currentName = imagePath.replace(/^.*[\\\/]/, '');
-
+        
         //날짜로 이름 생성
         var d = new Date();
         var n = d.getTime();
@@ -168,16 +176,30 @@ wcm.controller("WriteController", function($scope,  $state, $cordovaCamera, $cor
             chunkedMode: false,
             mimeType: "image/jpg"
         };
+
         $cordovaFileTransfer.upload(url, targetPath, options).then(function(result) {
             console.log(JSON.stringify(result.response));
+
+            if (window.localStorage['user'] != null) {
+              var user = JSON.parse(window.localStorage['user'] || '{}');
+              $scope.userid = user.id;
+              $scope.username = user.properties.nickname;
+              $scope.userimage = user.properties.thumbnail_image;       
+            }
+
             //DB 저장하기 시작
             var title = document.getElementById("card_title").value;
+            var user_app_id = $scope.userid;
+            var username = $scope.username;
+            var userimage = $scope.userimage; 
             var description = document.getElementById("card_des").value;
-            // var location = document.getElementById("card_location").value;
             var location_lat =  document.getElementById("card_location").getAttribute('lat');
             var location_long = document.getElementById("card_location").getAttribute('long');
             var img_path = mServerUrl+"/upload/"+newFileName;
             var formData = {
+                        user_app_id: user_app_id,
+                        username: username,
+                        userimage: userimage,
                         title: title,
                         description: description,
                         location_lat: location_lat,
@@ -194,7 +216,7 @@ wcm.controller("WriteController", function($scope,  $state, $cordovaCamera, $cor
                 cache: false
             });
             request.success(function(data) {
-                //reset inputs
+
                 $scope.cardForm.$setPristine();
                 $scope.cardForm.title.$setViewValue('');
                 document.getElementById('card_title').value = '';
@@ -206,7 +228,6 @@ wcm.controller("WriteController", function($scope,  $state, $cordovaCamera, $cor
                 $scope.cardForm.file.$setViewValue('');
                 $scope.imgURI = undefined;
 
-                //go to the home
                 $state.go('tabs.home');
                 
                 $ionicLoading.hide();
@@ -231,4 +252,107 @@ wcm.controller("WriteController", function($scope,  $state, $cordovaCamera, $cor
       }
 
     }
+
+  // ==================================== Post card END ====================================== 
+
+  // ==================================== Edit card ======================================  
+
+  /* Get card info */
+
+  $scope.postId = $stateParams.postId;
+
+  var request = $http({
+    method: "get",
+    url: mServerAPI + "/cardDetail/" + $scope.postId,
+    crossDomain : true,
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+    cache: false
+  });
+
+  request.success(function(data) {
+    $scope.postTitle = data.cards[0].title;
+    $scope.postDescription = data.cards[0].description;
+    $scope.postImage = data.cards[0].img_path;
+    $scope.lat = data.cards[0].location_lat;
+    $scope.lng = data.cards[0].location_long;
+
+  });
+
+  /* Get card info END */
+
+
+  /* Post card info */
+
+  $scope.editCard = function() {
+
+    /* Upload image file */
+
+    var newFileName;
+    if($scope.imgURI != null){
+      
+      var imagePath = $scope.imgURI;
+      var d = new Date();
+      var n = d.getTime();
+
+      newFileName = n + ".jpg";
+
+      var url = mServerAPI + "/upload";
+      var targetPath = imagePath;
+      var filename = targetPath.split("/").pop();
+      var options = {
+          fileKey: "file",
+          fileName: newFileName,
+          chunkedMode: false,
+          mimeType: "image/jpg"
+      };
+      $cordovaFileTransfer.upload(url, targetPath, options).then(function(result) {
+          console.log("SUCCESS: " + JSON.stringify(result.response));
+          alert("success");
+          alert(JSON.stringify(result.response));
+      }, function(err) {
+          console.log("ERROR: " + JSON.stringify(err));
+          alert(JSON.stringify(err));
+      }, function (progress) {
+          // constant progress updates
+          $timeout(function () {
+          $scope.downloadProgress = (progress.loaded / progress.total) * 100;
+        })
+      });
+    }
+
+    /* Upload image file END */
+
+    var title = document.getElementById("card_title").value;
+    var description = document.getElementById("card_des").value;
+    var location_lat =  document.getElementById("card_location").getAttribute('lat');
+    var location_long = document.getElementById("card_location").getAttribute('long');
+    var img_path = mServerUrl+"/upload/"+newFileName;
+    var formData = {
+                      title: title,
+                      description: description,
+                      location_lat: location_lat,
+                      location_long: location_long,
+                      img_path: img_path
+                    };
+    var postData = 'cardData='+JSON.stringify(formData);
+    var request = $http({
+        method: "post",
+        url: mServerAPI + "/cardDetail/" + $scope.postId,
+        crossDomain : true,
+        data: postData,
+        headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+        cache: false
+    });
+
+    request.success(function(data) {
+      $state.go("tabs.home");
+    });
+
+  }
+
+  /* Post card info END */
+
+  // ==================================== Edit card END ======================================
+
 });
+
