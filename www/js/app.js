@@ -65,10 +65,10 @@ wcm.config(function($stateProvider, $urlRouterProvider) {
       }
     })
     .state('tabs.edit', {
-      url: "/home/:postId/edit",
+      url: "/home/:id/edit",
       views: {
         'home-tab': {
-          templateUrl: "templates/edit.html",
+          templateUrl: "templates/write.html",
           controller : "WriteController"
         }
       }
@@ -82,7 +82,16 @@ wcm.config(function($stateProvider, $urlRouterProvider) {
         }
       }
     })
-    .state('tabs.location', {
+    .state('tabs.locationh', {
+      url: "/location/:latlng",
+      views: {
+        'home-tab': {
+          templateUrl: "templates/location.html",
+          controller: 'MapController'
+        }
+      }
+    })
+    .state('tabs.locationw', {
       url: "/location/:latlng",
       views: {
         'write-tab': {
