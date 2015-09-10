@@ -16,8 +16,8 @@
               <img ng-src="{{ card.userimage }}">
               <p class="username">{{card.username}}</p>
               <p class="date">{{ card.create_time }}</p>
-              <a href="#/tab/home/{{ card.id }}/edit" ng-click="" class="edit">edit</a>
-              <a ng-click="deleteCard(card.id)" class="delete"> <input type="hidden" name="_METHOD" value="DELETE"/>delete</a>
+              <a ng-click="deleteCard(card.id)" ng-style="userChecked(card)" class="edit"><small>&nbsp;delete</small></a>
+              <a href="#/tab/home/{{ card.id }}/edit" ng-style="userChecked(card)" class="edit"><small>edit</small></a>
             </div>
 
             <div class="content">

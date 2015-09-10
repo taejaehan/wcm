@@ -36,6 +36,11 @@
 
 #home_page .profile p.date {
 	font-size: 12px;
+	display: inline-block;
+}
+
+#home_page .profile a.edit {
+	float: right;
 }
 
 #home_page hr {

@@ -138,6 +138,8 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
       var user = JSON.parse(window.localStorage['user'] || '{}');
       $scope.username = user.properties.nickname;
       $scope.userimage = user.properties.thumbnail_image;
+    } else {
+      alert("로그인 후 이용하세요.");
     }
 
     var post_id = parseInt($stateParams.postId);
@@ -156,10 +158,7 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
 
     var postData = 'commentData='+JSON.stringify(formData);
 
-
     $scope.comments.push(formData);
-    console.log($scope.comments);
-
 
     var request = $http({
         method: "post",
