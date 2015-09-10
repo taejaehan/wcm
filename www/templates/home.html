@@ -19,8 +19,8 @@
           <div class="post-body">
             
             <div class="profile">
-              <img ng-src="{{ card.user_id[0].userimage }}">
-              <p class="username">{{card.user_id[0].username}}</p>
+              <img ng-src="{{ card.user[0].userimage }}">
+              <p class="username">{{card.user[0].username}}</p>
               <p class="date">{{ card.create_time }}</p>
               <a ng-click="deleteCard(card.id)" ng-style="userChecked(card)" class="edit"><small>&nbsp;delete</small></a>
               <a href="#/tab/home/{{ card.id }}/edit" ng-style="userChecked(card)" class="edit"><small>edit</small></a>

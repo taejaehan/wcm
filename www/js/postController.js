@@ -178,7 +178,7 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
                             post_id: post_id,
                             user_app_id: user_app_id,
                             content: comment,
-                            user_id: [{
+                            user: [{
                                         username: $scope.username,
                                         userimage: $scope.userimage
                                      }],
@@ -198,6 +198,31 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
   }
   // ==================================== Post comment END ======================================
 
+  // ==================================== Delete comment ======================================
+
+  $scope.deleteComment = function(comment) {
+
+    if (confirm('Are you sure you want to delete?')) {
+      var request = $http({
+          method: "get",
+          url: mServerAPI + "/comment/" + comment.id + "/delete",
+          crossDomain : true,
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
+      });
+
+      request.success(function() {
+
+        var index = $scope.comments.indexOf(comment);
+        $scope.comments.splice(index, 1); 
+        $scope.comments_count --;
+
+      });
+    } else {
+      
+    }
+  }
+
+  // ==================================== Delete comment END======================================
 });
 
 
