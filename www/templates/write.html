@@ -76,9 +76,10 @@
         </button>
       </div>
       <input id="card_file"
-         name="file"
-         ng-model="cardData.file"
-         required>
+        type = "hidden"
+        name="file"
+        ng-model="cardData.file"
+        required>
       </label>
       <div class="error-container last-error-container"  
           ng-show="cardForm.file.$error && cardForm.$submitted"

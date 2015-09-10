@@ -341,7 +341,6 @@ wcm.controller("WriteController", function($scope, $state, $cordovaCamera, $cord
            template: 'data :  ' + data
         });
     });
-    //DB 저장하기 끝
   }
 
   /* 
