@@ -25,7 +25,8 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
       //marker dragend listener
       google.maps.event.addListener(marker, 'dragend', function() { 
         var latlng = marker.getPosition();
-        $scope.setLocationName(latlng);
+        var movedLatlng = {lat: latlng.G,  lng: latlng.K};
+        $scope.setLocationName(movedLatlng);
       });
 
        // Marker + infowindow + angularjs compiled ng-click
@@ -82,7 +83,8 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
             animation: google.maps.Animation.DROP,
           });
 
-          $scope.setLocationName(place.geometry.location);
+          var searchedLatlng = {lat: place.geometry.location.G , lng: place.geometry.location.K};
+          $scope.setLocationName(searchedLatlng);
 
           if (place.geometry.viewport) {
             // Only geocodes have viewport.
@@ -151,10 +153,12 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
             });
             infowindow.setContent(results[1].formatted_address);
             infowindow.open(map, marker);
+            console.log('lat : ' + latlng.lat);
+            console.log('lng : ' + latlng.lng);
             document.getElementById("card_location").value = results[1].formatted_address;
-            document.getElementById("card_location").validity.valid = true;
             document.getElementById("card_location").setAttribute('lat' , latlng.lat);
-            document.getElementById("card_location").setAttribute('long' , latlng.long);
+            document.getElementById("card_location").setAttribute('long' , latlng.lng);
+            document.getElementById("card_location").validity.valid = true;
             // $scope.cardForm.location.$setValidity("nouser", true);
           } else {
             window.alert('No results found');
