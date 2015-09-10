@@ -61,7 +61,7 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
       var numMarkers = document.getElementById('nummarkers').value;
 
       if(numMarkers > speedTest.pics.length) numMarkers = speedTest.pics.length;
-      
+
       for (var i = 0; i < numMarkers; i++) {
 
         var titleText = speedTest.pics[i].title;
@@ -115,8 +115,8 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
 
         var username = '';
         if(pic.user != null){
-          if(pic.user.username != null){
-            username = pic.user.username;
+          if(pic.user[0].username != null){
+            username = pic.user[0].username;
           }
         }
 

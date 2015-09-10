@@ -43,7 +43,7 @@ wcm.controller("HomeController", function($scope, $cordovaNetwork, $state, $cord
               var object =  data.cards[i];
               $scope.cards.push(object);
             }
-            console.log($scope.cards);
+            // console.log($scope.cards);
           }
 
           $scope.page++;
