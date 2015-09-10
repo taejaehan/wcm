@@ -255,18 +255,12 @@ wcm.controller("WriteController", function($scope, $state, $cordovaCamera, $cord
     //user관련 부분이 없으면 테스트 용도로 kakao 정보를 넣어준다
     if (window.localStorage['user'] != null) {
       var user = JSON.parse(window.localStorage['user'] || '{}');
-      $scope.userid = user.id;
-      $scope.username = user.properties.nickname;
-      $scope.userimage = user.properties.thumbnail_image;       
+      $scope.userid = user.id;  
     }else{
       $scope.userid = 57421548;
-      $scope.username = "Taejae Han";
-      $scope.userimage = "http://mud-kage.kakao.co.kr/14/dn/btqch17TnPq/Ve843fr4kMziXkSIjFwKI0/o.jpg";
     }
 
     var user_app_id = $scope.userid;
-    var username = $scope.username;
-    var userimage = $scope.userimage; 
 
     var url, title, description, location_lat, location_long = '';
     //cardId가 null이면 (new add)
@@ -302,8 +296,6 @@ wcm.controller("WriteController", function($scope, $state, $cordovaCamera, $cord
     }
     var formData = {
             user_app_id: user_app_id,
-            username: username,
-            userimage: userimage,
             title: title,
             description: description,
             location_lat: location_lat,
