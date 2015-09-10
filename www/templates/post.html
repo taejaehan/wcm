@@ -30,11 +30,11 @@
         </form>
 
         <div ng-repeat="comment in comments track by $index" class="comment-list">
-          <img ng-src="{{ comment.userimage }}" class="profile-image">
+          <img ng-src="{{ comment.user_id[0].userimage }}" class="profile-image">
           <div class="description">
-            <strong>{{ comment.username }}</strong>
+            <strong>{{ comment.user_id[0].username }}</strong>
             <p>{{ comment.content }}</p>
-            <small>{{ comment.updated_at }}</small>
+            <small>{{ comment.updated_at | date:'yyyy-MM-dd HH:mm:ss' }}</small>
           </div>
         </div>
 

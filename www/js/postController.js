@@ -132,61 +132,73 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
 
   $scope.addComment =function() {
   
-    var comment = document.getElementById("comment").value
+    var comment = document.getElementById("comment").value;
+    console.log(comment);
 
-    if (window.localStorage['user'] != null) {
-      var user = JSON.parse(window.localStorage['user'] || '{}');
-      $scope.username = user.properties.nickname;
-      $scope.userimage = user.properties.thumbnail_image;
+    if ( comment === "" ) {
+
+      alert('코멘트를 입력하세요.');
+
     } else {
-      alert("로그인 후 이용하세요.");
+
+      if (window.localStorage['user'] != null) {
+        var user = JSON.parse(window.localStorage['user'] || '{}');
+        $scope.username = user.properties.nickname;
+        $scope.userimage = user.properties.thumbnail_image;
+
+        if ($scope.userimage === null) {
+          $scope.userimage = "http://mud-kage.kakao.co.kr/14/dn/btqchdUZIl1/FYku2ixAIgvL1O50eDzaCk/o.jpg";
+        }
+
+      } else {
+        alert("로그인 후 이용하세요.");
+      }
+
+      var post_id = parseInt($stateParams.postId);
+      var user_app_id = parseInt(user.id);
+
+      var formData = {
+                        post_id: post_id,
+                        user_app_id: user_app_id,
+                        content: comment
+                      };
+
+      var postData = 'commentData='+JSON.stringify(formData);
+
+      var request = $http({
+          method: "post",
+          url: mServerAPI + "/comments",
+          crossDomain : true,
+          data: postData,
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+          cache: false
+      });
+
+      var formDataLocal = {
+                            post_id: post_id,
+                            user_app_id: user_app_id,
+                            content: comment,
+                            user_id: [{
+                                        username: $scope.username,
+                                        userimage: $scope.userimage
+                                     }],
+                            updated_at: new Date()
+                          }
+
+      $scope.comments.push(formDataLocal);
+
+      request.success(function(data) {
+
+        document.getElementById("comment").value = "";
+        $scope.comments_count ++;
+
+      });
     }
 
-    var post_id = parseInt($stateParams.postId);
-    var user_app_id = parseInt(user.id);
-    var content = comment;
-    var username = $scope.username;
-    var userimage = $scope.userimage;
-
-    var formData = {
-                      post_id: post_id,
-                      user_app_id: user_app_id,
-                      content: content,
-                      username: username,
-                      userimage: userimage
-                    };
-
-    var postData = 'commentData='+JSON.stringify(formData);
-
-    $scope.comments.push(formData);
-
-    var request = $http({
-        method: "post",
-        url: mServerAPI + "/comments",
-        crossDomain : true,
-        data: postData,
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-        cache: false
-    });
-
-    /* Successful HTTP post request or not */
-    request.success(function(data) {
-
-      document.getElementById("comment").value = "";
-      $scope.comments_count ++;
-
-    });
   }
-
   // ==================================== Post comment END ======================================
 
 });
-
-
-
-
-
-
 
 
 

@@ -43,6 +43,7 @@ wcm.controller("HomeController", function($scope, $cordovaNetwork, $state, $cord
               var object =  data.cards[i];
               $scope.cards.push(object);
             }
+            console.log($scope.cards);
           }
 
           $scope.page++;
@@ -57,12 +58,12 @@ wcm.controller("HomeController", function($scope, $cordovaNetwork, $state, $cord
 
     /* isOffline */
       alert("Check your network connection.");
-
+      
       for (var i = 0; i < cardList.cards.length; i++) {
         var object = cardList.cards[i];
         $scope.cards.push(object);
       }
-    }  
+    }
   }
 
   $scope.findWarning = function() {
@@ -82,7 +83,6 @@ wcm.controller("HomeController", function($scope, $cordovaNetwork, $state, $cord
   }
 
   // ========================= Check current user & card user END ===========================
-
 
   // ==================================== Delete card ======================================  
 
