@@ -253,17 +253,20 @@ wcm.controller("WriteController", function($scope, $state, $cordovaCamera, $cord
   $scope.uploadDb = function(newFileName) {
 
     //user관련 부분이 없으면 테스트 용도로 kakao 정보를 넣어준다
-    if (window.localStorage['user'] != null) {
-      var user = JSON.parse(window.localStorage['user'] || '{}');
-      $scope.userid = user.id;
-      $scope.username = user.properties.nickname;
-      $scope.userimage = user.properties.thumbnail_image;       
-    }else{
-      $scope.userid = 57421548;
-      $scope.username = "Taejae Han";
-      $scope.userimage = "http://mud-kage.kakao.co.kr/14/dn/btqch17TnPq/Ve843fr4kMziXkSIjFwKI0/o.jpg";
-    }
+    // if (window.localStorage['user'] != null) {
+    //   var user = JSON.parse(window.localStorage['user'] || '{}');
+    //   $scope.userid = user.id;
+    //   $scope.username = user.properties.nickname;
+    //   $scope.userimage = user.properties.thumbnail_image;       
+    // }else{
+    //   $scope.userid = 57421548;
+    //   $scope.username = "Taejae Han";
+    //   $scope.userimage = "http://mud-kage.kakao.co.kr/14/dn/btqch17TnPq/Ve843fr4kMziXkSIjFwKI0/o.jpg";
+    // }
 
+    $scope.userid = 57421548;
+    $scope.username = "Taejae Han";
+    $scope.userimage = "http://mud-kage.kakao.co.kr/14/dn/btqch17TnPq/Ve843fr4kMziXkSIjFwKI0/o.jpg";
     var user_app_id = $scope.userid;
     var username = $scope.username;
     var userimage = $scope.userimage; 
