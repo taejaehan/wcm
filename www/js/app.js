@@ -55,6 +55,15 @@ wcm.config(function($stateProvider, $urlRouterProvider) {
         }
       }
     })
+    .state('tabs.map', {
+      url: "/home/map",
+      views: {
+        'home-tab': {
+          templateUrl: "templates/map.html"
+          // controller: 'HomeController'
+        }
+      }
+    })
     .state("tabs.post", {
       url: "/home/:postId",
       views: {

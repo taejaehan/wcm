@@ -64,6 +64,11 @@ wcm.controller("HomeController", function($scope, $cordovaNetwork, $state, $cord
       }
     }  
   }
+
+  $scope.findWarning = function() {
+    $state.go("tabs.map");
+  }
+
   
   // =========================== Check current user & card user =============================
 

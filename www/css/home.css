@@ -4,6 +4,11 @@
 	display: block;
 }
 
+#home_page a.find-warning {
+	text-align: center;
+	display: block;
+}
+
 #home_page .posts {
 	padding: 0px;
 }
