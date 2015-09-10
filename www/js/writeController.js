@@ -332,6 +332,8 @@ wcm.controller("WriteController", function($scope, $state, $cordovaCamera, $cord
           title: 'Success',
            template: 'data :  ' + data
         });
+
+        location.reload();
     });
   }
 
