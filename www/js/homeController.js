@@ -58,7 +58,7 @@ wcm.controller("HomeController", function($scope, $cordovaNetwork, $state, $cord
 
     /* isOffline */
       alert("Check your network connection.");
-      
+
       for (var i = 0; i < cardList.cards.length; i++) {
         var object = cardList.cards[i];
         $scope.cards.push(object);
@@ -74,12 +74,16 @@ wcm.controller("HomeController", function($scope, $cordovaNetwork, $state, $cord
   // =========================== Check current user & card user =============================
 
   $scope.userChecked = function(card) {
+    console.log(card.user[0].user_id);
+    console.log(user);
 
-      if ( parseInt(card.user_id[0].user_id) === user.id ) {
-        return { 'display' : 'inline-block' };
-      } else {
-        return { 'display' : 'none' };
-      }
+    if ( parseInt(card.user[0].user_id) === user.id ) {
+      return { 'display' : 'inline-block' };
+    } else if (user === null) {
+      return { 'display' : 'none' };
+    } else {
+      return { 'display' : 'none' };
+    }
   }
 
   // ========================= Check current user & card user END ===========================
