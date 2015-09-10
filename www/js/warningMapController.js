@@ -60,7 +60,9 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
       // panel.innerHTML = '';
       var numMarkers = document.getElementById('nummarkers').value;
 
-      for (var i = 0; i < speedTest.pics.length; i++) {
+      if(numMarkers > speedTest.pics.length) numMarkers = speedTest.pics.length;
+
+      for (var i = 0; i < numMarkers; i++) {
 
         var titleText = speedTest.pics[i].title;
         if (titleText === '') {
@@ -108,17 +110,24 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
           e.preventDefault();
         }
         var title = pic.title;
-        var url = pic.img_path;
+        var url = "#/tab/home/"+pic.id;
         var fileurl = pic.img_path;
+
+        var username = '';
+        if(pic.user != null){
+          if(pic.user[0].username != null){
+            username = pic.user[0].username;
+          }
+        }
 
         var infoHtml = '<div class="info"><h3>' + title +
           '</h3><div class="info-body">' +
-          '<a href="' + url + '" target="_blank"><img src="' +
+          '<a href="' + url + '"><img src="' +
           fileurl + '" class="info-img"/></a></div>' +
           // '<a href="http://www.panoramio.com/" target="_blank">' +
           // '<img src="http://maps.google.com/intl/en_ALL/mapfiles/' +
           // 'iw_panoramio.png"/></a><br/>' +
-          '<a href="' + pic.userimage + '" target="_blank">' + pic.username +
+          '<a href="' + pic.userimage + '" target="_blank">' + username +
           '</a></div></div>';
 
         speedTest.infoWindow.setContent(infoHtml);
