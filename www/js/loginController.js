@@ -10,7 +10,9 @@ wcm.controller("LoginController", function($scope, $rootScope, $state, $http) {
 		    Kakao.API.request({
 	        url: '/v1/user/me',
 	        success: function(res) {
-
+	        	console.log(res);
+	        	res.properties.like = [];
+	        	
 	          window.localStorage['user'] = JSON.stringify(res);
 	          var user = JSON.parse(window.localStorage['user'] || '{}');
 	          var user_id = user.id;

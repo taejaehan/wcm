@@ -32,9 +32,10 @@
             </div>
 
             <div class="progress">
-              <div class="progress-bar progress-bar-danger progress-bar-striped" role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100" style="width: 33%">
+              <div class="progress-bar progress-bar-danger progress-bar-striped" role="progressbar" aria-valuenow="{{card.status}}" aria-valuemin="0" aria-valuemax="100" style="width: {{card.status}}%">
               </div>
             </div>
+            <p class="progressText">{{ card.statusDescription }}</p>
 
             <hr> 
 
