@@ -1,7 +1,7 @@
 <ion-view view-title="Profile">
   <ion-content>
     
-    <form class="form-horizontal profile-form">
+    <form class="form-horizontal profile-form" ng-show="userCheck">
 	    <img src="{{ userimage }}">
 
 		  <div class="form-group">
@@ -36,6 +36,11 @@
 		  <hr>
     	<button ng-click="logOut()" class="btn btn-default">LogOut</button>
     </form>
+
+    <div ng-hide="userCheck">
+    	<p>로그인이 필요한 서비스 입니다.</p>
+    	<button class="btn btn-default" ng-click="goLogin()">로그인 하러 가기</button>
+    </div>
 
   </ion-content>
 </ion-view>

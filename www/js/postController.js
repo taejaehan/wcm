@@ -46,12 +46,16 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
 
   // ==================================== post like_count ======================================
 
-  if (user.properties.like.indexOf($scope.postId) != -1) {
-    $scope.watch = true;
+  if (user != null ) {
+    if (user.properties.like.indexOf($scope.postId) != -1) {
+      $scope.watch = true;
+    }
   }
 
+    console.log(user);
   $scope.toggleLike = function(e) {
     
+
     if (e === true) {
 
       if (user.properties.like.indexOf($scope.postId) === -1) {
@@ -175,21 +179,17 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
   // ==================================== Post comment ======================================
 
   $scope.addComment =function() {
-  
-    var comment = document.getElementById("comment").value;
-    console.log(comment);
+    
+    if (user != null) {
 
-    if ( comment === "" ) {
+      var comment = document.getElementById("comment").value;
 
-      alert('내용을 입력하세요.');
+      if ( comment === "" ) {
 
-    } else {
-
-      if (window.localStorage['user'] === null) {
-
-        alert("로그인 후 이용하세요.");
+        alert('내용을 입력하세요.');
 
       } else {
+
         $scope.username = user.properties.nickname;
         $scope.userimage = user.properties.thumbnail_image;
         $scope.userid = String(user.id);
@@ -234,11 +234,12 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
       $scope.comments.push(formDataLocal);
 
       request.success(function(data) {
-
         document.getElementById("comment").value = "";
         $scope.comments_count ++;
-
       });
+
+    } else {
+      alert("로그인 후에 이용 가능합니다.");
     }
 
   }
@@ -247,14 +248,17 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
   // =========================== Check current user & comment user =============================
 
   $scope.userChecked = function(comment) {  
-
-    if ( parseInt(comment.user[0].user_id) === user.id ) {
-      return { 'display' : 'inline-block' };
-    } else if (user === null) {
-      return { 'display' : 'none' };
+    
+    if (user != null) {
+      if ( parseInt(comment.user[0].user_id) === user.id ) {
+        return { 'display' : 'inline-block' };
+      } else {
+        return { 'display' : 'none' };
+      }
     } else {
       return { 'display' : 'none' };
     }
+
   }  
 
   // ========================= Check current user & card user END ===========================
