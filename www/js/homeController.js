@@ -6,6 +6,7 @@ wcm.controller("HomeController", function($scope, $cordovaNetwork, $state, $cord
     var user = JSON.parse(window.localStorage['user'] || '{}');
     $scope.username = user.properties.nickname;
     $scope.userimage = user.properties.thumbnail_image;
+    $scope.likes = user.properties.like;
   }
 
   $scope.page = 0;
@@ -30,20 +31,18 @@ wcm.controller("HomeController", function($scope, $cordovaNetwork, $state, $cord
 
           for (var i = 0; i <  data.cards.length; i++) {
 
-            if (data.cards[i].userimage === "") {
-
-              /* temporary code */
-              var object =  data.cards[i];
-              object.userimage = "https://lh3.googleusercontent.com/1K8PBYnhbpdHtiXNZqaMwbk_dCPkoSXMZMqJc-Ae0qvhr-Cpnx2ATu49eEkoXv_Ym75h1uNq7EbeS--_P2g02V-nU1tJcxEt6r5CfdtPvT8owFngb3OTyxr5APYg8YKDxAxM7Iw7HxtY37et0ZeT-InQnqoLrjNa-2BiHlwUnO95XpuIU286rakjG_0Y7Q0tRkeKwRDNp_kCMZeEXISzlVvOf-tIXIjdGxS4F6vZkmrvY7h98r0sUmp_yLZFAl120ZOHyezvHk_vetywZuA-63BFAJu9Iy59-DNkk3iK6umL5uO_hWzFL0oRk3d-VHQ_en1Vmey7_b39frnnxFkIpWvzj1GlAwJ1qysrWCx0HY2iuZbm0zNgIenw3yVzxIFyGT1Xy_jpjr6FU1QGVUkWxBb-3HpkPWUn7G4DS0YrsDmUSPARK3D9l01cUgYJD_jBR-Jdf895B7GWPRwNupZNulICfFw-VwoF8eVm4xaFSNcbgEANa0LXb75oHhJ6p0QnhACN0NcxZC4xk3nz3R5l_g=s160-no";
-              object.username = "temporary name";
-              $scope.cards.push(object);
-              /* temporary code end */
-
+            if (data.cards[i].status === "0") {
+              data.cards[i].statusDescription = "프로젝트가 등록되었습니다.";
+            } else if (data.cards[i].status === "33") {
+              data.cards[i].statusDescription = "프로젝트가 시작되었습니다.";
+            } else if (data.cards[i].status === "66") {
+              data.cards[i].statusDescription = "프로젝트를 진행합니다.";
             } else {
-              var object =  data.cards[i];
-              $scope.cards.push(object);
+              data.cards[i].statusDescription = "프로젝트가 완료되었습니다.";
             }
-            // console.log($scope.cards);
+
+            var object =  data.cards[i];
+            $scope.cards.push(object);
           }
 
           $scope.page++;
@@ -74,8 +73,6 @@ wcm.controller("HomeController", function($scope, $cordovaNetwork, $state, $cord
   // =========================== Check current user & card user =============================
 
   $scope.userChecked = function(card) {
-    console.log(card.user[0].user_id);
-    console.log(user);
 
     if ( parseInt(card.user[0].user_id) === user.id ) {
       return { 'display' : 'inline-block' };

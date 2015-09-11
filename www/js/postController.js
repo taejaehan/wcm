@@ -1,9 +1,14 @@
 wcm.controller("PostController", function($scope, $http, $stateParams) {
-  
+    
+  if (window.localStorage['user'] != null) {
+    var user = JSON.parse(window.localStorage['user'] || '{}');
+  }
+
 	$scope.postId = $stateParams.postId;
   $scope.cards = [];
   $scope.comments = [];
   $scope.comments_count = 0;
+  
   // $scope.like_count = [];
 
   var request = $http({
@@ -22,16 +27,51 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
     $scope.lat = data.cards[0].location_lat;
     $scope.lng = data.cards[0].location_long;
     $scope.like_count = data.cards[0].like_count;
+    $scope.status = data.cards[0].status;
     $scope.initMap(data);
 
+    if (data.cards[0].status === "0") {
+      data.cards[0].statusDescription = "프로젝트가 등록되었습니다.";
+    } else if (data.cards[0].status === "33") {
+      data.cards[0].statusDescription = "프로젝트가 시작되었습니다.";
+    } else if (data.cards[0].status === "66") {
+      data.cards[0].statusDescription = "프로젝트를 진행합니다.";
+    } else {
+      data.cards[0].statusDescription = "프로젝트가 완료되었습니다.";
+    }
+
+    $scope.statusDescription = data.cards[0].statusDescription;
 
   });
 
   // ==================================== post like_count ======================================
 
-  $scope.toggleLike = function(e) {
+  if (user.properties.like.indexOf($scope.postId) != -1) {
+    $scope.watch = true;
+  }
 
-    e === true ? $scope.like_count ++ : $scope.like_count --;
+  $scope.toggleLike = function(e) {
+    
+    if (e === true) {
+
+      if (user.properties.like.indexOf($scope.postId) === -1) {
+        $scope.like_count ++;
+        user.properties.like.push($scope.postId);
+        window.localStorage['user'] = JSON.stringify(user);
+        console.log(window.localStorage['user']);
+      } 
+
+    } else {
+
+      if (user.properties.like.indexOf($scope.postId) != -1) {
+        $scope.like_count --;
+        var index = user.properties.like.indexOf($scope.postId);
+        user.properties.like.splice(index, 1);
+        window.localStorage['user'] = JSON.stringify(user);
+        console.log(window.localStorage['user']);
+      } 
+
+    }
 
     var like_count = parseInt($scope.like_count);
     var formData = { like_count: like_count };
@@ -44,6 +84,10 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
         data: postData,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
         cache: false
+    });
+
+    request.success(function() {
+
     });
   }
 
@@ -137,21 +181,22 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
 
     if ( comment === "" ) {
 
-      alert('코멘트를 입력하세요.');
+      alert('내용을 입력하세요.');
 
     } else {
 
-      if (window.localStorage['user'] != null) {
-        var user = JSON.parse(window.localStorage['user'] || '{}');
+      if (window.localStorage['user'] === null) {
+
+        alert("로그인 후 이용하세요.");
+
+      } else {
         $scope.username = user.properties.nickname;
         $scope.userimage = user.properties.thumbnail_image;
+        $scope.userid = String(user.id);
 
         if ($scope.userimage === null) {
           $scope.userimage = "http://mud-kage.kakao.co.kr/14/dn/btqchdUZIl1/FYku2ixAIgvL1O50eDzaCk/o.jpg";
         }
-
-      } else {
-        alert("로그인 후 이용하세요.");
       }
 
       var post_id = parseInt($stateParams.postId);
@@ -178,7 +223,8 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
                             post_id: post_id,
                             user_app_id: user_app_id,
                             content: comment,
-                            user: [{
+                            user: [{    
+                                        user_id: $scope.userid,
                                         username: $scope.username,
                                         userimage: $scope.userimage
                                      }],
@@ -197,6 +243,21 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
 
   }
   // ==================================== Post comment END ======================================
+
+  // =========================== Check current user & comment user =============================
+
+  $scope.userChecked = function(comment) {  
+
+    if ( parseInt(comment.user[0].user_id) === user.id ) {
+      return { 'display' : 'inline-block' };
+    } else if (user === null) {
+      return { 'display' : 'none' };
+    } else {
+      return { 'display' : 'none' };
+    }
+  }  
+
+  // ========================= Check current user & card user END ===========================
 
   // ==================================== Delete comment ======================================
 

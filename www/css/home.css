@@ -48,6 +48,11 @@
 	float: right;
 }
 
+#home_page p.progressText {
+	text-align: center;
+	margin-bottom: 30px;
+}
+
 #home_page hr {
 	margin: 5px;
 }
