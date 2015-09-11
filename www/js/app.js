@@ -47,7 +47,10 @@ wcm.run(function($ionicPlatform, $http) {
   });
 })
 
-wcm.config(function($stateProvider, $urlRouterProvider) {
+wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+
+  $ionicConfigProvider.tabs.position('bottom');
+  
   $stateProvider
     .state("login", {
       url: "/login",
