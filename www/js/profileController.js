@@ -2,6 +2,8 @@ wcm.controller("ProfileController", function($scope, $state, $http) {
 
   if (window.localStorage['user'] != null) {
 
+  	$scope.userCheck = true;
+
 	  var user = JSON.parse(window.localStorage['user'] || '{}');
 	  
 		$scope.username = user.properties.nickname;
@@ -19,7 +21,6 @@ wcm.controller("ProfileController", function($scope, $state, $http) {
 			});
 		} 
 		
-
 		var request = $http({
 	    method: "get",
 	    url: mServerAPI + "/cards/" + user.id,
@@ -70,8 +71,12 @@ wcm.controller("ProfileController", function($scope, $state, $http) {
 
   
   } else {
-  	alert("로그인 후 이용가능 합니다");
-  	$state.go('login');
+  	
+  	$scope.userCheck = false;
+
+  	$scope.goLogin = function() {
+  		$state.go('login');
+  	}
   } 
 
 

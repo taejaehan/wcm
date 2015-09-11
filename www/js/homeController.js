@@ -8,10 +8,7 @@ wcm.controller("HomeController", function($scope, $cordovaNetwork, $state, $cord
     $scope.username = user.properties.nickname;
     $scope.userimage = user.properties.thumbnail_image;
     $scope.likes = user.properties.like;
-  }else{
-    user = {};
-    user.id = 57421548;
-  }
+  } 
 
   console.log(user);
 
@@ -80,12 +77,14 @@ wcm.controller("HomeController", function($scope, $cordovaNetwork, $state, $cord
 
   $scope.userChecked = function(card) {
 
-    if ( parseInt(card.user[0].user_id) === user.id ) {
-      return { 'display' : 'inline-block' };
-    } else if (user === null) {
-      return { 'display' : 'none' };
+    if (user != null) {
+      if ( parseInt(card.user[0].user_id) === user.id ) {
+        return { 'display' : 'inline-block' };
+      } else {
+        return { 'display' : 'none' };
+      }
     } else {
-      return { 'display' : 'none' };
+      return { 'display' : 'none' }
     }
   }
 
