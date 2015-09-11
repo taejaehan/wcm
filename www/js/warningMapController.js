@@ -101,7 +101,8 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
              
         }, function(err) {
             $ionicLoading.hide();
-            console.log(err);
+            alert('You can not use the location information');
+            console.log('CURRENT LOCATION ERROR :  ' + err);
         });
     }
 

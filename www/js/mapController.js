@@ -1,20 +1,21 @@
-wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocation, $ionicLoading, $compile) {
+wcm.controller('MapController', function(Scopes, $scope, $stateParams, $cordovaGeolocation, $ionicLoading, $compile) {
 
     var map , marker, infowindow;
     $scope.$on('$ionicView.afterEnter', function(){
-
-      console.log('$stateParams.latlng : ' + $stateParams.latlng);
-      if($stateParams.latlng == null){
-
-      }else{
-        $scope.editLocation();
-      }
+      $scope.locationFound = true;
+      $scope.editLocation();
     }); 
 
     $scope.editLocation = function(){
       //받아온 위/경도로 맵을 생성
+      console.log('$stateParams.latlng : ' + $stateParams.latlng);
       var latlngStr = $stateParams.latlng.slice(1,-1).split(',',2);
-      var currentLatlng = {lat: parseFloat(latlngStr[0]), lng: parseFloat(latlngStr[1])};
+      var currentLatlng;
+      if(latlngStr != ''){
+        currentLatlng = {lat: parseFloat(latlngStr[0]), lng: parseFloat(latlngStr[1])};
+      }else{
+        currentLatlng = {lat : 37.574515, lng : 126.976930};
+      }
       var mapOptions = {
         'zoom': 16, //init
         'minZoom' : 4,
@@ -149,7 +150,8 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
              
         }, function(err) {
             $ionicLoading.hide();
-            console.log(err);
+            alert('You can not use the location information');
+            console.log('CURRENT LOCATION ERROR :  ' + err);
         });
     }
 
@@ -168,11 +170,15 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
             infowindow.open(map, marker);
             console.log('lat : ' + latlng.lat);
             console.log('lng : ' + latlng.lng);
+
+            Scopes.store('MapController', $scope);
+            $scope.locationFound = true;
+
             document.getElementById("card_location").value = results[1].formatted_address;
             document.getElementById("card_location").setAttribute('lat' , latlng.lat);
             document.getElementById("card_location").setAttribute('long' , latlng.lng);
             document.getElementById("card_location").validity.valid = true;
-            // $scope.cardForm.location.$setValidity("nouser", true);
+            
           } else {
             window.alert('No results found');
           }

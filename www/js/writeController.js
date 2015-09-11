@@ -1,7 +1,10 @@
-wcm.controller("WriteController", function($scope, $state, $cordovaCamera, $cordovaFile, $cordovaFileTransfer, $timeout, $cordovaGeolocation, $ionicLoading, $http, $stateParams, $ionicPopup) {
+wcm.controller("WriteController", function(Scopes, $scope, $state, $cordovaCamera, $cordovaFile, $cordovaFileTransfer, $timeout, $cordovaGeolocation, $ionicLoading, $http, $stateParams, $ionicPopup) {
+
+  
 
   var latlng, cardId;
   var imgPath = '';
+  var locationFound = false;
   $scope.cardData = {
     "title" : "",
     "description" : "",
@@ -10,13 +13,20 @@ wcm.controller("WriteController", function($scope, $state, $cordovaCamera, $cord
   };
 
   $scope.$on('$ionicView.afterEnter', function(){
+
+    if(Scopes.get('MapController') != null){
+      console.log('locationFound  : ' + Scopes.get('MapController').locationFound);
+      locationFound = Scopes.get('MapController').locationFound;
+    }
     //id가 없다면 add
     if($stateParams.id == null){
       $scope.uploadTitle = 'Add';
       if($scope.imgURI == null){
         $scope.takePicture();
       }else{
-        $scope.currentLocation();
+        if(!locationFound){
+          $scope.currentLocation();
+        }
       }
     }
     //id가 있으면 해당 card edit
@@ -155,6 +165,8 @@ wcm.controller("WriteController", function($scope, $state, $cordovaCamera, $cord
       //맵을 보여준 후 dirty설정
       $scope.cardForm.location.$setDirty();
     };
+
+    $scope.cardForm.location.$setViewValue('done');
   }
 
   /*
@@ -336,7 +348,7 @@ wcm.controller("WriteController", function($scope, $state, $cordovaCamera, $cord
            template: 'data :  ' + data
         });
 
-        location.reload();
+        // location.reload();
     });
   }
 

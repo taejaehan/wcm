@@ -5,6 +5,19 @@ var mServerAPI = mServerUrl + '/controllers/index.php';
 
 var wcm = angular.module('starter', ['ionic', 'ngCordova']);
 
+//controller간 데이터를 전달하기 위해 사용한다
+wcm.factory('Scopes', function($rootScope) {
+    var mem = {};
+    return {
+        store: function(key, value) {
+             mem[key] = value;
+        },
+             get: function(key) {
+             return mem[key];
+         }
+    };
+})
+
 wcm.run(function($ionicPlatform, $http) {
   // Kakao.init('2b1444fba3c133df8405882491640b80');
 

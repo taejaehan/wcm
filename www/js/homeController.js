@@ -2,12 +2,18 @@ wcm.controller("HomeController", function($scope, $cordovaNetwork, $state, $cord
 
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
 
+  var user;
   if (window.localStorage['user'] != null) {
-    var user = JSON.parse(window.localStorage['user'] || '{}');
+    user = JSON.parse(window.localStorage['user'] || '{}');
     $scope.username = user.properties.nickname;
     $scope.userimage = user.properties.thumbnail_image;
     $scope.likes = user.properties.like;
+  }else{
+    user = {};
+    user.id = 57421548;
   }
+
+  console.log(user);
 
   $scope.page = 0;
   $scope.cards = [];

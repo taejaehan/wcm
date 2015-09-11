@@ -46,9 +46,9 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
 
   // ==================================== post like_count ======================================
 
-  if (user.properties.like.indexOf($scope.postId) != -1) {
-    $scope.watch = true;
-  }
+  // if(user.properties.like.indexOf($scope.postId) != -1){
+  //   $scope.watch = true;
+  // }
 
   $scope.toggleLike = function(e) {
     
