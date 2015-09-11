@@ -3,13 +3,27 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
     var map , marker, infowindow;
     $scope.$on('$ionicView.afterEnter', function(){
 
+      console.log('$stateParams.latlng : ' + $stateParams.latlng);
+      if($stateParams.latlng == null){
+
+      }else{
+        $scope.editLocation();
+      }
+    }); 
+
+    $scope.editLocation = function(){
       //받아온 위/경도로 맵을 생성
       var latlngStr = $stateParams.latlng.slice(1,-1).split(',',2);
       var currentLatlng = {lat: parseFloat(latlngStr[0]), lng: parseFloat(latlngStr[1])};
       var mapOptions = {
-        center: currentLatlng,
-        zoom: 16,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+        'zoom': 16, //init
+        'minZoom' : 4,
+        'center': currentLatlng,
+        'mapTypeId': google.maps.MapTypeId.ROADMAP,
+        'mapTypeControl' : false,     //지도, 위성
+        'streetViewControl' : false,   //거리뷰
+        'panControl' : false,           //위치 조절 pan
+        'zoomControl' : false,         //확대/축소 pan
       };
      map = new google.maps.Map(document.getElementById("map"),
           mapOptions);
@@ -97,8 +111,7 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
       });
 
       $scope.map = map;
-    }); 
-    
+    }
     //내 위치 찾기
     $scope.centerOnMe = function() {
         $ionicLoading.show({

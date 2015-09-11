@@ -75,7 +75,7 @@ wcm.controller("HomeController", function($scope, $cordovaNetwork, $state, $cord
 
   $scope.userChecked = function(card) {
 
-      if ( parseInt(card.user_id[0].user_id) === user.id ) {
+      if ( parseInt(card.user[0].user_id) === user.id ) {
         return { 'display' : 'inline-block' };
       } else {
         return { 'display' : 'none' };

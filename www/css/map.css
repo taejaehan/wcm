@@ -1,0 +1,66 @@
+#map {
+    height: 100%;
+    width: 100%;
+}
+
+.scroll {
+    height: 100%;
+}
+
+#pac-input {
+  background-color: #fff;
+  font-family: Roboto;
+  font-size: 15px;
+  font-weight: 300;
+  padding: 0 11px 0 13px;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+#pac-input:focus {
+  border-color: #4d90fe;
+}
+
+.pac-container {
+  font-family: Roboto;
+}
+
+#type-selector {
+  color: #fff;
+  background-color: #4d90fe;
+  padding: 5px 11px 0px 11px;
+}
+
+#type-selector label {
+  font-family: Roboto;
+  font-size: 13px;
+  font-weight: 300;
+}
+
+.ng-hide-add         { animation:0.5s lightSpeedOut ease; }
+
+/* when showing the picture */
+.ng-hide-remove      { animation:0.5s flipInX ease; }
+
+.checkbox_custrom{
+	padding-left : 43px;
+}
+
+.checkbox_custrom input:checked:before, .checkbox_custrom input:checked + .checkbox-icon:before{
+  
+  background : url('http://chart.apis.google.com/chart?cht=mm&chs=24x32&chco=FFFFFF,008CFF,000000&ext=.png');
+  border : none;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 20px;
+}
+.checkbox_custrom input:after, .checkbox-icon:after{
+  border : none;
+}
+.checkbox_custrom input:before, .checkbox-icon:before{
+  background : url('http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/images/m1.png');
+  border : none;
+  background-size: 30px;
+  background-repeat: no-repeat;
+  background-position: center;
+}

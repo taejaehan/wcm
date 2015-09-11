@@ -12,6 +12,7 @@ wcm.controller("WriteController", function($scope, $state, $cordovaCamera, $cord
   $scope.$on('$ionicView.afterEnter', function(){
     //id가 없다면 add
     if($stateParams.id == null){
+      $scope.uploadTitle = 'Add';
       if($scope.imgURI == null){
         $scope.takePicture();
       }else{
@@ -20,6 +21,7 @@ wcm.controller("WriteController", function($scope, $state, $cordovaCamera, $cord
     }
     //id가 있으면 해당 card edit
     else{
+      $scope.uploadTitle = 'Edit';
       if(cardId == null){
         cardId = $stateParams.id;
         $scope.getCard();

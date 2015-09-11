@@ -1,70 +1,129 @@
-wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGeolocation, $ionicLoading, $compile) {
+wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGeolocation, $ionicLoading) {
     
 
-    var speedTest = {};
-    speedTest.pics = null;
-    speedTest.map = null;
-    speedTest.markerClusterer = null;
-    speedTest.markers = [];
-    speedTest.infoWindow = null;
+    $scope.cards = null;
+    $scope.map = null;
+    $scope.markerClusterer = null;
+    $scope.markers = [];
+    $scope.infoWindow = null;
+    $scope.usegmm = { checked: true };
 
     $scope.$on('$ionicView.afterEnter', function(){
-      speedTest.init();
+      $scope.init();
     });
 
-    speedTest.init = function() {
+    $scope.init = function() {
 
       var latlng = new google.maps.LatLng(37.574515, 126.976930);
       var options = {
-        'zoom': 13,
+        'zoom': 11, //init
+        'minZoom' : 3,
         'center': latlng,
-        'mapTypeId': google.maps.MapTypeId.ROADMAP
+        'mapTypeId': google.maps.MapTypeId.ROADMAP,
+        'mapTypeControl' : false,     //지도, 위성
+        'streetViewControl' : false,   //거리뷰
+        'panControl' : false,           //위치 조절 pan
+        'zoomControl' : false,         //확대/축소 pan
       };
 
       var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
 
-      // for (var i = 0; i < cardList.cards.length; i++) {
-      //   var object = cardList.cards[i];
-      //   $scope.cards.push(object);
-      // }
+      $scope.map = new google.maps.Map(document.getElementById("map"), options);
+      // $scope.cards = data.photos;
+      $scope.cards = cardList.cards;
 
-      speedTest.map = new google.maps.Map(document.getElementById("map"), options);
-      // speedTest.pics = data.photos;
-      speedTest.pics = cardList.cards;
-      
+      //marker 숫자 제한하는 select 부분 listener등록 주석처리함
+      // var numMarkers = document.getElementById('nummarkers');
+      // google.maps.event.addDomListener(numMarkers, 'change', $scope.change);
+      $scope.infoWindow = new google.maps.InfoWindow();
 
-      var useGmm = document.getElementById('usegmm');
-      google.maps.event.addDomListener(useGmm, 'click', speedTest.change);
-      
-      var numMarkers = document.getElementById('nummarkers');
-      google.maps.event.addDomListener(numMarkers, 'change', speedTest.change);
+      $scope.showMarkers();
 
-      speedTest.infoWindow = new google.maps.InfoWindow();
+      // find me 넣기
+      var findMe = document.getElementById('find-me');
+      $scope.map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(findMe);
 
-      speedTest.showMarkers();
+      /****************************** Serch box start ******************************/
+      var input = document.getElementById('pac-input');
+      var searchBox = new google.maps.places.SearchBox(input);
+      $scope.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+      // Bias the SearchBox results towards current map's viewport.
+      $scope.map.addListener('bounds_changed', function() {
+        searchBox.setBounds($scope.map.getBounds());
+      });
+      // Listen for the event fired when the user selects a prediction and retrieve
+      // more details for that place.
+      searchBox.addListener('places_changed', function() {
+        var places = searchBox.getPlaces();
+        if (places.length == 0) {
+          return;
+        }
+        // For each place, get the icon, name and location.
+        var bounds = new google.maps.LatLngBounds();
+        places.forEach(function(place) {
+          if (place.geometry.viewport) {
+            // Only geocodes have viewport.
+            bounds.union(place.geometry.viewport);
+          } else {
+            bounds.extend(place.geometry.location);
+          }
+        });
+        $scope.map.fitBounds(bounds);
+      });
+      /****************************** Serch box end ******************************/
     };
 
-    speedTest.showMarkers = function() {
-      speedTest.markers = [];
+    //내 위치 찾기
+    $scope.centerOnMe = function() {
+        $ionicLoading.show({
+            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!'
+        });
+         
+        var posOptions = {
+            enableHighAccuracy: true,
+            timeout: 20000,
+            maximumAge: 0
+        };
+        $cordovaGeolocation.getCurrentPosition(posOptions).then(function (position) {
+            var lat  = position.coords.latitude;
+            var long = position.coords.longitude;
+             
+            var myLatlng = new google.maps.LatLng(lat, long);
+             
+            var mapOptions = {
+                center: myLatlng,
+                zoom: 16,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            }; 
+            $scope.map.setOptions(mapOptions);    
+            $ionicLoading.hide();           
+             
+        }, function(err) {
+            $ionicLoading.hide();
+            console.log(err);
+        });
+    }
+
+    $scope.showMarkers = function() {
+      $scope.markers = [];
 
       var type = 1;
-      if (document.getElementById('usegmm').checked) {
+      if ($scope.usegmm.checked) {
         type = 0;
       }
 
-      if (speedTest.markerClusterer) {
-        speedTest.markerClusterer.clearMarkers();
+      if ($scope.markerClusterer) {
+        $scope.markerClusterer.clearMarkers();
       }
 
-      // var panel = $('markerlist');
-      // panel.innerHTML = '';
-      var numMarkers = document.getElementById('nummarkers').value;
+      //marker 숫자 제한하는 것 주석처리 함
+      // var numMarkers = document.getElementById('nummarkers').value;
+      // if(numMarkers > $scope.cards.length) numMarkers = $scope.cards.length;
 
-      if(numMarkers > speedTest.pics.length) numMarkers = speedTest.pics.length;
+      for (var i = 0; i < $scope.cards.length; i++) {
 
-      for (var i = 0; i < numMarkers; i++) {
-
-        var titleText = speedTest.pics[i].title;
+        var titleText = $scope.cards[i].title;
         if (titleText === '') {
           titleText = 'No title';
         }
@@ -76,11 +135,9 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
         title.innerHTML = titleText;
 
         item.appendChild(title);
-        // panel.appendChild(item);
 
-
-        var latLng = new google.maps.LatLng(speedTest.pics[i].location_lat,
-            speedTest.pics[i].location_long);
+        var latLng = new google.maps.LatLng($scope.cards[i].location_lat,
+            $scope.cards[i].location_long);
 
         var imageUrl = 'http://chart.apis.google.com/chart?cht=mm&chs=24x32&chco=' +
             'FFFFFF,008CFF,000000&ext=.png';
@@ -92,16 +149,16 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
           'icon': markerImage
         });
 
-        var fn = speedTest.markerClickFunction(speedTest.pics[i], latLng);
+        var fn = $scope.markerClickFunction($scope.cards[i], latLng);
         google.maps.event.addListener(marker, 'click', fn);
         google.maps.event.addDomListener(title, 'click', fn);
-        speedTest.markers.push(marker);
+        $scope.markers.push(marker);
       }
 
-      window.setTimeout(speedTest.time, 0);
+      window.setTimeout($scope.time, 0);
     };
 
-    speedTest.markerClickFunction = function(pic, latlng) {
+    $scope.markerClickFunction = function(pic, latlng) {
       return function(e) {
         e.cancelBubble = true;
         e.returnValue = false;
@@ -114,112 +171,39 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
         var fileurl = pic.img_path;
 
         var username = '';
-        if(pic.user != null){
-          if(pic.user[0].username != null){
-            username = pic.user[0].username;
-          }
-        }
 
         var infoHtml = '<div class="info"><h3>' + title +
           '</h3><div class="info-body">' +
           '<a href="' + url + '"><img src="' +
           fileurl + '" class="info-img"/></a></div>' +
-          // '<a href="http://www.panoramio.com/" target="_blank">' +
-          // '<img src="http://maps.google.com/intl/en_ALL/mapfiles/' +
-          // 'iw_panoramio.png"/></a><br/>' +
-          '<a href="' + pic.userimage + '" target="_blank">' + username +
+          '<a href="' + pic.user[0].userimage + '" target="_blank">' + pic.user[0].username +
           '</a></div></div>';
 
-        speedTest.infoWindow.setContent(infoHtml);
-        speedTest.infoWindow.setPosition(latlng);
-        speedTest.infoWindow.open(speedTest.map);
+        $scope.infoWindow.setContent(infoHtml);
+        $scope.infoWindow.setPosition(latlng);
+        $scope.infoWindow.open($scope.map);
       };
     };
 
-    speedTest.clear = function() {
-      // $('timetaken').innerHTML = 'cleaning...';
-      for (var i = 0, marker; marker = speedTest.markers[i]; i++) {
+    $scope.clear = function() {
+      for (var i = 0, marker; marker = $scope.markers[i]; i++) {
         marker.setMap(null);
       }
     };
 
-    speedTest.change = function() {
-      speedTest.clear();
-      speedTest.showMarkers();
+    $scope.change = function() {
+      $scope.clear();
+      $scope.showMarkers();
     };
 
-    speedTest.time = function() {
+    $scope.time = function() {
 
-      // $('timetaken').innerHTML = 'timing...';
-      // var start = new Date();
-      if (document.getElementById('usegmm').checked) {
-        speedTest.markerClusterer = new MarkerClusterer(speedTest.map, speedTest.markers);
-      } else {
-        for (var i = 0, marker; marker = speedTest.markers[i]; i++) {
-          marker.setMap(speedTest.map);
+      if ($scope.usegmm.checked) {
+        for (var i = 0, marker; marker = $scope.markers[i]; i++) {
+          marker.setMap($scope.map);
         }
+      } else {
+        $scope.markerClusterer = new MarkerClusterer($scope.map, $scope.markers);
       }
-
-      // var end = new Date();
-      // $('timetaken').innerHTML = end - start;
     };
-
-    /*$scope.$on('$ionicView.afterEnter', function(){
-
-      $ionicLoading.show({
-          template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!'
-      });
-      var posOptions = {
-          enableHighAccuracy: true,
-          timeout: 20000,
-          maximumAge: 0
-      };
-      $cordovaGeolocation.getCurrentPosition(posOptions).then(function (position) {
-          var lat  = position.coords.latitude;
-          var long = position.coords.longitude;
-           
-          var myLatlng = new google.maps.LatLng(lat, long);
-           
-          var options = {
-              center: myLatlng,
-              zoom: 16,
-              mapTypeId: google.maps.MapTypeId.ROADMAP
-          }; 
-
-          var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
-
-          for (var i = 0; i < cardList.cards.length; i++) {
-            var object = cardList.cards[i];
-            $scope.cards.push(object);
-          }
- 
-          var map = new google.maps.Map(document.getElementById("map"), options);
-          var markers = [];
-          for (var i = 0; i < cardList.cards.length; i++) {
-            var object = cardList.cards[i];
-            var latLng = new google.maps.LatLng(object.location_lat,object.location_long);
-            // var latLng = new google.maps.LatLng(data.photos[i].latitude,
-            //     data.photos[i].longitude);
-            var imageUrl = 'http://chart.apis.google.com/chart?cht=mm&chs=24x32&chco=' + 'FFFFFF,008CFF,000000&ext=.png';
-            var markerImage = new google.maps.MarkerImage(imageUrl,
-                new google.maps.Size(24, 32));
-
-            var marker = new google.maps.Marker({
-              'position': latLng,
-              'icon': markerImage
-            });
-            markers.push(marker);
-          }
-          var markerCluster = new MarkerClusterer(map, markers);
-
-          $ionicLoading.hide();           
-           
-      }, function(err) {
-          $ionicLoading.hide();
-          console.log(err);
-      });
-
-    }); */
-
-                  
 });

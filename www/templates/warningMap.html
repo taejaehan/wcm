@@ -1,16 +1,18 @@
-<ion-view view-title="내 주변">
-	<ion-nav-buttons side="right">
-		<input type="checkbox" checked="checked" id="usegmm"/>
-      	<select id="nummarkers">
-         <option value="10">10</option>
-         <option value="50">50</option>
-         <option value="100" selected="selected">100</option>
-         <option value="500">500</option>
-         <option value="1000">1000</option>
-       </select>
+<ion-view view-title="Warning Map">
+  <ion-nav-buttons side="right">
+    <ion-checkbox class="checkbox_custrom" ng-model="usegmm.checked" ng-change="change()">
+    </ion-checkbox>
+    <!-- <select id="nummarkers">
+      <option value="10">10</option>
+      <option value="50">50</option>
+      <option value="100" selected="selected">100</option>
+      <option value="500">500</option>
+      <option value="1000">1000</option>
+    </select> -->
   </ion-nav-buttons>
   <ion-content>
-	  <div id="map" data-tap-disabled="true"></div>
+    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+    <div id="map" data-tap-disabled="true"></div>
     <a id="find-me" ng-click="centerOnMe()" class="button button-icon icon ion-navigate">Find Me</a>
   </ion-content>
 </ion-view>
