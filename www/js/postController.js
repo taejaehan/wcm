@@ -1,5 +1,7 @@
 wcm.controller("PostController", function($scope, $http, $stateParams) {
-    
+  
+  var localCard = JSON.parse(window.localStorage['localCard'] || '{}');
+
   if (window.localStorage['user'] != null) {
     var user = JSON.parse(window.localStorage['user'] || '{}');
   }
@@ -52,9 +54,7 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
     }
   }
 
-    console.log(user);
   $scope.toggleLike = function(e) {
-    
 
     if (e === true) {
 
@@ -62,7 +62,14 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
         $scope.like_count ++;
         user.properties.like.push($scope.postId);
         window.localStorage['user'] = JSON.stringify(user);
-        console.log(window.localStorage['user']);
+
+        for (var i = 0; i <  localCard.length; i++) {
+          if (localCard[i].id === $scope.postId) {
+            localCard[i].like_count ++;
+            window.localStorage['localCard'] = JSON.stringify(localCard);
+
+          }
+        }
       } 
 
     } else {
@@ -72,7 +79,14 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
         var index = user.properties.like.indexOf($scope.postId);
         user.properties.like.splice(index, 1);
         window.localStorage['user'] = JSON.stringify(user);
-        console.log(window.localStorage['user']);
+
+        for (var i = 0; i <  localCard[i].length; i++) {
+          if (localCard[i].id === $scope.postId) {
+            localCard[i].like_count --;
+            window.localStorage['localCard'] = JSON.stringify(localCard);
+          }
+        }
+
       } 
 
     }
@@ -288,6 +302,11 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
   }
 
   // ==================================== Delete comment END======================================
+
+  $scope.$ionicGoBack = function() {
+    // window.location.reload(true);
+    alert("test");
+  }
 });
 
 

@@ -1,7 +1,7 @@
-var mServerUrl = 'http://192.168.20.45:3000/wcm_php';
-var mServerAPI = mServerUrl + '/controllers/index.php';
-// var mServerUrl = 'http://wcm.localhost';
-// var mServerAPI = mServerUrl + '';
+// var mServerUrl = 'http://192.168.20.45:3000/wcm_php';
+// var mServerAPI = mServerUrl + '/controllers/index.php';
+var mServerUrl = 'http://192.168.20.186:3000';
+var mServerAPI = mServerUrl + '';
 
 var wcm = angular.module('starter', ['ionic', 'ngCordova']);
 

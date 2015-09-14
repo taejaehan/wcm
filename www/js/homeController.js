@@ -1,16 +1,13 @@
 wcm.controller("HomeController", function($scope, $cordovaNetwork, $state, $cordovaCamera, $http, $timeout, $stateParams) {
-
+  
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
-
-  var user;
+  console.log(cardList);
   if (window.localStorage['user'] != null) {
-    user = JSON.parse(window.localStorage['user'] || '{}');
+    var user = JSON.parse(window.localStorage['user'] || '{}');
     $scope.username = user.properties.nickname;
     $scope.userimage = user.properties.thumbnail_image;
     $scope.likes = user.properties.like;
   } 
-
-  console.log(user);
 
   $scope.page = 0;
   $scope.cards = [];
@@ -46,11 +43,17 @@ wcm.controller("HomeController", function($scope, $cordovaNetwork, $state, $cord
 
             var object =  data.cards[i];
             $scope.cards.push(object);
+
           }
 
           $scope.page++;
           $scope.$broadcast('scroll.infiniteScrollComplete');  
+
+          window.localStorage['localCard'] = JSON.stringify($scope.cards);
+          var localCard = JSON.parse(window.localStorage['localCard']);
+
         });
+
 
         //Stop the ion-refresher from spinning
         $scope.$broadcast('scroll.refreshComplete');  
