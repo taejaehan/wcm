@@ -12,11 +12,31 @@ wcm.controller("HomeController", function($scope, $cordovaNetwork, $state, $cord
   $scope.page = 0;
   $scope.cards = [];
 
-  $scope.doRefresh = function() {
+  $scope.doRefresh = function(refresh) {
 
+    //init이면(pull to refresh) 첫 페이지를 다시 불러온다
+    if(refresh == 'init'){
+      $scope.page = 0 ;
+      $scope.cards = [];
+
+      //init이면 localStorage['cardList']도 갱신한다
+      var request = $http({
+          method: "get",
+          url: mServerAPI + "/cards",
+          crossDomain : true,
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+          cache: false
+      });
+
+      request.success(function(data) {
+        window.localStorage['cardList'] = JSON.stringify(data);
+      });
+    }
+
+    console.log('$scope.page : ' + $scope.page);
     if ($cordovaNetwork.isOnline) {
 
-    /* isOnline */  
+      /* isOnline */  
       $timeout( function() {
 
         var request = $http({
@@ -61,7 +81,7 @@ wcm.controller("HomeController", function($scope, $cordovaNetwork, $state, $cord
   
     } else {
 
-    /* isOffline */
+      /* isOffline */
       alert("Check your network connection.");
 
       for (var i = 0; i < cardList.cards.length; i++) {
@@ -74,7 +94,6 @@ wcm.controller("HomeController", function($scope, $cordovaNetwork, $state, $cord
   $scope.findWarning = function() {
     $state.go("tabs.map");
   }
-
   
   // =========================== Check current user & card user =============================
 
@@ -115,6 +134,12 @@ wcm.controller("HomeController", function($scope, $cordovaNetwork, $state, $cord
   
   // ==================================== Delete card END ======================================  
   
+  /*
+  * edit card
+  */
+  $scope.editCard = function(id) {
+    $state.go('tabs.edit', { 'id': id});
+  };
 
 });
 

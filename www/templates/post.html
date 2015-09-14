@@ -1,19 +1,17 @@
-<ion-view>
+<ion-view view-title="{{cardTitle}}">
   <ion-content padding="true">
-
   	<div id="detail_page">
 
       <img src="{{ postImage }}">
-      <h1 class="title">{{ postTitle }}</h1>
+      <!-- <h1 class="title">{{ postTitle }}</h1> -->
       <p>{{ postDescription }}</p>
-      <p><i class="fa fa-map-marker"></i> {{ address }}</p>
+      <p id="post_location_name" class="fa fa-map-marker"></p>
 
       <div class="progress">
         <div class="progress-bar progress-bar-danger progress-bar-striped" role="progressbar" aria-valuenow="{{status}}" aria-valuemin="0" aria-valuemax="100" style="width: {{status}}%">
         </div>
       </div>
       <p class="progressText">{{ statusDescription }}</p>
-      <hr>
 
       <div class="sns-link">
         <a href="#" ng-click="toggleLike(watch = !watch)" ng-class="{'active' : watch, 'non-active' : !watch}" id="like">
@@ -35,9 +33,11 @@
           <img ng-src="{{ comment.user[0].userimage }}" class="profile-image">
           <div class="description">
             <strong>{{ comment.user[0].username }}</strong>
+            <a class="comment-delete" ng-click="deleteComment(comment)" ng-style="userChecked(comment)">
+              <i class="icon ion-ios-trash-outline"></i>
+            </a>
             <p>{{ comment.content }}</p>
             <small>{{ comment.updated_at | date:'yyyy-MM-dd HH:mm:ss' }}</small>
-            <a ng-click="deleteComment(comment)" ng-style="userChecked(comment)"><small>| delete</small></a>
           </div>
         </div>
 

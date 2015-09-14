@@ -6,146 +6,98 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
     var user = JSON.parse(window.localStorage['user'] || '{}');
   }
 
-	$scope.postId = $stateParams.postId;
+  $scope.postId = $stateParams.postId;
   $scope.cards = [];
   $scope.comments = [];
   $scope.comments_count = 0;
-  
   // $scope.like_count = [];
 
-  var request = $http({
-    method: "get",
-    url: mServerAPI + "/cardDetail/" + $scope.postId,
-    crossDomain : true,
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
-    cache: false
-  });
 
-  request.success(function(data) {
-
-    $scope.postTitle = data.cards[0].title;
-    $scope.postDescription = data.cards[0].description;
-    $scope.postImage = data.cards[0].img_path;
-    $scope.lat = data.cards[0].location_lat;
-    $scope.lng = data.cards[0].location_long;
-    $scope.like_count = data.cards[0].like_count;
-    $scope.status = data.cards[0].status;
-    $scope.initMap(data);
-
-    if (data.cards[0].status === "0") {
-      data.cards[0].statusDescription = "프로젝트가 등록되었습니다.";
-    } else if (data.cards[0].status === "33") {
-      data.cards[0].statusDescription = "프로젝트가 시작되었습니다.";
-    } else if (data.cards[0].status === "66") {
-      data.cards[0].statusDescription = "프로젝트를 진행합니다.";
-    } else {
-      data.cards[0].statusDescription = "프로젝트가 완료되었습니다.";
-    }
-
-    $scope.statusDescription = data.cards[0].statusDescription;
-
-  });
-
-  // ==================================== post like_count ======================================
-
-  if (user != null ) {
-    if (user.properties.like.indexOf($scope.postId) != -1) {
-      $scope.watch = true;
-    }
-  }
-
-  $scope.toggleLike = function(e) {
-
-    if (e === true) {
-
-      if (user.properties.like.indexOf($scope.postId) === -1) {
-        $scope.like_count ++;
-        user.properties.like.push($scope.postId);
-        window.localStorage['user'] = JSON.stringify(user);
-
-        for (var i = 0; i <  localCard.length; i++) {
-          if (localCard[i].id === $scope.postId) {
-            localCard[i].like_count ++;
-            window.localStorage['localCard'] = JSON.stringify(localCard);
-
-          }
-        }
-      } 
-
-    } else {
-
-      if (user.properties.like.indexOf($scope.postId) != -1) {
-        $scope.like_count --;
-        var index = user.properties.like.indexOf($scope.postId);
-        user.properties.like.splice(index, 1);
-        window.localStorage['user'] = JSON.stringify(user);
-
-        for (var i = 0; i <  localCard[i].length; i++) {
-          if (localCard[i].id === $scope.postId) {
-            localCard[i].like_count --;
-            window.localStorage['localCard'] = JSON.stringify(localCard);
-          }
-        }
-
-      } 
-
-    }
-
-    var like_count = parseInt($scope.like_count);
-    var formData = { like_count: like_count };
-    var postData = 'likeData='+JSON.stringify(formData);
-
+  $scope.$on('$ionicView.afterEnter', function(){
     var request = $http({
-        method: "post",
-        url: mServerAPI + "/cardDetail/" + $scope.postId + "/like",
+      method: "get",
+      url: mServerAPI + "/cardDetail/" + $scope.postId,
+      crossDomain : true,
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+      cache: false
+    });
+
+    request.success(function(data) {
+      $scope.cardTitle = data.cards[0].title; 
+      $scope.postTitle = data.cards[0].title;
+      $scope.postDescription = data.cards[0].description;
+      $scope.postImage = data.cards[0].img_path;
+      $scope.lat = data.cards[0].location_lat;
+      $scope.lng = data.cards[0].location_long;
+      $scope.like_count = data.cards[0].like_count;
+      $scope.status = data.cards[0].status;
+      $scope.setLocationName();
+
+      if (data.cards[0].status === "0") {
+        data.cards[0].statusDescription = "프로젝트가 등록되었습니다.";
+      } else if (data.cards[0].status === "33") {
+        data.cards[0].statusDescription = "프로젝트가 시작되었습니다.";
+      } else if (data.cards[0].status === "66") {
+        data.cards[0].statusDescription = "프로젝트를 진행합니다.";
+      } else {
+        data.cards[0].statusDescription = "프로젝트가 완료되었습니다.";
+      }
+
+
+      $scope.statusDescription = data.cards[0].statusDescription;
+
+    });
+
+    // ==================================== Get comments ======================================
+    var request2 = $http({
+        method: "get",
+        url: mServerAPI + "/comments",
         crossDomain : true,
-        data: postData,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
         cache: false
     });
 
-    request.success(function() {
+    /* Successful HTTP post request or not */
+    request2.success(function(data) {
 
+        for (var i = 0; i <  data.comments.length; i++) {
+          var object =  data.comments[i];
+          
+          if (object.post_id === $stateParams.postId) {
+
+            if (object.username === null || object.userimage === null) {
+              object.username = "no nickname";
+              object.userimage = "http://mud-kage.kakao.co.kr/14/dn/btqchdUZIl1/FYku2ixAIgvL1O50eDzaCk/o.jpg"
+              $scope.comments.push(object);
+              $scope.comments_count ++;
+            } else {
+              $scope.comments.push(object);
+              $scope.comments_count ++;
+            }
+          }    
+        }
     });
-  }
+    // ==================================== Get comments END ======================================
 
-  // ==================================== post like_count END ======================================
-
+    if (user != null ) {
+      if (user.properties.like.indexOf($scope.postId) != -1) {
+        $scope.watch = true;
+      }
+    }
+  });
+  
   // ==================================== reverse geocording ======================================
 
-  $scope.initMap = function(data) {
-    var map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 8,
-      center: {lat: Number(data.cards[0].location_lat), lng: Number(data.cards[0].location_long)}
-    });
-    var geocoder = new google.maps.Geocoder;
-    var infowindow = new google.maps.InfoWindow;
-
-    $scope.geocodeLatLng(geocoder, map, infowindow);
-
-  }
-
-  $scope.geocodeLatLng = function(geocoder, map, infowindow) {
-    // var input = document.getElementById('latlng').value;
-    // var latlngStr = input.split(',', 2);
-    // var latlng = {lat: parseFloat(latlngStr[0]), lng: parseFloat(latlngStr[1])};
+  $scope.setLocationName = function() {
 
     var latlng = { lat: parseFloat($scope.lat), lng: parseFloat($scope.lng) };
+    var geocoder = new google.maps.Geocoder;
 
     geocoder.geocode({'location': latlng}, function(results, status) {
       if (status === google.maps.GeocoderStatus.OK) {
         if (results[1]) {
-          map.setZoom(11);
-          var marker = new google.maps.Marker({
-            position: latlng,
-            map: map
-          });
-          
-          infowindow.setContent(results[1].formatted_address);
-          infowindow.open(map, marker);
-
           $scope.address = results[1].formatted_address;
-          
+          document.getElementById('post_location_name').innerHTML = ' ' +results[1].formatted_address;
         } else {
           window.alert('No results found');
         }
@@ -157,53 +109,59 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
 
   // ==================================== reverse geocording END ======================================
 
-  // ==================================== Get comments ======================================
+  // ==================================== post like_count ======================================
+  $scope.toggleLike = function(e) {
 
-  var request2 = $http({
-      method: "get",
-      url: mServerAPI + "/comments",
-      crossDomain : true,
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-      cache: false
-  });
-
-  /* Successful HTTP post request or not */
-  request2.success(function(data) {
-
-      for (var i = 0; i <  data.comments.length; i++) {
-        var object =  data.comments[i];
-        
-        if (object.post_id === $stateParams.postId) {
-
-          if (object.username === null || object.userimage === null) {
-            object.username = "no nickname";
-            object.userimage = "http://mud-kage.kakao.co.kr/14/dn/btqchdUZIl1/FYku2ixAIgvL1O50eDzaCk/o.jpg"
-            $scope.comments.push(object);
-            $scope.comments_count ++;
-          } else {
-            $scope.comments.push(object);
-            $scope.comments_count ++;
-          }
-        }    
+    if (user != null ) {
+      if (e === true) {
+        if (user.properties.like.indexOf($scope.postId) === -1) {
+          $scope.like_count ++;
+          user.properties.like.push($scope.postId);
+          window.localStorage['user'] = JSON.stringify(user);
+          console.log(window.localStorage['user']);
+        }
+      } else {
+        if (user.properties.like.indexOf($scope.postId) != -1) {
+          $scope.like_count --;
+          var index = user.properties.like.indexOf($scope.postId);
+          user.properties.like.splice(index, 1);
+          window.localStorage['user'] = JSON.stringify(user);
+          console.log(window.localStorage['user']);
+        }
       }
-  });
 
-  // ==================================== Get comments END ======================================
+      var like_count = parseInt($scope.like_count);
+      var formData = { like_count: like_count };
+      var postData = 'likeData='+JSON.stringify(formData);
 
+      var request = $http({
+          method: "post",
+          url: mServerAPI + "/cardDetail/" + $scope.postId + "/like",
+          crossDomain : true,
+          data: postData,
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+          cache: false
+      });
+
+      request.success(function() {
+
+      });
+    }else{
+      this.watch = !this.watch;
+      alert('로그인 후에 이용 가능합니다.');
+    }
+  }
+  // ==================================== post like_count END ======================================
+
+  
   // ==================================== Post comment ======================================
-
   $scope.addComment =function() {
     
     if (user != null) {
-
       var comment = document.getElementById("comment").value;
-
       if ( comment === "" ) {
-
         alert('내용을 입력하세요.');
-
       } else {
-
         $scope.username = user.properties.nickname;
         $scope.userimage = user.properties.thumbnail_image;
         $scope.userid = String(user.id);
@@ -260,7 +218,6 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
   // ==================================== Post comment END ======================================
 
   // =========================== Check current user & comment user =============================
-
   $scope.userChecked = function(comment) {  
     
     if (user != null) {

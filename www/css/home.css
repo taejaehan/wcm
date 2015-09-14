@@ -10,11 +10,14 @@
 }
 
 #home_page .posts {
-	padding: 0px;
+	padding: 0 0 10px 0;
+	background-color: #ddd;
+	border : none;
 }
 
 #home_page .post-body {
-	padding: 0px 10px 0px 10px;
+	padding: 5px 10px 0px 10px;
+	background-color: #fff;
 }
 
 #home_page h2 {
@@ -44,13 +47,15 @@
 	display: inline-block;
 }
 
-#home_page .profile a.edit {
+#home_page .profile .float-edit {
 	float: right;
+	top : -20px;
+	margin-left : 10px;
 }
 
 #home_page p.progressText {
 	text-align: center;
-	margin-bottom: 30px;
+	margin-bottom: 10px;
 }
 
 #home_page .content img {
@@ -58,13 +63,11 @@
 	height: 200px;
 }
 
-#home_page hr {
-	margin: 5px;
-}
-
 #home_page .sns-link {
+	border-top: 1px solid #eee;
 	width: 100%;
-	margin-bottom: 10px;
+	height: 	50px;
+	padding-top : 15px;
 }
 
 #home_page .sns-link a {
@@ -83,4 +86,12 @@ button.more {
 	bottom: 0px;
 	z-index: 100;
 
+}
+
+.center-cropped{
+	width: 100%;
+	height: 300px;
+	background-size: 100%;
+	background-position: center center;
+	background-repeat: no-repeat;
 }

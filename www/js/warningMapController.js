@@ -1,6 +1,5 @@
 wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGeolocation, $ionicLoading) {
     
-
     $scope.cards = null;
     $scope.map = null;
     $scope.markerClusterer = null;
