@@ -7,7 +7,7 @@
 
   <ion-content>
 
-  <ion-refresher on-refresh="doRefresh()">
+  <ion-refresher on-refresh="doRefresh('init')">
   </ion-refresher>
     <ion-list>
 
@@ -22,12 +22,21 @@
               <img ng-src="{{ card.user[0].userimage }}">
               <p class="username">{{card.user[0].username}}</p>
               <p class="date">{{ card.create_time }}</p>
-              <a ng-click="deleteCard(card.id)" ng-style="userChecked(card)" class="edit"><small>&nbsp;delete</small></a>
-              <a href="#/tab/home/{{ card.id }}/edit" ng-style="userChecked(card)" class="edit"><small>edit</small></a>
+              <button class="button button-icon float-edit" ng-style="userChecked(card)" ng-click="deleteCard(card.id)">
+                  <i class="icon ion-ios-trash-outline"></i>
+              </button>
+              <button class="button button-icon float-edit" ng-style="userChecked(card)" ng-click="editCard(card.id)">
+                  <i class="icon ion-ios-compose-outline"></i>
+              </button>
+              <!-- <a ng-click="deleteCard(card.id)" ng-style="userChecked(card)" class="edit"><small>&nbsp;delete</small></a>
+              <a href="#/tab/home/{{ card.id }}/edit" ng-style="userChecked(card)" class="edit"><small>edit</small></a> -->
             </div>
 
             <div class="content">
-              <a href="#/tab/home/{{ card.id }}"><img ng-src="{{ card.img_path}}"></a>
+              <a href="#/tab/home/{{ card.id }}">
+                <div class="center-cropped" style="background-image: url('{{ card.img_path}}');">
+              </div>
+              </a>
               <h2><strong>{{card.title}}</strong></h2>
             </div>
 
@@ -36,8 +45,6 @@
               </div>
             </div>
             <p class="progressText">{{ card.statusDescription }}</p>
-
-            <hr> 
 
             <div class="sns-link">
               <a href="#">

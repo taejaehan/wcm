@@ -1,5 +1,6 @@
 #detail_page img {
 	width: 100%;
+	margin-bottom : 10px;
 }
 
 #detail_page h1 {
@@ -9,6 +10,7 @@
 }
 
 #detail_page p {
+	width : 100%;
 	text-align: center;
 }
 
@@ -91,4 +93,9 @@
 
 #detail_page .comment-list small {
 	color: grey;
+}
+
+.comment-delete{
+	float: right;
+	margin-right : 10px;
 }

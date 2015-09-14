@@ -31,10 +31,9 @@ wcm.run(function($ionicPlatform, $http) {
         cache: false
     });
 
-  request.success(function(data) {
-    window.localStorage['cardList'] = JSON.stringify(data);
-  });
-
+    request.success(function(data) {
+      window.localStorage['cardList'] = JSON.stringify(data);
+    });
 
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -90,7 +89,7 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
       }
     })
     .state('tabs.edit', {
-      url: "/home/:id/edit",
+      url: "/home/edit/:id/",
       views: {
         'home-tab': {
           templateUrl: "templates/write.html",
@@ -136,6 +135,6 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
     })
 
     $urlRouterProvider.otherwise("/tab/home");
-   // $urlRouterProvider.otherwise("/login");
+    // $urlRouterProvider.otherwise("/login");
 });
 
