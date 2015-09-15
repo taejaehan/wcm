@@ -13,6 +13,9 @@
 	width : 100%;
 	text-align: center;
 }
+#detail_page #post_location_name {
+	margin-bottom : 30px;
+}
 
 #detail_page #map {
 	display: none;
@@ -24,6 +27,7 @@
 
 #detail_page .sns-link {
 	width: 100%;
+	margin-top: 40px;
 	margin-bottom: 10px;
 }
 

@@ -1,6 +1,4 @@
-wcm.controller("WriteController", function(Scopes, $scope, $state, $cordovaCamera, $cordovaFile, $cordovaFileTransfer, $timeout, $cordovaGeolocation, $ionicLoading, $http, $stateParams, $ionicPopup) {
-
-  
+wcm.controller("WriteController", function(Scopes, $scope, $state, $cordovaCamera, $cordovaFile, $cordovaFileTransfer, $timeout, $cordovaGeolocation, $ionicLoading, $http, $stateParams, $ionicPopup, $ionicActionSheet) {
 
   var latlng, cardId;
   var imgPath = '';
@@ -21,12 +19,8 @@ wcm.controller("WriteController", function(Scopes, $scope, $state, $cordovaCamer
     //id가 없다면 add
     if($stateParams.id == null){
       $scope.uploadTitle = 'Add';
-      if($scope.imgURI == null){
-        $scope.takePicture();
-      }else{
-        if(!locationFound){
-          $scope.currentLocation();
-        }
+      if(!locationFound){
+        $scope.currentLocation();
       }
     }
     //id가 있으면 해당 card edit
@@ -40,54 +34,93 @@ wcm.controller("WriteController", function(Scopes, $scope, $state, $cordovaCamer
   });
 
   /*
-  * 사진 찍기
+  * 카메라 또는 앨범을 선택할 수 있는 시트를 보여준다
   */
-  $scope.takePicture = function(){
+  $scope.showPictureSheet = function(){
 
-    //device가 undefined이면 사진을 찍지 않고 바로 위치정보로 넘어감
-    var platform;
-    if(typeof device != 'undefined'){
-      platform = device.platform;;
-    }else{
-      $scope.currentLocation();
-      return;
-    };
+    // Show the action sheet
+   var hideSheet = $ionicActionSheet.show({
+     buttons: [
+       { text: 'Camera' },
+       { text: 'Album' }
+     ],
+     // destructiveText: 'Delete',
+     titleText: 'Get Picture',
+     cancelText: 'Cancel',
+     cancel: function() {
+        // add cancel code..
+      },
+     buttonClicked: function(index) {
+        console.log('index :  ' + index);
+        $scope.getPicture(index);
+        return true;
+     },
+   });
 
-    var options = { 
-        quality : 100, 
-        destinationType : Camera.DestinationType.FILE_URI, 
-        sourceType : Camera.PictureSourceType.CAMERA, 
-        // allowEdit : true,  //사진 찍은 후 edit 여부
-        encodingType: Camera.EncodingType.JPEG,
-        cameraDirection: 0, //back : 0 , front : 1
-        targetWidth: 300,
-        targetHeight: 300,
-        popoverOptions: CameraPopoverOptions,   //ios only 
-        sourceType: Camera.PictureSourceType.CAMERA
-        // sourceType: Camera.PictureSourceType.PHOTOLIBRARY
-        // saveToPhotoAlbum: true  /*android 일 경우 해당 옵션을 사용하면 capture되지 않음*/
-    };
-    if(platform == 'iOS'){
-      options['saveToPhotoAlbum'] = true;
-    }
-
-    $cordovaCamera.getPicture(options).then(function(imagePath){
-      // $scope.imgURI = "data:image/jpeg;base64," + imageData;
-      $scope.imgURI = imagePath;
-      $scope.cardForm.file.$setTouched();
-      $scope.cardForm.file.$setViewValue(imagePath);
-
-      $scope.currentLocation();
-    }, function(error){
-      //An error occured
-      $ionicPopup.alert({
-         title: 'getPicture error',
-         template: error
-       });
-      $scope.currentLocation();
-    });
   }
+  /*
+  * 사진 가져오기
+  * @param index : 0 = camera , 1 = album
+  */
+  $scope.getPicture = function(index){
+    //device가 undefined이면 사진을 찍지 않고 바로 위치정보로 넘어감
+    // var platform;
+    // if(typeof device != 'undefined'){
+    //   platform = device.platform;;
+    // }else{
+    //   // $scope.currentLocation();
+    //   return;
+    // };
 
+    if(ionic.Platform.isWebView()){
+      var options = { 
+          quality : 100, 
+          destinationType : Camera.DestinationType.FILE_URI, 
+          sourceType : Camera.PictureSourceType.CAMERA, 
+          // allowEdit : true,  //사진 찍은 후 edit 여부
+          encodingType: Camera.EncodingType.JPEG,
+          cameraDirection: 0, //back : 0 , front : 1
+          targetWidth: 300,
+          targetHeight: 300,
+          popoverOptions: CameraPopoverOptions,   //ios only 
+          // sourceType: Camera.PictureSourceType.CAMERA
+          // sourceType: Camera.PictureSourceType.PHOTOLIBRARY
+          // saveToPhotoAlbum: true  /*android 일 경우 해당 옵션을 사용하면 capture되지 않음*/
+      };
+      if(index == 0){
+        options['sourceType'] = Camera.PictureSourceType.CAMERA
+        //ios일 경우 찍은 사진을 앨범에 저장
+        if(ionic.Platform.isIOS()){
+          options['saveToPhotoAlbum'] = true;
+        }
+      }else if(index == 1){
+        options['sourceType'] = Camera.PictureSourceType.PHOTOLIBRARY
+      }
+
+      $cordovaCamera.getPicture(options).then(function(imagePath){
+        // $scope.imgURI = "data:image/jpeg;base64," + imageData;
+        alert('imagePath :' + imagePath);
+        $scope.imgURI = imagePath;
+        $scope.cardForm.file.$setTouched();
+        $scope.cardForm.file.$setViewValue(imagePath);
+
+      }, function(error){
+        //An error occured
+        $ionicPopup.alert({
+           title: 'getPicture error',
+           template: error
+         });
+      });
+    }else{
+      // cordova같은 webview가 아니고 index(1) 앨범을 선택한 경우 임시로 테스트 사진을 넣어준다
+     // if(index == 1){
+     //    document.getElementById("card_file_hidden").click();
+     //  }
+      $scope.imgURI = 'http://placehold.it/100x100';
+      $scope.cardForm.file.$setTouched();
+      $scope.cardForm.file.$setViewValue('http://placehold.it/100x100');
+    };
+  }
   /*
   * 현재 위치 가져오기
   */
@@ -175,7 +208,7 @@ wcm.controller("WriteController", function(Scopes, $scope, $state, $cordovaCamer
   */
   $scope.uploadCard = function(form) {
 
-    //form 밖의 버튼이므로 submit이 처리되지 않으므로 submit처리하여 invalid error를 보여준다
+    //form 밖의 버튼이라서 submit이 처리되지 않으므로 submit처리하여 invalid error를 보여준다
     $scope.cardForm.$setSubmitted();
 
     if(form.$invalid){
@@ -228,6 +261,7 @@ wcm.controller("WriteController", function(Scopes, $scope, $state, $cordovaCamer
     var newFileName;
     var imagePath = $scope.imgURI;
     
+    console.log('$scope.imgURI : ' + $scope.imgURI)
     //날짜로 이름 생성
     var d = new Date();
     var n = d.getTime();
@@ -243,21 +277,25 @@ wcm.controller("WriteController", function(Scopes, $scope, $state, $cordovaCamer
         chunkedMode: false,
         mimeType: "image/jpg"
     };
+    if(ionic.Platform.isWebView()){
+      $cordovaFileTransfer.upload(url, targetPath, options).then(function(result) {
+        console.log(JSON.stringify(result.response));
+        //서버에 파일을 저장한 후 db를 set
+        $scope.uploadDb(newFileName);
+      }, function(err) {
+        $ionicLoading.hide();
+        console.log(JSON.stringify(err));
+      }, function (progress) {
+        $ionicLoading.hide();
+        // constant progress updates
+        $timeout(function () {
+          $scope.downloadProgress = (progress.loaded / progress.total) * 100;
+        })
+      });
+    }else{
+      $scope.uploadDb();
+    }
 
-    $cordovaFileTransfer.upload(url, targetPath, options).then(function(result) {
-      console.log(JSON.stringify(result.response));
-      //서버에 파일을 저장한 후 db를 set
-      $scope.uploadDb(newFileName);
-    }, function(err) {
-      $ionicLoading.hide();
-      console.log(JSON.stringify(err));
-    }, function (progress) {
-      $ionicLoading.hide();
-      // constant progress updates
-      $timeout(function () {
-        $scope.downloadProgress = (progress.loaded / progress.total) * 100;
-      })
-    });
   }
 
   /*

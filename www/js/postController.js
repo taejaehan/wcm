@@ -23,6 +23,7 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
       $scope.cardTitle = data.cards[0].title; 
       $scope.postTitle = data.cards[0].title;
       $scope.postDescription = data.cards[0].description;
+      if(data.cards[0].img_path == '') data.cards[0].img_path = 'http://placehold.it/300x300';
       $scope.postImage = data.cards[0].img_path;
       $scope.lat = data.cards[0].location_lat;
       $scope.lng = data.cards[0].location_long;

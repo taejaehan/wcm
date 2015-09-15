@@ -63,22 +63,22 @@
          ng-messages="cardForm.location.$error">
          <div ng-messages-include="error-list.html"></div>
       </div> 
-
       
-      
+      <!-- File -->
       <label class="item item-input"  
          ng-class="{ 'has-errors-img' : cardForm.file.$invalid && cardForm.$submitted, 'no-errors-img' : cardForm.file.$valid  && cardForm.$submitted}">
       <div id="picture_list">
         <img id="card_img" ng-show="imgURI !== undefined" ng-src="{{imgURI}}">
         <img ng-show="imgURI === undefined" ng-src="http://placehold.it/100x100">
-        <button id="change_pic" class="button button-icon" ng-click="takePicture()">
+        <button id="change_pic" class="button button-icon" ng-click="showPictureSheet()">
             <i class="icon ion-ios-reverse-camera"></i>
         </button>
       </div>
       <input id="card_file"
-        type="hidden"
+        type = "hidden"
         name="file"
         ng-model="cardData.file"
+        style ="display: block"
         required>
       </label>
       <div class="error-container last-error-container"  
@@ -86,13 +86,22 @@
           ng-messages="cardForm.file.$error">
          <div ng-messages-include="error-list.html"></div>
       </div> 
+      
 
+      <!-- <input id="card_file_hidden"
+        type="file"
+        name="file"
+        style ="display: block"
+        onchange="this.select(); setFilePath(this)"> -->
+
+      <!-- Error Messages (angular-messages 1.4.3부터 적용되는데 웹에서는 되는데 앱에서는 에러발생) -->
       <script id="error-list.html" type="text/ng-template">  
         <div class="error" ng-message="required">
           <i class="ion-information-circled"></i> 
           This field is required!
         </div>
-      </script>   
+      </script>
+
     </div>
   </ion-content>
   </form>

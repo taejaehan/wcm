@@ -24,6 +24,10 @@
 	text-align: center;
 	margin: 20px;
 }
+#home_page .content h2{
+	margin : 10px 0;
+	width : 100%;
+}
 
 #home_page .profile {
 	margin: 10px 0px 10px 0px;
@@ -55,7 +59,7 @@
 
 #home_page p.progressText {
 	text-align: center;
-	margin-bottom: 10px;
+	margin-bottom: 20px;
 }
 
 #home_page .content img {
@@ -91,7 +95,21 @@ button.more {
 .center-cropped{
 	width: 100%;
 	height: 300px;
-	background-size: 100%;
+	min-height: 100px;
+	background-size: cover;
 	background-position: center center;
 	background-repeat: no-repeat;
+}
+.progress{
+	margin-bottom: 10px;
+	height: 10px;
+}
+.progress .progress-100{
+	background-color: #00B050;
+}
+.progress .progress-66{
+	background-color: #FFC000;
+}
+.progress .progress-33{
+	background-color: #d9534f;
 }
