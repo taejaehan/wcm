@@ -7,7 +7,7 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
     $scope.infoWindow = null;
     $scope.usegmm = { checked: true };
 
-    $scope.$on('$ionicView.afterEnter', function(){
+    $scope.$on('$ionicView.loaded', function(){
       $scope.init();
     });
 
@@ -169,6 +169,7 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
         var title = pic.title;
         var url = "#/tab/home/"+pic.id;
         var fileurl = pic.img_path;
+        if(fileurl == '') fileurl = mNoImage;
 
         var username = '';
 
