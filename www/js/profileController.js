@@ -7,7 +7,13 @@ wcm.controller("ProfileController", function($scope, $state, $http) {
 	  var user = JSON.parse(window.localStorage['user'] || '{}');
 	  
 		$scope.username = user.properties.nickname;
-		$scope.userimage = user.properties.thumbnail_image;
+		
+		if (user.properties.thumbnail_image === null) {
+			$scope.userimage = "http://mud-kage.kakao.co.kr/14/dn/btqchdUZIl1/FYku2ixAIgvL1O50eDzaCk/o.jpg";
+		} else {
+			$scope.userimage = user.properties.thumbnail_image;
+		}
+
 		$scope.likes = user.properties.like;
 		$scope.cards = [];
 
