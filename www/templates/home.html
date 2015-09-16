@@ -30,15 +30,15 @@
             </div>
 
             <div class="content">
-              <a href="#/tab/home/{{ card.id }}">
-                <div class="center-cropped" style="background-image: url('{{ card.img_path}}');">
-              </div>
-              </a>
               <h2><strong>{{card.title}}</strong></h2>
+              <a href="#/tab/home/{{ card.id }}">
+                <div class="center-cropped" style="background-image: url('{{card.img_path}}');">
+                </div>
+              </a>
             </div>
 
             <div class="progress">
-              <div class="progress-bar progress-bar-danger progress-bar-striped" role="progressbar" aria-valuenow="{{card.status}}" aria-valuemin="0" aria-valuemax="100" style="width: {{card.status}}%">
+              <div class="progress-bar progress-bar-danger progress-bar-striped progress-{{card.status}}" role="progressbar" aria-valuenow="{{card.status}}" aria-valuemin="0" aria-valuemax="100" style="width: {{card.status}}%">
               </div>
             </div>
             <p class="progressText">{{ card.statusDescription }}</p>

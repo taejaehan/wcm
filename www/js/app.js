@@ -3,6 +3,9 @@
 var mServerUrl = 'http://192.168.20.186:3000';
 var mServerAPI = mServerUrl + '';
 
+//사진이 없을 경우 보여주는 이미지 링크
+var mNoImage = 'http://placehold.it/300x300';
+
 var wcm = angular.module('starter', ['ionic', 'ngCordova']);
 
 //controller간 데이터를 전달하기 위해 사용한다
