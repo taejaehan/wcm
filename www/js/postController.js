@@ -1,7 +1,7 @@
-wcm.controller("PostController", function($scope, $http, $stateParams) {
+wcm.controller("PostController", function($scope, $rootScope, $http, $stateParams) {
   
   var localCard = JSON.parse(window.localStorage['localCard'] || '{}');
-
+  console.log("loading: " + localCard[0].like_count);
   if (window.localStorage['user'] != null) {
     var user = JSON.parse(window.localStorage['user'] || '{}');
   }
@@ -11,7 +11,6 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
   $scope.comments = [];
   $scope.comments_count = 0;
   // $scope.like_count = [];
-
 
   $scope.$on('$ionicView.afterEnter', function(){
     var request = $http({
@@ -76,6 +75,7 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
             }
           }    
         }
+
     });
     // ==================================== Get comments END ======================================
 
@@ -118,7 +118,17 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
           $scope.like_count ++;
           user.properties.like.push($scope.postId);
           window.localStorage['user'] = JSON.stringify(user);
-          console.log(window.localStorage['user']);
+
+          var i = 0;
+        
+          while( i < $rootScope.allData.cards.length) {
+            if ($rootScope.allData.cards[i].id === $stateParams.postId) {
+              $rootScope.allData.cards[i].like_count ++;
+              break;
+            }
+            i ++;
+          }
+
         }
       } else {
         if (user.properties.like.indexOf($scope.postId) != -1) {
@@ -126,7 +136,17 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
           var index = user.properties.like.indexOf($scope.postId);
           user.properties.like.splice(index, 1);
           window.localStorage['user'] = JSON.stringify(user);
-          console.log(window.localStorage['user']);
+
+          var i = 0;
+        
+          while( i < $rootScope.allData.cards.length) {
+            if ($rootScope.allData.cards[i].id === $stateParams.postId) {
+              $rootScope.allData.cards[i].like_count --;
+              break;
+            }
+            i ++;
+          }
+
         }
       }
 
@@ -206,8 +226,20 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
       $scope.comments.push(formDataLocal);
 
       request.success(function(data) {
+        
         document.getElementById("comment").value = "";
         $scope.comments_count ++;
+        
+        var i = 0;
+        
+        while( i < $rootScope.allData.cards.length) {
+          if ($rootScope.allData.cards[i].id === $stateParams.postId) {
+            $rootScope.allData.cards[i].comments_count ++;
+            break;
+          }
+          i ++;
+        }
+
       });
 
     } else {
@@ -251,6 +283,16 @@ wcm.controller("PostController", function($scope, $http, $stateParams) {
         var index = $scope.comments.indexOf(comment);
         $scope.comments.splice(index, 1); 
         $scope.comments_count --;
+
+        var i = 0;
+        
+        while( i < $rootScope.allData.cards.length) {
+          if ($rootScope.allData.cards[i].id === $stateParams.postId) {
+            $rootScope.allData.cards[i].comments_count --;
+            break;
+          }
+          i ++;
+        }
 
       });
     } else {
