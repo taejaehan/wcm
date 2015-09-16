@@ -63,7 +63,11 @@ wcm.controller("HomeController", function($scope, $cordovaNetwork, $state, $cord
             } else {
               data.cards[i].statusDescription = "프로젝트가 완료되었습니다.";
             }
-            if(data.cards[i].img_path == '') data.cards[i].img_path = mNoImage;
+            if(data.cards[i].img_path == ''){
+              data.cards[i].img_path = mNoImage;
+            }else{
+              data.cards[i].img_path = mServerUrl + data.cards[i].img_path;
+            }
             var object =  data.cards[i];
             $scope.cards.push(object);
           }

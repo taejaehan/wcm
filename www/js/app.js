@@ -1,4 +1,4 @@
-var mServerUrl = 'http://192.168.20.45:3000/wcm_php';
+var mServerUrl = 'http://192.168.10.35:3000/wcm_php';
 var mServerAPI = mServerUrl + '/controllers/index.php';
 // var mServerUrl = 'http://wcm.localhost';
 // var mServerAPI = mServerUrl + '';

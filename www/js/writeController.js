@@ -324,7 +324,8 @@ wcm.controller("WriteController", function(Scopes, $scope, $state, $cordovaCamer
       location_lat =  document.getElementById("card_location").getAttribute('lat');
       location_long = document.getElementById("card_location").getAttribute('long');
       if(newFileName != null) {
-        imgPath = mServerUrl+"/upload/"+newFileName;
+        // imgPath = mServerUrl+"/upload/"+newFileName;
+        imgPath = "/upload/"+newFileName;
       }
     }else{  //cardId가 있으면 (edit)
       if($scope.cardForm.title.$dirty ||
@@ -337,7 +338,7 @@ wcm.controller("WriteController", function(Scopes, $scope, $state, $cordovaCamer
           location_lat =  document.getElementById("card_location").getAttribute('lat');
           location_long = document.getElementById("card_location").getAttribute('long');
           if(newFileName != null) {
-            imgPath = mServerUrl+"/upload/"+newFileName;
+            imgPath = "/upload/"+newFileName;
           }
       }else{
         $ionicPopup.alert({
@@ -409,6 +410,11 @@ wcm.controller("WriteController", function(Scopes, $scope, $state, $cordovaCamer
       $scope.cardData.description = data.cards[0].description;
 
       imgPath = data.cards[0].img_path;
+      if(imgPath == ''){
+        imgPath = mNoImage;
+      }else{
+        imgPath = mServerUrl + imgPath;
+      }
       $scope.imgURI = imgPath;
       $scope.cardForm.file.$setTouched();
       $scope.cardForm.file.$setViewValue(imgPath);

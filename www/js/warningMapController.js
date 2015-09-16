@@ -71,6 +71,7 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
         $scope.map.fitBounds(bounds);
       });
       /****************************** Serch box end ******************************/
+
     };
 
     //내 위치 찾기
@@ -169,7 +170,11 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
         var title = pic.title;
         var url = "#/tab/home/"+pic.id;
         var fileurl = pic.img_path;
-        if(fileurl == '') fileurl = mNoImage;
+        if(fileurl == ''){
+          fileurl = mNoImage;
+        }else{
+          fileurl = mServerUrl + fileurl;
+        }
 
         var username = '';
 
