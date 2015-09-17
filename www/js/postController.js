@@ -1,7 +1,7 @@
-wcm.controller("PostController", function($scope, $rootScope, $http, $stateParams) {
+wcm.controller("PostController", function($scope, $rootScope, $http, $stateParams, $state) {
   
+  var latlng;
   var localCard = JSON.parse(window.localStorage['localCard'] || '{}');
-  console.log("loading: " + localCard[0].like_count);
   if (window.localStorage['user'] != null) {
     var user = JSON.parse(window.localStorage['user'] || '{}');
   }
@@ -33,6 +33,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       $scope.postImage = data.cards[0].img_path;
       $scope.lat = data.cards[0].location_lat;
       $scope.lng = data.cards[0].location_long;
+      latlng = new google.maps.LatLng($scope.lat, $scope.lng);
       $scope.like_count = data.cards[0].like_count;
       $scope.status = data.cards[0].status;
       $scope.setLocationName();
@@ -310,6 +311,14 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   $scope.$ionicGoBack = function() {
     // window.location.reload(true);
     alert("test");
+  }
+
+
+  /*맵 보여주기*/
+  $scope.showMap = function() {
+    // $state.go("tabs.write");
+    // $state.go("tabs.map", { 'latlng': latlng});
+    $state.go('tabs.location_h', { 'latlng': latlng});
   }
 });
 

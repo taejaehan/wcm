@@ -1,8 +1,7 @@
-wcm.controller("WriteController", function(Scopes, $scope, $state, $cordovaCamera, $cordovaFile, $cordovaFileTransfer, $timeout, $cordovaGeolocation, $ionicLoading, $http, $stateParams, $ionicPopup, $ionicActionSheet) {
+wcm.controller("WriteController", function($scope, $state, $cordovaCamera, $cordovaFile, $cordovaFileTransfer, $timeout, $cordovaGeolocation, $ionicLoading, $http, $stateParams, $ionicPopup, $ionicActionSheet, $ionicHistory) {
 
   var latlng, cardId;
   var imgPath = '';
-  var locationFound = false;
   $scope.cardData = {
     "title" : "",
     "description" : "",
@@ -12,16 +11,14 @@ wcm.controller("WriteController", function(Scopes, $scope, $state, $cordovaCamer
 
   $scope.$on('$ionicView.afterEnter', function(){
 
-    if(Scopes.get('MapController') != null){
-      console.log('locationFound  : ' + Scopes.get('MapController').locationFound);
-      locationFound = Scopes.get('MapController').locationFound;
-    }
     //id가 없다면 add
     if($stateParams.id == null){
       $scope.uploadTitle = 'Add';
-      if(!locationFound){
+      if(!($ionicHistory.viewHistory().forwardView != null 
+        && $ionicHistory.viewHistory().forwardView.stateName == "tabs.location_w")){
         $scope.currentLocation();
       }
+      
     }
     //id가 있으면 해당 card edit
     else{
@@ -192,9 +189,9 @@ wcm.controller("WriteController", function(Scopes, $scope, $state, $cordovaCamer
   $scope.showMap = function() {
     console.log('showMap latlng : ' + latlng);
     if(cardId == null){
-      $state.go('tabs.locationw', { 'latlng': latlng});
+      $state.go('tabs.location_w', { 'latlng': latlng});
     }else{
-      $state.go('tabs.locationh', { 'latlng': latlng});
+      $state.go('tabs.location_h', { 'latlng': latlng});
       //맵을 보여준 후 dirty설정
       $scope.cardForm.location.$setDirty();
     };
