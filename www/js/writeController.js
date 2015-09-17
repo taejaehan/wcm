@@ -1,4 +1,4 @@
-wcm.controller("WriteController", function(Scopes, $scope, $state, $cordovaCamera, $cordovaFile, $cordovaFileTransfer, $timeout, $cordovaGeolocation, $ionicLoading, $http, $stateParams, $ionicPopup, $ionicActionSheet) {
+wcm.controller("WriteController", function(Scopes, $scope, $rootScope, $state, $cordovaCamera, $cordovaFile, $cordovaFileTransfer, $timeout, $cordovaGeolocation, $ionicLoading, $http, $stateParams, $ionicPopup, $ionicActionSheet) {
 
   var latlng, cardId;
   var imgPath = '';
@@ -347,6 +347,19 @@ wcm.controller("WriteController", function(Scopes, $scope, $state, $cordovaCamer
         $ionicLoading.hide();
         return;
       }
+
+      var i = 0;
+
+      while( i < $rootScope.allData.cards.length) {
+
+        if ($rootScope.allData.cards[i].id === cardId) {
+          $rootScope.allData.cards[i].title = document.getElementById("card_title").value;
+          $rootScope.allData.cards[i].img_path = "/upload/"+newFileName;
+          break;
+        }
+        i ++;
+      }
+
     }
     var formData = {
             user_app_id: user_app_id,
