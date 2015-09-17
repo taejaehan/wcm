@@ -47,7 +47,7 @@
             <p class="progressText">{{ card.statusDescription }}</p>
 
             <div class="sns-link">
-              <a href="#">
+              <a href="#" ng-click="toggleLike(card.watch = !card.watch, card.id)" ng-class="{'active' : card.watch, 'non-active' : !card.watch}" id="like">
                 <i class="fa fa-thumbs-up"></i> 좋아요 {{ card.like_count }}개
               </a>
               <a href="#/tab/home/{{ card.id }}"><i class="fa fa-commenting"></i> 댓글 {{ card.comments_count }}개 </a>

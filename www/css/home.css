@@ -83,6 +83,14 @@
 	font-size: 14px;
 }
 
+#home_page .sns-link .active {
+	color: blue;
+}
+
+#home_page .sns-link .non-active {
+	color: grey;
+}
+
 button.more {
 	width: 100%;
 	height: 50px;
