@@ -16,7 +16,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
                        };
                
   $scope.doRefresh = function(refresh) {
-    console.log($rootScope.allData); 
+
     //init이면(pull to refresh) 첫 페이지를 다시 불러온다
     if(refresh == 'init'){
       $scope.page = 0 ;
@@ -62,14 +62,24 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             } else {
               data.cards[i].statusDescription = "프로젝트가 완료되었습니다.";
             }
+
             if(data.cards[i].img_path == '') data.cards[i].img_path = mNoImage;
+            
             var object =  data.cards[i];
             $scope.cards.push(object);
-
             $rootScope.allData.cards.push(object);
 
-            console.log($scope.cards);
-
+  
+            if (user != null ) {
+              for(var i = 0; i < $scope.cards.length; i ++) {
+                
+                if(user.properties.like.indexOf($scope.cards[i].id) != -1) {
+                  $scope.cards[i].watch = true;
+                } else {
+                  $scope.cards[i].watch = false;
+                }
+              }
+            }
           }
 
           $scope.page++;
@@ -140,12 +150,81 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   
   // ==================================== Delete card END ======================================  
   
-  /*
-  * edit card
-  */
   $scope.editCard = function(id) {
     $state.go('tabs.edit', { 'id': id});
   };
+
+
+  // ==================================== post like_count ======================================
+  
+  $scope.toggleLike = function(e, id) {
+
+    if (user != null ) {
+
+      if (e === true) {
+
+        if (user.properties.like.indexOf(id) === -1) {
+          user.properties.like.push(id);
+          window.localStorage['user'] = JSON.stringify(user);
+        }
+
+        var i = 0;
+
+        while( i < $rootScope.allData.cards.length) {
+
+          if ($rootScope.allData.cards[i].id === id) {
+            $rootScope.allData.cards[i].like_count ++;
+            $rootScope.allData.cards[i].watch = true;
+            $scope.selectedCard = $rootScope.allData.cards[i];
+            break;
+          }
+          i ++;
+        }
+
+
+      } else {
+        
+        if (user.properties.like.indexOf(id) != -1) {
+          var index = user.properties.like.indexOf(id);
+          user.properties.like.splice(index, 1);
+          window.localStorage['user'] = JSON.stringify(user);
+        }
+
+        var i = 0;
+
+        while( i < $rootScope.allData.cards.length) {
+
+          if ($rootScope.allData.cards[i].id === id) {
+            $rootScope.allData.cards[i].like_count --;
+            $rootScope.allData.cards[i].watch = false;
+            $scope.selectedCard = $rootScope.allData.cards[i];
+            break;
+          }
+          i ++;
+        }
+      }
+      
+      var like_count = parseInt($scope.selectedCard.like_count);
+      var formData = { like_count: like_count };
+      var postData = 'likeData='+JSON.stringify(formData);
+
+      var request = $http({
+          method: "post",
+          url: mServerAPI + "/cardDetail/" + id + "/like",
+          crossDomain : true,
+          data: postData,
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+          cache: false
+      });
+
+      request.success(function() {
+        
+      });
+    } else {
+      alert('로그인 후에 이용 가능합니다.');
+    }
+  }
+  // ==================================== post like_count END ======================================
 
 });
 

@@ -1,7 +1,7 @@
 wcm.controller("PostController", function($scope, $rootScope, $http, $stateParams) {
   
   var localCard = JSON.parse(window.localStorage['localCard'] || '{}');
-  console.log("loading: " + localCard[0].like_count);
+ 
   if (window.localStorage['user'] != null) {
     var user = JSON.parse(window.localStorage['user'] || '{}');
   }
@@ -43,11 +43,21 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
         data.cards[0].statusDescription = "프로젝트가 완료되었습니다.";
       }
 
-
       $scope.statusDescription = data.cards[0].statusDescription;
 
-    });
+      var i = 0;
+      
+      while( i < $rootScope.allData.cards.length) {
+        if ($rootScope.allData.cards[i].id === data.cards[0].id) {
+          $scope.card = $rootScope.allData.cards[i];
+          $scope.watch = $rootScope.allData.cards[i].watch;
+          break;
+        }
+        i ++;
+      }
 
+    });
+    
     // ==================================== Get comments ======================================
     var request2 = $http({
         method: "get",
@@ -80,11 +90,6 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
     });
     // ==================================== Get comments END ======================================
 
-    if (user != null ) {
-      if (user.properties.like.indexOf($scope.postId) != -1) {
-        $scope.watch = true;
-      }
-    }
   });
   
   // ==================================== reverse geocording ======================================
@@ -111,45 +116,51 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   // ==================================== reverse geocording END ======================================
 
   // ==================================== post like_count ======================================
-  $scope.toggleLike = function(e) {
 
+
+  $scope.toggleLike = function(e) {
     if (user != null ) {
+      
       if (e === true) {
         if (user.properties.like.indexOf($scope.postId) === -1) {
           $scope.like_count ++;
+          $scope.watch = true;
           user.properties.like.push($scope.postId);
           window.localStorage['user'] = JSON.stringify(user);
-
-          var i = 0;
-        
-          while( i < $rootScope.allData.cards.length) {
-            if ($rootScope.allData.cards[i].id === $stateParams.postId) {
-              $rootScope.allData.cards[i].like_count ++;
-              break;
-            }
-            i ++;
-          }
-
         }
+
+        var i = 0;
+      
+        while( i < $rootScope.allData.cards.length) {
+          if ($rootScope.allData.cards[i].id === $stateParams.postId) {
+            $rootScope.allData.cards[i].like_count ++;
+            $rootScope.allData.cards[i].watch = true;
+            break;
+          }
+          i ++;
+        }
+
       } else {
         if (user.properties.like.indexOf($scope.postId) != -1) {
           $scope.like_count --;
+          $scope.watch = false;
           var index = user.properties.like.indexOf($scope.postId);
           user.properties.like.splice(index, 1);
           window.localStorage['user'] = JSON.stringify(user);
+        }
 
-          var i = 0;
-        
-          while( i < $rootScope.allData.cards.length) {
-            if ($rootScope.allData.cards[i].id === $stateParams.postId) {
-              $rootScope.allData.cards[i].like_count --;
-              break;
-            }
-            i ++;
+        var i = 0;
+      
+        while( i < $rootScope.allData.cards.length) {
+          if ($rootScope.allData.cards[i].id === $stateParams.postId) {
+            $rootScope.allData.cards[i].like_count --;
+            $rootScope.allData.cards[i].watch = false;
+            break;
           }
-
+          i ++;
         }
       }
+
 
       var like_count = parseInt($scope.like_count);
       var formData = { like_count: like_count };
@@ -168,7 +179,6 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
       });
     }else{
-      this.watch = !this.watch;
       alert('로그인 후에 이용 가능합니다.');
     }
   }
@@ -303,10 +313,6 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
   // ==================================== Delete comment END======================================
 
-  $scope.$ionicGoBack = function() {
-    // window.location.reload(true);
-    alert("test");
-  }
 });
 
 
