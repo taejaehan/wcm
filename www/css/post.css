@@ -21,18 +21,54 @@
 	display: none;
 }
 
+#detail_page p.progress-100 {
+	color: #00B050;
+}
+
+#detail_page p.progress-66 {
+	color: #E6AD00;
+}
+
+#detail_page p.progress-33 {
+	color: #d9534f;
+}
+
+#detail_page .additional-function {
+	color: grey;
+	text-align: center;
+	font-size: 13px;
+}
+
+#detail_page .additional-function span {
+	margin: 0px 5px 0px 5px;
+}
+
 #detail_page hr {
 	margin-bottom: 10px;
 }
 
 #detail_page .sns-link {
 	width: 100%;
-	margin-top: 40px;
-	margin-bottom: 10px;
+	height: 	50px;
+	padding-top : 15px;
+}
+
+#detail_page .sns-link a {
+	width: 33%;
+	text-decoration: none;
+	display: inline-block;
+	text-align: center;
+	padding: 2px 0px 2px 0px;
+	font-size: 14px;
+
+	border: 1px solid darkgrey;
+	border-radius: 6px;
+	color: grey;
 }
 
 #detail_page .sns-link .active {
-	color: blue;
+	background-color: grey;
+	color: white;
 }
 
 #detail_page .sns-link .non-active {
@@ -83,6 +119,7 @@
 	height: 40px;
 	float: left;
 	margin-right: 10px;
+	border-radius: 50px;
 }
 
 #detail_page .comment-list .description {

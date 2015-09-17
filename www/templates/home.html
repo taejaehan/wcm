@@ -1,4 +1,4 @@
-<ion-view view-title="WeMakeChanges">
+<ion-view view-title="We Change Maker">
   <ion-nav-buttons side="right">
     <button type="submit" class="button button-icon" ng-click="findWarning()">
       <i class="icon ion-location"></i>
@@ -31,7 +31,7 @@
 
             <div class="content">
               <h2><strong>{{card.title}}</strong></h2>
-              <a href="#/tab/home/{{ card.id }}">
+              <a ng-href="#/tab/home/{{ card.id }}">
                 <div class="center-cropped" style="background-image: url('{{card.img_path}}');">
                 </div>
               </a>
@@ -41,14 +41,20 @@
               <div class="progress-bar progress-bar-danger progress-bar-striped progress-{{card.status}}" role="progressbar" aria-valuenow="{{card.status}}" aria-valuemin="0" aria-valuemax="100" style="width: {{card.status}}%">
               </div>
             </div>
-            <p class="progressText">{{ card.statusDescription }}</p>
+            <p class="progressText progress-{{card.status}}">{{ card.statusDescription }}</p>
+
+            <div class="additional-function">
+              <span>좋아요 {{ card.like_count }}</span>
+              <span>댓글 {{ card.comments_count }}</span>
+              <span>공유 0</span>
+            </div>
 
             <div class="sns-link">
               <a href="#" ng-click="toggleLike(card.watch = !card.watch, card.id)" ng-class="{'active' : card.watch, 'non-active' : !card.watch}" id="like">
-                <i class="fa fa-thumbs-up"></i> 좋아요 {{ card.like_count }}개
+                <i class="fa fa-thumbs-up"></i> 좋아요
               </a>
-              <a href="#/tab/home/{{ card.id }}"><i class="fa fa-commenting">
-                </i> 댓글 {{ card.comments_count }}개 
+              <a ng-href="#/tab/home/{{ card.id }}#comment"><i class="fa fa-commenting">
+                </i> 댓글달기
               </a>
               <a href="#" id="sns-share"><i class="fa fa-share"></i> 공유하기</a>
             </div>

@@ -18,6 +18,9 @@
 #home_page .post-body {
 	padding: 5px 10px 0px 10px;
 	background-color: #fff;
+	border-radius: 10px;
+	margin: 10px 10px 0px 10px;
+	box-shadow: 2px 3px 10px 2px #888888;
 }
 
 #home_page h2 {
@@ -57,34 +60,63 @@
 	margin-left : 10px;
 }
 
-#home_page p.progressText {
-	text-align: center;
-	margin-bottom: 20px;
-}
-
 #home_page .content img {
 	width: 100%;
 	height: 200px;
 }
 
+#home_page p.progressText {
+	text-align: center;
+	margin-bottom: 20px;
+}
+
+#home_page p.progress-100 {
+	color: #00B050;
+}
+
+#home_page p.progress-66 {
+	color: #E6AD00;
+}
+
+#home_page p.progress-33 {
+	color: #d9534f;
+}
+
+#home_page .additional-function {
+	color: grey;
+	text-align: center;
+	font-size: 13px;
+}
+
+#home_page .additional-function span {
+	margin: 0px 5px 0px 5px;
+}
+
 #home_page .sns-link {
-	border-top: 1px solid #eee;
-	width: 100%;
+	/*border-top: 1px solid #eee;*/
+	width: 90%;
 	height: 	50px;
 	padding-top : 15px;
+	margin: 0 auto;
 }
 
 #home_page .sns-link a {
-	width: 33%;
+	width: 32.8%;
 	text-decoration: none;
 	display: inline-block;
 	text-align: center;
-	color: grey;
+	padding: 2px 0px 2px 0px;
 	font-size: 14px;
+
+	border: 1px solid darkgrey;
+	border-radius: 6px;
+	color: grey;
 }
 
 #home_page .sns-link .active {
-	color: blue;
+	/*color: #005CE6;*/
+	background-color: grey;
+	color: white;
 }
 
 #home_page .sns-link .non-active {

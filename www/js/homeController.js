@@ -161,7 +161,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
 
   // ==================================== post like_count ======================================
-  
+
   $scope.toggleLike = function(e, id) {
 
     if (user != null ) {
@@ -225,12 +225,14 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       request.success(function() {
         
       });
+
     } else {
       alert('로그인 후에 이용 가능합니다.');
+      
     }
   }
   // ==================================== post like_count END ======================================
-
+  
 });
 
 

@@ -1,5 +1,5 @@
 wcm.controller("ProfileController", function($scope, $state, $http) {
-
+	
   if (window.localStorage['user'] != null) {
 
   	$scope.userCheck = true;

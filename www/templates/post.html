@@ -11,7 +11,13 @@
         <div class="progress-bar progress-bar-danger progress-bar-striped progress-{{status}}" role="progressbar" aria-valuenow="{{status}}" aria-valuemin="0" aria-valuemax="100" style="width: {{status}}%">
         </div>
       </div>
-      <p class="progressText">{{ statusDescription }}</p>
+      <p class="progressText progress-{{status}}">{{ statusDescription }}</p>
+
+      <div class="additional-function">
+        <span>좋아요 {{ like_count }}</span>
+        <span>댓글 {{ comments_count }}</span>
+        <span>공유 0</span>
+      </div>
 
       <div class="sns-link">
         <a href="#" ng-click="toggleLike(watch = !watch)" ng-class="{'active' : watch, 'non-active' : !watch}" id="like">
@@ -25,7 +31,7 @@
       <div id="comment_section">
 
         <form class="comment-form" ng-submit="addComment()">
-          <input type="text" id="comment" ng-model="comment" placeholder="댓글을 입력하세요...">
+          <input type="text" name="comment" id="comment" ng-model="comment" placeholder="댓글을 입력하세요...">
           <button class="btn btn-default">done</button>
         </form>
 
