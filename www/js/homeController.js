@@ -1,20 +1,23 @@
 wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $cordovaCamera, $http, $timeout, $stateParams) {
-  
+
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
 
+  var user;
   if (window.localStorage['user'] != null) {
-    var user = JSON.parse(window.localStorage['user'] || '{}');
+    user = JSON.parse(window.localStorage['user'] || '{}');
     $scope.username = user.properties.nickname;
     $scope.userimage = user.properties.thumbnail_image;
     $scope.likes = user.properties.like;
   } 
 
+  console.log(user);
+
   $scope.page = 0;
   $scope.cards = [];
-  $rootScope.allData = { 
-                          cards: []
-                       };
-               
+  $rootScope.allData = {
+    cards : []
+  }
+
   $scope.doRefresh = function(refresh) {
 
     //init이면(pull to refresh) 첫 페이지를 다시 불러온다
@@ -36,6 +39,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       });
     }
 
+    console.log('$scope.page : ' + $scope.page);
     if ($cordovaNetwork.isOnline) {
 
       /* isOnline */  
@@ -93,7 +97,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           window.localStorage['localCard'] = JSON.stringify($scope.cards);
           var localCard = JSON.parse(window.localStorage['localCard']);
           $scope.cards = localCard;
-
         });
 
         //Stop the ion-refresher from spinning

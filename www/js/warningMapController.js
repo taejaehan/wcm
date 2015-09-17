@@ -10,12 +10,13 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
     $scope.$on('$ionicView.loaded', function(){
       $scope.init();
     });
-
+    
     $scope.init = function() {
 
+      console.log('init!!!');
       var latlng = new google.maps.LatLng(37.574515, 126.976930);
       var options = {
-        'zoom': 11, //init
+        'zoom': 11,
         'minZoom' : 3,
         'center': latlng,
         'mapTypeId': google.maps.MapTypeId.ROADMAP,
@@ -25,9 +26,9 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
         'zoomControl' : false,         //확대/축소 pan
       };
 
-      var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
+      $scope.map = new google.maps.Map(document.getElementById("map-warn"), options);
 
-      $scope.map = new google.maps.Map(document.getElementById("map"), options);
+      var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
       // $scope.cards = data.photos;
       $scope.cards = cardList.cards;
 
@@ -39,11 +40,11 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
       $scope.showMarkers();
 
       // find me 넣기
-      var findMe = document.getElementById('find-me');
+      var findMe = document.getElementById('find-me-warn');
       $scope.map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(findMe);
 
       /****************************** Serch box start ******************************/
-      var input = document.getElementById('pac-input');
+      var input = document.getElementById('pac-input-warn');
       var searchBox = new google.maps.places.SearchBox(input);
       $scope.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 

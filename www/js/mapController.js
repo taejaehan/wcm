@@ -1,12 +1,17 @@
-wcm.controller('MapController', function(Scopes, $scope, $stateParams, $cordovaGeolocation, $ionicLoading, $compile) {
+wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocation, $ionicLoading, $compile, $ionicHistory) {
 
     var map , marker, infowindow;
     $scope.$on('$ionicView.afterEnter', function(){
-      $scope.locationFound = true;
-      $scope.editLocation();
+      if($ionicHistory.backView() != null && $ionicHistory.backView().stateName == "tabs.post"){
+        $scope.showLocation();
+        document.getElementById('pac-input').setAttribute('style' , 'display:none');
+      }else{
+        $scope.showLocation();
+        $scope.setMapFuntions();
+      }
+      
     }); 
-
-    $scope.editLocation = function(){
+    $scope.showLocation = function(){
       //받아온 위/경도로 맵을 생성
       console.log('$stateParams.latlng : ' + $stateParams.latlng);
       var latlngStr = $stateParams.latlng.slice(1,-1).split(',',2);
@@ -26,7 +31,7 @@ wcm.controller('MapController', function(Scopes, $scope, $stateParams, $cordovaG
         'panControl' : false,           //위치 조절 pan
         'zoomControl' : false,         //확대/축소 pan
       };
-     map = new google.maps.Map(document.getElementById("map"),
+     map = new google.maps.Map(document.getElementById("map-find"),
           mapOptions);
 
       //marker를 생성
@@ -34,14 +39,7 @@ wcm.controller('MapController', function(Scopes, $scope, $stateParams, $cordovaG
         position: currentLatlng,
         map: map,
         title: 'Uluru (Ayers Rock)',
-        draggable: true,
-      });
-
-      //marker dragend listener
-      google.maps.event.addListener(marker, 'dragend', function() { 
-        var latlng = marker.getPosition();
-        var movedLatlng = {lat: latlng.G,  lng: latlng.K};
-        $scope.setLocationName(movedLatlng);
+        draggable: false,
       });
 
        // Marker + infowindow + angularjs compiled ng-click
@@ -55,7 +53,16 @@ wcm.controller('MapController', function(Scopes, $scope, $stateParams, $cordovaG
       //   infowindow.open(map,marker);
       // });
       $scope.setLocationName(currentLatlng);
+    }
+    $scope.setMapFuntions = function(){
+      marker.draggable = true;
 
+      //marker dragend listener
+      google.maps.event.addListener(marker, 'dragend', function() { 
+        var latlng = marker.getPosition();
+        var movedLatlng = {lat: latlng.H,  lng: latlng.L};
+        $scope.setLocationName(movedLatlng);
+      });
       // find me 넣기
       var findMe = document.getElementById('find-me');
       map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(findMe);
@@ -98,7 +105,7 @@ wcm.controller('MapController', function(Scopes, $scope, $stateParams, $cordovaG
             animation: google.maps.Animation.DROP,
           });
 
-          var searchedLatlng = {lat: place.geometry.location.G , lng: place.geometry.location.K};
+          var searchedLatlng = {lat: place.geometry.location.H , lng: place.geometry.location.L};
           $scope.setLocationName(searchedLatlng);
 
           if (place.geometry.viewport) {
@@ -171,13 +178,12 @@ wcm.controller('MapController', function(Scopes, $scope, $stateParams, $cordovaG
             console.log('lat : ' + latlng.lat);
             console.log('lng : ' + latlng.lng);
 
-            Scopes.store('MapController', $scope);
-            $scope.locationFound = true;
-
-            document.getElementById("card_location").value = results[1].formatted_address;
-            document.getElementById("card_location").setAttribute('lat' , latlng.lat);
-            document.getElementById("card_location").setAttribute('long' , latlng.lng);
-            document.getElementById("card_location").validity.valid = true;
+            if(document.getElementById("card_location") != null){
+              document.getElementById("card_location").value = results[1].formatted_address;
+              document.getElementById("card_location").setAttribute('lat' , latlng.lat);
+              document.getElementById("card_location").setAttribute('long' , latlng.lng);
+              document.getElementById("card_location").validity.valid = true;
+            }
             
           } else {
             window.alert('No results found');
