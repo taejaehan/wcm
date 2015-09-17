@@ -32,6 +32,10 @@
 	width : 100%;
 }
 
+#home_page .content .post-image {
+	margin-bottom: 20px;
+}
+
 #home_page .profile {
 	margin: 10px 0px 10px 0px;
 }
@@ -114,7 +118,6 @@
 }
 
 #home_page .sns-link .active {
-	/*color: #005CE6;*/
 	background-color: grey;
 	color: white;
 }

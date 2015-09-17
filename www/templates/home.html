@@ -33,11 +33,11 @@
             </div>
 
             <div class="content">
-              <h2><strong>{{card.title}}</strong></h2>
               <a ng-href="#/tab/home/{{ card.id }}">
-                <div class="center-cropped" style="background-image: url('{{card.img_path}}');">
+                <div class="center-cropped post-image" style="background-image: url('{{card.img_path}}');">
                 </div>
               </a>
+              <h2><strong>{{card.title}}</strong></h2>
             </div>
 
             <div class="progress">
@@ -56,13 +56,9 @@
               <a href="#" ng-click="toggleLike(card.watch = !card.watch, card.id)" ng-class="{'active' : card.watch, 'non-active' : !card.watch}" id="like">
                 <i class="fa fa-thumbs-up"></i> 좋아요
               </a>
-<<<<<<< HEAD
               <a ng-href="#/tab/home/{{ card.id }}#comment"><i class="fa fa-commenting">
                 </i> 댓글달기
               </a>
-=======
-              <a href="#/tab/home/{{ card.id }}"><i class="fa fa-commenting"></i> 댓글 {{ card.comments_count }}개 </a>
->>>>>>> e288cf9313cf816488c5c5920740bbc7d229c996
               <a href="#" id="sns-share"><i class="fa fa-share"></i> 공유하기</a>
             </div>
 
