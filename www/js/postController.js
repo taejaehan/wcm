@@ -2,10 +2,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   
   var latlng;
   var localCard = JSON.parse(window.localStorage['localCard'] || '{}');
-<<<<<<< HEAD
-=======
  
->>>>>>> 0b35996350c7783610da81787147f03b2f805fb7
   if (window.localStorage['user'] != null) {
     var user = JSON.parse(window.localStorage['user'] || '{}');
   }

@@ -122,7 +122,7 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
       url: "/location/:latlng",
       views: {
         'write-tab': {
-          templateUrl: "templates/map.html",
+          templateUrl: "templates/.html",
           controller: 'MapController'
         }
       }

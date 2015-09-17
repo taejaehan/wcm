@@ -1,4 +1,4 @@
-wcm.controller("HomeController", function($scope, $cordovaNetwork, $state, $cordovaCamera, $http, $timeout, $stateParams) {
+wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $cordovaCamera, $http, $timeout, $stateParams) {
 
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
 
@@ -14,6 +14,9 @@ wcm.controller("HomeController", function($scope, $cordovaNetwork, $state, $cord
 
   $scope.page = 0;
   $scope.cards = [];
+  $rootScope.allData = {
+    cards : []
+  }
 
   $scope.doRefresh = function(refresh) {
 
@@ -90,6 +93,10 @@ wcm.controller("HomeController", function($scope, $cordovaNetwork, $state, $cord
 
           $scope.page++;
           $scope.$broadcast('scroll.infiniteScrollComplete');  
+
+          window.localStorage['localCard'] = JSON.stringify($scope.cards);
+          var localCard = JSON.parse(window.localStorage['localCard']);
+          $scope.cards = localCard;
         });
 
         //Stop the ion-refresher from spinning
@@ -221,6 +228,7 @@ wcm.controller("HomeController", function($scope, $cordovaNetwork, $state, $cord
       request.success(function() {
         
       });
+
     } else {
       alert('로그인 후에 이용 가능합니다.');
     }
