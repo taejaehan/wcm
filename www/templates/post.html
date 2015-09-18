@@ -23,20 +23,19 @@
 
       <div class="sns-link">
         <a href="#" ng-click="toggleLike(watch = !watch)" ng-class="{'active' : watch, 'non-active' : !watch}" id="like">
-          <i class="fa fa-thumbs-up"></i> 좋아요 {{like_count }}개
+          <i class="fa fa-thumbs-up"></i> 좋아요
         </a>
-            <a href="#"><i class="fa fa-commenting"></i> 댓글 {{comments_count}}개</a>
+            <a href="#"><i class="fa fa-commenting"></i> 댓글달기</a>
         <a href="#" id="sns-share"><i class="fa fa-share"></i> 공유하기</a>
+      </div>
+
+      <div class="change-member">
+        <button class="change-button btn btn-default"><i class="icon ion-wrench"></i> 우리가 바꿔요!</button>
+        <p>ChangeMaker가 되어 해당 이슈를 직접 해결합니다</p>
       </div>
 
       <!-- ========================== comment section ========================== -->
       <div id="comment_section">
-
-        <form class="comment-form" ng-submit="addComment()">
-          <input type="text" name="comment" id="comment" ng-model="comment" placeholder="댓글을 입력하세요...">
-          <button class="btn btn-default">done</button>
-        </form>
-
         <div ng-repeat="comment in comments track by $index" class="comment-list">
           <img ng-src="{{ comment.user[0].userimage }}" class="profile-image">
           <div class="description">
@@ -49,6 +48,10 @@
           </div>
         </div>
 
+        <form class="comment-form" ng-submit="addComment()">
+          <input type="text" name="comment" id="comment" ng-model="comment" placeholder="댓글을 입력하세요...">
+          <button class="btn btn-default">done</button>
+        </form>
       </div>
       <!-- ========================== comment section end ========================== -->
 

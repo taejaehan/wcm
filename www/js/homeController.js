@@ -1,23 +1,15 @@
 wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $cordovaCamera, $http, $timeout, $stateParams) {
 
+  var user = JSON.parse(window.localStorage['user']);
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
-
-  var user;
-  if (window.localStorage['user'] != null) {
-    user = JSON.parse(window.localStorage['user'] || '{}');
-    $scope.username = user.properties.nickname;
-    $scope.userimage = user.properties.thumbnail_image;
-    $scope.likes = user.properties.like;
-  } 
-
   console.log(user);
 
   $scope.page = 0;
   $scope.cards = [];
-  $rootScope.allData = {
-    cards : []
-  }
-
+  $rootScope.allData = { 
+                          cards: []
+                       };
+               
   $scope.doRefresh = function(refresh) {
 
     //init이면(pull to refresh) 첫 페이지를 다시 불러온다
@@ -42,7 +34,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       });
     }
 
-    console.log('$scope.page : ' + $scope.page);
     if ($cordovaNetwork.isOnline) {
 
       /* isOnline */  
@@ -60,6 +51,8 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
           for (var i = 0; i <  data.cards.length; i++) {
 
+            var address = $scope.setLocationName(data.cards[i].location_lat, data.cards[i].location_long, data.cards[i]);            
+            
             if (data.cards[i].status === "0") {
               data.cards[i].statusDescription = "프로젝트가 등록되었습니다.";
             } else if (data.cards[i].status === "33") {
@@ -70,19 +63,19 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
               data.cards[i].statusDescription = "프로젝트가 완료되었습니다.";
             }
 
-
             if (data.cards[i].img_path == '') {
               data.cards[i].img_path = mNoImage;
             } else {
               data.cards[i].img_path = mServerUrl + data.cards[i].img_path;
             }
 
+            data.cards[i].address = address;
             var object =  data.cards[i];
+            console.log(object);
             $scope.cards.push(object);
             $rootScope.allData.cards.push(object);
 
-  
-            if (user != null ) {
+            if (user.isAuthenticated === true) {
               for(var j = 0; j < $scope.cards.length; j ++) {
                 
                 if(user.properties.like.indexOf($scope.cards[j].id) != -1) {
@@ -92,6 +85,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
                 }
               }
             }
+
           }
 
           $scope.page++;
@@ -100,6 +94,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           window.localStorage['localCard'] = JSON.stringify($scope.cards);
           var localCard = JSON.parse(window.localStorage['localCard']);
           $scope.cards = localCard;
+
         });
 
         //Stop the ion-refresher from spinning
@@ -121,12 +116,35 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   $scope.findWarning = function() {
     $state.go("tabs.map");
   }
+
+  // ==================================== reverse geocording ======================================
+
+  $scope.setLocationName = function(latitude, longitude, card) {
+
+    var latlng = { lat: parseFloat(latitude), lng: parseFloat(longitude) };
+    var geocoder = new google.maps.Geocoder;
+
+    geocoder.geocode({'location': latlng}, function(results, status) {
+      if (status === google.maps.GeocoderStatus.OK) {
+        if (results[1]) {
+          card.address = results[1].formatted_address;
+          return card.address;
+        } else {
+          window.alert('No results found');
+        }
+      } else {
+        // window.alert('Geocoder failed due to: ' + status);
+      }
+    });
+  }
+  // ==================================== reverse geocording END ======================================
   
+
   // =========================== Check current user & card user =============================
 
   $scope.userChecked = function(card) {
 
-    if (user != null) {
+    if (user.isAuthenticated === true) {
       if ( parseInt(card.user[0].user_id) === user.id ) {
         return { 'display' : 'inline-block' };
       } else {
@@ -165,12 +183,10 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     $state.go('tabs.edit', { 'id': id});
   };
 
-
   // ==================================== post like_count ======================================
 
   $scope.toggleLike = function(e, id) {
-
-    if (user != null ) {
+    if (user.isAuthenticated === true) {
 
       if (e === true) {
 
@@ -191,7 +207,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           }
           i ++;
         }
-
 
       } else {
         
@@ -235,10 +250,23 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     } else {
       alert('로그인 후에 이용 가능합니다.');
       
+      var i = 0;
+      while( i < $rootScope.allData.cards.length) {
+        if ($rootScope.allData.cards[i].id === id) {
+          $rootScope.allData.cards[i].watch = false;
+          break;
+        }
+        i ++;
+      }
     }
   }
   // ==================================== post like_count END ======================================
   
+  $scope.showMap = function(lat, lon) {
+    var latlng = new google.maps.LatLng(lat, lon);
+    $state.go('tabs.location_h', { 'latlng': latlng});
+  }
+
 });
 
 

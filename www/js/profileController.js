@@ -1,32 +1,18 @@
-wcm.controller("ProfileController", function($scope, $state, $http) {
-	
-  if (window.localStorage['user'] != null) {
+wcm.controller("ProfileController", function($scope, $state, $http, AuthService) {
 
-  	$scope.userCheck = true;
+	var user = JSON.parse(window.localStorage['user']);
+	console.log(user);
 
-	  var user = JSON.parse(window.localStorage['user'] || '{}');
-	  
-		$scope.username = user.properties.nickname;
-		
-		if (user.properties.thumbnail_image === null) {
-			$scope.userimage = "http://mud-kage.kakao.co.kr/14/dn/btqchdUZIl1/FYku2ixAIgvL1O50eDzaCk/o.jpg";
-		} else {
-			$scope.userimage = user.properties.thumbnail_image;
+	if (user.isAuthenticated === true) {
+		$scope.userCheck = true;
+		$scope.user = user;
+
+		if ($scope.user.properties.profile_image === null) {
+			$scope.user.properties.profile_image = "http://mud-kage.kakao.co.kr/14/dn/btqchdUZIl1/FYku2ixAIgvL1O50eDzaCk/o.jpg";
 		}
 
-		$scope.likes = user.properties.like;
 		$scope.cards = [];
 
-		$scope.logOut = function() {
-			Kakao.Auth.logout(function(result){
-				console.log(result);
-				if (result) {
-					$state.go('login');
-					location.reload();
-				};
-			});
-		} 
-		
 		var request = $http({
 	    method: "get",
 	    url: mServerAPI + "/cards/" + user.id,
@@ -38,11 +24,21 @@ wcm.controller("ProfileController", function($scope, $state, $http) {
 	  request.success(function(data) {
 
 	  	for (var i = 0; i < data.cards.length; i++) {
+	  		if (data.cards[i].status === "0") {
+          data.cards[i].statusDescription = "프로젝트가 등록되었습니다.";
+        } else if (data.cards[i].status === "33") {
+          data.cards[i].statusDescription = "프로젝트가 시작되었습니다.";
+        } else if (data.cards[i].status === "66") {
+          data.cards[i].statusDescription = "프로젝트를 진행합니다.";
+        } else {
+          data.cards[i].statusDescription = "프로젝트가 완료되었습니다.";
+        }
+
 	  		var card = data.cards[i];
 	  		$scope.cards.push(card);	
+	  		console.log($scope.cards);
 	  	}
 	  });
-
 
 	  var statusPost = function(card) {
 	  	var status = card.status;
@@ -58,7 +54,27 @@ wcm.controller("ProfileController", function($scope, $state, $http) {
           headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
           cache: false
       });
-	  }
+
+      request.success(function(data) {
+
+        var i = 0;
+        while( i < $scope.cards.length) {
+
+          if ($scope.cards[i].id === card.id) {
+            
+            if (card.status === "33") {
+		          $scope.cards[i].statusDescription = "프로젝트가 시작되었습니다.";
+		        } else if (card.status === "66") {
+		          $scope.cards[i].statusDescription = "프로젝트를 진행합니다.";
+		        } else {
+		          $scope.cards[i].statusDescription = "프로젝트가 완료되었습니다.";
+		        }
+            break;
+          } 
+          i ++;
+        }
+      });
+	  };
 
 	  $scope.idea = function(card) {
 	  	card.status = "33";
@@ -75,15 +91,18 @@ wcm.controller("ProfileController", function($scope, $state, $http) {
 	  	statusPost(card);
 	  }
 
-  
-  } else {
-  	
-  	$scope.userCheck = false;
 
-  	$scope.goLogin = function() {
-  		$state.go('login');
-  	}
-  } 
+	} else {
+		$scope.userCheck = false;
+	}
 
+	$scope.goLogin = function() {
+		$state.go('login');
+	}
+
+	$scope.kakaoLogout = function() {
+		AuthService.kakaoLogout();
+	}
+	
 
 });
