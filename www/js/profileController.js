@@ -1,6 +1,6 @@
 wcm.controller("ProfileController", function($scope, $state, $http, AuthService) {
 
-	var user = JSON.parse(window.localStorage['user']);
+	var user = JSON.parse(window.localStorage['user'] || '{}');
 
 	if (user.isAuthenticated === true) {
 		$scope.userCheck = true;

@@ -1,18 +1,31 @@
-wcm.service('AuthService', function($state, $ionicPopup) {
+wcm.service('AuthService', function($state, $ionicPopup, $http) {
   
   var login = function(name, pw) {
 
     if (name == 'admin' && pw == 'dmajor1196') {
       var user = {
                     username: name,
-                    userid: 56220637,
+                    userid: 1,
                     userimage: "http://mud-kage.kakao.co.kr/14/dn/btqchdUZIl1/FYku2ixAIgvL1O50eDzaCk/o.jpg",
                     isAuthenticated: true
                   };
+      
 
-      window.localStorage['user'] = JSON.stringify(user);
-      var user = JSON.parse(window.localStorage['user']);
-      console.log(user);
+      var request = $http({
+          method: "get",
+          url: mServerAPI + "/like/" + user.userid,
+          crossDomain : true,
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+          cache: false
+      });
+
+      request.success(function(data) {
+        
+        user.likes = data.likes[0];
+        window.localStorage['user'] = JSON.stringify(user);
+      });
+
+
       $state.go('tabs.home');
 
     } else {

@@ -1,8 +1,8 @@
 wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $cordovaCamera, $http, $timeout, $stateParams) {
   
-  var user = JSON.parse(window.localStorage['user']);
+  var user = JSON.parse(window.localStorage['user'] || '{}');
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
-  console.log(user);
+  console.log(user.likes.post_id);
 
   $scope.page = 0;
   $scope.cards = [];
@@ -74,10 +74,11 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             $scope.cards.push(object);
             $rootScope.allData.cards.push(object);
 
+
             if (user.isAuthenticated === true) {
               for(var j = 0; j < $scope.cards.length; j ++) {
                 
-                if(user.properties.like.indexOf($scope.cards[j].id) != -1) {
+                if(user.likes.post_id.indexOf($scope.cards[j].id) != -1) {
                   $scope.cards[j].watch = true;
                 } else {
                   $scope.cards[j].watch = false;
@@ -85,6 +86,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
               }
             }
 
+            console.log($scope.cards);
           }
 
           $scope.page++;
@@ -154,6 +156,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   // ========================= Check current user & card user END ===========================
 
+
   // ==================================== Delete card ======================================  
 
   $scope.deleteCard = function(id) {
@@ -187,10 +190,10 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
       if (e === true) {
 
-        if (user.properties.like.indexOf(id) === -1) {
-          user.properties.like.push(id);
-          window.localStorage['user'] = JSON.stringify(user);
-        }
+        // if (user.properties.like.indexOf(id) === -1) {
+        //   user.properties.like.push(id);
+        //   window.localStorage['user'] = JSON.stringify(user);
+        // }
 
         var i = 0;
 
@@ -207,11 +210,11 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
       } else {
         
-        if (user.properties.like.indexOf(id) != -1) {
-          var index = user.properties.like.indexOf(id);
-          user.properties.like.splice(index, 1);
-          window.localStorage['user'] = JSON.stringify(user);
-        }
+        // if (user.properties.like.indexOf(id) != -1) {
+        //   var index = user.properties.like.indexOf(id);
+        //   user.properties.like.splice(index, 1);
+        //   window.localStorage['user'] = JSON.stringify(user);
+        // }
 
         var i = 0;
 
