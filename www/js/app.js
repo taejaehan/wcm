@@ -22,7 +22,7 @@ wcm.factory('Scopes', function($rootScope) {
 })
 
 wcm.run(function($ionicPlatform, $http) {
-  Kakao.init('2b1444fba3c133df8405882491640b80');
+  // Kakao.init('2b1444fba3c133df8405882491640b80');
 
   $ionicPlatform.ready(function() {
 

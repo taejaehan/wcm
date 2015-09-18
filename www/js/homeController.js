@@ -1,8 +1,12 @@
 wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $cordovaCamera, $http, $timeout, $stateParams) {
 
-  var user = JSON.parse(window.localStorage['user']);
+  var user;
+  if(window.localStorage['user'] != null){
+    user = JSON.parse(window.localStorage['user']);
+  }else{
+    user = {"id":57421548,"properties":{"nickname":"Taejae Han","thumbnail_image":"http://mud-kage.kakao.co.kr/14/dn/btqch17TnPq/Ve843fr4kMziXkSIjFwKI0/o.jpg","profile_image":"http://mud-kage.kakao.co.kr/14/dn/btqch02eQsy/PhRrVTx9KwvhxovXQk6Lek/o.jpg","like":[]},"isAuthenticated":true}
+  }
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
-  console.log(user);
 
   $scope.page = 0;
   $scope.cards = [];
@@ -74,7 +78,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             console.log(object);
             $scope.cards.push(object);
             $rootScope.allData.cards.push(object);
-
             if (user.isAuthenticated === true) {
               for(var j = 0; j < $scope.cards.length; j ++) {
                 
@@ -143,7 +146,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   // =========================== Check current user & card user =============================
 
   $scope.userChecked = function(card) {
-
     if (user.isAuthenticated === true) {
       if ( parseInt(card.user[0].user_id) === user.id ) {
         return { 'display' : 'inline-block' };

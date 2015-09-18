@@ -37,16 +37,16 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
       switch($stateParams.progress){
         case '0' :
         case '33' :
-          imageUrl = '../img/location_r.png';
+          imageUrl = 'img/location_r.png';
           break;
         case '66' :
-          imageUrl = '../img/location_y.png';
+          imageUrl = 'img/location_y.png';
           break;
         case '100' :
-          imageUrl = '../img/location_g.png';
+          imageUrl = 'img/location_g.png';
           break;
         default : 
-          imageUrl = '../img/location_r.png';
+          imageUrl = 'img/location_r.png';
       }
       var markerImage = new google.maps.MarkerImage(imageUrl,
         new google.maps.Size(50, 50),
