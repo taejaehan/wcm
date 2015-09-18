@@ -2,7 +2,12 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   
   var latlng, progress;
   var localCard = JSON.parse(window.localStorage['localCard'] || '{}');
-  var user = JSON.parse(window.localStorage['user']);
+  var user;
+  if(window.localStorage['user'] != null){
+    user = JSON.parse(window.localStorage['user']);
+  }else{
+    user = {"id":57421548,"properties":{"nickname":"Taejae Han","thumbnail_image":"http://mud-kage.kakao.co.kr/14/dn/btqch17TnPq/Ve843fr4kMziXkSIjFwKI0/o.jpg","profile_image":"http://mud-kage.kakao.co.kr/14/dn/btqch02eQsy/PhRrVTx9KwvhxovXQk6Lek/o.jpg","like":[]},"isAuthenticated":true}
+  }
 
   $scope.postId = $stateParams.postId;
   $scope.cards = [];

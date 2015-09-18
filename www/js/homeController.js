@@ -1,8 +1,10 @@
 wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $cordovaCamera, $http, $timeout, $stateParams) {
+
   
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
   console.log(user.likes.post_id);
+
 
   $scope.page = 0;
   $scope.cards = [];
@@ -73,7 +75,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             var object =  data.cards[i];
             $scope.cards.push(object);
             $rootScope.allData.cards.push(object);
-
 
             if (user.isAuthenticated === true) {
               for(var j = 0; j < $scope.cards.length; j ++) {

@@ -128,32 +128,32 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
         switch(index){
           case 0 :
             if($scope.cards[i].status != '0' && $scope.cards[i].status != '33') continue;
-            markerUrl = '../img/location_r.png';
-            clusterUrl = '../img/cluster_r.png';
-            clusterBigUrl = '../img/cluster_r_big.png';
+            markerUrl = 'img/location_r.png';
+            clusterUrl = 'img/cluster_r.png';
+            clusterBigUrl = 'img/cluster_r_big.png';
             clusterTextColor = '#9c3625';
             $scope.warningTitle = 'Discovered';
             break;
           case 1 :
             if($scope.cards[i].status != '66') continue;
-            markerUrl = '../img/location_y.png';
-            clusterUrl = '../img/cluster_y.png';
-            clusterBigUrl = '../img/cluster_y_big.png';
+            markerUrl = 'img/location_y.png';
+            clusterUrl = 'img/cluster_y.png';
+            clusterBigUrl = 'img/cluster_y_big.png';
             clusterTextColor = '#e38b0d';
             $scope.warningTitle = 'Ongoing';
             break;
           case 2 :
             if($scope.cards[i].status != '100') continue;
-            markerUrl = '../img/location_g.png';
-            clusterUrl = '../img/cluster_g.png';
-            clusterBigUrl = '../img/cluster_g_big.png';
+            markerUrl = 'img/location_g.png';
+            clusterUrl = 'img/cluster_g.png';
+            clusterBigUrl = 'img/cluster_g_big.png';
             clusterTextColor = '#264804';
             $scope.warningTitle = 'Completed';
             break;
           default : 
-            markerUrl = '../img/location_y.png';
-            clusterUrl = '../img/cluster_y.png';
-            clusterBigUrl = '../img/cluster_y_big.png';
+            markerUrl = 'img/location_y.png';
+            clusterUrl = 'img/cluster_y.png';
+            clusterBigUrl = 'img/cluster_y_big.png';
             clusterTextColor = '#e38b0d';
             $scope.warningTitle = 'Ongoing';
         }
