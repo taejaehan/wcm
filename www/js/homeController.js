@@ -48,6 +48,8 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
           for (var i = 0; i <  data.cards.length; i++) {
 
+            var address = $scope.setLocationName(data.cards[i].location_lat, data.cards[i].location_long, data.cards[i]);            
+            
             if (data.cards[i].status === "0") {
               data.cards[i].statusDescription = "프로젝트가 등록되었습니다.";
             } else if (data.cards[i].status === "33") {
@@ -58,14 +60,15 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
               data.cards[i].statusDescription = "프로젝트가 완료되었습니다.";
             }
 
-
             if (data.cards[i].img_path == '') {
               data.cards[i].img_path = mNoImage;
             } else {
               data.cards[i].img_path = mServerUrl + data.cards[i].img_path;
             }
 
+            data.cards[i].address = address;
             var object =  data.cards[i];
+            console.log(object);
             $scope.cards.push(object);
             $rootScope.allData.cards.push(object);
 
@@ -80,6 +83,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
                 }
               }
             }
+
           }
 
           $scope.page++;
@@ -110,7 +114,30 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   $scope.findWarning = function() {
     $state.go("tabs.map");
   }
+
+  // ==================================== reverse geocording ======================================
+
+  $scope.setLocationName = function(latitude, longitude, card) {
+
+    var latlng = { lat: parseFloat(latitude), lng: parseFloat(longitude) };
+    var geocoder = new google.maps.Geocoder;
+
+    geocoder.geocode({'location': latlng}, function(results, status) {
+      if (status === google.maps.GeocoderStatus.OK) {
+        if (results[1]) {
+          card.address = results[1].formatted_address;
+          return card.address;
+        } else {
+          window.alert('No results found');
+        }
+      } else {
+        // window.alert('Geocoder failed due to: ' + status);
+      }
+    });
+  }
+  // ==================================== reverse geocording END ======================================
   
+
   // =========================== Check current user & card user =============================
 
   $scope.userChecked = function(card) {
@@ -153,7 +180,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   $scope.editCard = function(id) {
     $state.go('tabs.edit', { 'id': id});
   };
-
 
   // ==================================== post like_count ======================================
 
@@ -234,6 +260,11 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   }
   // ==================================== post like_count END ======================================
   
+  $scope.showMap = function(lat, lon) {
+    var latlng = new google.maps.LatLng(lat, lon);
+    $state.go('tabs.location_h', { 'latlng': latlng});
+  }
+
 });
 
 

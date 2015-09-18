@@ -33,6 +33,9 @@
             </div>
 
             <div class="content">
+              <a href="#" ng-click="showMap(card.location_lat, card.location_long)">
+                <p class="fa fa-map-marker"> {{card.address}}</p>
+              </a>
               <a ng-href="#/tab/home/{{ card.id }}">
                 <div class="center-cropped post-image" style="background-image: url('{{card.img_path}}');">
                 </div>
