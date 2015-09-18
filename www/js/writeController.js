@@ -1,6 +1,6 @@
 wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaCamera, $cordovaFile, $cordovaFileTransfer, $timeout, $cordovaGeolocation, $ionicLoading, $http, $stateParams, $ionicPopup, $ionicActionSheet, $ionicHistory) {
 
-  var latlng, cardId;
+  var latlng, cardId, progress;
   var imgPath = '';
   $scope.cardData = {
     "title" : "",
@@ -191,7 +191,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     if(cardId == null){
       $state.go('tabs.location_w', { 'latlng': latlng});
     }else{
-      $state.go('tabs.location_h', { 'latlng': latlng});
+      $state.go('tabs.location_h', { 'latlng': latlng, 'progress' : progress});
       //맵을 보여준 후 dirty설정
       $scope.cardForm.location.$setDirty();
     };
@@ -394,7 +394,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
 
         $ionicPopup.alert({
           title: 'Success',
-           template: 'data :  ' + data
+          template: 'data :  ' + data
         });
 
         // location.reload();
@@ -419,16 +419,17 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       $scope.cardData.title = data.cards[0].title;
       $scope.cardData.description = data.cards[0].description;
 
-      imgPath = data.cards[0].img_path;
-      if(imgPath == ''){
-        imgPath = mNoImage;
+      progress = data.cards[0].status;
+      var imgUrl = data.cards[0].img_path;
+      if(imgUrl == ''){
+        imgUrl = mNoImage;
       }else{
-        imgPath = mServerUrl + imgPath;
+        imgUrl = mServerUrl + imgUrl;
       }
-      $scope.imgURI = imgPath;
+      $scope.imgURI = imgUrl;
       $scope.cardForm.file.$setTouched();
-      $scope.cardForm.file.$setViewValue(imgPath);
-      document.getElementById("card_file").value = imgPath;
+      $scope.cardForm.file.$setViewValue(imgUrl);
+      document.getElementById("card_file").value = imgUrl;
       $scope.cardForm.file.$setPristine();
 
       var lat = data.cards[0].location_lat;

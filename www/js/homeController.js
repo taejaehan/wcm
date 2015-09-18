@@ -24,6 +24,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     if(refresh == 'init'){
       $scope.page = 0 ;
       $scope.cards = [];
+      $rootScope.allData = {
+        cards : []
+      };
 
       //init이면 localStorage['cardList']도 갱신한다
       var request = $http({
@@ -80,12 +83,12 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   
             if (user != null ) {
-              for(var i = 0; i < $scope.cards.length; i ++) {
+              for(var j = 0; j < $scope.cards.length; j ++) {
                 
-                if(user.properties.like.indexOf($scope.cards[i].id) != -1) {
-                  $scope.cards[i].watch = true;
+                if(user.properties.like.indexOf($scope.cards[j].id) != -1) {
+                  $scope.cards[j].watch = true;
                 } else {
-                  $scope.cards[i].watch = false;
+                  $scope.cards[j].watch = false;
                 }
               }
             }

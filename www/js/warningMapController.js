@@ -1,4 +1,4 @@
-wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGeolocation, $ionicLoading) {
+wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGeolocation, $ionicLoading, $ionicActionSheet) {
     
     $scope.cards = null;
     $scope.map = null;
@@ -6,6 +6,7 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
     $scope.markers = [];
     $scope.infoWindow = null;
     $scope.usegmm = { checked: true };
+    $scope.warningTitle = 'Ongoing';
 
     $scope.$on('$ionicView.loaded', function(){
       $scope.init();
@@ -37,7 +38,7 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
       // google.maps.event.addDomListener(numMarkers, 'change', $scope.change);
       $scope.infoWindow = new google.maps.InfoWindow();
 
-      $scope.showMarkers();
+      $scope.showMarkers(1);
 
       // find me 넣기
       var findMe = document.getElementById('find-me-warn');
@@ -72,7 +73,6 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
         $scope.map.fitBounds(bounds);
       });
       /****************************** Serch box end ******************************/
-
     };
 
     //내 위치 찾기
@@ -107,13 +107,14 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
         });
     }
 
-    $scope.showMarkers = function() {
-      $scope.markers = [];
+    /*
+    * marker를 보여줍니다
+    * @param - index 0 - discoverd , 1 - ongoing,  2-completed
+    */
+    $scope.showMarkers = function(index) {
 
-      var type = 1;
-      if ($scope.usegmm.checked) {
-        type = 0;
-      }
+      var markerUrl, clusterUrl, clusterBigUrl, clusterTextColor;
+      $scope.markers = [];
 
       if ($scope.markerClusterer) {
         $scope.markerClusterer.clearMarkers();
@@ -124,6 +125,38 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
       // if(numMarkers > $scope.cards.length) numMarkers = $scope.cards.length;
 
       for (var i = 0; i < $scope.cards.length; i++) {
+        switch(index){
+          case 0 :
+            if($scope.cards[i].status != '0' && $scope.cards[i].status != '33') continue;
+            markerUrl = '../img/location_r.png';
+            clusterUrl = '../img/cluster_r.png';
+            clusterBigUrl = '../img/cluster_r_big.png';
+            clusterTextColor = '#9c3625';
+            $scope.warningTitle = 'Discovered';
+            break;
+          case 1 :
+            if($scope.cards[i].status != '66') continue;
+            markerUrl = '../img/location_y.png';
+            clusterUrl = '../img/cluster_y.png';
+            clusterBigUrl = '../img/cluster_y_big.png';
+            clusterTextColor = '#e38b0d';
+            $scope.warningTitle = 'Ongoing';
+            break;
+          case 2 :
+            if($scope.cards[i].status != '100') continue;
+            markerUrl = '../img/location_g.png';
+            clusterUrl = '../img/cluster_g.png';
+            clusterBigUrl = '../img/cluster_g_big.png';
+            clusterTextColor = '#264804';
+            $scope.warningTitle = 'Completed';
+            break;
+          default : 
+            markerUrl = '../img/location_y.png';
+            clusterUrl = '../img/cluster_y.png';
+            clusterBigUrl = '../img/cluster_y_big.png';
+            clusterTextColor = '#e38b0d';
+            $scope.warningTitle = 'Ongoing';
+        }
 
         var titleText = $scope.cards[i].title;
         if (titleText === '') {
@@ -141,10 +174,12 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
         var latLng = new google.maps.LatLng($scope.cards[i].location_lat,
             $scope.cards[i].location_long);
 
-        var imageUrl = 'http://chart.apis.google.com/chart?cht=mm&chs=24x32&chco=' +
-            'FFFFFF,008CFF,000000&ext=.png';
-        var markerImage = new google.maps.MarkerImage(imageUrl,
-            new google.maps.Size(24, 32));
+        var markerImage = new google.maps.MarkerImage(markerUrl,
+            new google.maps.Size(50, 50),
+            new google.maps.Point(0, 0),
+            new google.maps.Point(15, 25),
+            new google.maps.Size(30, 30));
+
 
         var marker = new google.maps.Marker({
           'position': latLng,
@@ -154,10 +189,30 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
         var fn = $scope.markerClickFunction($scope.cards[i], latLng);
         google.maps.event.addListener(marker, 'click', fn);
         google.maps.event.addDomListener(title, 'click', fn);
+
         $scope.markers.push(marker);
       }
 
-      window.setTimeout($scope.time, 0);
+      // window.setTimeout($scope.time, 0);
+      mcOptions = {maxZoom: 20, 
+        styles: [{
+      height: 56,
+      url: clusterUrl,
+      width: 56,
+      textColor : clusterTextColor,
+      textSize : 16
+      },
+      {
+      height: 80,
+      url: clusterBigUrl,
+      width: 80,
+      textColor : clusterTextColor,
+      textSize : 20
+      }]}
+      $scope.markerClusterer = new MarkerClusterer($scope.map, $scope.markers,mcOptions);
+      if(document.getElementById('location-button-img') != null){
+        document.getElementById('location-button-img').setAttribute('src', markerUrl);
+      }
     };
 
     $scope.markerClickFunction = function(pic, latlng) {
@@ -198,19 +253,27 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
       }
     };
 
-    $scope.change = function() {
-      $scope.clear();
-      $scope.showMarkers();
-    };
-
-    $scope.time = function() {
-
-      if ($scope.usegmm.checked) {
-        for (var i = 0, marker; marker = $scope.markers[i]; i++) {
-          marker.setMap($scope.map);
-        }
-      } else {
-        $scope.markerClusterer = new MarkerClusterer($scope.map, $scope.markers);
-      }
-    };
+    $scope.changeMarkers = function() {
+      // Show the marker sheet
+     var hideSheet = $ionicActionSheet.show({
+       buttons: [
+         { text: 'Discovered' },
+         { text: 'Ongoing' },
+         { text: 'Completed' }
+       ],
+       cssClass : 'warning_sheet',
+       // destructiveText: 'Delete',
+       titleText: 'Selcet Wanring',
+       cancelText: 'Cancel',
+       cancel: function() {
+          // add cancel code..
+        },
+       buttonClicked: function(index) {
+          console.log('index :  ' + index);
+          $scope.clear();
+          $scope.showMarkers(index);
+          return true;
+       },
+     });
+    }
 });

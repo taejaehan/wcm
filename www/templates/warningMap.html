@@ -1,18 +1,22 @@
-<ion-view view-title="Warning Map">
+<ion-view view-title="{{warningTitle}}">
   <ion-nav-buttons side="right">
-    <ion-checkbox class="checkbox_custrom" ng-model="usegmm.checked" ng-change="change()">
+    <!-- <ion-checkbox class="checkbox_custrom" ng-model="usegmm.checked" ng-change="change()">
     </ion-checkbox>
-    <!-- <select id="nummarkers">
+    <select id="nummarkers">
       <option value="10">10</option>
       <option value="50">50</option>
       <option value="100" selected="selected">100</option>
       <option value="500">500</option>
       <option value="1000">1000</option>
     </select> -->
+    <button type="submit" class="button button-icon location-button" ng-click="changeMarkers()">
+      <!-- <i class="icon ion-location"></i> -->
+      <img id="location-button-img" src="../img/location_r.png" class="location-button-icon"/>
+    </button>
   </ion-nav-buttons>
   <ion-content>
     <input id="pac-input-warn" class="controls pac-input" type="text" placeholder="Search Box">
     <div id="map-warn" class="map" data-tap-disabled="true"></div>
-    <a id="find-me-warn" ng-click="centerOnMe()" class="button button-icon icon ion-navigate">Find Me</a>
+    <a id="find-me-warn" ng-click="centerOnMe()" class="button button-icon icon ion-ios-search find-me"> 현재위치 찾기</a>
   </ion-content>
 </ion-view>
