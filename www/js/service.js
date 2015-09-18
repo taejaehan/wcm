@@ -1,36 +1,33 @@
 wcm.service('AuthService', function($state, $ionicPopup) {
   
-  // var login = function(name, pw) {
+  var login = function(name, pw) {
 
-  //   if (name == 'admin' && pw == 'dmajor1196') {
-  //     isAuthenticated = true;
-  //     username = name;
+    if (name == 'admin' && pw == 'dmajor1196') {
+      var user = {
+                    username: name,
+                    userid: 56220637,
+                    userimage: "http://mud-kage.kakao.co.kr/14/dn/btqchdUZIl1/FYku2ixAIgvL1O50eDzaCk/o.jpg",
+                    isAuthenticated: true
+                  };
 
-  //     var user = {
-  //                   username: name,
-  //                   userpassword: pw,
-  //                   isAuthenticated: true
-  //                 };
+      window.localStorage['user'] = JSON.stringify(user);
+      var user = JSON.parse(window.localStorage['user']);
+      console.log(user);
+      $state.go('tabs.home');
 
-  //     window.localStorage['user'] = JSON.stringify(user);
-  //     var user = JSON.parse(window.localStorage['user']);
-  //     console.log(user);
-  //     $state.go('tabs.home');
+    } else {
+      $ionicPopup.alert({
+        title: 'Login failed',
+        template: 'Please check your credentials.'
+      });
+    }
+  };
 
-  //   } else {
-  //     $ionicPopup.alert({
-  //       title: 'Login failed',
-  //       template: 'Please check your credentials.'
-  //     });
-  //   }
-  // };
-
-  // var logout = function() {
-  //   username = '';
-  //   isAuthenticated = false;
-  //   window.localStorage.removeItem('user');
-  //   $state.go('login');
-  // };
+  var logout = function() {
+    isAuthenticated = false;
+    window.localStorage.removeItem('user');
+    $state.go('login');
+  };
 
 
   var kakaoLogin = function(res) {
@@ -59,6 +56,8 @@ wcm.service('AuthService', function($state, $ionicPopup) {
 
 
   return {
+    login: login,
+    logout: logout,
     kakaoLogin: kakaoLogin,
     kakaoLogout: kakaoLogout,
     skipLogin: skipLogin,

@@ -1,5 +1,5 @@
 wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $cordovaCamera, $http, $timeout, $stateParams) {
-
+  
   var user = JSON.parse(window.localStorage['user']);
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
   console.log(user);
@@ -9,7 +9,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   $rootScope.allData = { 
                           cards: []
                        };
-               
+
   $scope.doRefresh = function(refresh) {
 
     //init이면(pull to refresh) 첫 페이지를 다시 불러온다
@@ -46,7 +46,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
         request.success(function(data) {
 
-          for (var i = 0; i <  data.cards.length; i++) {
+          for (var i = 0; i < data.cards.length; i++) {
 
             var address = $scope.setLocationName(data.cards[i].location_lat, data.cards[i].location_long, data.cards[i]);            
             
@@ -68,18 +68,17 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
             data.cards[i].address = address;
             var object =  data.cards[i];
-            console.log(object);
             $scope.cards.push(object);
             $rootScope.allData.cards.push(object);
 
   
             if (user.isAuthenticated === true) {
-              for(var i = 0; i < $scope.cards.length; i ++) {
+              for(var j = 0; j < $scope.cards.length; j ++) {
                 
-                if(user.properties.like.indexOf($scope.cards[i].id) != -1) {
-                  $scope.cards[i].watch = true;
+                if(user.properties.like.indexOf($scope.cards[j].id) != -1) {
+                  $scope.cards[j].watch = true;
                 } else {
-                  $scope.cards[i].watch = false;
+                  $scope.cards[j].watch = false;
                 }
               }
             }
@@ -92,7 +91,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           window.localStorage['localCard'] = JSON.stringify($scope.cards);
           var localCard = JSON.parse(window.localStorage['localCard']);
           $scope.cards = localCard;
-
         });
 
         //Stop the ion-refresher from spinning
@@ -141,7 +139,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   // =========================== Check current user & card user =============================
 
   $scope.userChecked = function(card) {
-
     if (user.isAuthenticated === true) {
       if ( parseInt(card.user[0].user_id) === user.id ) {
         return { 'display' : 'inline-block' };
