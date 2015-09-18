@@ -31,7 +31,7 @@
  
 .error i {
   font-size: 24px;
-  color: #B83E2C;  
+  color: #E0624D;  
   vertical-align: middle;
 }
  
@@ -40,11 +40,11 @@
 }
  
 .has-errors{
-  border-bottom: 3px solid #B83E2C;
+  border-bottom: 3px solid #E0624D;
 }
  
 .no-errors {
-  border-bottom: 3px solid green;
+  border-bottom: 3px solid #65B614;
 }
 
 label.item.has-errors-img img{  
@@ -52,7 +52,7 @@ label.item.has-errors-img img{
 }
 
 label.item.no-errors-img img{  
-  border: 2px solid green;
+  border: 2px solid #65B614;
 }
 
 .popup-body{

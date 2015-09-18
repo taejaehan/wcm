@@ -1,6 +1,6 @@
 wcm.controller("PostController", function($scope, $rootScope, $http, $stateParams, $state) {
   
-  var latlng;
+  var latlng, progress;
   var localCard = JSON.parse(window.localStorage['localCard'] || '{}');
   var user = JSON.parse(window.localStorage['user']);
 
@@ -35,7 +35,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       $scope.like_count = data.cards[0].like_count;
       $scope.status = data.cards[0].status;
       $scope.setLocationName();
-
+      progress = data.cards[0].status;
       if (data.cards[0].status === "0") {
         data.cards[0].statusDescription = "프로젝트가 등록되었습니다.";
       } else if (data.cards[0].status === "33") {
@@ -325,7 +325,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
   /*맵 보여주기*/
   $scope.showMap = function() {
-    $state.go('tabs.location_h', { 'latlng': latlng});
+    $state.go('tabs.location_h', { 'latlng': latlng, 'progress' : progress});
   }
 
 });

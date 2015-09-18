@@ -1,7 +1,7 @@
-// var mServerUrl = 'http://192.168.10.35:3000/wcm_php';
-// var mServerAPI = mServerUrl + '/controllers/index.php';
-var mServerUrl = 'http://192.168.20.186:3000';
-var mServerAPI = mServerUrl + '';
+var mServerUrl = 'http://192.168.20.192:3000/wcm_php';
+var mServerAPI = mServerUrl + '/controllers/index.php';
+// var mServerUrl = 'http://192.168.20.186:3000';
+// var mServerAPI = mServerUrl + '';
 
 //사진이 없을 경우 보여주는 이미지 링크
 var mNoImage = 'http://placehold.it/300x300';
@@ -110,7 +110,7 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
       }
     })
     .state('tabs.location_h', {
-      url: "/location/:latlng",
+      url: "/location/:latlng/:progress",
       views: {
         'home-tab': {
           templateUrl: "templates/map.html",
@@ -122,7 +122,7 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
       url: "/location/:latlng",
       views: {
         'write-tab': {
-          templateUrl: "templates/.html",
+          templateUrl: "templates/map.html",
           controller: 'MapController'
         }
       }

@@ -16,6 +16,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     if(refresh == 'init'){
       $scope.page = 0 ;
       $scope.cards = [];
+      $rootScope.allData = {
+        cards : []
+      };
 
       //init이면 localStorage['cardList']도 갱신한다
       var request = $http({
@@ -71,7 +74,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             $scope.cards.push(object);
             $rootScope.allData.cards.push(object);
 
-  
             if (user.isAuthenticated === true) {
               for(var j = 0; j < $scope.cards.length; j ++) {
                 

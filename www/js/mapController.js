@@ -9,11 +9,11 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
         $scope.showLocation();
         $scope.setMapFuntions();
       }
-      
     }); 
     $scope.showLocation = function(){
       //받아온 위/경도로 맵을 생성
       console.log('$stateParams.latlng : ' + $stateParams.latlng);
+      console.log('$stateParams.progress : ' + $stateParams.progress);
       var latlngStr = $stateParams.latlng.slice(1,-1).split(',',2);
       var currentLatlng;
       if(latlngStr != ''){
@@ -31,8 +31,28 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
         'panControl' : false,           //위치 조절 pan
         'zoomControl' : false,         //확대/축소 pan
       };
-     map = new google.maps.Map(document.getElementById("map-find"),
-          mapOptions);
+      map = new google.maps.Map(document.getElementById("map-find"), mapOptions);
+
+      var imageUrl;
+      switch($stateParams.progress){
+        case '0' :
+        case '33' :
+          imageUrl = '../img/location_r.png';
+          break;
+        case '66' :
+          imageUrl = '../img/location_y.png';
+          break;
+        case '100' :
+          imageUrl = '../img/location_g.png';
+          break;
+        default : 
+          imageUrl = '../img/location_r.png';
+      }
+      var markerImage = new google.maps.MarkerImage(imageUrl,
+        new google.maps.Size(50, 50),
+        new google.maps.Point(0, 0),
+        new google.maps.Point(15, 25),
+        new google.maps.Size(50, 50));
 
       //marker를 생성
       marker = new google.maps.Marker({
@@ -40,6 +60,7 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
         map: map,
         title: 'Uluru (Ayers Rock)',
         draggable: false,
+        icon : markerImage
       });
 
        // Marker + infowindow + angularjs compiled ng-click

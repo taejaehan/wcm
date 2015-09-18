@@ -1,5 +1,15 @@
 /* ANIMATIONS (FROM ANIMATE.CSS) ======================== */
 /* flip in */
+
+.nav-bar-block, .bar {
+  background-color: #E0624D !important;
+  border-color : #E0624D !important;
+}
+.tabs-dark > .tabs, .tabs.tabs-dark {
+  background-color: #E0624D !important;
+  border-color : #E0624D !important;
+}
+
 @keyframes flipInX {
   0% {
     transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
