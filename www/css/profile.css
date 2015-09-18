@@ -1,27 +1,53 @@
-.profile-form {
-	padding: 20px 10px 10px 10px;
+#profile_page {
+	padding: 20px 10px 30px 10px;
 }
 
-.profile-form a {
+
+#profile_page .profile-form a {
 	color: black;
 }
 
-.profile-form img {
+#profile_page .profile-form img {
 	width: 50px;
 	height: 50px;
 	float: left;
 	margin-right: 10px;
 }
 
-.profile-form .username {
+#profile_page .profile-form .username {
 	margin-top: 4px;
 }
 
-.profile-form .form-group {
+#profile_page .profile-form .form-group {
 	padding: 0px 20px 0px 20px;
 }
 
-.profile-form .form-group .progress {
+#profile_page .my-card-list {
+	border-radius: 10px;
+	margin-top: 10px;
+	box-shadow: 1px 2px 8px 1px #888888;
+}
+
+#profile_page .my-card-list .title p {
+	text-align: center;
+	font-weight: 900;
+}
+
+#profile_page .profile-form .form-group .progress {
 	margin-top: 10px;
 	margin-bottom: 10px;
+}
+
+#profile_page .progress-button {
+	text-align: center;
+}
+
+#profile_page p.progressText {
+	text-align: center;
+	margin-bottom: 20px;
+	font-size: 12px;
+}
+
+button.logout {
+	margin-left: 10px;
 }

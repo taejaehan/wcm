@@ -1,23 +1,15 @@
 wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $cordovaCamera, $http, $timeout, $stateParams) {
 
+  var user = JSON.parse(window.localStorage['user']);
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
-
-  var user;
-  if (window.localStorage['user'] != null) {
-    user = JSON.parse(window.localStorage['user'] || '{}');
-    $scope.username = user.properties.nickname;
-    $scope.userimage = user.properties.thumbnail_image;
-    $scope.likes = user.properties.like;
-  } 
-
   console.log(user);
 
   $scope.page = 0;
   $scope.cards = [];
-  $rootScope.allData = {
-    cards : []
-  }
-
+  $rootScope.allData = { 
+                          cards: []
+                       };
+               
   $scope.doRefresh = function(refresh) {
 
     //init이면(pull to refresh) 첫 페이지를 다시 불러온다
@@ -39,7 +31,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       });
     }
 
-    console.log('$scope.page : ' + $scope.page);
     if ($cordovaNetwork.isOnline) {
 
       /* isOnline */  
@@ -79,7 +70,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             $rootScope.allData.cards.push(object);
 
   
-            if (user != null ) {
+            if (user.isAuthenticated === true) {
               for(var i = 0; i < $scope.cards.length; i ++) {
                 
                 if(user.properties.like.indexOf($scope.cards[i].id) != -1) {
@@ -97,6 +88,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           window.localStorage['localCard'] = JSON.stringify($scope.cards);
           var localCard = JSON.parse(window.localStorage['localCard']);
           $scope.cards = localCard;
+
         });
 
         //Stop the ion-refresher from spinning
@@ -123,7 +115,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   $scope.userChecked = function(card) {
 
-    if (user != null) {
+    if (user.isAuthenticated === true) {
       if ( parseInt(card.user[0].user_id) === user.id ) {
         return { 'display' : 'inline-block' };
       } else {
@@ -166,8 +158,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   // ==================================== post like_count ======================================
 
   $scope.toggleLike = function(e, id) {
-
-    if (user != null ) {
+    if (user.isAuthenticated === true) {
 
       if (e === true) {
 
@@ -188,7 +179,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           }
           i ++;
         }
-
 
       } else {
         
@@ -232,6 +222,14 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     } else {
       alert('로그인 후에 이용 가능합니다.');
       
+      var i = 0;
+      while( i < $rootScope.allData.cards.length) {
+        if ($rootScope.allData.cards[i].id === id) {
+          $rootScope.allData.cards[i].watch = false;
+          break;
+        }
+        i ++;
+      }
     }
   }
   // ==================================== post like_count END ======================================

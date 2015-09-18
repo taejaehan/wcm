@@ -2,10 +2,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   
   var latlng;
   var localCard = JSON.parse(window.localStorage['localCard'] || '{}');
- 
-  if (window.localStorage['user'] != null) {
-    var user = JSON.parse(window.localStorage['user'] || '{}');
-  }
+  var user = JSON.parse(window.localStorage['user']);
 
   $scope.postId = $stateParams.postId;
   $scope.cards = [];
@@ -125,7 +122,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
 
   $scope.toggleLike = function(e) {
-    if (user != null ) {
+    if (user.isAuthenticated === true) {
       
       if (e === true) {
         if (user.properties.like.indexOf($scope.postId) === -1) {
@@ -184,8 +181,10 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       request.success(function() {
 
       });
-    }else{
+
+    } else {
       alert('로그인 후에 이용 가능합니다.');
+      $scope.watch = false;
     }
   }
   // ==================================== post like_count END ======================================
@@ -194,7 +193,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   // ==================================== Post comment ======================================
   $scope.addComment =function() {
     
-    if (user != null) {
+    if (user.isAuthenticated === true) {
       var comment = document.getElementById("comment").value;
       if ( comment === "" ) {
         alert('내용을 입력하세요.');
@@ -261,6 +260,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
     } else {
       alert("로그인 후에 이용 가능합니다.");
+      document.getElementById("comment").value = "";
     }
 
   }
@@ -269,7 +269,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   // =========================== Check current user & comment user =============================
   $scope.userChecked = function(comment) {  
     
-    if (user != null) {
+    if (user.isAuthenticated === true) {
       if ( parseInt(comment.user[0].user_id) === user.id ) {
         return { 'display' : 'inline-block' };
       } else {

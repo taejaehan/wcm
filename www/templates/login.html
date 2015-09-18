@@ -1,9 +1,16 @@
 <ion-view view-title="WeChangeMakers">
   <ion-content>
+  	
   	<div id="login_page">
 	  	<a id="kakao-login-btn"></a>
-	  	<p><a href="#/tab/home">Skip Login</a></p>
 	  </div>
+<!-- 
+	  <form ng-submit="register()">
+		  <label>username: </label><input type="text" ng-model="data.username">
+		  <label>password: </label><input type="password" ng-model="data.password">
+		  <input type="submit" value="Login">
+		</form> -->
 
+  	<button class="btn btn-lg btn-info" ng-click="skipLogin()">Skip Login</button>
   </ion-content>
 </ion-view>
