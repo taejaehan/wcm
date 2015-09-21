@@ -10,6 +10,13 @@
   border-color : #E0624D !important;
 }
 
+.header-offline{
+  color :#fff;
+  background-color : #222 !important;
+  border-color: #222 !important;
+  display: none; 
+}
+
 @keyframes flipInX {
   0% {
     transform: perspective(400px) rotate3d(1, 0, 0, 90deg);

@@ -304,7 +304,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     //user관련 부분이 없으면 테스트 용도로 kakao 정보를 넣어준다
     if (window.localStorage['user'] != null) {
       var user = JSON.parse(window.localStorage['user'] || '{}');
-      $scope.userid = user.id;  
+      $scope.userid = user.userid;  
     }else{
       $scope.userid = 57421548;
     }
