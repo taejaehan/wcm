@@ -104,8 +104,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
                 }
               }
             }
-
-            console.log($scope.cards);
           }
 
           $scope.page++;
@@ -138,6 +136,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   // =========================== Check current user & card user =============================
 
   $scope.userChecked = function(card) {
+
     if (user.isAuthenticated === true) {
       if ( parseInt(card.user[0].user_id) === user.id ) {
         return { 'display' : 'inline-block' };
