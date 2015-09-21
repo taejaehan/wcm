@@ -12,8 +12,10 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
       $scope.init();
     });
     
+    /*
+    * WarningMap을 초기화합니다
+    */
     $scope.init = function() {
-
       console.log('init!!!');
       var latlng = new google.maps.LatLng(37.574515, 126.976930);
       var options = {
@@ -75,7 +77,9 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
       /****************************** Serch box end ******************************/
     };
 
-    //내 위치 찾기
+    /*
+    * 내 위치 찾기 (지도를 현재 내 위치로 이동)
+    */
     $scope.centerOnMe = function() {
         $ionicLoading.show({
             template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!'
@@ -108,7 +112,7 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
     }
 
     /*
-    * marker를 보여줍니다
+    * marker 및 cluster를 보여줍니다
     * @param - index 0 - discoverd , 1 - ongoing,  2-completed
     */
     $scope.showMarkers = function(index) {
@@ -125,6 +129,8 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
       // if(numMarkers > $scope.cards.length) numMarkers = $scope.cards.length;
 
       for (var i = 0; i < $scope.cards.length; i++) {
+
+        //card type에 따라 이미지/색을 변경 한다 index 0 - discoverd , 1 - ongoing,  2-completed
         switch(index){
           case 0 :
             if($scope.cards[i].status != '0' && $scope.cards[i].status != '33') continue;
@@ -194,6 +200,8 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
       }
 
       // window.setTimeout($scope.time, 0);
+
+      //현재는 2단계 까지만 설정해 놓음 후에 추가 예정 (5단계 까지 가능)
       mcOptions = {maxZoom: 20, 
         styles: [{
       height: 56,
@@ -215,6 +223,9 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
       }
     };
 
+    /*
+    * 개별 marker를 클릭했을 경우 infoHtml 창을 띄운다
+    */
     $scope.markerClickFunction = function(pic, latlng) {
       return function(e) {
         e.cancelBubble = true;
@@ -247,12 +258,18 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
       };
     };
 
+    /*
+    * marker clear
+    */
     $scope.clear = function() {
       for (var i = 0, marker; marker = $scope.markers[i]; i++) {
         marker.setMap(null);
       }
     };
 
+    /*
+    * marker type을 변경 할 수 있는 sheet를 띄웁니다
+    */
     $scope.changeMarkers = function() {
       // Show the marker sheet
      var hideSheet = $ionicActionSheet.show({

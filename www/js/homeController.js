@@ -3,7 +3,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
-  console.log(user);
 
   $scope.page = 0;
   $scope.cards = [];
@@ -11,34 +10,54 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
                           cards: []
                        };
 
+  //인터넷 연결 상태 listeners
+  document.addEventListener("deviceready", function () {
+    // listen for Online event
+    $rootScope.$on('$cordovaNetwork:online', function(event, networkState){
+      var onlineState = networkState;
+      $scope.closeSubHeader();
+    })
+    // listen for Offline event
+    $rootScope.$on('$cordovaNetwork:offline', function(event, networkState){
+      var offlineState = networkState;
+      $scope.showSubHeader();
+    })
+  });
+  $scope.closeSubHeader = function(){
+    document.getElementById('sub_header_offline').setAttribute('style','display:none');
+  }
+  $scope.showSubHeader = function(){
+    document.getElementById('sub_header_offline').setAttribute('style','display:block');
+  }
+
   $scope.doRefresh = function(refresh) {
 
-    //init이면(pull to refresh) 첫 페이지를 다시 불러온다
-    if(refresh == 'init'){
-      $scope.page = 0 ;
-      $scope.cards = [];
-      $rootScope.allData = {
-        cards : []
-      };
-
-      //init이면 localStorage['cardList']도 갱신한다
-      var request = $http({
-          method: "get",
-          url: mServerAPI + "/cards",
-          crossDomain : true,
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-          cache: false
-      });
-
-      request.success(function(data) {
-        window.localStorage['cardList'] = JSON.stringify(data);
-      });
-    }
-
-    if ($cordovaNetwork.isOnline) {
+    //app에서 띄운 webview가 아니거나 online일 경우만
+    if (!(ionic.Platform.isWebView()) || $cordovaNetwork.isOnline()) {
 
       /* isOnline */  
       $timeout( function() {
+        //init이면(pull to refresh) 첫 페이지를 다시 불러온다
+        if(refresh == 'init'){
+          $scope.page = 0 ;
+          $scope.cards = [];
+          $rootScope.allData = {
+            cards : []
+          };
+
+          //init이면 localStorage['cardList']도 갱신한다
+          var request = $http({
+              method: "get",
+              url: mServerAPI + "/cards",
+              crossDomain : true,
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+              cache: false
+          });
+
+          request.success(function(data) {
+            window.localStorage['cardList'] = JSON.stringify(data);
+          });
+        }
 
         var request = $http({
             method: "get",
@@ -67,6 +86,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             } else {
               data.cards[i].img_path = mServerUrl + data.cards[i].img_path;
             }
+
+
+            data.cards[i].address = data.cards[i].location_name;
 
             var object =  data.cards[i];
             $scope.cards.push(object);
@@ -100,7 +122,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
       /* isOffline */
       alert("Check your network connection.");
-
       for (var i = 0; i < cardList.cards.length; i++) {
         var object = cardList.cards[i];
         $scope.cards.push(object);
@@ -111,29 +132,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   $scope.findWarning = function() {
     $state.go("tabs.map");
   }
-
-  // ==================================== reverse geocording ======================================
-
-  $scope.setLocationName = function(latitude, longitude, card) {
-
-    var latlng = { lat: parseFloat(latitude), lng: parseFloat(longitude) };
-    var geocoder = new google.maps.Geocoder;
-
-    geocoder.geocode({'location': latlng}, function(results, status) {
-      if (status === google.maps.GeocoderStatus.OK) {
-        if (results[1]) {
-          card.address = results[1].formatted_address;
-          return card.address;
-        } else {
-          window.alert('No results found');
-        }
-      } else {
-        // window.alert('Geocoder failed due to: ' + status);
-      }
-    });
-  }
-  // ==================================== reverse geocording END ======================================
-  
 
   // =========================== Check current user & card user =============================
 

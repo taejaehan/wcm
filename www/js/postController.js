@@ -41,7 +41,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       latlng = new google.maps.LatLng($scope.lat, $scope.lng);
       $scope.like_count = data.cards[0].like_count;
       $scope.status = data.cards[0].status;
-      $scope.setLocationName();
+      $scope.locationName = data.cards[0].location_name;
       progress = data.cards[0].status;
       if (data.cards[0].status === "0") {
         data.cards[0].statusDescription = "프로젝트가 등록되었습니다.";
@@ -102,32 +102,8 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
     // ==================================== Get comments END ======================================
 
   });
-  
-  // ==================================== reverse geocording ======================================
-
-  $scope.setLocationName = function() {
-
-    var latlng = { lat: parseFloat($scope.lat), lng: parseFloat($scope.lng) };
-    var geocoder = new google.maps.Geocoder;
-
-    geocoder.geocode({'location': latlng}, function(results, status) {
-      if (status === google.maps.GeocoderStatus.OK) {
-        if (results[1]) {
-          $scope.address = results[1].formatted_address;
-          document.getElementById('post_location_name').innerHTML = ' ' +results[1].formatted_address;
-        } else {
-          window.alert('No results found');
-        }
-      } else {
-        // window.alert('Geocoder failed due to: ' + status);
-      }
-    });
-  }
-
-  // ==================================== reverse geocording END ======================================
 
   // ==================================== post like_count ======================================
-
 
   $scope.toggleLike = function(e) {
     if (user.isAuthenticated === true) {

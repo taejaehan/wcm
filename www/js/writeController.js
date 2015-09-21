@@ -96,7 +96,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
 
       $cordovaCamera.getPicture(options).then(function(imagePath){
         // $scope.imgURI = "data:image/jpeg;base64," + imageData;
-        alert('imagePath :' + imagePath);
+        // alert('imagePath :' + imagePath);
         $scope.imgURI = imagePath;
         $scope.cardForm.file.$setTouched();
         $scope.cardForm.file.$setViewValue(imagePath);
@@ -302,17 +302,16 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   $scope.uploadDb = function(newFileName) {
 
     //user관련 부분이 없으면 테스트 용도로 kakao 정보를 넣어준다
-
     if (window.localStorage['user'] != null) {
       var user = JSON.parse(window.localStorage['user'] || '{}');
-      $scope.userid = user.id;  
+      $scope.userid = user.userid;  
     }else{
       $scope.userid = 57421548;
     }
 
     var user_app_id = $scope.userid;
 
-    var url, title, description, location_lat, location_long = '';
+    var url, title, description, location_lat, location_long, location_name= '';
     //cardId가 null이면 (new add)
     if(cardId == null){
       url = mServerAPI + "/card";
@@ -320,6 +319,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       description = document.getElementById("card_des").value;
       location_lat =  document.getElementById("card_location").getAttribute('lat');
       location_long = document.getElementById("card_location").getAttribute('long');
+      location_name = document.getElementById("card_location").value;
       if(newFileName != null) {
         // imgPath = mServerUrl+"/upload/"+newFileName;
         imgPath = "/upload/"+newFileName;
@@ -334,6 +334,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
           description = document.getElementById("card_des").value;
           location_lat =  document.getElementById("card_location").getAttribute('lat');
           location_long = document.getElementById("card_location").getAttribute('long');
+          location_name = document.getElementById("card_location").value;
           if(newFileName != null) {
             imgPath = "/upload/"+newFileName;
           }
