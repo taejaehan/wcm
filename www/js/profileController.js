@@ -1,15 +1,10 @@
 wcm.controller("ProfileController", function($scope, $state, $http, AuthService) {
 
-	var user = JSON.parse(window.localStorage['user']);
-	console.log(user);
+	var user = JSON.parse(window.localStorage['user'] || '{}');
 
 	if (user.isAuthenticated === true) {
 		$scope.userCheck = true;
 		$scope.user = user;
-
-		if ($scope.user.properties.profile_image === null) {
-			$scope.user.properties.profile_image = "http://mud-kage.kakao.co.kr/14/dn/btqchdUZIl1/FYku2ixAIgvL1O50eDzaCk/o.jpg";
-		}
 
 		$scope.cards = [];
 

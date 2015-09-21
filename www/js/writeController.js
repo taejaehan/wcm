@@ -378,6 +378,9 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
         cache: false
     });
     request.success(function(data) {
+
+        $rootScope.allData.cards.push(formData);
+
         //reset inputs
         $scope.cardForm.$setPristine();
         $scope.cardForm.title.$setViewValue('');
@@ -387,7 +390,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
         $scope.cardForm.location.$setViewValue('');
         document.getElementById('card_location').value = '';
         $scope.cardForm.file.$setUntouched();
-        $scope.cardForm.file.$setViewValue('');
+        $scope.cardForm.file.$setiewValue('');
         $scope.imgURI = undefined;
         //go to the home
         $state.go('tabs.home');

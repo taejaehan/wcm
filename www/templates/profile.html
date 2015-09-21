@@ -3,10 +3,10 @@
     <div id="profile_page">
 
 	    <form class="form-horizontal profile-form" ng-show="userCheck">
-		    <img src="{{ user.properties.profile_image }}">
+		    <img src="{{ user.userimage }}">
 
 			  <div class="form-group username">
-			    <label>{{ user.properties.nickname }}</label>
+			    <label>{{ user.username }}</label>
 			    <a href="#"><i class="icon ion-gear-b"></i></a>
 			  </div>
 			  <hr>
@@ -33,9 +33,9 @@
 			  </div>
 	    	
 	    <!-- <button ng-click="logOut()" class="btn btn-default">LogOut</button> -->
+	    	<button ng-click="kakaoLogout()" class="btn btn-default logout">Log Out</button>
 	    </form>
 	    
-	    <button ng-click="kakaoLogout()" class="btn btn-default logout">Log Out</button>
 
 	    <div ng-hide="userCheck">
 	    	<p>로그인이 필요한 서비스 입니다.</p>

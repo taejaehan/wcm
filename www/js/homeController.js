@@ -1,19 +1,17 @@
 wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $cordovaCamera, $http, $timeout, $stateParams) {
 
-  var user;
-  if(window.localStorage['user'] != null){
-    user = JSON.parse(window.localStorage['user']);
-  }else{
-    user = {"id":57421548,"properties":{"nickname":"Taejae Han","thumbnail_image":"http://mud-kage.kakao.co.kr/14/dn/btqch17TnPq/Ve843fr4kMziXkSIjFwKI0/o.jpg","profile_image":"http://mud-kage.kakao.co.kr/14/dn/btqch02eQsy/PhRrVTx9KwvhxovXQk6Lek/o.jpg","like":[]},"isAuthenticated":true}
-  }
+  
+  var user = JSON.parse(window.localStorage['user'] || '{}');
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
+  console.log(user.likes.post_id);
+
 
   $scope.page = 0;
   $scope.cards = [];
   $rootScope.allData = { 
                           cards: []
                        };
-               
+
   $scope.doRefresh = function(refresh) {
 
     //init이면(pull to refresh) 첫 페이지를 다시 불러온다
@@ -53,7 +51,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
         request.success(function(data) {
 
-          for (var i = 0; i <  data.cards.length; i++) {
+          for (var i = 0; i < data.cards.length; i++) {
 
             var address = $scope.setLocationName(data.cards[i].location_lat, data.cards[i].location_long, data.cards[i]);            
             
@@ -75,13 +73,13 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
             data.cards[i].address = address;
             var object =  data.cards[i];
-            console.log(object);
             $scope.cards.push(object);
             $rootScope.allData.cards.push(object);
+
             if (user.isAuthenticated === true) {
               for(var j = 0; j < $scope.cards.length; j ++) {
                 
-                if(user.properties.like.indexOf($scope.cards[j].id) != -1) {
+                if(user.likes.post_id.indexOf($scope.cards[j].id) != -1) {
                   $scope.cards[j].watch = true;
                 } else {
                   $scope.cards[j].watch = false;
@@ -89,6 +87,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
               }
             }
 
+            console.log($scope.cards);
           }
 
           $scope.page++;
@@ -97,7 +96,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           window.localStorage['localCard'] = JSON.stringify($scope.cards);
           var localCard = JSON.parse(window.localStorage['localCard']);
           $scope.cards = localCard;
-
         });
 
         //Stop the ion-refresher from spinning
@@ -159,6 +157,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   // ========================= Check current user & card user END ===========================
 
+
   // ==================================== Delete card ======================================  
 
   $scope.deleteCard = function(id) {
@@ -192,10 +191,10 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
       if (e === true) {
 
-        if (user.properties.like.indexOf(id) === -1) {
-          user.properties.like.push(id);
-          window.localStorage['user'] = JSON.stringify(user);
-        }
+        // if (user.properties.like.indexOf(id) === -1) {
+        //   user.properties.like.push(id);
+        //   window.localStorage['user'] = JSON.stringify(user);
+        // }
 
         var i = 0;
 
@@ -212,11 +211,11 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
       } else {
         
-        if (user.properties.like.indexOf(id) != -1) {
-          var index = user.properties.like.indexOf(id);
-          user.properties.like.splice(index, 1);
-          window.localStorage['user'] = JSON.stringify(user);
-        }
+        // if (user.properties.like.indexOf(id) != -1) {
+        //   var index = user.properties.like.indexOf(id);
+        //   user.properties.like.splice(index, 1);
+        //   window.localStorage['user'] = JSON.stringify(user);
+        // }
 
         var i = 0;
 
