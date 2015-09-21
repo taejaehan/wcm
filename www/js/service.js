@@ -1,4 +1,4 @@
-wcm.service('AuthService', function($state, $ionicPopup, $http) {
+wcm.service('AuthService', function($state, $ionicPopup, $http, $window) {
   
   var login = function(name, pw) {
 
@@ -10,8 +10,9 @@ wcm.service('AuthService', function($state, $ionicPopup, $http) {
                     isAuthenticated: true
                   };
       
+      window.localStorage['user'] = user;
 
-      var request = $http({
+      var request1 = $http({
           method: "get",
           url: mServerAPI + "/like/" + user.userid,
           crossDomain : true,
@@ -19,14 +20,39 @@ wcm.service('AuthService', function($state, $ionicPopup, $http) {
           cache: false
       });
 
-      request.success(function(data) {
-        
-        user.likes = data.likes[0];
-        window.localStorage['user'] = JSON.stringify(user);
+      var request2 = $http({
+          method: "get",
+          url: mServerAPI + "/change/" + user.userid,
+          crossDomain : true,
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+          cache: false
       });
 
+      request1.success(function(data1) {
+        user.likes = [];
+        
+        if (data1.likes.length != 0) {
+          for(var i = 0; i < data1.likes.length; i++ ) {
+            user.likes.push(data1.likes[i].post_id); 
+          }
+        }
+        window.localStorage['user'] = JSON.stringify(user);
 
-      $state.go('tabs.home');
+        request2.success(function(data2) {
+          user.changes = [];
+          
+          if (data2.changes.length != 0) {
+            for(var i = 0; i < data2.changes.length; i++ ) {
+              user.changes.push(data2.changes[i].post_id); 
+            }
+          } 
+          window.localStorage['user'] = JSON.stringify(user);
+
+          $window.location.reload(true);
+          $state.go('tabs.home');
+        });
+      });   
+  
 
     } else {
       $ionicPopup.alert({
@@ -36,6 +62,7 @@ wcm.service('AuthService', function($state, $ionicPopup, $http) {
     }
   };
 
+
   var logout = function() {
     isAuthenticated = false;
     window.localStorage.removeItem('user');
@@ -43,27 +70,10 @@ wcm.service('AuthService', function($state, $ionicPopup, $http) {
   };
 
 
-  var kakaoLogin = function(res) {
-    res.isAuthenticated = true;
-    window.localStorage['user'] = JSON.stringify(res);
-    var user = JSON.parse(window.localStorage['user']);
-    console.log(user);
-  };
-
-
-  var kakaoLogout = function() {
-    Kakao.Auth.logout(function(result){
-      if (result) {
-        window.localStorage.removeItem('user');
-        console.log(window.localStorage['user']);
-        $state.go('login');
-     };
-   });
-  }
-
   var skipLogin = function() {
     var user = { isAuthenticated: false };
     window.localStorage['user'] = JSON.stringify(user);
+    $window.location.reload(true);
     $state.go('tabs.home');
   };
 
@@ -71,8 +81,6 @@ wcm.service('AuthService', function($state, $ionicPopup, $http) {
   return {
     login: login,
     logout: logout,
-    kakaoLogin: kakaoLogin,
-    kakaoLogout: kakaoLogout,
     skipLogin: skipLogin,
     username: function() {return username;},
   };

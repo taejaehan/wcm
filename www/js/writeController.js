@@ -364,6 +364,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
             description: description,
             location_lat: location_lat,
             location_long: location_long,
+            location_name: location_name,
             img_path: imgPath
     };
     var postData = 'cardData='+JSON.stringify(formData);

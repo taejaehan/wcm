@@ -112,18 +112,18 @@
 	padding: 2px 0px 2px 0px;
 	font-size: 14px;
 
-	border: 1px solid darkgrey;
+	border: 1px solid #7F7266;
 	border-radius: 6px;
 	color: grey;
 }
 
 #home_page .sns-link .active {
-	background-color: grey;
+	background-color: #695B4D;
 	color: white;
 }
 
 #home_page .sns-link .non-active {
-	color: grey;
+	color: #695B4D;
 }
 
 button.more {

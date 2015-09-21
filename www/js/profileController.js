@@ -10,7 +10,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService)
 
 		var request = $http({
 	    method: "get",
-	    url: mServerAPI + "/cards/" + user.id,
+	    url: mServerAPI + "/cards/" + user.userid,
 	    crossDomain : true,
 	    headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
 	    cache: false
@@ -95,8 +95,8 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService)
 		$state.go('login');
 	}
 
-	$scope.kakaoLogout = function() {
-		AuthService.kakaoLogout();
+	$scope.logOut = function() {
+		AuthService.logout();
 	}
 	
 

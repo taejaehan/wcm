@@ -1,6 +1,6 @@
 // var mServerUrl = 'http://192.168.20.192:3000/wcm_php';
 // var mServerAPI = mServerUrl + '/controllers/index.php';
-var mServerUrl = 'http://192.168.20.186:3000';
+var mServerUrl = 'http://192.168.10.186:3000';
 var mServerAPI = mServerUrl + '';
 
 //사진이 없을 경우 보여주는 이미지 링크

@@ -1,4 +1,4 @@
-wcm.controller("PostController", function($scope, $rootScope, $http, $stateParams, $state) {
+wcm.controller("PostController", function($scope, $rootScope, $http, $stateParams, $state, $ionicPopup) {
   
   var latlng, progress;
   var localCard = JSON.parse(window.localStorage['localCard'] || '{}');
@@ -12,6 +12,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   $scope.postId = $stateParams.postId;
   $scope.cards = [];
   $scope.comments = [];
+  $scope.changers = [];
   $scope.comments_count = 0;
   // $scope.like_count = [];
 
@@ -25,6 +26,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
     });
 
     request.success(function(data) {
+
       $scope.cardTitle = data.cards[0].title; 
       $scope.postTitle = data.cards[0].title;
       $scope.postDescription = data.cards[0].description;
@@ -64,6 +66,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
         i ++;
       }
 
+      $scope.changers.push(data.cards[0].changer);
     });
     
     // ==================================== Get comments ======================================
@@ -130,11 +133,27 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
     if (user.isAuthenticated === true) {
       
       if (e === true) {
-        if (user.properties.like.indexOf($scope.postId) === -1) {
+        if (user.likes.indexOf($scope.postId) === -1) {
           $scope.like_count ++;
           $scope.watch = true;
-          user.properties.like.push($scope.postId);
+          user.likes.push($scope.postId);
           window.localStorage['user'] = JSON.stringify(user);
+
+          var userId = parseInt(user.userid);
+          var postId = parseInt($scope.postId);
+          var formData1 = { user_id: userId,
+                            post_id: postId
+                          };
+          var postData1 = 'likeData='+JSON.stringify(formData1);
+
+          var request1 = $http({
+              method: "post",
+              url: mServerAPI + "/like",
+              crossDomain : true,
+              data: postData1,
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+              cache: false
+          });
         }
 
         var i = 0;
@@ -149,12 +168,28 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
         }
 
       } else {
-        if (user.properties.like.indexOf($scope.postId) != -1) {
+        if (user.likes.indexOf($scope.postId) != -1) {
           $scope.like_count --;
           $scope.watch = false;
-          var index = user.properties.like.indexOf($scope.postId);
-          user.properties.like.splice(index, 1);
+          var index = user.likes.indexOf($scope.postId);
+          user.likes.splice(index, 1);
           window.localStorage['user'] = JSON.stringify(user);
+
+          var userId = parseInt(user.userid);
+          var postId = parseInt($scope.postId);
+          var formData1 = { user_id: userId,
+                            post_id: postId
+                          };
+          var postData1 = 'likeData='+JSON.stringify(formData1);
+
+          var request1 = $http({
+              method: "post",
+              url: mServerAPI + "/like/delete/" + userId + "/" + postId,
+              crossDomain : true,
+              data: postData1,
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+              cache: false
+          });
         }
 
         var i = 0;
@@ -188,8 +223,21 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       });
 
     } else {
-      alert('로그인 후에 이용 가능합니다.');
+      $ionicPopup.alert({
+        title: 'We Change Makers',
+        template: '로그인 후에 이용 가능합니다'
+      });
       $scope.watch = false;
+
+      var i = 0;
+      while( i < $rootScope.allData.cards.length) {
+        if ($rootScope.allData.cards[i].id === $stateParams.postId) {
+          $rootScope.allData.cards[i].watch = false;
+          break;
+        }
+        i ++;
+      }
+      
     }
   }
   // ==================================== post like_count END ======================================
@@ -203,9 +251,9 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       if ( comment === "" ) {
         alert('내용을 입력하세요.');
       } else {
-        $scope.username = user.properties.nickname;
-        $scope.userimage = user.properties.thumbnail_image;
-        $scope.userid = String(user.id);
+        $scope.username = user.username;
+        $scope.userimage = user.userimage;
+        $scope.userid = String(user.userid);
 
         if ($scope.userimage === null) {
           $scope.userimage = "http://mud-kage.kakao.co.kr/14/dn/btqchdUZIl1/FYku2ixAIgvL1O50eDzaCk/o.jpg";
@@ -213,7 +261,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       }
 
       var post_id = parseInt($stateParams.postId);
-      var user_app_id = parseInt(user.id);
+      var user_app_id = parseInt(user.userid);
 
       var formData = {
                         post_id: post_id,
@@ -246,7 +294,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
       $scope.comments.push(formDataLocal);
 
-      request.success(function(data) {
+      request.success(function(data) {  
         
         document.getElementById("comment").value = "";
         $scope.comments_count ++;
@@ -264,7 +312,10 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       });
 
     } else {
-      alert("로그인 후에 이용 가능합니다.");
+      $ionicPopup.alert({
+        title: 'We Change Makers',
+        template: '로그인 후에 이용 가능합니다'
+      });
       document.getElementById("comment").value = "";
     }
 
@@ -275,7 +326,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   $scope.userChecked = function(comment) {  
     
     if (user.isAuthenticated === true) {
-      if ( parseInt(comment.user[0].user_id) === user.id ) {
+      if ( parseInt(comment.user[0].user_id) === user.userid ) {
         return { 'display' : 'inline-block' };
       } else {
         return { 'display' : 'none' };
@@ -323,6 +374,70 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   }
 
   // ==================================== Delete comment END======================================
+
+  var ChangeMakerPost = function() {
+    var confirmPopup = $ionicPopup.confirm({
+      title: 'We Change Makers',
+      template: 'ChangeMaker가 되어 해당 이슈를 해결하는데 참여하시겠습니까?'
+    });
+    confirmPopup.then(function(res) {
+      if(res) {
+        // $scope.weChanges.push(user);
+
+        var userId = parseInt(user.userid);
+        var postId = parseInt($stateParams.postId);
+        var formData =  { user_id: userId,
+                          post_id: $stateParams.postId
+                        };
+        var postData = 'changeData='+JSON.stringify(formData);
+
+        var request = $http({
+            method: "post",
+            url: mServerAPI + "/changes",
+            crossDomain : true,
+            data: postData,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+            cache: false
+        });
+      }
+    });
+  }
+
+  var changerObject = {
+                        user_id: String(user.userid),
+                        changeUser: [{
+                          userimage: user.userimage,
+                          username: user.username
+                        }]
+                      };
+
+
+  $scope.weChange = function() {
+
+    if (user.isAuthenticated === true) {
+      console.log($stateParams.postId);
+
+      if ((user.changes.length === 0) || (user.changes.indexOf($stateParams.postId) === -1)) {
+        ChangeMakerPost();
+        user.changes.push($stateParams.postId);
+        window.localStorage['user'] = JSON.stringify(user);
+        $scope.changers[0].push(changerObject);
+      
+      } else {
+        $ionicPopup.alert({
+          title: 'We Change Makers',
+          template: '이미 참여하셨습니다'
+        });
+      }
+
+    } else {
+      $ionicPopup.alert({
+        title: 'We Change Makers',
+        template: '로그인 후에 이용 가능합니다'
+      });
+    }
+  }
+
 
   $scope.$ionicGoBack = function() {
     // window.location.reload(true);
