@@ -10,6 +10,10 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
         $scope.setMapFuntions();
       }
     }); 
+
+    /*
+    * 맵과 marker를 보여주고 클릭시 보여줄 info창을 세팅합니다
+    */
     $scope.showLocation = function(){
       //받아온 위/경도로 맵을 생성
       console.log('$stateParams.latlng : ' + $stateParams.latlng);
@@ -33,6 +37,7 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
       };
       map = new google.maps.Map(document.getElementById("map-find"), mapOptions);
 
+      // 진행 상황에 따른 marker 색을 변경합니다
       var imageUrl;
       switch($stateParams.progress){
         case '0' :
@@ -75,15 +80,20 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
       // });
       $scope.setLocationName(currentLatlng);
     }
-    $scope.setMapFuntions = function(){
-      marker.draggable = true;
 
-      //marker dragend listener
+    /*
+    * map의 기능을 설정합니다. (marker dragend 리스너, 현재 위치, search box)
+    */
+    $scope.setMapFuntions = function(){
+
+      //marker dragend 리스너
+      marker.draggable = true;
       google.maps.event.addListener(marker, 'dragend', function() { 
         var latlng = marker.getPosition();
         var movedLatlng = {lat: latlng.H,  lng: latlng.L};
         $scope.setLocationName(movedLatlng);
       });
+
       // find me 넣기
       var findMe = document.getElementById('find-me');
       map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(findMe);
@@ -92,7 +102,6 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
       var input = document.getElementById('pac-input');
       var searchBox = new google.maps.places.SearchBox(input);
       map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-
       // Bias the SearchBox results towards current map's viewport.
       map.addListener('bounds_changed', function() {
         searchBox.setBounds(map.getBounds());
@@ -101,11 +110,9 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
       // more details for that place.
       searchBox.addListener('places_changed', function() {
         var places = searchBox.getPlaces();
-
         if (places.length == 0) {
           return;
         }
-
         // For each place, get the icon, name and location.
         var bounds = new google.maps.LatLngBounds();
         places.forEach(function(place) {
@@ -116,7 +123,6 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
           //   anchor: new google.maps.Point(17, 34),
           //   scaledSize: new google.maps.Size(25, 25)
           // };
-
           marker.setOptions({
             map: map,
             // icon: icon,
@@ -138,10 +144,12 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
         });
         map.fitBounds(bounds);
       });
-
       $scope.map = map;
     }
-    //내 위치 찾기
+
+    /*
+    * 내 위치 찾기 (현재 내 위치로 marker를 변경합니다)
+    */
     $scope.centerOnMe = function() {
         $ionicLoading.show({
             template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!'
@@ -183,7 +191,9 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
         });
     }
 
-    //마커 상단에 위치 이름 표시
+    /*
+    * 마커 상단에 위치 이름 표시
+    */
     $scope.setLocationName = function(latlng) {
       var geocoder = new google.maps.Geocoder;
       geocoder.geocode({'location': latlng}, function(results, status) {
