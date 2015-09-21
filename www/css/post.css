@@ -89,6 +89,27 @@
 	border-bottom: 1px solid #A9A199;
 	margin-top: 10px;
 	padding: 20px 0px 10px 0px;
+	height: 150px;
+}
+
+#detail_page .change-member .member-list {
+	width: 100%;
+	display: block;
+}
+
+#detail_page .change-member .change-description {
+	width: 100%;
+	float: left;
+}
+
+#detail_page .change-member .member-list img {
+	width: 50px;
+	height: 50px;
+	border-radius: 50px;
+	border: 2px solid #FF4719;
+	display: inline-block;
+	margin-right: 10px;
+	float: left;
 }
 
 #detail_page .change-member .change-button {
@@ -110,6 +131,7 @@
 	width: 100%;
 	margin-bottom: 20px;
 	z-index: 100;
+	float: left;
 }
 
 #detail_page .comment-form {

@@ -30,8 +30,14 @@
       </div>
 
       <div class="change-member">
-        <button class="change-button btn btn-default"><i class="icon ion-wrench"></i> 우리가 바꿔요!</button>
-        <p>ChangeMaker가 되어 해당 이슈를 직접 해결합니다</p>
+        <div ng-repeat="changer in changers track by $index" class="member-list">
+          <img ng-src="{{changer[0].changeUser[0].userimage}}">
+        </div>
+
+        <div class="change-description">
+          <button class="change-button btn btn-default" ng-click="weChange()"><i class="icon ion-wrench"></i> 우리가 바꿔요!</button>
+          <p>ChangeMaker가 되어 해당 이슈를 직접 해결합니다</p>
+        </div>
       </div>
 
       <!-- ========================== comment section ========================== -->

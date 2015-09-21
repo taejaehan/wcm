@@ -1,10 +1,8 @@
-wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $cordovaCamera, $http, $timeout, $stateParams) {
+wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams) {
 
   
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
-  // console.log(user.likes.post_id);
-
 
   $scope.page = 0;
   $scope.cards = [];
@@ -89,7 +87,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
               data.cards[i].img_path = mServerUrl + data.cards[i].img_path;
             }
 
+
             data.cards[i].address = data.cards[i].location_name;
+
             var object =  data.cards[i];
             $scope.cards.push(object);
             $rootScope.allData.cards.push(object);
@@ -97,7 +97,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             if (user.isAuthenticated === true) {
               for(var j = 0; j < $scope.cards.length; j ++) {
                 
-                if(user.likes.post_id.indexOf($scope.cards[j].id) != -1) {
+                if(user.likes.indexOf($scope.cards[j].id) != -1) {
                   $scope.cards[j].watch = true;
                 } else {
                   $scope.cards[j].watch = false;
@@ -138,7 +138,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   $scope.userChecked = function(card) {
 
     if (user.isAuthenticated === true) {
-      if ( parseInt(card.user[0].user_id) === user.id ) {
+      if ( parseInt(card.user[0].user_id) === user.userid ) {
         return { 'display' : 'inline-block' };
       } else {
         return { 'display' : 'none' };
@@ -184,10 +184,27 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
       if (e === true) {
 
-        // if (user.properties.like.indexOf(id) === -1) {
-        //   user.properties.like.push(id);
-        //   window.localStorage['user'] = JSON.stringify(user);
-        // }
+        if (user.likes.indexOf(id) === -1) {
+          user.likes.push(id);
+          window.localStorage['user'] = JSON.stringify(user);
+
+          var userId = parseInt(user.userid);
+          var postId = parseInt(id);
+          var formData1 = { user_id: userId,
+                            post_id: postId
+                          };
+          var postData1 = 'likeData='+JSON.stringify(formData1);
+
+          var request1 = $http({
+              method: "post",
+              url: mServerAPI + "/like",
+              crossDomain : true,
+              data: postData1,
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+              cache: false
+          });
+
+        }
 
         var i = 0;
 
@@ -202,13 +219,31 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           i ++;
         }
 
+
       } else {
         
-        // if (user.properties.like.indexOf(id) != -1) {
-        //   var index = user.properties.like.indexOf(id);
-        //   user.properties.like.splice(index, 1);
-        //   window.localStorage['user'] = JSON.stringify(user);
-        // }
+        if (user.likes.indexOf(id) != -1) {
+          var index = user.likes.indexOf(id);
+          user.likes.splice(index, 1);
+          window.localStorage['user'] = JSON.stringify(user);
+
+          var userId = parseInt(user.userid);
+          var postId = parseInt(id);
+          var formData1 = { user_id: userId,
+                            post_id: postId
+                          };
+          var postData1 = 'likeData='+JSON.stringify(formData1);
+
+          var request1 = $http({
+              method: "post",
+              url: mServerAPI + "/like/delete/" + userId + "/" + postId,
+              crossDomain : true,
+              data: postData1,
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+              cache: false
+          });
+
+        }
 
         var i = 0;
 
@@ -223,7 +258,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           i ++;
         }
       }
-      
+
       var like_count = parseInt($scope.selectedCard.like_count);
       var formData = { like_count: like_count };
       var postData = 'likeData='+JSON.stringify(formData);
@@ -237,12 +272,12 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           cache: false
       });
 
-      request.success(function() {
-        
-      });
 
     } else {
-      alert('로그인 후에 이용 가능합니다.');
+      $ionicPopup.alert({
+        title: 'We Change Makers',
+        template: '로그인 후에 이용 가능합니다'
+      });
       
       var i = 0;
       while( i < $rootScope.allData.cards.length) {
