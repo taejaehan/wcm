@@ -308,6 +308,9 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     }else{
       $scope.userid = 57421548;
     }
+    if($scope.userid == null){
+      $scope.userid = 57421548;
+    }
 
     var user_app_id = $scope.userid;
 
@@ -379,6 +382,9 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     });
     request.success(function(data) {
 
+        if(formData.img_path == ''){
+          formData.img_path = mNoImage;
+        }
         $rootScope.allData.cards.push(formData);
 
         //reset inputs
@@ -390,7 +396,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
         $scope.cardForm.location.$setViewValue('');
         document.getElementById('card_location').value = '';
         $scope.cardForm.file.$setUntouched();
-        $scope.cardForm.file.$setiewValue('');
+        $scope.cardForm.file.$setViewValue('');
         $scope.imgURI = undefined;
         //go to the home
         $state.go('tabs.home');
