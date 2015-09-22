@@ -29,9 +29,9 @@
         <a href="#" id="sns-share"><i class="fa fa-share"></i> 공유하기</a>
       </div>
 
-      <div class="change-member">
-        <div ng-repeat="changer in changers track by $index" class="member-list">
-          <img ng-src="{{changer[0].changeUser[0].userimage}}">
+      <div ng-class="{'change-member' : !changerImage, 'change-member active' : changerImage}">
+        <div ng-repeat="changer in changers" ng-class="{'member-list ng-hide' : !changerImage, 'member-list ng-show' : changerImage}">
+          <img ng-src="{{changer[0].changeUser[0].userimage}}" ng-show="{{ changerImage }}">
         </div>
 
         <div class="change-description">
@@ -59,6 +59,7 @@
           <button class="btn btn-default">done</button>
         </form>
       </div>
+
       <!-- ========================== comment section end ========================== -->
 
       <div id="map"></div>

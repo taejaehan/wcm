@@ -1,5 +1,5 @@
 wcm.controller("PostController", function($scope, $rootScope, $http, $stateParams, $state, $ionicPopup) {
-  
+
   var latlng, progress;
   var localCard = JSON.parse(window.localStorage['localCard'] || '{}');
   var user;
@@ -17,6 +17,8 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   // $scope.like_count = [];
 
   $scope.$on('$ionicView.afterEnter', function(){
+    $scope.changerImage = false;
+
     var request = $http({
       method: "get",
       url: mServerAPI + "/cardDetail/" + $scope.postId,
@@ -64,6 +66,15 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
           break;
         }
         i ++;
+      }
+
+      // console.log(user.changes.indexOf());
+      if (data.cards[0].changer.length != 0) {
+      console.log(data.cards[0].changer);
+        $scope.changerImage = true;
+      } else {
+        $scope.changerImage = false;
+        console.log("false");
       }
 
       $scope.changers.push(data.cards[0].changer);
@@ -319,34 +330,38 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
   $scope.deleteComment = function(comment) {
 
-    if (confirm('Are you sure you want to delete?')) {
-      var request = $http({
-          method: "get",
-          url: mServerAPI + "/comment/" + comment.id + "/delete",
-          crossDomain : true,
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
-      });
+    var confirmPopup = $ionicPopup.confirm({
+      title: 'We Change Makers',
+      template: 'Are you sure you want to delete?'
+    });
 
-      request.success(function() {
+    confirmPopup.then(function(res) {
+      if(res) {
+        var request = $http({
+            method: "get",
+            url: mServerAPI + "/comment/" + comment.id + "/delete",
+            crossDomain : true,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
+        });
 
-        var index = $scope.comments.indexOf(comment);
-        $scope.comments.splice(index, 1); 
-        $scope.comments_count --;
+        request.success(function() {
 
-        var i = 0;
-        
-        while( i < $rootScope.allData.cards.length) {
-          if ($rootScope.allData.cards[i].id === $stateParams.postId) {
-            $rootScope.allData.cards[i].comments_count --;
-            break;
+          var index = $scope.comments.indexOf(comment);
+          $scope.comments.splice(index, 1); 
+          $scope.comments_count --;
+
+          var i = 0;
+          
+          while( i < $rootScope.allData.cards.length) {
+            if ($rootScope.allData.cards[i].id === $stateParams.postId) {
+              $rootScope.allData.cards[i].comments_count --;
+              break;
+            }
+            i ++;
           }
-          i ++;
-        }
-
-      });
-    } else {
-      
-    }
+        });
+      }
+    });
   }
 
   // ==================================== Delete comment END======================================
@@ -375,6 +390,11 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
             headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
             cache: false
         });
+
+        user.changes.push($stateParams.postId);
+        window.localStorage['user'] = JSON.stringify(user);
+        $scope.changers[0].push(changerObject);
+        $scope.changerImage = true;
       }
     });
   }
@@ -391,13 +411,9 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   $scope.weChange = function() {
 
     if (user.isAuthenticated === true) {
-      console.log($stateParams.postId);
 
       if ((user.changes.length === 0) || (user.changes.indexOf($stateParams.postId) === -1)) {
         ChangeMakerPost();
-        user.changes.push($stateParams.postId);
-        window.localStorage['user'] = JSON.stringify(user);
-        $scope.changers[0].push(changerObject);
       
       } else {
         $ionicPopup.alert({
@@ -414,10 +430,6 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
     }
   }
 
-
-  $scope.$ionicGoBack = function() {
-    // window.location.reload(true);
-  }
 
   /*맵 보여주기*/
   $scope.showMap = function() {
