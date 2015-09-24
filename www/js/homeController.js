@@ -1,8 +1,19 @@
-wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer) {
+wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation) {
 
   
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
+
+  //sort type
+  $scope.sortingTypeList = [
+    { text: "등록시간", value: "regi" },
+    { text: "현재 위치", value: "loca" },
+    { text: "위험도", value: "warn" }
+  ];
+  //sort type default value
+  $scope.data = {
+    sortingType: 'regi'
+  };
 
   $scope.downloaded = false;
   $scope.page = 0;
@@ -193,7 +204,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
         var request = $http({
             method: "get",
-            url: mServerAPI + "/card/" + $scope.page,
+            url: mServerAPI + "/card/" + $scope.page + '/' + $scope.data.sortingType,
             crossDomain : true,
             headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
             cache: false
@@ -285,6 +296,72 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       $rootScope.allData.cards.push(cardList.cards[i]);
     }
   }
+
+  /*
+  * sort버튼을 눌렀을 때 popover show
+  * $event 클릭된 event
+  */
+  $scope.openPopover = function ($event) {
+   $ionicPopover.fromTemplateUrl('templates/popover.html', {
+     scope: $scope
+   }).then(function(popover) {
+     $scope.popover = popover;
+     $scope.popover.show($event);
+   });
+  };
+  /*
+  * popover창에서 sort type을 변경 했을 때 호출됨
+  */
+  $scope.sortingTypeChange = function(item) {
+    console.log("sortingTypeChange, text:", item.text, "value:", item.value);
+    // SORT 진행중 by tjhan 20150924
+    // if(item.value == 'loca'){
+    //   var myLatlng ; 
+    //   var posOptions = {
+    //           enableHighAccuracy: true,
+    //           timeout: 20000,
+    //           maximumAge: 0
+    //       };
+    //   $cordovaGeolocation.getCurrentPosition(posOptions).then(function (position) {
+    //       var lat  = position.coords.latitude;
+    //       var long = position.coords.longitude;
+           
+    //       myLatlng = new google.maps.LatLng(lat, long);
+    //       console.log('myLatlng : ' + myLatlng);
+    //       for(var j = 0; j < $rootScope.allData.cards.length; j ++) {
+    //         var lat  = $rootScope.allData.cards[j].location_lat;
+    //         var long = $rootScope.allData.cards[j].location_long;
+    //         var cardLatlng = new google.maps.LatLng(lat, long);
+    //         console.log('cardLatlng : ' + cardLatlng);
+    //         var distance = $scope.getDistance(myLatlng, cardLatlng);
+    //         $rootScope.allData.cards[j].distance = distance;
+    //         console.log('distance : ' + $rootScope.allData.cards[j].distance);
+    //       };
+
+    //   }, function(err) {
+    //       alert('You can not use the location information');
+    //       console.log('CURRENT LOCATION ERROR :  ' + err);
+    //   });
+    // }
+  };
+
+  /*
+  * 2개 pos간의 거리 계산
+  */
+  $scope.getDistance  = function(p1, p2) {
+    var rad = function(x) {
+      return x * Math.PI / 180;
+    };
+    var R = 6378137; // Earth’s mean radius in meter
+    var dLat = rad(p2.lat() - p1.lat());
+    var dLong = rad(p2.lng() - p1.lng());
+    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(rad(p1.lat())) * Math.cos(rad(p2.lat())) *
+      Math.sin(dLong / 2) * Math.sin(dLong / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c;
+    return d; // returns the distance in meter
+  };
   /*
   * warnings map show
   */
@@ -302,7 +379,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   // =========================== Check current user & card user =============================
 
   $scope.userChecked = function(card) {
-    return { 'display' : 'inline-block' };
+    
     if (user.isAuthenticated === true) {
       if ( parseInt(card.user[0].user_id) === user.userid ) {
         return { 'display' : 'inline-block' };
