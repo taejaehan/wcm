@@ -48,14 +48,14 @@
             <p class="progressText progress-{{card.status}}">{{ card.statusDescription }}</p>
 
             <div class="additional-function">
-              <span>좋아요 {{ card.like_count }}</span>
+              <span>Watch {{ card.like_count }}</span>
               <span>댓글 {{ card.comments_count }}</span>
               <span>공유 0</span>
             </div>
 
             <div class="sns-link">
               <a href="#" ng-click="toggleLike(card.watch = !card.watch, card.id)" ng-class="{'active' : card.watch, 'non-active' : !card.watch}" id="like">
-                <i class="fa fa-thumbs-up"></i> 좋아요
+                <i class="fa fa-thumbs-up"></i> Watch
               </a>
               <a ng-href="#/tab/home/{{ card.id }}#comment"><i class="fa fa-commenting">
                 </i> 댓글달기

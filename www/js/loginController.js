@@ -1,6 +1,5 @@
 wcm.controller("LoginController", function($scope, $rootScope, $state, $http, AuthService) {
 
-
 	// Kakao.Auth.createLoginButton({
 
  //    container: '#kakao-login-btn',

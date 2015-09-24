@@ -1,7 +1,6 @@
 wcm.controller("PostController", function($scope, $rootScope, $http, $stateParams, $state, $ionicPopup) {
   
   var latlng, progress;
-  var localCard = JSON.parse(window.localStorage['localCard'] || '{}');
   var user;
   if(window.localStorage['user'] != null){
     user = JSON.parse(window.localStorage['user']);
@@ -33,7 +32,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       if(data.cards[0].img_path == ''){
         data.cards[0].img_path = mNoImage;
       }else{
-        data.cards[0].img_path = mServerUrl + data.cards[0].img_path;
+        data.cards[0].img_path = mServerUpload + data.cards[0].img_path;
       }
       $scope.postImage = data.cards[0].img_path;
       $scope.lat = data.cards[0].location_lat;
