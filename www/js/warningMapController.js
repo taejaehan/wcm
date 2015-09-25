@@ -237,10 +237,10 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
         var title = pic.title;
         var url = "#/tab/home/"+pic.id;
         var fileurl = pic.img_path;
-        if(fileurl == ''){
+        if(fileurl == '' || fileurl == mNoImage){
           fileurl = mNoImage;
         }else{
-          fileurl = mServerUrl + fileurl;
+          fileurl = mServerUpload + fileurl;
         }
 
         var username = '';

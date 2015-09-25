@@ -1,6 +1,8 @@
 var mServerUrl = 'http://192.168.20.192:3000/wcm_php';
+var mServerUpload = mServerUrl + '/upload/';
 var mServerAPI = mServerUrl + '/controllers/index.php';
 // var mServerUrl = 'http://192.168.20.186:3000';
+// var mServerUpload = mServerUrl + '/upload/';
 // var mServerAPI = mServerUrl + '';
 
 //사진이 없을 경우 보여주는 이미지 링크
@@ -21,11 +23,10 @@ wcm.factory('Scopes', function($rootScope) {
     };
 })
 
-wcm.run(function($ionicPlatform, $http) {
+wcm.run(function($ionicPlatform, $http, $cordovaFile) {
   // Kakao.init('2b1444fba3c133df8405882491640b80');
 
   $ionicPlatform.ready(function() {
-
     var request = $http({
         method: "get",
         url: mServerAPI + "/cards",
@@ -37,7 +38,7 @@ wcm.run(function($ionicPlatform, $http) {
     request.success(function(data) {
       window.localStorage['cardList'] = JSON.stringify(data);
     });
-
+    
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     if(window.cordova && window.cordova.plugins.Keyboard) {
@@ -48,6 +49,8 @@ wcm.run(function($ionicPlatform, $http) {
     }
   });
 })
+
+
 
 wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
@@ -137,7 +140,7 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
       }
     })
 
-    // $urlRouterProvider.otherwise("/tab/home");
-    $urlRouterProvider.otherwise("/login");
+    $urlRouterProvider.otherwise("/tab/home");
+    // $urlRouterProvider.otherwise("/login");
 });
 

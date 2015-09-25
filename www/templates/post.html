@@ -16,14 +16,14 @@
       <p class="progressText progress-{{status}}">{{ statusDescription }}</p>
 
       <div class="additional-function">
-        <span>좋아요 {{ like_count }}</span>
+        <span>Watch {{ like_count }}</span>
         <span>댓글 {{ comments_count }}</span>
         <span>공유 0</span>
       </div>
 
       <div class="sns-link">
         <a href="#" ng-click="toggleLike(watch = !watch)" ng-class="{'active' : watch, 'non-active' : !watch}" id="like">
-          <i class="fa fa-thumbs-up"></i> 좋아요
+          <i class="fa fa-thumbs-up"></i> Watch
         </a>
             <a href="#"><i class="fa fa-commenting"></i> 댓글달기</a>
         <a href="#" id="sns-share"><i class="fa fa-share"></i> 공유하기</a>

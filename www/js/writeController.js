@@ -324,8 +324,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       location_long = document.getElementById("card_location").getAttribute('long');
       location_name = document.getElementById("card_location").value;
       if(newFileName != null) {
-        // imgPath = mServerUrl+"/upload/"+newFileName;
-        imgPath = "/upload/"+newFileName;
+        imgPath = newFileName;
       }
     }else{  //cardId가 있으면 (edit)
       if($scope.cardForm.title.$dirty ||
@@ -339,7 +338,9 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
           location_long = document.getElementById("card_location").getAttribute('long');
           location_name = document.getElementById("card_location").value;
           if(newFileName != null) {
-            imgPath = "/upload/"+newFileName;
+            imgPath = newFileName;
+          }else{
+            imgPath = $scope.imgURI.split("/").pop();;
           }
       }else{
         $ionicPopup.alert({
@@ -355,7 +356,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
 
         if ($rootScope.allData.cards[i].id === cardId) {
           $rootScope.allData.cards[i].title = document.getElementById("card_title").value;
-          $rootScope.allData.cards[i].img_path = "/upload/"+newFileName;
+          $rootScope.allData.cards[i].img_path = newFileName;
           break;
         }
         i ++;
@@ -382,10 +383,24 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     });
     request.success(function(data) {
 
-        if(formData.img_path == ''){
+        /*if(formData.img_path == ''){
           formData.img_path = mNoImage;
         }
-        $rootScope.allData.cards.push(formData);
+        //home에서 추가/변경된 card update
+       if(cardId == null){ 
+          //TODO user관련 정보 찾아와서 update할것 
+          $rootScope.allData.cards.unshift(formData);
+        }else{
+          for(var i = 0; i < $rootScope.allData.cards.length ; i++){
+            if($rootScope.allData.cards[i].id == cardId){
+              $rootScope.allData.cards[i].description = formData.description;
+              $rootScope.allData.cards[i].location_lat = formData.location_lat;
+              $rootScope.allData.cards[i].location_long = formData.location_long;
+              $rootScope.allData.cards[i].location_name = formData.location_name;
+              $rootScope.allData.cards[i].img_path = formData.img_path;
+            }
+          }
+        }*/
 
         //reset inputs
         $scope.cardForm.$setPristine();
@@ -408,7 +423,6 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
           template: 'data :  ' + data
         });
 
-        // location.reload();
     });
   }
 
@@ -435,7 +449,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       if(imgUrl == ''){
         imgUrl = mNoImage;
       }else{
-        imgUrl = mServerUrl + imgUrl;
+        imgUrl = mServerUpload + imgUrl;
       }
       $scope.imgURI = imgUrl;
       $scope.cardForm.file.$setTouched();

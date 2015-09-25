@@ -1,5 +1,8 @@
-<ion-view view-title="We Change Maker">
+<ion-view view-title="We Change Makers">
   <ion-nav-buttons side="right">
+    <button type="submit" class="button button-icon" ng-click="openPopover($event)">
+      <i class="icon ion-android-list"></i>
+    </button>
     <button type="submit" class="button button-icon" ng-click="findWarning()">
       <i class="icon ion-location"></i>
     </button>
@@ -48,14 +51,14 @@
             <p class="progressText progress-{{card.status}}">{{ card.statusDescription }}</p>
 
             <div class="additional-function">
-              <span>좋아요 {{ card.like_count }}</span>
+              <span>Watch {{ card.like_count }}</span>
               <span>댓글 {{ card.comments_count }}</span>
               <span>공유 0</span>
             </div>
 
             <div class="sns-link">
               <a href="#" ng-click="toggleLike(card.watch = !card.watch, card.id)" ng-class="{'active' : card.watch, 'non-active' : !card.watch}" id="like">
-                <i class="fa fa-thumbs-up"></i> 좋아요
+                <i class="fa fa-thumbs-up"></i> Watch
               </a>
               <a ng-href="#/tab/home/{{ card.id }}#comment"><i class="fa fa-commenting">
                 </i> 댓글달기
@@ -72,8 +75,18 @@
 
       </div>
       <!-- ========================== home_page end ========================== -->
-
-
     </ion-list>
   </ion-content>
+  <script id="templates/popover.html" type="text/ng-template">
+    <ion-popover-view>
+      <ion-content>
+        <ion-radio ng-repeat="item in sortingTypeList"
+            ng-value="item.value"
+            ng-model="data.sortingType"
+            ng-change="sortingTypeChange(item)">
+          {{ item.text }}
+        </ion-radio>
+      </ion-content>
+    </ion-popover-view>
+  </script>
 </ion-view>
