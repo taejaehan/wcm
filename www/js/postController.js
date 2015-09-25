@@ -1,4 +1,4 @@
-wcm.controller("PostController", function($scope, $rootScope, $http, $stateParams, $state, $ionicPopup) {
+wcm.controller("PostController", function($scope, $rootScope, $http, $stateParams, $state, $ionicPopup, $ionicModal) {
 
   var latlng, progress;
   var localCard = JSON.parse(window.localStorage['localCard'] || '{}');
@@ -428,6 +428,35 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
         template: '로그인 후에 이용 가능합니다'
       });
     }
+  }
+
+
+  $scope.openProfile = function(e) {
+    // $ionicPopup.alert({
+    //    title: "https://www.google.co.kr/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png",
+    //    template: e.username + "님이 Change Supporters가 되어 문제를 함께 해결합니다!"
+    // });
+  
+    $ionicPopup.show({
+      templateUrl : 'templates/popup.html',
+      scope: $scope,
+      buttons: [
+       { text: 'Cancel',
+         onTap: function(e) {
+           alert($scope.contactMessage);
+           return 'cancel button'
+         }
+       },
+       {
+         text: '<b>Ok</b>',
+         type: 'button-positive',
+         onTap: function(e) {
+           alert($scope.contactMessage);
+           return 'ok button'
+         }
+       },
+      ]
+    });
   }
 
 

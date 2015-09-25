@@ -31,7 +31,7 @@
 
       <div ng-class="{'change-member' : !changerImage, 'change-member active' : changerImage}">
         <div ng-repeat="changer in changers" ng-class="{'member-list ng-hide' : !changerImage, 'member-list ng-show' : changerImage}">
-          <img ng-src="{{changer[0].changeUser[0].userimage}}" ng-show="{{ changerImage }}">
+          <a href="#" ng-click="openProfile(changer[0].changeUser[0])"><img ng-src="{{changer[0].changeUser[0].userimage}}" ng-show="{{ changerImage }}"></a>
         </div>
 
         <div class="change-description">
