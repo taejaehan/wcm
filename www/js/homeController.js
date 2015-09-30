@@ -1,18 +1,17 @@
 wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation) {
-
-  
+  navigator.geolocation.getCurrentPosition(showPosition);
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
 
   //sort type
   $scope.sortingTypeList = [
-    { text: "등록시간", value: "regi" },
-    { text: "현재 위치", value: "loca" },
-    { text: "위험도", value: "warn" }
+    { text: "등록순", value: "registration" },
+    { text: "거리순", value: "location" },
+    { text: "위험도", value: "warning" }
   ];
   //sort type default value
   $scope.data = {
-    sortingType: 'regi'
+    sortingType: 'registration'
   };
 
   $scope.downloaded = false;
@@ -20,6 +19,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   $rootScope.allData = { 
                           cards: []
                        };
+
 
   /*
   * deviceready > app file system안에 폴더만들고 이미지 저장, 인터넷 연결 listener
@@ -202,11 +202,20 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           });
         }
 
+        var formData = { 
+                        lat: $scope.currentLat,
+                        lon: $scope.currentLon
+                      };
+
+        var postData = 'locationData='+JSON.stringify(formData);
+
+
         var request = $http({
             method: "get",
             url: mServerAPI + "/card/" + $scope.page + '/' + $scope.data.sortingType,
             crossDomain : true,
             headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+            data: postData,
             cache: false
         });
 
@@ -309,13 +318,97 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
      $scope.popover.show($event);
    });
   };
+
+
+  function showPosition(position) { 
+    $scope.currentLat = position.coords.latitude;
+    $scope.currentLon = position.coords.longitude;
+  }
+
+  $scope.sortBy = function(sortType) {
+    $scope.popover.hide();
+    $scope.page = 0;
+
+      var formData = { 
+                        lat: $scope.currentLat,
+                        lon: $scope.currentLon
+                      };
+
+      var postData = 'locationData='+JSON.stringify(formData);
+
+      var request = $http({
+          method: "post",
+          url: mServerAPI + "/card/" + $scope.page + '/' + sortType,
+          crossDomain : true,
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+          data: postData,
+          cache: false
+      });  
+
+
+    request.success(function(data) { 
+
+      $rootScope.allData.cards = [];
+
+      for (var i = 0; i < data.cards.length; i++) {
+        
+        if (data.cards[i].status === "0") {
+          data.cards[i].statusDescription = "위험요소가 등록되었습니다.";
+        } else if (data.cards[i].status === "33") {
+          data.cards[i].statusDescription = "위험요소가 등록되었습니다.";
+        } else if (data.cards[i].status === "66") {
+          data.cards[i].statusDescription = "위험요소를 해결 중 입니다.";
+        } else {
+          data.cards[i].statusDescription = "위험요소가 해결 되었습니다.";
+        }
+
+        if (data.cards[i].img_path == '') {
+          data.cards[i].img_path = mNoImage;
+        } else {
+          data.cards[i].img_path = mServerUpload + data.cards[i].img_path;
+        }
+
+        data.cards[i].address = data.cards[i].location_name;
+
+        var object =  data.cards[i];
+        $rootScope.allData.cards.push(object);
+
+        if (user.isAuthenticated === true) {
+          for(var j = 0; j < $rootScope.allData.cards.length; j ++) {
+            
+            if(user.likes.indexOf($rootScope.allData.cards[j].id) != -1) {
+              $rootScope.allData.cards[j].watch = true;
+            } else {
+              $rootScope.allData.cards[j].watch = false;
+            }
+          }
+        }
+      
+      }
+      console.log("success");
+      $scope.page++;
+
+      $scope.$broadcast('scroll.infiniteScrollComplete');  
+    });
+
+  }
+
+
+
   /*
   * popover창에서 sort type을 변경 했을 때 호출됨
   */
   $scope.sortingTypeChange = function(item) {
-    console.log("sortingTypeChange, text:", item.text, "value:", item.value);
-    // SORT 진행중 by tjhan 20150924
-    // if(item.value == 'loca'){
+    // console.log("sortingTypeChange, text:", item.text, "value:", item.value);
+
+    if (item.value == 'registration') {
+      $scope.sortBy(item.value);
+    } else if (item.value == 'warning') {
+      $scope.sortBy(item.value);
+    } else if (item.value == 'location') {
+      $scope.sortBy(item.value);
+    }
+
     //   var myLatlng ; 
     //   var posOptions = {
     //           enableHighAccuracy: true,

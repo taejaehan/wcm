@@ -18,7 +18,6 @@
       <div id="home_page">
 
         <ion-item collection-repeat="card in allData.cards" class="posts">
-
           <div class="post-body">
             
             <div class="profile">
@@ -28,7 +27,7 @@
               <button class="button button-icon float-edit" ng-style="userChecked(card)" ng-click="deleteCard(card.id)">
                   <i class="icon ion-ios-trash-outline"></i>
               </button>
-              <button class="button button-icon float-edit" ng-style="userChecked(card)" ng-click="editCard(card.id)">
+              <button class="button button-icon float-edit" ng-style="userChecked(card)" ng-click="editCard(card.id)">  
                   <i class="icon ion-ios-compose-outline"></i>
               </button>
             </div>
