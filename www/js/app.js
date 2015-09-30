@@ -1,9 +1,9 @@
-var mServerUrl = 'http://192.168.20.192:3000/wcm_php';
-var mServerUpload = mServerUrl + '/upload/';
-var mServerAPI = mServerUrl + '/controllers/index.php';
-// var mServerUrl = 'http://192.168.20.186:3000';
+// var mServerUrl = 'http://192.168.20.192:3000/wcm_php';
 // var mServerUpload = mServerUrl + '/upload/';
-// var mServerAPI = mServerUrl + '';
+// var mServerAPI = mServerUrl + '/controllers/index.php';
+var mServerUrl = 'http://192.168.20.186:3000';
+var mServerUpload = mServerUrl + '/upload/';
+var mServerAPI = mServerUrl + '';
 
 //사진이 없을 경우 보여주는 이미지 링크
 var mNoImage = 'img/default.png';
@@ -135,6 +135,42 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
       views: {
         'profile-tab': {
           templateUrl: "templates/profile.html",
+          controller: 'ProfileController'
+        }
+      }
+    })
+    .state('tabs.config', {
+      url: "/profile/config",
+      views: {
+        'profile-tab': {
+          templateUrl: "templates/configuration.html",
+          controller: 'ProfileController'
+        }
+      }
+    })
+    .state('tabs.terms', {
+      url: "/profile/config/terms",
+      views: {
+        'profile-tab': {
+          templateUrl: "templates/terms.html",
+          controller: 'ProfileController'
+        }
+      }
+    })
+    .state('tabs.terms_gps', {
+      url: "/profile/config/terms_gps",
+      views: {
+        'profile-tab': {
+          templateUrl: "templates/terms-gps.html",
+          controller: 'ProfileController'
+        }
+      }
+    })
+    .state('tabs.privacy', {
+      url: "/profile/config/privacy",
+      views: {
+        'profile-tab': {
+          templateUrl: "templates/privacy.html",
           controller: 'ProfileController'
         }
       }

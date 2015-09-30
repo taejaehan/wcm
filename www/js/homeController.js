@@ -211,7 +211,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
 
         var request = $http({
-            method: "get",
+            method: "post",
             url: mServerAPI + "/card/" + $scope.page + '/' + $scope.data.sortingType,
             crossDomain : true,
             headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},

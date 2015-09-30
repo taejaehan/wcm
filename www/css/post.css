@@ -184,8 +184,25 @@
 	color: grey;
 }
 
-.comment-delete{
+#detail_page .comment-delete{
 	float: right;
 	margin-right : 10px;
 }
+
+#popup_page .changeMakerImage {
+	width: 50px;
+	height: 50px;
+	border-radius: 50px;
+}
+
+#popup_page p {
+	color: darkslategrey;
+	margin-bottom: 25px;
+}
+
+#popup_page .name {
+	font-size: 20px;
+}
+
+
 
