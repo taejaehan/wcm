@@ -1,5 +1,6 @@
 wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth,$ionicPlatform) {
   navigator.geolocation.watchPosition(showPosition);
+  // var user = JSON.parse(window.localStorage['user'] || '{}');
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
 

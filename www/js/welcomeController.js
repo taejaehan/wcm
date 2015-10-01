@@ -60,7 +60,18 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
     /* Successful HTTP post request or not */
     request.success(function(data) {
       alert('success : '+JSON.stringify(data));
+      var user = {
+                    username: formData.username,
+                    userid: formData.user_id,
+                    userimage: formData.userimage.split("amp;").join("&"),
+                    isAuthenticated: true,
+                    likes: []
+                  };
+      
+      window.localStorage['user'] = JSON.stringify(user);
+
       $state.go("tabs.home");
+
     })
     .error(function(error){
       // alert('error');
