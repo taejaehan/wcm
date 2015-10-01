@@ -11,10 +11,12 @@
 }
 
 .header-offline{
-  color :#fff;
   background-color : #222 !important;
   border-color: #222 !important;
   display: none; 
+}
+.header-offline h1{
+  color :#fff;
 }
 
 @keyframes flipInX {
