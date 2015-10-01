@@ -1,7 +1,14 @@
 wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation) {
+
   navigator.geolocation.getCurrentPosition(showPosition);
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
+  
+
+  $scope.$on('$ionicView.afterEnter', function(){
+    console.log(user.likes);
+  });
+
 
   //sort type
   $scope.sortingTypeList = [
@@ -393,14 +400,8 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   }
 
-
-
-  /*
-  * popover창에서 sort type을 변경 했을 때 호출됨
-  */
+  // popover창에서 sort type을 변경 했을 때 호출됨
   $scope.sortingTypeChange = function(item) {
-    // console.log("sortingTypeChange, text:", item.text, "value:", item.value);
-
     if (item.value == 'registration') {
       $scope.sortBy(item.value);
     } else if (item.value == 'warning') {
@@ -408,71 +409,21 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     } else if (item.value == 'location') {
       $scope.sortBy(item.value);
     }
-
-    //   var myLatlng ; 
-    //   var posOptions = {
-    //           enableHighAccuracy: true,
-    //           timeout: 20000,
-    //           maximumAge: 0
-    //       };
-    //   $cordovaGeolocation.getCurrentPosition(posOptions).then(function (position) {
-    //       var lat  = position.coords.latitude;
-    //       var long = position.coords.longitude;
-           
-    //       myLatlng = new google.maps.LatLng(lat, long);
-    //       console.log('myLatlng : ' + myLatlng);
-    //       for(var j = 0; j < $rootScope.allData.cards.length; j ++) {
-    //         var lat  = $rootScope.allData.cards[j].location_lat;
-    //         var long = $rootScope.allData.cards[j].location_long;
-    //         var cardLatlng = new google.maps.LatLng(lat, long);
-    //         console.log('cardLatlng : ' + cardLatlng);
-    //         var distance = $scope.getDistance(myLatlng, cardLatlng);
-    //         $rootScope.allData.cards[j].distance = distance;
-    //         console.log('distance : ' + $rootScope.allData.cards[j].distance);
-    //       };
-
-    //   }, function(err) {
-    //       alert('You can not use the location information');
-    //       console.log('CURRENT LOCATION ERROR :  ' + err);
-    //   });
-    // }
   };
 
-  /*
-  * 2개 pos간의 거리 계산
-  */
-  $scope.getDistance  = function(p1, p2) {
-    var rad = function(x) {
-      return x * Math.PI / 180;
-    };
-    var R = 6378137; // Earth’s mean radius in meter
-    var dLat = rad(p2.lat() - p1.lat());
-    var dLong = rad(p2.lng() - p1.lng());
-    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(rad(p1.lat())) * Math.cos(rad(p2.lat())) *
-      Math.sin(dLong / 2) * Math.sin(dLong / 2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    var d = R * c;
-    return d; // returns the distance in meter
-  };
-  /*
-  * warnings map show
-  */
+  // warnings map show
   $scope.findWarning = function() {
     $state.go("tabs.map");
   }
-  /*
-  * 각 card의 location map show
-  */
+
+  // 각 card의 location map show
   $scope.showMap = function(lat, lon) {
     var latlng = new google.maps.LatLng(lat, lon);
     $state.go('tabs.location_h', { 'latlng': latlng});
   }
 
-  // =========================== Check current user & card user =============================
-
+  // Check current user & card user
   $scope.userChecked = function(card) {
-    
     if (user.isAuthenticated === true) {
       if ( parseInt(card.user[0].user_id) === user.userid ) {
         return { 'display' : 'inline-block' };
@@ -484,11 +435,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     }
   }
 
-  // ========================= Check current user & card user END ===========================
-
-
-  // ==================================== Delete card ======================================  
-
+  // Delete Card
   $scope.deleteCard = function(id) {
   
     if (confirm('Are you sure you want to delete?')) {
@@ -507,14 +454,13 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     }
   }
   
-  // ==================================== Delete card END ======================================  
-  
+  // Edit Card  
   $scope.editCard = function(id) {
     $state.go('tabs.edit', { 'id': id});
   };
 
-  // ==================================== post like_count ======================================
 
+  // Toggle Like-Count
   $scope.toggleLike = function(e, id) {
     if (user.isAuthenticated === true) {
 
@@ -523,7 +469,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         if (user.likes.indexOf(id) === -1) {
           user.likes.push(id);
           window.localStorage['user'] = JSON.stringify(user);
-
+          console.log(user.likes);
           var userId = parseInt(user.userid);
           var postId = parseInt(id);
           var formData1 = { user_id: userId,
@@ -562,7 +508,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           var index = user.likes.indexOf(id);
           user.likes.splice(index, 1);
           window.localStorage['user'] = JSON.stringify(user);
-
+          console.log(user.likes);
           var userId = parseInt(user.userid);
           var postId = parseInt(id);
           var formData1 = { user_id: userId,
@@ -625,8 +571,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       }
     }
   }
-  // ==================================== post like_count END ======================================
-
+  
   
 });
 

@@ -8,6 +8,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService)
 
 		$scope.cards = [];
 		$scope.watch = true;
+		$scope.message = '';
 
 		var request = $http({
 	    method: "get",
@@ -32,9 +33,13 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService)
 
 	  		var card = data.cards[i];
 	  		$scope.cards.push(card);	
-	  		console.log($scope.cards);
+	  	}
+	  	
+	  	if(data.cards.length === 0) {
+	  		$scope.message = "참여 중인 프로젝트가 없습니다."
 	  	}
 	  });
+
 
 	  var statusPost = function(card) {
 	  	var status = card.status;

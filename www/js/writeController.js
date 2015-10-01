@@ -419,8 +419,8 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
         $ionicLoading.hide();
 
         $ionicPopup.alert({
-          title: 'Success',
-          template: 'data :  ' + data
+          title: 'We change Makers',
+          template: '게시물이 성공적으로 등록되었습니다.'
         });
 
     });
