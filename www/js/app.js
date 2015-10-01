@@ -74,7 +74,6 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
       templateUrl: "templates/tabs.html"
     })
     .state('tabs.home', {
-      
       url: "/home",
       views: {
         'home-tab': {
@@ -142,6 +141,42 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
       views: {
         'profile-tab': {
           templateUrl: "templates/profile.html",
+          controller: 'ProfileController'
+        }
+      }
+    })
+    .state('tabs.config', {
+      url: "/profile/config",
+      views: {
+        'profile-tab': {
+          templateUrl: "templates/configuration.html",
+          controller: 'ProfileController'
+        }
+      }
+    })
+    .state('tabs.terms', {
+      url: "/profile/config/terms",
+      views: {
+        'profile-tab': {
+          templateUrl: "templates/terms.html",
+          controller: 'ProfileController'
+        }
+      }
+    })
+    .state('tabs.terms_gps', {
+      url: "/profile/config/terms_gps",
+      views: {
+        'profile-tab': {
+          templateUrl: "templates/terms-gps.html",
+          controller: 'ProfileController'
+        }
+      }
+    })
+    .state('tabs.privacy', {
+      url: "/profile/config/privacy",
+      views: {
+        'profile-tab': {
+          templateUrl: "templates/privacy.html",
           controller: 'ProfileController'
         }
       }
