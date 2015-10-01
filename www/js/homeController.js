@@ -1,14 +1,12 @@
-wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation) {
+wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth,$ionicPlatform) {
+  navigator.geolocation.watchPosition(showPosition);
 
-  navigator.geolocation.getCurrentPosition(showPosition);
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
   
-
   $scope.$on('$ionicView.afterEnter', function(){
     console.log(user.likes);
   });
-
 
   //sort type
   $scope.sortingTypeList = [
@@ -16,6 +14,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     { text: "거리순", value: "location" },
     { text: "위험도", value: "warning" }
   ];
+
   //sort type default value
   $scope.data = {
     sortingType: 'registration'
@@ -31,33 +30,33 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   /*
   * deviceready > app file system안에 폴더만들고 이미지 저장, 인터넷 연결 listener
   */
-  document.addEventListener("deviceready", function () {
+  $ionicPlatform.ready(function() {
     console.log('deviceready');
 
     //앱에서 켰다면 
     if(ionic.Platform.isWebView()){
-      console.log('cordova.file : ' + cordova.file);
-      console.log('cordova.file.dataDirectory : ' + cordova.file.dataDirectory);
+      // console.log('cordova.file : ' + cordova.file);
+      // console.log('cordova.file.dataDirectory : ' + cordova.file.dataDirectory);
 
-      //cordova.file.dataDirectory안에 cardImage 디렉토리 (없다면 만들고) 안에 이미지 다운로드 시작
-      $cordovaFile.checkDir(cordova.file.dataDirectory, "cardImage")
-      .then(function (success) {
-        console.log('checkDir success : ' + JSON.stringify(success));
-        $scope.fileDownload();
-        // success
-      }, function (error) {
-        // error
-        console.log('checkDir error : ' + JSON.stringify(error));
-        $cordovaFile.createDir(cordova.file.dataDirectory, "cardImage", true)
-        .then(function (success) {
-          console.log('CREATE success : ' + JSON.stringify(success));
-          $scope.fileDownload();
-          // success
-        }, function (error) {
-          console.log('CREATE error : ' + JSON.stringify(error));
-          // error
-        });
-      });
+      // //cordova.file.dataDirectory안에 cardImage 디렉토리 (없다면 만들고) 안에 이미지 다운로드 시작
+      // $cordovaFile.checkDir(cordova.file.dataDirectory, "cardImage")
+      // .then(function (success) {
+      //   console.log('checkDir success : ' + JSON.stringify(success));
+      //   $scope.fileDownload();
+      //   // success
+      // }, function (error) {
+      //   // error
+      //   console.log('checkDir error : ' + JSON.stringify(error));
+      //   $cordovaFile.createDir(cordova.file.dataDirectory, "cardImage", true)
+      //   .then(function (success) {
+      //     console.log('CREATE success : ' + JSON.stringify(success));
+      //     $scope.fileDownload();
+      //     // success
+      //   }, function (error) {
+      //     console.log('CREATE error : ' + JSON.stringify(error));
+      //     // error
+      //   });
+      // });
 
       /*인터넷 연결 상태 listeners*/
       // listen for Online event
@@ -112,13 +111,13 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   * 인터넷 연결 끊김 sub header 닫기
   */
   $scope.closeSubHeader = function(){
-    document.getElementById('sub_header_offline').setAttribute('style','display:none');
+   // document.getElementById('sub_header_offline').setAttribute('style','display:none');
   }
   /*
   * 인터넷 연결 끊김 sub header 보이기
   */
   $scope.showSubHeader = function(){
-    document.getElementById('sub_header_offline').setAttribute('style','display:block');
+    //document.getElementById('sub_header_offline').setAttribute('style','display:block');
   }
 
   /*
@@ -183,39 +182,37 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   */
   $scope.doRefresh = function(init) {
 
-    console.log('doRefresh - page : ' + $scope.page);
     //app에서 띄운 webview가 아니거나 online일 경우만
     if (!(ionic.Platform.isWebView()) || $cordovaNetwork.isOnline()) {
-
       /* isOnline */  
       $timeout( function() {
-
         //init이면 처음 페이지 데이터를 다시 가져옴
-        if(init == 'init'){
-          $scope.page = 0;
-          $rootScope.allData = { 
-                          cards: []
-                       };
-          var request = $http({
-              method: "get",
-              url: mServerAPI + "/cards",
-              crossDomain : true,
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-              cache: false
-          });
+        // if(init == 'init'){
+        //   $scope.page = 0;
+        //   $rootScope.allData = { 
+        //                   cards: []
+        //                };
+        //   var request = $http({
+        //       method: "get",
+        //       url: mServerAPI + "/cards",
+        //       crossDomain : true,
+        //       headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+        //       cache: false
+        //   });
 
-          request.success(function(data) {
-            window.localStorage['cardList'] = JSON.stringify(data);
-          });
-        }
+        //   request.success(function(data) {
+        //     window.localStorage['cardList'] = JSON.stringify(data);
+        //   });
+        // }
 
         var formData = { 
                         lat: $scope.currentLat,
                         lon: $scope.currentLon
                       };
 
-        var postData = 'locationData='+JSON.stringify(formData);
+        console.log('lat : ' + $scope.currentLat + 'lon : ' + $scope.currentLon);
 
+        var postData = 'locationData='+JSON.stringify(formData);
 
         var request = $http({
             method: "post",
@@ -226,6 +223,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             cache: false
         });
 
+        request.error(function(error){
+          console.log('error : ' + JSON.stringify(error))
+        })
         request.success(function(data) {
 
           for (var i = 0; i < data.cards.length; i++) {
@@ -270,7 +270,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
         //Stop the ion-refresher from spinning
         $scope.$broadcast('scroll.refreshComplete');  
-      }, 1000);
+      },10);
   
     } else {
 

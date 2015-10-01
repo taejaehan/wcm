@@ -1,9 +1,10 @@
-// var mServerUrl = 'http://192.168.20.192:3000/wcm_php';
-// var mServerUpload = mServerUrl + '/upload/';
-// var mServerAPI = mServerUrl + '/controllers/index.php';
-var mServerUrl = 'http://192.168.20.186:3000';
+var mServerUrl = 'http://192.168.10.35:3000/wcm_php';
 var mServerUpload = mServerUrl + '/upload/';
-var mServerAPI = mServerUrl + '';
+var mServerAPI = mServerUrl + '/controllers/index.php';
+
+// var mServerUrl = 'http://192.168.20.186:3000';
+// var mServerUpload = mServerUrl + '/upload/';
+// var mServerAPI = mServerUrl + '';
 
 //사진이 없을 경우 보여주는 이미지 링크
 var mNoImage = 'img/default.png';
@@ -57,6 +58,11 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
   $ionicConfigProvider.tabs.position('bottom');
   
   $stateProvider
+  .state("fblogin", {
+      url: "/fblogin",
+        templateUrl: "templates/welcome.html",
+        controller: "WelcomeController"
+    })
     .state("login", {
       url: "/login",
         templateUrl: "templates/login.html",
@@ -176,7 +182,7 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
       }
     })
 
-    $urlRouterProvider.otherwise("/tab/home");
-    // $urlRouterProvider.otherwise("/login");
+    // $urlRouterProvider.otherwise("/tab/home");
+    $urlRouterProvider.otherwise("/fblogin");
 });
 
