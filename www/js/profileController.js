@@ -7,6 +7,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService)
 		$scope.user = user;
 
 		$scope.cards = [];
+		$scope.watch = true;
 
 		var request = $http({
 	    method: "get",
@@ -20,13 +21,13 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService)
 
 	  	for (var i = 0; i < data.cards.length; i++) {
 	  		if (data.cards[i].status === "0") {
-          data.cards[i].statusDescription = "프로젝트가 등록되었습니다.";
+          data.cards[i].statusDescription = "위험요소가 등록되었습니다.";
         } else if (data.cards[i].status === "33") {
-          data.cards[i].statusDescription = "프로젝트가 시작되었습니다.";
+          data.cards[i].statusDescription = "위험요소가 등록되었습니다.";
         } else if (data.cards[i].status === "66") {
-          data.cards[i].statusDescription = "프로젝트를 진행합니다.";
+          data.cards[i].statusDescription = "위험요소를 해결 중 입니다.";
         } else {
-          data.cards[i].statusDescription = "프로젝트가 완료되었습니다.";
+          data.cards[i].statusDescription = "위험요소가 해결 되었습니다.";
         }
 
 	  		var card = data.cards[i];
@@ -99,5 +100,31 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService)
 		AuthService.logout();
 	}
 	
+	$scope.showChanges = function() {
+		$scope.watch = true;
+	}
+
+	$scope.showActivities = function() {
+		$scope.watch = false;
+	}
+
+	$scope.config = function() {
+    $state.go("tabs.config");
+  }
+
+  $scope.terms = function() {
+    $state.go("tabs.terms");
+  }
+
+  $scope.termsGps = function() {
+    $state.go("tabs.terms_gps");
+  }
+
+  $scope.privacy = function() {
+    $state.go("tabs.privacy");
+  }
+
+
+
 
 });

@@ -2,24 +2,27 @@
 	padding: 20px 10px 30px 10px;
 }
 
-
 #profile_page .profile-form a {
 	color: black;
 }
 
 #profile_page .profile-form img {
-	width: 50px;
-	height: 50px;
-	float: left;
-	margin-right: 10px;
+	width: 100px;
+	height: 100px;
+	margin-right: 20px;
+	border-radius: 50px;
+	margin: 0 auto;
+	display: block;
 }
 
 #profile_page .profile-form .username {
 	margin-top: 4px;
 }
 
-#profile_page .profile-form .form-group {
-	padding: 0px 20px 0px 20px;
+#profile_page .profile-form .username label {
+	font-size: 20px;
+	text-align: center;
+	display: block;
 }
 
 #profile_page .my-card-list {
@@ -50,4 +53,59 @@
 
 button.logout {
 	margin-left: 10px;
+}
+
+#profile_page .jumbotron {
+	padding: 0px 20px 20px 20px;
+	border-top: 1px solid grey;
+}
+
+#profile_page .jumbotron .row {
+	margin: 0px;
+}
+
+#profile_page .jumbotron .row a {
+	text-align: center;
+	text-decoration: none;
+	color: #666666;
+}
+
+#profile_page .jumbotron .row a.active {
+	border-bottom: 4px solid #666666;
+	margin-bottom: 10px;
+}
+
+#profile_page .jumbotron .info-1.non-active, .info-2.non-active{
+	left: 100%;
+	position: absolute;
+}
+
+.terms, .gps, .privacy {
+	padding: 15px;
+}
+
+.terms .redEmphasis, .gps .redEmphasis, .privacy .redEmphasis {
+	color: red;
+}
+
+.terms .term, .gps .term, .privacy .term, ul {
+	margin-bottom: 40px;
+}
+
+.terms h2, .gps h2, .privacy h2 {
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.terms h3, .terms h4, .terms h5, .gps h3, .gps h4, .gps h5, .privacy h3, .privacy h4, .privacy h5 {
+	font-size: 15px;
+	color: grey;
+}
+
+.terms h4, .gps h4, .privacy h4 {
+	margin-left: 20px;
+} 
+
+.privacy h5 {
+	margin-left: 40px;
 }

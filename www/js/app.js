@@ -74,6 +74,7 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
       templateUrl: "templates/tabs.html"
     })
     .state('tabs.home', {
+      
       url: "/home",
       views: {
         'home-tab': {
