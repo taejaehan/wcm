@@ -239,58 +239,58 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
         if ($scope.userimage === null) {
           $scope.userimage = "http://mud-kage.kakao.co.kr/14/dn/btqchdUZIl1/FYku2ixAIgvL1O50eDzaCk/o.jpg";
         }
-      }
 
-      var post_id = parseInt($stateParams.postId);
-      var user_app_id = parseInt(user.userid);
+        var post_id = parseInt($stateParams.postId);
+        var user_app_id = parseInt(user.userid);
 
-      var formData = {
-                        post_id: post_id,
-                        user_app_id: user_app_id,
-                        content: comment
-                      };
+        var formData = {
+                          post_id: post_id,
+                          user_app_id: user_app_id,
+                          content: comment
+                        };
 
-      var postData = 'commentData='+JSON.stringify(formData);
+        var postData = 'commentData='+JSON.stringify(formData);
 
-      var request = $http({
-          method: "post",
-          url: mServerAPI + "/comments",
-          crossDomain : true,
-          data: postData,
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-          cache: false
-      });
+        var request = $http({
+            method: "post",
+            url: mServerAPI + "/comments",
+            crossDomain : true,
+            data: postData,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+            cache: false
+        });
 
-      var formDataLocal = {
-                            post_id: post_id,
-                            user_app_id: user_app_id,
-                            content: comment,
-                            user: [{    
-                                        user_id: $scope.userid,
-                                        username: $scope.username,
-                                        userimage: $scope.userimage
-                                     }],
-                            updated_at: new Date()
-                          }
+        var formDataLocal = {
+                              post_id: post_id,
+                              user_app_id: user_app_id,
+                              content: comment,
+                              user: [{    
+                                          user_id: $scope.userid,
+                                          username: $scope.username,
+                                          userimage: $scope.userimage
+                                       }],
+                              updated_at: new Date()
+                            }
 
-      $scope.comments.push(formDataLocal);
+        $scope.comments.push(formDataLocal);
 
-      request.success(function(data) {  
-        
-        document.getElementById("comment").value = "";
-        $scope.comments_count ++;
-        
-        var i = 0;
-        
-        while( i < $rootScope.allData.cards.length) {
-          if ($rootScope.allData.cards[i].id === $stateParams.postId) {
-            $rootScope.allData.cards[i].comments_count ++;
-            break;
+        request.success(function(data) {  
+          
+          document.getElementById("comment").value = "";
+          $scope.comments_count ++;
+          
+          var i = 0;
+          
+          while( i < $rootScope.allData.cards.length) {
+            if ($rootScope.allData.cards[i].id === $stateParams.postId) {
+              $rootScope.allData.cards[i].comments_count ++;
+              break;
+            }
+            i ++;
           }
-          i ++;
-        }
 
-      });
+        });
+      }
 
     } else {
       $ionicPopup.alert({
@@ -307,7 +307,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   $scope.userChecked = function(comment) {  
     
     if (user.isAuthenticated === true) {
-      if ( parseInt(comment.user[0].user_id) === user.userid ) {
+      if ( parseInt(comment.user[0].user_id) == user.userid ) {
         return { 'display' : 'inline-block' };
       } else {
         return { 'display' : 'none' };

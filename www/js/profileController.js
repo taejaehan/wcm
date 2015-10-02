@@ -1,4 +1,4 @@
-wcm.controller("ProfileController", function($scope, $state, $http, AuthService) {
+wcm.controller("ProfileController", function($scope, $state, $http, AuthService, $window) {
 
 	var user = JSON.parse(window.localStorage['user'] || '{}');
 
