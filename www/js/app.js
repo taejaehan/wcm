@@ -28,6 +28,9 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile) {
   // Kakao.init('2b1444fba3c133df8405882491640b80');
 
   $ionicPlatform.ready(function() {
+    
+    window.localStorage['user'] = null;
+
     var request = $http({
         method: "get",
         url: mServerAPI + "/cards",

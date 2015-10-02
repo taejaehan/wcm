@@ -1,6 +1,5 @@
 wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth,$ionicPlatform) {
   navigator.geolocation.watchPosition(showPosition);
-  // var user = JSON.parse(window.localStorage['user'] || '{}');
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
 
@@ -30,6 +29,8 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
     //앱에서 켰다면 
     if(ionic.Platform.isWebView()){
+
+      // card이미지를  file system에 저장하는 부분 임시로 주석처리 by tjhan 20151002
       // console.log('cordova.file : ' + cordova.file);
       // console.log('cordova.file.dataDirectory : ' + cordova.file.dataDirectory);
 
@@ -180,28 +181,26 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     console.log('doRefresh - page : ' + $scope.page);
     //app에서 띄운 webview가 아니거나 online일 경우만
     if (!(ionic.Platform.isWebView()) || $cordovaNetwork.isOnline()) {
-console.log('1');
       /* isOnline */  
       $timeout( function() {
-console.log('2');
-        //init이면 처음 페이지 데이터를 다시 가져옴
-        // if(init == 'init'){
-        //   $scope.page = 0;
-        //   $rootScope.allData = { 
-        //                   cards: []
-        //                };
-        //   var request = $http({
-        //       method: "get",
-        //       url: mServerAPI + "/cards",
-        //       crossDomain : true,
-        //       headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-        //       cache: false
-        //   });
+        // init이면 처음 페이지 데이터를 다시 가져옴
+        if(init == 'init'){
+          $scope.page = 0;
+          $rootScope.allData = { 
+                          cards: []
+                       };
+          var request = $http({
+              method: "get",
+              url: mServerAPI + "/cards",
+              crossDomain : true,
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+              cache: false
+          });
 
-        //   request.success(function(data) {
-        //     window.localStorage['cardList'] = JSON.stringify(data);
-        //   });
-        // }
+          request.success(function(data) {
+            window.localStorage['cardList'] = JSON.stringify(data);
+          });
+        }
 
         var formData = { 
                         lat: $scope.currentLat,
@@ -212,7 +211,6 @@ console.log('2');
 
         var postData = 'locationData='+JSON.stringify(formData);
 
-console.log('3: ' +mServerAPI + "/card/" + $scope.page + '/' + $scope.data.sortingType);
         var request = $http({
             method: "post",
             url: mServerAPI + "/card/" + $scope.page + '/' + $scope.data.sortingType,
@@ -221,12 +219,10 @@ console.log('3: ' +mServerAPI + "/card/" + $scope.page + '/' + $scope.data.sorti
             data: postData,
             cache: false
         });
-console.log('4');
         request.error(function(error){
           console.log('error : ' + JSON.stringify(error))
         })
         request.success(function(data) {
-console.log('5');
           for (var i = 0; i < data.cards.length; i++) {
             
             if (data.cards[i].status === "0") {
@@ -246,7 +242,8 @@ console.log('5');
             }
 
             data.cards[i].address = data.cards[i].location_name;
-
+            //url 중에 "&"은 "amp;"로 db에 저장되어 있으므로 변환한다
+            data.cards[i].user[0].userimage = data.cards[i].user[0].userimage.split("amp;").join("&");
             var object =  data.cards[i];
             $rootScope.allData.cards.push(object);
 
@@ -269,7 +266,7 @@ console.log('5');
 
         //Stop the ion-refresher from spinning
         $scope.$broadcast('scroll.refreshComplete');  
-      },10);
+      },1000);
   
     } else {
 
@@ -478,9 +475,9 @@ console.log('5');
   // =========================== Check current user & card user =============================
 
   $scope.userChecked = function(card) {
-    
+ 
     if (user.isAuthenticated === true) {
-      if ( parseInt(card.user[0].user_id) === user.userid ) {
+      if ( card.user[0].user_id === user.userid ) {
         return { 'display' : 'inline-block' };
       } else {
         return { 'display' : 'none' };

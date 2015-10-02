@@ -123,12 +123,14 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   */
   $scope.currentLocation = function(){
 
+    console.log('currentLocation!!!!');   
+
     if(document.getElementById("card_location").value != '') return;
 
     $ionicLoading.show({
         template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!'
     });
-     
+    
     var posOptions = {
         enableHighAccuracy: true,
         timeout: 20000,
@@ -136,11 +138,13 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     };
 
     $cordovaGeolocation.getCurrentPosition(posOptions).then(function (position) {
+
         var lat  = position.coords.latitude;
         var long = position.coords.longitude;
         $scope.setLocationName(lat, long);
 
-        $ionicLoading.hide();           
+        $ionicLoading.hide();
+        console.log('DONE!!!!');   
     }, function(err) {
         $ionicLoading.hide();
         console.log(err);
@@ -176,11 +180,14 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
            template: 'No results found'
          });
         }
+
+        $ionicLoading.hide();
       } else {
         $ionicPopup.alert({
            title: 'google map error',
            template: status
          });
+        $ionicLoading.hide();
       }
     });
   }
@@ -306,11 +313,13 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       var user = JSON.parse(window.localStorage['user'] || '{}');
       $scope.userid = user.userid;  
     }else{
-      $scope.userid = 57421548;
+      $scope.userid = 879359548800156;
     }
     if($scope.userid == null){
-      $scope.userid = 57421548;
+      $scope.userid = 879359548800156;
     }
+
+    console.log("userId : "  + $scope.userid);
 
     var user_app_id = $scope.userid;
 
