@@ -66,14 +66,14 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window) {
   var logout = function() {
     isAuthenticated = false;
     window.localStorage.removeItem('user');
-    $state.go('login');
+    $state.go('fblogin');
   };
 
 
   var skipLogin = function() {
     var user = { isAuthenticated: false };
     window.localStorage['user'] = JSON.stringify(user);
-    $window.location.reload(true);
+    // $window.location.reload(true);
     $state.go('tabs.home');
   };
 
