@@ -1,19 +1,19 @@
-<ion-view view-title="{{cardTitle}}">
+<ion-view view-title="{{card.title}}">
   <ion-content padding="true">
   	<div id="detail_page">
 
-      <img src="{{ postImage }}">
+      <img src="{{ card.img_path }}">
       <!-- <h1 class="title">{{ postTitle }}</h1> -->
-      <p>{{ postDescription }}</p>
+      <p>{{ card.description }}</p>
       <a href="#" ng-click="showMap()">
-        <p id="post_location_name" class="fa fa-map-marker">{{ locationName }}</p>
+        <p id="post_location_name" class="fa fa-map-marker">{{ card.location_name }}</p>
       </a>
 
       <div class="progress">
-        <div class="progress-bar progress-bar-danger progress-bar-striped progress-{{status}}" role="progressbar" aria-valuenow="{{status}}" aria-valuemin="0" aria-valuemax="100" style="width: {{status}}%">
+        <div class="progress-bar progress-bar-danger progress-bar-striped progress-{{ card.status }}" role="progressbar" aria-valuenow="{{ card.status }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ card.status }}%">
         </div>
       </div>
-      <p class="progressText progress-{{status}}">{{ statusDescription }}</p>
+      <p class="progressText progress-{{ card.status }}">{{ card.statusDescription }}</p>
 
       <div class="additional-function">
         <span>Watch {{ like_count }}</span>
@@ -22,7 +22,7 @@
       </div>
 
       <div class="sns-link">
-        <a href="#" ng-click="toggleLike(watch = !watch)" ng-class="{'active' : watch, 'non-active' : !watch}" id="like">
+        <a href="#" ng-click="toggleLike(watch = !watch)" ng-class="{'active' : card.watch, 'non-active' : !card.watch}" id="like">
           <i class="fa fa-thumbs-up"></i> Watch
         </a>
             <a href="#"><i class="fa fa-commenting"></i> 댓글달기</a>
@@ -31,7 +31,7 @@
 
       <div ng-class="{'change-member' : !changerImage, 'change-member active' : changerImage}">
         <div ng-repeat="changer in changers" ng-class="{'member-list ng-hide' : !changerImage, 'member-list ng-show' : changerImage}">
-          <a href="#" ng-click="openProfile(changer[0].changeUser[0])"><img ng-src="{{changer[0].changeUser[0].userimage}}" ng-show="{{ changerImage }}"></a>
+          <a href="#" ng-click="openProfile(changer.changeUser[0])"><img ng-src="{{changer.changeUser[0].userimage}}" ng-show="{{ changerImage }}"></a>
         </div>
 
         <div class="change-description">

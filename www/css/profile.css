@@ -56,7 +56,7 @@ button.logout {
 }
 
 #profile_page .jumbotron {
-	padding: 0px 20px 20px 20px;
+	padding: 0px 20px 40px 20px;
 	border-top: 1px solid grey;
 }
 
@@ -78,6 +78,31 @@ button.logout {
 #profile_page .jumbotron .info-1.non-active, .info-2.non-active{
 	left: 100%;
 	position: absolute;
+}
+
+#profile_page .jumbotron.non-login {
+	border: none;
+	border-radius: 10px;
+  height: 120px;
+  text-align: center;
+}
+
+#profile_page .jumbotron.non-login img {
+	width: 90px;
+	height: 90px;
+	margin-top: 15px;
+	margin-left: 10px;
+	float: left;
+}
+
+#profile_page .jumbotron.non-login p {
+	font-size: 15px;
+	padding-top: 25px;
+}
+
+i.ion-chevron-right {
+	float: right;
+	color: grey;
 }
 
 .terms, .gps, .privacy {

@@ -6,7 +6,7 @@
 		    <img src="{{ user.userimage }}">
 
 			  <div class="form-group username">
-			    <label>{{ user.username }} <button ng-click="config()"><i class="icon ion-gear-b"></i></button></label>
+			    <a ng-click="config()"><label>{{ user.username }} <i class="ion-gear-a"></i></label></a>
 			  </div>
 
 			  <div class="form-group jumbotron">
@@ -17,6 +17,7 @@
 
 
 			    <div ng-class="{'info-1 active' : watch, 'info-1 non-active' : !watch}">
+			    	{{ message }}
 				    <ion-item ng-repeat="card in cards" class="my-card-list">
 				    	<a href="#/tab/home/{{ card.id }}" class="title"><p>{{ card.title }}</p></a>
 
@@ -38,14 +39,15 @@
 			    	<h2>test</h2>
 			    </div>
 			  </div>
-	    	
-	    <button ng-click="logOut()" class="btn btn-default">LogOut</button>
 	    </form>
 	    
 
 	    <div ng-hide="userCheck">
-	    	<p>로그인이 필요한 서비스 입니다.</p>
-	    	<button class="btn btn-default" ng-click="goLogin()">로그인 하러 가기</button>
+	    	<div class="form-group jumbotron non-login">
+	    		<img src="img/app_icon.png">
+	    		<p>로그인이 필요한 서비스 입니다.</p>
+	    		<button class="btn btn-default" ng-click="goLogin()">페이스북으로 로그인하기</button>
+	    	</div>
 	    </div>
 	  </div>
   </ion-content>
