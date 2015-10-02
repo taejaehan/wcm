@@ -248,7 +248,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
             data.cards[i].address = data.cards[i].location_name;
             //url 중에 "&"은 "amp;"로 db에 저장되어 있으므로 변환한다
-            data.cards[i].user[0].userimage = data.cards[i].user[0].userimage.split("amp;").join("&");
+            if(data.cards[i].user[0].userimage != null){
+              data.cards[i].user[0].userimage = data.cards[i].user[0].userimage.split("amp;").join("&");
+            }
             var object =  data.cards[i];
             $rootScope.allData.cards.push(object);
 
@@ -376,6 +378,10 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           data.cards[i].img_path = mServerUpload + data.cards[i].img_path;
         }
 
+        //url 중에 "&"은 "amp;"로 db에 저장되어 있으므로 변환한다
+        if(data.cards[i].user[0].userimage != null){
+          data.cards[i].user[0].userimage = data.cards[i].user[0].userimage.split("amp;").join("&");
+        }
         data.cards[i].address = data.cards[i].location_name;
 
         var object =  data.cards[i];
