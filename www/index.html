@@ -17,21 +17,7 @@
     <link href="css/map.css" rel="stylesheet">
     <link href="css/profile.css" rel="stylesheet">
     <link href="css/login.css" rel="stylesheet">
-    <link href="css/welcome.css" rel="stylesheet">
 
-  
-
-  </head>
-  <body>
-    <div ng-app="starter" ng-controller="HomeController">
-        <ion-nav-bar class="bar-assertive" ng-style="{&apos;background-color&apos;: viewColor}">
-          <ion-nav-back-button>
-          </ion-nav-back-button>
-        </ion-nav-bar>
-                 
-        <ion-nav-view></ion-nav-view>
-    </div>
-      <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-messages.js"></script>  
 
@@ -54,5 +40,16 @@
     <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
     <!--<script src="https://maps.googleapis.com/maps/api/js"></script>-->
     <script src="https://maps-api-ssl.google.com/maps/api/js?libraries=places"></script>
+    
+  </head>
+  <body>
+    <div ng-app="wcm" ng-controller="HomeController">
+        <ion-nav-bar class="bar-assertive" ng-style="{&apos;background-color&apos;: viewColor}">
+          <ion-nav-back-button>
+          </ion-nav-back-button>
+        </ion-nav-bar>
+                 
+        <ion-nav-view></ion-nav-view>
+    </div>
   </body>
 </html>

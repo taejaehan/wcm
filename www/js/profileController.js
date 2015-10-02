@@ -104,7 +104,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 	$scope.logOut = function() {
 		AuthService.logout();
 
-		window.localStorage['user'] = null;
+		window.localStorage['user'] = undefined;
 		$state.go('fblogin');
 	}
 	

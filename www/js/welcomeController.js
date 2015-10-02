@@ -1,7 +1,10 @@
 wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOauth, AuthService, $window) {
 
-  // if(window.localStorage['user'] != null) $state.go("tabs.home");
-  
+  console.log('user : ' + window.localStorage['user']);
+  // if(window.localStorage['user'] != null && window.localStorage['user'] != 'null'){
+  //   $state.go("tabs.home");
+  // };
+
   $scope.facebookLogin = function(){
 
     //webview 앱에서 실행했을 때만 facebook login
@@ -35,7 +38,7 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
                          user_id: "1826451354247937",
                          username: "Dev Major",
                          userimage: userImage,
-                         sns: "fb"
+                         sns: "fb",
                        };
       $scope.uploadUser(formData);
     }
@@ -67,7 +70,8 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
                     username: formData.username,
                     userid: formData.user_id,
                     userimage: formData.userimage.split("amp;").join("&"),
-                    isAuthenticated: true
+                    isAuthenticated: true,
+                    likse : []
                   };
       
       window.localStorage['user'] = JSON.stringify(user);
@@ -124,77 +128,3 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
   }
 
 });
-
-
-
-// wcm.controller("WelcomeController", ["$scope", "$state", "$http", "$cordovaOauth", function($scope, $state, $http ,$cordovaOauth) {
-//     // window.cordovaOauth = $cordovaOauth;
-//     // window.http = $http;
-//     // window.state = $state;
-
-//     alert('WelcomeController');
-
-//     if( window.localStorage['name'] )
-//       $state.go('tabs.home');
-//     $scope.facebookLogin = function($cordovaOauth, $http)
-//     { 
-//       alert('facebookLogin');
-//       var formData = {
-//                          user_id: '123124',
-//                          username: 'aaaa',
-//                          userimage: 'ttt.png'
-//                          sns: "fb"
-//                        };
-//       $scope.uploadUser(formData);
-//       window.cordovaOauth.facebook("1020667507964480", ["public_profile"], {redirect_uri: "http://localhost/"}).then(function(result){
-//             window.http.get("https://graph.facebook.com/v2.2/me", {params: {access_token: result.access_token, fields: "name,picture", format: "json" }}).then(function(results) {
-
-//                 console.log('FB results.data : ' + results.data);
-//                 console.log('FB results.data.id : ' + results.data.id);
-//                 console.log('FB results.data.name : ' + results.data.name);
-//                 console.log('FB results.data.picture.data.url : ' + results.data.picture.data.url);
-
-//                 var formData = {
-//                                  user_id: results.data.id,
-//                                  username: results.data.name,
-//                                  userimage: results.data.picture.data.url,
-//                                  sns: "fb"
-//                                };
-
-//                 $scope.uploadUser(formData);
-
-//                 // $rootScope.$emit('loginSuccess');
-//                 // window.state.go('tabs.home');
-//             }, function(error) {
-//                 alert("Error: " + JSON.stringify(error));
-//             });
-//       },  function(error){
-//             alert("Error: " + JSON.stringify(error));
-//       });
-//     }
-
-//     $scope.uploadUser = function(formData)
-//     {
-//       var postData = 'userData='+JSON.stringify(formData);
-//       var request = $http({
-//          method: "post",
-//          url: mServerAPI + "/users",
-//          crossDomain : true,
-//          data: postData,
-//          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-//          cache: false
-//       });
-
-//       /* Successful HTTP post request or not */
-//       request.success(function(data) {
-//         alert('success');
-//         window.localStorage['name'] =  results.data.name;
-//         window.localStorage['picture'] = results.data.picture.data.url;
-//         $state.go("tabs.home");
-//       })
-//       .error(function(){
-//         alert('error');
-//       });
-
-//     }
-// }]);

@@ -1,12 +1,12 @@
-wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth,$ionicPlatform) {
+wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth,$ionicPlatform, $ionicSlideBoxDelegate) {
 
   navigator.geolocation.watchPosition(showPosition);
 
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
-  
+
   $scope.$on('$ionicView.afterEnter', function(){
-    console.log(user);
+    // console.log(user.likes);
   });
 
   //sort type
@@ -74,6 +74,10 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     }
   });
   
+  $scope.nextSlide = function() {
+    $ionicSlideBoxDelegate.next();
+  }
+
   /*
   *   서버에서 이미지 가져와서 app file system안에 저장
   */
@@ -322,6 +326,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   * $event 클릭된 event
   */
   $scope.openPopover = function ($event) {
+    console.log(' va : ' + document.getElementById('notShowCheckbox'));
    $ionicPopover.fromTemplateUrl('templates/popover.html', {
      scope: $scope
    }).then(function(popover) {
@@ -580,10 +585,4 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       }
     }
   }
-  
-  
 });
-
-
-
-

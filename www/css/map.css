@@ -42,8 +42,8 @@
 /* when showing the picture */
 .ng-hide-remove      { animation:0.5s flipInX ease; }
 
-.checkbox_custrom{
-	padding-left : 43px;
+/* .checkbox_custrom{
+  padding-left : 43px;
 }
 
 .checkbox_custrom input:checked:before, .checkbox_custrom input:checked + .checkbox-icon:before{
@@ -63,7 +63,7 @@
   background-size: 30px;
   background-repeat: no-repeat;
   background-position: center;
-}
+} */
 
 .find-me{
   background-color : #bbb;
