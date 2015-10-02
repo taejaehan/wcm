@@ -64,11 +64,11 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService)
           if ($scope.cards[i].id === card.id) {
             
             if (card.status === "33") {
-		          $scope.cards[i].statusDescription = "프로젝트가 시작되었습니다.";
+		          $scope.cards[i].statusDescription = "위험요소가 등록되었습니다.";
 		        } else if (card.status === "66") {
-		          $scope.cards[i].statusDescription = "프로젝트를 진행합니다.";
+		          $scope.cards[i].statusDescription = "위험요소를 해결 중 입니다.";
 		        } else {
-		          $scope.cards[i].statusDescription = "프로젝트가 완료되었습니다.";
+		          $scope.cards[i].statusDescription = "위험요소가 해결 되었습니다.";
 		        }
             break;
           } 
@@ -103,6 +103,9 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService)
 
 	$scope.logOut = function() {
 		AuthService.logout();
+
+		window.localStorage['user'] = null;
+		$state.go('fblogin');
 	}
 	
 	$scope.showChanges = function() {

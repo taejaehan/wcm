@@ -1,4 +1,8 @@
 wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOauth) {
+
+  console.log('local user : ' + window.localStorage['user']);
+  if(window.localStorage['user'] != null) $state.go("tabs.home");
+  
   $scope.facebookLogin = function(){
 
     //webview 앱에서 실행했을 때만 facebook login

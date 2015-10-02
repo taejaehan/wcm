@@ -29,7 +29,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile) {
 
   $ionicPlatform.ready(function() {
     
-    window.localStorage['user'] = null;
+    // window.localStorage['user'] = null;
 
     var request = $http({
         method: "get",
