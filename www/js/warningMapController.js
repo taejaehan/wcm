@@ -106,7 +106,10 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
              
         }, function(err) {
             $ionicLoading.hide();
-            alert('You can not use the location information');
+            $ionicPopup.alert({
+               title: 'wcm',
+               template: 'You can not use the location information'
+             });
             console.log('CURRENT LOCATION ERROR :  ' + err);
         });
     }
@@ -249,7 +252,7 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
           '</h3><div class="info-body">' +
           '<a href="' + url + '"><img src="' +
           fileurl + '" class="info-img"/></a></div>' +
-          '<a href="' + pic.user[0].userimage + '" target="_blank">' + pic.user[0].username +
+          '<a href="http://facebook.com/' + pic.user[0].user_id + '" target="_blank">' + pic.user[0].username +
           '</a></div></div>';
 
         $scope.infoWindow.setContent(infoHtml);

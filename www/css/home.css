@@ -156,3 +156,87 @@ button.more {
 .progress .progress-33{
 	background-color: #d9534f;
 }
+
+
+
+.dark-overlay {
+  background-color: #222 !important;
+  opacity: 0.85;
+  display: none;
+}
+.dark-item {
+  background-color: transparent !important;
+  color: #fff !important;
+  border-color: #444 !important;
+}
+
+.overlay-spacer {
+  height: 43px;
+}
+.content-flush {
+  top: 0px !important;
+}
+.slider-pager{
+	bottom : 0;
+	top : 30px;
+}
+
+.overlay-box{
+	height: 100%;
+	padding-top: 20px;
+}
+.info_box{
+	text-align: center;
+	width: 80%;
+	margin-left: 10%;
+	padding-top : 50%;
+}
+.info_box h1{
+	color : #E0624D;
+}
+.info_box h4{
+	color : #eee;
+}
+
+.blue{
+	height: 100%;
+	/*background-color: blue !important;*/
+}
+.red{
+	height: 100%;
+	/*background-color: red !important;*/
+}
+
+
+.checkbox_custrom{
+	position: absolute;
+	top : 55px;
+  border : none;
+  background-color: transparent !important;
+  color: #fff;
+}
+.checkbox_custrom input:checked:before, .checkbox_custrom input:checked + .checkbox-icon:before{
+  
+  background: #E0624D;
+  border-color: #E0624D;
+}
+
+span.slider-pager-page{
+	color: #fff !important;
+}
+
+.info_01{
+	position:absolute;
+	top: 0;
+	right : 2%;
+}
+.info_02{
+	position:absolute;
+	bottom: 50px;
+	right : 23%;;
+}
+.info_03{
+	position:absolute;
+	bottom: 50px;
+	right : 32%;
+}

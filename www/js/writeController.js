@@ -123,8 +123,6 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   */
   $scope.currentLocation = function(){
 
-    console.log('currentLocation!!!!');   
-
     if(document.getElementById("card_location").value != '') return;
 
     $ionicLoading.show({
@@ -144,11 +142,22 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
         $scope.setLocationName(lat, long);
 
         $ionicLoading.hide();
-        console.log('DONE!!!!');   
     }, function(err) {
+
         $ionicLoading.hide();
+        $ionicPopup.alert({
+           title: 'wcm',
+           template: 'You can not use the location information'
+         });
+        //서울 초기값 세팅
+        var lat  = 37.574515;
+        var long = 126.976930;
+        $scope.setLocationName(lat, long);
+        
         console.log(err);
     });
+
+
   }
 
   /*

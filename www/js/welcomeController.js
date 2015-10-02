@@ -1,8 +1,10 @@
 wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOauth) {
 
   console.log('local user : ' + window.localStorage['user']);
-  if(window.localStorage['user'] != null) $state.go("tabs.home");
-  
+  if(window.localStorage['user'] != null){
+    $state.go("tabs.home");
+  };
+
   $scope.facebookLogin = function(){
 
     //webview 앱에서 실행했을 때만 facebook login
@@ -41,7 +43,7 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
                          user_id: "1826451354247937",
                          username: "Dev Major",
                          userimage: userImage,
-                         sns: "fb"
+                         sns: "fb",
                        };
       $scope.uploadUser(formData);
     }

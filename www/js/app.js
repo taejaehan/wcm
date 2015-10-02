@@ -9,7 +9,7 @@ var mServerAPI = mServerUrl + '/controllers/index.php';
 //사진이 없을 경우 보여주는 이미지 링크
 var mNoImage = 'img/default.png';
 
-var wcm = angular.module('starter', ['ionic', 'ngCordova']);
+var wcm = angular.module('wcm', ['ionic', 'ngCordova']);
 
 //controller간 데이터를 전달하기 위해 사용한다
 wcm.factory('Scopes', function($rootScope) {
@@ -28,7 +28,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile) {
   // Kakao.init('2b1444fba3c133df8405882491640b80');
 
   $ionicPlatform.ready(function() {
-    
+    window.localStorage.clear();
     // window.localStorage['user'] = null;
 
     var request = $http({
