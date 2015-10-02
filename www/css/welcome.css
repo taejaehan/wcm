@@ -1,0 +1,12 @@
+.welcome_page.jumbotron {
+	padding: 20px;
+}
+
+.welcome_page {
+	text-align: center;
+}
+
+.welcome_page p {
+	font-size: 17px;
+	margin: 30px 0px 30px 0px;
+}

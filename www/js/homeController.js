@@ -1,11 +1,10 @@
 wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth,$ionicPlatform) {
-  navigator.geolocation.watchPosition(showPosition);
-
+  
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
   
   $scope.$on('$ionicView.afterEnter', function(){
-    console.log(user.likes);
+    console.log(user);
   });
 
   //sort type
@@ -32,7 +31,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   */
   $ionicPlatform.ready(function() {
     console.log('deviceready');
-
+    navigator.geolocation.watchPosition(showPosition);
     //앱에서 켰다면 
     if(ionic.Platform.isWebView()){
       // console.log('cordova.file : ' + cordova.file);

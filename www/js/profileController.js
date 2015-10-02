@@ -98,7 +98,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService)
 	}
 
 	$scope.goLogin = function() {
-		$state.go('login');
+		$state.go('fblogin');
 	}
 
 	$scope.logOut = function() {
