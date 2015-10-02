@@ -73,7 +73,7 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window) {
   var skipLogin = function() {
     var user = { isAuthenticated: false };
     window.localStorage['user'] = JSON.stringify(user);
-    $window.location.reload(true);
+    // $window.location.reload(true);
     $state.go('tabs.home');
   };
 

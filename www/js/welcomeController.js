@@ -111,11 +111,11 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
           } 
           window.localStorage['user'] = JSON.stringify(user);
 
+          $state.go("tabs.home");
           // $window.location.reload(true);
         });
       }); 
 
-      $state.go("tabs.home");
 
     })
     .error(function(error){
