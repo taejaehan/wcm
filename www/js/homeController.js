@@ -1,5 +1,7 @@
 wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth,$ionicPlatform) {
-  
+
+  navigator.geolocation.watchPosition(showPosition);
+
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
   
@@ -31,9 +33,10 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   */
   $ionicPlatform.ready(function() {
     console.log('deviceready');
-    navigator.geolocation.watchPosition(showPosition);
     //앱에서 켰다면 
     if(ionic.Platform.isWebView()){
+
+      // card이미지를  file system에 저장하는 부분 임시로 주석처리 by tjhan 20151002
       // console.log('cordova.file : ' + cordova.file);
       // console.log('cordova.file.dataDirectory : ' + cordova.file.dataDirectory);
 
@@ -185,24 +188,24 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     if (!(ionic.Platform.isWebView()) || $cordovaNetwork.isOnline()) {
       /* isOnline */  
       $timeout( function() {
-        //init이면 처음 페이지 데이터를 다시 가져옴
-        // if(init == 'init'){
-        //   $scope.page = 0;
-        //   $rootScope.allData = { 
-        //                   cards: []
-        //                };
-        //   var request = $http({
-        //       method: "get",
-        //       url: mServerAPI + "/cards",
-        //       crossDomain : true,
-        //       headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-        //       cache: false
-        //   });
+        // init이면 처음 페이지 데이터를 다시 가져옴
+        if(init == 'init'){
+          $scope.page = 0;
+          $rootScope.allData = { 
+                          cards: []
+                       };
+          var request = $http({
+              method: "get",
+              url: mServerAPI + "/cards",
+              crossDomain : true,
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+              cache: false
+          });
 
-        //   request.success(function(data) {
-        //     window.localStorage['cardList'] = JSON.stringify(data);
-        //   });
-        // }
+          request.success(function(data) {
+            window.localStorage['cardList'] = JSON.stringify(data);
+          });
+        }
 
         var formData = { 
                         lat: $scope.currentLat,
@@ -221,7 +224,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             data: postData,
             cache: false
         });
-
         request.error(function(error){
           console.log('error : ' + JSON.stringify(error))
         })
@@ -246,7 +248,10 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             }
 
             data.cards[i].address = data.cards[i].location_name;
-
+            //url 중에 "&"은 "amp;"로 db에 저장되어 있으므로 변환한다
+            if(data.cards[i].user[0].userimage != null){
+              data.cards[i].user[0].userimage = data.cards[i].user[0].userimage.split("amp;").join("&");
+            }
             var object =  data.cards[i];
             $rootScope.allData.cards.push(object);
 
@@ -269,7 +274,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
         //Stop the ion-refresher from spinning
         $scope.$broadcast('scroll.refreshComplete');  
-      },10);
+      },1000);
   
     } else {
 
@@ -374,6 +379,10 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           data.cards[i].img_path = mServerUpload + data.cards[i].img_path;
         }
 
+        //url 중에 "&"은 "amp;"로 db에 저장되어 있으므로 변환한다
+        if(data.cards[i].user[0].userimage != null){
+          data.cards[i].user[0].userimage = data.cards[i].user[0].userimage.split("amp;").join("&");
+        }
         data.cards[i].address = data.cards[i].location_name;
 
         var object =  data.cards[i];
@@ -423,8 +432,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   // Check current user & card user
   $scope.userChecked = function(card) {
+
     if (user.isAuthenticated === true) {
-      if ( parseInt(card.user[0].user_id) === user.userid ) {
+      if ( card.user[0].user_id === user.userid ) {
         return { 'display' : 'inline-block' };
       } else {
         return { 'display' : 'none' };

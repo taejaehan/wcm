@@ -1,4 +1,7 @@
 wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOauth, AuthService, $window) {
+
+  // if(window.localStorage['user'] != null) $state.go("tabs.home");
+  
   $scope.facebookLogin = function(){
 
     //webview 앱에서 실행했을 때만 facebook login
@@ -27,10 +30,10 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
     } else {  //app에서 실행한게 아니면 테스트용도로 넣어줌 
 
       //url 중에 "&"은 "amp;"로 치환해야 에러가 나지 않는다
-      var userImage =  "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xfa1/v/t1.0-1/c35.35.436.436/s50x50/307344_193140860755365_1983556886_n.jpg?oh=a40948b2a860a01dacbd5c4a63e10da2&oe=5699AB81&__gda__=1454065585_01976934a0fe46b4d7f5edca2ddf49b1".split("&").join("amp;");
+      var userImage =  "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xpf1/v/t1.0-1/c15.0.50.50/p50x50/10354686_10150004552801856_220367501106153455_n.jpg?oh=17835c9c962c70d05cc25d75008438a3&oe=5698842F&__gda__=1452879355_4d8b6c5947a3a8359645aff176f54967".split("&").join("amp;");
       var formData = {
-                         user_id: "879359548800156",
-                         username: "Taejae Han",
+                         user_id: "1826451354247937",
+                         username: "Dev Major",
                          userimage: userImage,
                          sns: "fb"
                        };

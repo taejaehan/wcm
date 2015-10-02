@@ -66,7 +66,7 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window) {
   var logout = function() {
     isAuthenticated = false;
     window.localStorage.removeItem('user');
-    $state.go('login');
+    $state.go('fblogin');
   };
 
 
