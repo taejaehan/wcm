@@ -90,10 +90,10 @@
   </script>
 </ion-view>
 
-<ion-pane class="dark-overlay">
+<ion-pane id="welcomeOverlay" ng-controller="WelcomeController" class="dark-overlay">
   <ion-content class="content-flush has-header" scroll="false">
     <div class="overlay-spacer"></div>
-    <ion-checkbox ng-model="notShowChecked" id="notShowCheckbox" class="checkbox_custrom">다시 보지않기</ion-checkbox>
+    <ion-checkbox ng-model="notShowChecked.checked" ng-change="notShowChanged()"class="checkbox_custrom">다시 보지않기</ion-checkbox>
     <ion-slide-box class="overlay-box">
       <ion-slide>
         <div class="box blue">

@@ -1,4 +1,4 @@
-wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOauth, AuthService, $window) {
+wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOauth, AuthService, $window, notShow) {
 
   console.log('user : ' + window.localStorage['user']);
   // if(window.localStorage['user'] != null && window.localStorage['user'] != 'null'){
@@ -114,8 +114,32 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
             }
           } 
           window.localStorage['user'] = JSON.stringify(user);
+          
+          if(document.getElementById('welcomeOverlay') != null){
+            document.getElementById('welcomeOverlay').setAttribute('style','display:none');
+          }
+          console.log('checked : ' + $scope.notShowChecked.checked);
+          // console.log('before notShow : ' + notShow.get());
+          // console.log('before notShowLocal : ' + window.localStorage.getItem("notShowLocal"));
+          Preferences.get('notShowPref', function(notShowPref) {
+            console.log('before notShowPref : ' + notShowPref);
+          });
 
-          $state.go("tabs.home", {}, { reload: true });
+          if($scope.notShowChecked.checked){
+            // window.localStorage['notShowChecked'] = true; 
+            // notShow.set(true);
+            // window.localStorage.setItem("notShowLocal", true);
+
+            Preferences.put('notShowPref', 'true');
+          }else{
+            Preferences.put('notShowPref', 'false');
+          }
+          Preferences.get('notShowPref', function(notShowPref) {
+            console.log('after notShowPref : ' + notShowPref);
+          });
+          // console.log('after notShowLocal : ' + window.localStorage.getItem("notShowLocal"));
+          // console.log('after notShow : ' + notShow.get());
+          $state.go("tabs.home");
         });
       }); 
 
