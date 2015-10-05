@@ -1,10 +1,10 @@
-// var mServerUrl = 'http://192.168.10.35:3000/wcm_php';
-// var mServerUpload = mServerUrl + '/upload/';
-// var mServerAPI = mServerUrl + '/controllers/index.php';
-
-var mServerUrl = 'http://192.168.20.186:3000';
+var mServerUrl = 'http://192.168.10.35:3000/wcm_php';
 var mServerUpload = mServerUrl + '/upload/';
-var mServerAPI = mServerUrl + '';
+var mServerAPI = mServerUrl + '/controllers/index.php';
+
+// var mServerUrl = 'http://192.168.20.186:3000';
+// var mServerUpload = mServerUrl + '/upload/';
+// var mServerAPI = mServerUrl + '';
 
 //사진이 없을 경우 보여주는 이미지 링크
 var mNoImage = 'img/default.png';
@@ -20,18 +20,6 @@ wcm.factory('Scopes', function($rootScope) {
       },
          get: function(key) {
          return mem[key];
-      }
-    };
-})
-
-wcm.factory('notShow', function($rootScope) {
-    var notShow = false;
-    return {
-      set: function(value) {
-         notShow = value;
-      },
-      get: function(key) {
-         return notShow;
       }
     };
 })
@@ -54,18 +42,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $cordovaPreferences) {
     request.success(function(data) {
       window.localStorage['cardList'] = JSON.stringify(data);
     });
-    
-    console.log('ready window.cordova: ' + window.cordova);
-    console.log('ready window.cordova.plugins: ' + window.cordova.plugins);
-    console.log('ready Preferences: ' + Preferences);
-    console.log('ready $cordovaPreferences: ' + $cordovaPreferences);
 
-    // Preferences.put('testKey', 'true');
-    // Preferences.get('testKey', function(success) {
-    //   alert('success: : ' +  success);
-    // }, function(error){
-    //   alert('error: : ' +  error);
-    // });
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     if(window.cordova && window.cordova.plugins.Keyboard) {
@@ -101,7 +78,7 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
       url: "/tab",
       abstract: true,
       templateUrl: "templates/tabs.html",
-      controller : "WriteController"
+      // controller : "WriteController"
     })
     .state('tabs.home', {
       url: "/home",
@@ -212,7 +189,8 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
       }
     })
 
-    $urlRouterProvider.otherwise("/fblogin");
+    // $urlRouterProvider.otherwise("/fblogin");
+    $urlRouterProvider.otherwise("/tab/home");
 
 });
 

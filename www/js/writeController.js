@@ -150,7 +150,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   */
   $scope.currentLocation = function(){
 
-    if(document.getElementById("card_location").value != '') return;
+    if(document.getElementById("card_location") != null && document.getElementById("card_location").value != '') return;
 
     $ionicLoading.show({
         template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!'
@@ -198,10 +198,11 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       if (status === google.maps.GeocoderStatus.OK) {
         if (results[1]) {
           console.log('results[1].formatted_address) : ' + results[1].formatted_address);
-          document.getElementById("card_location").setAttribute('lat' , lat);
-          document.getElementById("card_location").setAttribute('long' , long);
-          document.getElementById("card_location").value = results[1].formatted_address;
-
+          if(document.getElementById("card_location") != null){
+            document.getElementById("card_location").setAttribute('lat' , lat);
+            document.getElementById("card_location").setAttribute('long' , long);
+            document.getElementById("card_location").value = results[1].formatted_address;
+          }
           // 해당 input을 valid시킴
           // $scope.cardForm.location.$setDirty();
           $scope.cardForm.location.$setTouched();

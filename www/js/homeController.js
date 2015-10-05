@@ -1,62 +1,36 @@
-wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth,$ionicPlatform, $ionicSlideBoxDelegate, notShow) {
+wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth,$ionicPlatform, $ionicSlideBoxDelegate) {
 
   navigator.geolocation.watchPosition(showPosition);
 
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
 
-  $scope.notShowChanged = function(data){
-    // console.log('before checked : ' + notShowChecked.get());
-    // console.log('before localStorage checked : ' + window.localStorage['notShowChecked']);
-
-    // if($scope.notShowChecked.checked){
-    //   window.localStorage['notShowChecked'] = true; 
-    //   notShowChecked.set(true);
-    // }else{
-    //   window.localStorage['notShowChecked'] = false; 
-    //   notShowChecked.set(false);
-    // }
-
-    // console.log('after checked : ' + notShowChecked.get());
-    // console.log('after localStorage checked : ' + window.localStorage['notShowChecked']);
-  };
-
   $scope.$on('$ionicView.afterEnter', function(){
-
-    // Preferences.put('notShowPre', true);
-    // Preferences.get('notShowPre', function(value) {
-    //   alert('value : ' + value);
-    // }, error);
-    // sharedpreferences.getSharedPreferences('sharedpreferences', 'MODE_PRIVATE', function successHandler(result){
-    //     alert("SUCCESS: \r\n"+result );
-    // }, function errorHandler(result){
-    //     alert("ERORR: \r\n"+result );
-    // });
-
-    Preferences.get('notShowPref', function(notShowPref) {
-      console.log('success notShowPref : ' +  notShowPref);
-      if(document.getElementById('welcomeOverlay') != null){
-        if(notShowPref == 'true'){
-          console.log('display none');
-          document.getElementById('welcomeOverlay').setAttribute('style','display:none');
-        }else{
-          console.log('display block');
-          document.getElementById('welcomeOverlay').setAttribute('style','display:block');
+    
+    //앱에서 열였다면
+    if(ionic.Platform.isWebView()){
+      //com.portnou.cordova.plugin.preferences plugin에서 앱의 prefrences에 저장
+      Preferences.get('notShowPref', function(notShowPref) {
+        console.log('success notShowPref : ' +  notShowPref);
+        if(document.getElementById('welcomeOverlay') != null){
+           //다시 보지 않기가 true라면 
+          if(notShowPref == 'true'){
+            console.log('display none');
+            document.getElementById('welcomeOverlay').setAttribute('style','display:none');
+          }else{
+            console.log('display block');
+            document.getElementById('welcomeOverlay').setAttribute('style','display:block');
+          }
         }
+      }, function(error){
+        console.log('error: : ' +  error);
+      });
+
+    }else{
+      if(document.getElementById('welcomeOverlay') != null){
+        document.getElementById('welcomeOverlay').setAttribute('style','display:none');
       }
-    }, function(error){
-      console.log('error: : ' +  error);
-    });
-
-    console.log('afterEnter notShow : ' + notShow.get());
-
-    // console.log('afterEnter notShowLocal : ' + window.localStorage.getItem("notShowLocal"));
-    // if(window.localStorage.getItem("notShowLocal")){
-    //   if(document.getElementById('welcomeOverlay') != null){
-    //     document.getElementById('welcomeOverlay').setAttribute('style','display:none');
-    //   }
-    // }
-    // console.log(user.likes);
+    }
   });
 
   //sort type
@@ -72,6 +46,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     sortingType: 'registration'
   };
 
+  //처음 view에서 다시보지 않기의 초기값
   $scope.notShowChecked = { checked: false };
 
   $scope.downloaded = false;
@@ -85,13 +60,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   */
   $ionicPlatform.ready(function() {
     console.log('$ionicPlatform ready');
-
-    console.log('afterEnter notShowLocal : ' + window.localStorage.getItem("notShowLocal"));
-    if(window.localStorage.getItem("notShowLocal")){
-      if(document.getElementById('welcomeOverlay') != null){
-        document.getElementById('welcomeOverlay').setAttribute('style','display:none');
-      }
-    }
 
     //앱에서 켰다면 
     if(ionic.Platform.isWebView()){
