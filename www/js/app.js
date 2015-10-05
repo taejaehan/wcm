@@ -15,16 +15,28 @@ var wcm = angular.module('wcm', ['ionic', 'ngCordova']);
 wcm.factory('Scopes', function($rootScope) {
     var mem = {};
     return {
-        store: function(key, value) {
-             mem[key] = value;
-        },
-             get: function(key) {
-             return mem[key];
-         }
+      store: function(key, value) {
+         mem[key] = value;
+      },
+         get: function(key) {
+         return mem[key];
+      }
     };
 })
 
-wcm.run(function($ionicPlatform, $http, $cordovaFile) {
+wcm.factory('notShow', function($rootScope) {
+    var notShow = false;
+    return {
+      set: function(value) {
+         notShow = value;
+      },
+      get: function(key) {
+         return notShow;
+      }
+    };
+})
+
+wcm.run(function($ionicPlatform, $http, $cordovaFile, $cordovaPreferences) {
   // Kakao.init('2b1444fba3c133df8405882491640b80');
 
   $ionicPlatform.ready(function() {
@@ -43,6 +55,17 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile) {
       window.localStorage['cardList'] = JSON.stringify(data);
     });
     
+    console.log('ready window.cordova: ' + window.cordova);
+    console.log('ready window.cordova.plugins: ' + window.cordova.plugins);
+    console.log('ready Preferences: ' + Preferences);
+    console.log('ready $cordovaPreferences: ' + $cordovaPreferences);
+
+    // Preferences.put('testKey', 'true');
+    // Preferences.get('testKey', function(success) {
+    //   alert('success: : ' +  success);
+    // }, function(error){
+    //   alert('error: : ' +  error);
+    // });
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     if(window.cordova && window.cordova.plugins.Keyboard) {
@@ -185,7 +208,7 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
       }
     })
 
-    // $urlRouterProvider.otherwise("/tab/home");
-    $urlRouterProvider.otherwise("/fblogin");
+    $urlRouterProvider.otherwise("/tab/home");
+    // $urlRouterProvider.otherwise("/fblogin");
 });
 

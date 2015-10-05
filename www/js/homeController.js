@@ -1,11 +1,61 @@
-wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth,$ionicPlatform, $ionicSlideBoxDelegate) {
+wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth,$ionicPlatform, $ionicSlideBoxDelegate, notShow) {
 
   navigator.geolocation.watchPosition(showPosition);
 
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
 
+  $scope.notShowChanged = function(data){
+    // console.log('before checked : ' + notShowChecked.get());
+    // console.log('before localStorage checked : ' + window.localStorage['notShowChecked']);
+
+    // if($scope.notShowChecked.checked){
+    //   window.localStorage['notShowChecked'] = true; 
+    //   notShowChecked.set(true);
+    // }else{
+    //   window.localStorage['notShowChecked'] = false; 
+    //   notShowChecked.set(false);
+    // }
+
+    // console.log('after checked : ' + notShowChecked.get());
+    // console.log('after localStorage checked : ' + window.localStorage['notShowChecked']);
+  };
+
   $scope.$on('$ionicView.afterEnter', function(){
+
+    // Preferences.put('notShowPre', true);
+    // Preferences.get('notShowPre', function(value) {
+    //   alert('value : ' + value);
+    // }, error);
+    // sharedpreferences.getSharedPreferences('sharedpreferences', 'MODE_PRIVATE', function successHandler(result){
+    //     alert("SUCCESS: \r\n"+result );
+    // }, function errorHandler(result){
+    //     alert("ERORR: \r\n"+result );
+    // });
+
+    Preferences.get('notShowPref', function(notShowPref) {
+      console.log('success notShowPref : ' +  notShowPref);
+      if(document.getElementById('welcomeOverlay') != null){
+        if(notShowPref == 'true'){
+          console.log('display none');
+          document.getElementById('welcomeOverlay').setAttribute('style','display:none');
+        }else{
+          console.log('display block');
+          document.getElementById('welcomeOverlay').setAttribute('style','display:block');
+        }
+      }
+    }, function(error){
+      console.log('error: : ' +  error);
+    });
+
+    console.log('afterEnter notShow : ' + notShow.get());
+
+    // console.log('afterEnter notShowLocal : ' + window.localStorage.getItem("notShowLocal"));
+    // if(window.localStorage.getItem("notShowLocal")){
+    //   if(document.getElementById('welcomeOverlay') != null){
+    //     document.getElementById('welcomeOverlay').setAttribute('style','display:none');
+    //   }
+    // }
     // console.log(user.likes);
   });
 
@@ -16,10 +66,13 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     { text: "위험도", value: "warning" }
   ];
 
+
   //sort type default value
   $scope.data = {
     sortingType: 'registration'
   };
+
+  $scope.notShowChecked = { checked: false };
 
   $scope.downloaded = false;
   $scope.page = 0;
@@ -27,12 +80,19 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
                           cards: []
                        };
 
-
   /*
   * deviceready > app file system안에 폴더만들고 이미지 저장, 인터넷 연결 listener
   */
   $ionicPlatform.ready(function() {
-    console.log('deviceready');
+    console.log('$ionicPlatform ready');
+
+    console.log('afterEnter notShowLocal : ' + window.localStorage.getItem("notShowLocal"));
+    if(window.localStorage.getItem("notShowLocal")){
+      if(document.getElementById('welcomeOverlay') != null){
+        document.getElementById('welcomeOverlay').setAttribute('style','display:none');
+      }
+    }
+
     //앱에서 켰다면 
     if(ionic.Platform.isWebView()){
 
@@ -211,12 +271,17 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           });
         }
 
+        if($scope.currentLat == null){
+          $scope.currentLat = 37.574515;
+          $scope.currentLon = 126.976930;
+        }
         var formData = { 
                         lat: $scope.currentLat,
                         lon: $scope.currentLon
                       };
 
-        console.log('lat : ' + $scope.currentLat + 'lon : ' + $scope.currentLon);
+
+        console.log('lat : ' + $scope.currentLat + ' lon : ' + $scope.currentLon);
 
         var postData = 'locationData='+JSON.stringify(formData);
 
@@ -258,14 +323,15 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             }
             var object =  data.cards[i];
             $rootScope.allData.cards.push(object);
-
-            if (user.isAuthenticated === true) {
-              for(var j = 0; j < $rootScope.allData.cards.length; j ++) {
-                
-                if(user.likes.indexOf($rootScope.allData.cards[j].id) != -1) {
-                  $rootScope.allData.cards[j].watch = true;
-                } else {
-                  $rootScope.allData.cards[j].watch = false;
+            if(user != null){
+              if (user.isAuthenticated === true) {
+                for(var j = 0; j < $rootScope.allData.cards.length; j ++) {
+                  
+                  if(user.likes.indexOf($rootScope.allData.cards[j].id) != -1) {
+                    $rootScope.allData.cards[j].watch = true;
+                  } else {
+                    $rootScope.allData.cards[j].watch = false;
+                  }
                 }
               }
             }
@@ -326,7 +392,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   * $event 클릭된 event
   */
   $scope.openPopover = function ($event) {
-    console.log(' va : ' + document.getElementById('notShowCheckbox'));
    $ionicPopover.fromTemplateUrl('templates/popover.html', {
      scope: $scope
    }).then(function(popover) {
@@ -393,13 +458,15 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         var object =  data.cards[i];
         $rootScope.allData.cards.push(object);
 
-        if (user.isAuthenticated === true) {
-          for(var j = 0; j < $rootScope.allData.cards.length; j ++) {
-            
-            if(user.likes.indexOf($rootScope.allData.cards[j].id) != -1) {
-              $rootScope.allData.cards[j].watch = true;
-            } else {
-              $rootScope.allData.cards[j].watch = false;
+        if(user != null){
+          if (user.isAuthenticated === true) {
+            for(var j = 0; j < $rootScope.allData.cards.length; j ++) {
+              
+              if(user.likes.indexOf($rootScope.allData.cards[j].id) != -1) {
+                $rootScope.allData.cards[j].watch = true;
+              } else {
+                $rootScope.allData.cards[j].watch = false;
+              }
             }
           }
         }
@@ -438,14 +505,16 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   // Check current user & card user
   $scope.userChecked = function(card) {
 
-    if (user.isAuthenticated === true) {
-      if ( card.user[0].user_id === user.userid ) {
-        return { 'display' : 'inline-block' };
+    if(user != null){
+      if (user.isAuthenticated === true) {
+        if ( card.user[0].user_id === user.userid ) {
+          return { 'display' : 'inline-block' };
+        } else {
+          return { 'display' : 'none' };
+        }
       } else {
-        return { 'display' : 'none' };
+        return { 'display' : 'none' }
       }
-    } else {
-      return { 'display' : 'none' }
     }
   }
 
@@ -476,112 +545,115 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   // Toggle Like-Count
   $scope.toggleLike = function(e, id) {
-    if (user.isAuthenticated === true) {
 
-      if (e === true) {
+    if(user != null){
+      if (user.isAuthenticated === true) {
 
-        if (user.likes.indexOf(id) === -1) {
-          user.likes.push(id);
-          window.localStorage['user'] = JSON.stringify(user);
-          console.log(user.likes);
-          var userId = parseInt(user.userid);
-          var postId = parseInt(id);
-          var formData1 = { user_id: userId,
-                            post_id: postId
-                          };
-          var postData1 = 'likeData='+JSON.stringify(formData1);
+        if (e === true) {
 
-          var request1 = $http({
-              method: "post",
-              url: mServerAPI + "/like",
-              crossDomain : true,
-              data: postData1,
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-              cache: false
-          });
+          if (user.likes.indexOf(id) === -1) {
+            user.likes.push(id);
+            window.localStorage['user'] = JSON.stringify(user);
+            console.log(user.likes);
+            var userId = parseInt(user.userid);
+            var postId = parseInt(id);
+            var formData1 = { user_id: userId,
+                              post_id: postId
+                            };
+            var postData1 = 'likeData='+JSON.stringify(formData1);
 
-        }
+            var request1 = $http({
+                method: "post",
+                url: mServerAPI + "/like",
+                crossDomain : true,
+                data: postData1,
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+                cache: false
+            });
 
-        var i = 0;
-
-        while( i < $rootScope.allData.cards.length) {
-
-          if ($rootScope.allData.cards[i].id === id) {
-            $rootScope.allData.cards[i].like_count ++;
-            $rootScope.allData.cards[i].watch = true;
-            $scope.selectedCard = $rootScope.allData.cards[i];
-            break;
           }
-          i ++;
+
+          var i = 0;
+
+          while( i < $rootScope.allData.cards.length) {
+
+            if ($rootScope.allData.cards[i].id === id) {
+              $rootScope.allData.cards[i].like_count ++;
+              $rootScope.allData.cards[i].watch = true;
+              $scope.selectedCard = $rootScope.allData.cards[i];
+              break;
+            }
+            i ++;
+          }
+
+
+        } else {
+          
+          if (user.likes.indexOf(id) != -1) {
+            var index = user.likes.indexOf(id);
+            user.likes.splice(index, 1);
+            window.localStorage['user'] = JSON.stringify(user);
+            console.log(user.likes);
+            var userId = parseInt(user.userid);
+            var postId = parseInt(id);
+            var formData1 = { user_id: userId,
+                              post_id: postId
+                            };
+            var postData1 = 'likeData='+JSON.stringify(formData1);
+
+            var request1 = $http({
+                method: "post",
+                url: mServerAPI + "/like/delete/" + userId + "/" + postId,
+                crossDomain : true,
+                data: postData1,
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+                cache: false
+            });
+
+          }
+
+          var i = 0;
+
+          while( i < $rootScope.allData.cards.length) {
+
+            if ($rootScope.allData.cards[i].id === id) {
+              $rootScope.allData.cards[i].like_count --;
+              $rootScope.allData.cards[i].watch = false;
+              $scope.selectedCard = $rootScope.allData.cards[i];
+              break;
+            }
+            i ++;
+          }
         }
+
+        var like_count = parseInt($scope.selectedCard.like_count);
+        var formData = { like_count: like_count };
+        var postData = 'likeData='+JSON.stringify(formData);
+
+        var request = $http({
+            method: "post",
+            url: mServerAPI + "/cardDetail/" + id + "/like",
+            crossDomain : true,
+            data: postData,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+            cache: false
+        });
 
 
       } else {
+        $ionicPopup.alert({
+          title: 'We Change Makers',
+          template: '로그인 후에 이용 가능합니다'
+        });
         
-        if (user.likes.indexOf(id) != -1) {
-          var index = user.likes.indexOf(id);
-          user.likes.splice(index, 1);
-          window.localStorage['user'] = JSON.stringify(user);
-          console.log(user.likes);
-          var userId = parseInt(user.userid);
-          var postId = parseInt(id);
-          var formData1 = { user_id: userId,
-                            post_id: postId
-                          };
-          var postData1 = 'likeData='+JSON.stringify(formData1);
-
-          var request1 = $http({
-              method: "post",
-              url: mServerAPI + "/like/delete/" + userId + "/" + postId,
-              crossDomain : true,
-              data: postData1,
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-              cache: false
-          });
-
-        }
-
         var i = 0;
-
         while( i < $rootScope.allData.cards.length) {
-
           if ($rootScope.allData.cards[i].id === id) {
-            $rootScope.allData.cards[i].like_count --;
             $rootScope.allData.cards[i].watch = false;
-            $scope.selectedCard = $rootScope.allData.cards[i];
             break;
           }
           i ++;
         }
-      }
-
-      var like_count = parseInt($scope.selectedCard.like_count);
-      var formData = { like_count: like_count };
-      var postData = 'likeData='+JSON.stringify(formData);
-
-      var request = $http({
-          method: "post",
-          url: mServerAPI + "/cardDetail/" + id + "/like",
-          crossDomain : true,
-          data: postData,
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-          cache: false
-      });
-
-
-    } else {
-      $ionicPopup.alert({
-        title: 'We Change Makers',
-        template: '로그인 후에 이용 가능합니다'
-      });
-      
-      var i = 0;
-      while( i < $rootScope.allData.cards.length) {
-        if ($rootScope.allData.cards[i].id === id) {
-          $rootScope.allData.cards[i].watch = false;
-          break;
-        }
-        i ++;
       }
     }
   }

@@ -162,7 +162,7 @@ button.more {
 .dark-overlay {
   background-color: #222 !important;
   opacity: 0.85;
-  display: none;
+  /*display: none;*/
 }
 .dark-item {
   background-color: transparent !important;
