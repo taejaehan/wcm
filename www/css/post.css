@@ -187,6 +187,12 @@
 #detail_page .comment-delete{
 	float: right;
 	margin-right : 10px;
+	position: relative;
+}
+
+#detail_page .comment-delete i {
+	font-size: 150%;
+	color: black;
 }
 
 #popup_page .changeMakerImage {

@@ -2,7 +2,7 @@
   <ion-content>
     <div id="profile_page">
 
-	    <form class="form-horizontal profile-form" ng-show="userCheck">
+	    <form class="form-horizontal profile-form" ng-class="{'user active' : userCheck, 'user non-active' : !userCheck}">
 		    <img src="{{ user.userimage }}">
 
 			  <div class="form-group username">
@@ -42,9 +42,9 @@
 	    </form>
 	    
 
-	    <div ng-hide="userCheck">
+	    <div ng-class="{'user active' : !userCheck, 'user non-active' : userCheck}">
 	    	<div class="form-group jumbotron non-login">
-	    		<img src="img/app_icon.png">
+	    		<!-- <img src="img/app_icon.png"> -->
 	    		<p>로그인이 필요한 서비스 입니다.</p>
 	    		<button class="btn btn-default" ng-click="goLogin()">페이스북으로 로그인하기</button>
 	    	</div>

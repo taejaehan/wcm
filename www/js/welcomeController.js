@@ -114,6 +114,7 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
             }
           } 
           window.localStorage['user'] = JSON.stringify(user);
+          
           if(document.getElementById('welcomeOverlay') != null){
             document.getElementById('welcomeOverlay').setAttribute('style','display:none');
           }

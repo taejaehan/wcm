@@ -47,7 +47,7 @@
           <div class="description">
             <strong>{{ comment.user[0].username }}</strong>
             <a class="comment-delete" ng-click="deleteComment(comment)" ng-style="userChecked(comment)">
-              <i class="icon ion-ios-trash-outline"></i>
+              <i class="ion-trash-b"></i>
             </a>
             <p>{{ comment.content }}</p>
             <small>{{ comment.updated_at | date:'yyyy-MM-dd HH:mm:ss' }}</small>
