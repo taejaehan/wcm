@@ -3,7 +3,8 @@
 	  <ion-tab title="Home" icon="ion-home" href="#/tab/home">
 	    <ion-nav-view name="home-tab"></ion-nav-view>
 	  </ion-tab>
-	  <ion-tab title="Posting" icon="ion-compose" ui-sref="tabs.write" >
+	  <ion-tab title="Posting" icon="ion-compose" ng-click="writeUserCheck()">
+	  <!-- <ion-tab title="Posting" icon="ion-compose" ui-sref="tabs.write"> -->
 	    <ion-nav-view name="write-tab"></ion-nav-view>
 	  </ion-tab>
 	  <ion-tab title="Profile" icon="ion-person" ui-sref="tabs.profile">

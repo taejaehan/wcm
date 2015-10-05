@@ -1,5 +1,5 @@
 #profile_page {
-	padding: 20px 10px 30px 10px;
+	padding: 20px 10px 0px 10px;
 }
 
 #profile_page .user.active {
@@ -34,15 +34,26 @@
 	display: block;
 }
 
-#profile_page .my-card-list {
+#profile_page .my-change-list p.change-title {
+	font-size: 18px;
+	text-align: center;
+	color: black;
+}
+
+#profile_page .my-change-list .change-list {
+	width: 49%;
+}
+
+#profile_page .my-change-list, .my-card-list {
 	border-radius: 10px;
 	margin-top: 10px;
 	box-shadow: 1px 2px 8px 1px #888888;
 }
 
 #profile_page .my-card-list .title p {
+	font-size: 18px;
 	text-align: center;
-	font-weight: 900;
+	color: black;
 }
 
 #profile_page .profile-form .form-group .progress {
@@ -82,11 +93,11 @@ button.logout {
 #profile_page .jumbotron .row a.active {
 	border-bottom: 4px solid #666666;
 	margin-bottom: 10px;
+	display: block;
 }
 
 #profile_page .jumbotron .info-1.non-active, .info-2.non-active{
-	left: 100%;
-	position: absolute;
+	display: none;
 }
 
 #profile_page .jumbotron.non-login {

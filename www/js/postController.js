@@ -12,7 +12,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
   $scope.$on('$ionicView.afterEnter', function(){
     $scope.changerImage = false;
-    console.log(user);
+    
     var request = $http({
       method: "get",
       url: mServerAPI + "/cardDetail/" + $scope.postId,
@@ -207,11 +207,23 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
     } else {
       $scope.card.watch = false;   
-      $ionicPopup.alert({
+
+      var myPopup = $ionicPopup.show({
+        template: "로그인 후에 이용 가능합니다",
         title: 'We Change Makers',
-        template: '로그인 후에 이용 가능합니다'
+      
+        buttons: [
+          { text: '나중에하기' },
+          {
+            text: '<b>로그인하기</b>',
+            type: 'button-positive',
+            onTap: function(e) {
+              $state.go("fblogin");
+            }
+          }
+        ]
       });
-    
+
       var i = 0;
       while( i < $rootScope.allData.cards.length) {
         if ($rootScope.allData.cards[i].id === $stateParams.postId) {
@@ -293,10 +305,22 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       }
 
     } else {
-      $ionicPopup.alert({
+      var myPopup = $ionicPopup.show({
+        template: "로그인 후에 이용 가능합니다",
         title: 'We Change Makers',
-        template: '로그인 후에 이용 가능합니다'
+      
+        buttons: [
+          { text: '나중에하기' },
+          {
+            text: '<b>로그인하기</b>',
+            type: 'button-positive',
+            onTap: function(e) {
+              $state.go("fblogin");
+            }
+          }
+        ]
       });
+
       document.getElementById("comment").value = "";
     }
 
@@ -415,10 +439,22 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       }
 
     } else {
-      $ionicPopup.alert({
+      var myPopup = $ionicPopup.show({
+        template: "로그인 후에 이용 가능합니다",
         title: 'We Change Makers',
-        template: '로그인 후에 이용 가능합니다'
+      
+        buttons: [
+          { text: '나중에하기' },
+          {
+            text: '<b>로그인하기</b>',
+            type: 'button-positive',
+            onTap: function(e) {
+              $state.go("fblogin");
+            }
+          }
+        ]
       });
+
     }
   }
 

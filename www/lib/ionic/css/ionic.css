@@ -3617,7 +3617,9 @@ a.subdued {
   margin-top: -2px;
   border-style: solid;
   border-width: 2px 0 0 0;
-  border-color: #444; }
+  /*border-color: #444;*/
+  border-color: transparent;
+}
   .tabs-striped .tab-item.tab-item-active .badge, .tabs-striped .tab-item.active .badge, .tabs-striped .tab-item.activated .badge {
     top: 2px;
     opacity: 1; }
@@ -3753,7 +3755,9 @@ a.subdued {
     color: #fff;
     border-style: solid;
     border-width: 2px 0 0 0;
-    border-color: #fff; }
+    /*border-color: #fff; */
+    border-color: transparent;
+  }
 .tabs-striped.tabs-top .tab-item.tab-item-active .badge, .tabs-striped.tabs-top .tab-item.active .badge, .tabs-striped.tabs-top .tab-item.activated .badge {
   top: 4%; }
 .tabs-striped.tabs-background-light .tabs {

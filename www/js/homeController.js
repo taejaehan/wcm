@@ -11,9 +11,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   //sort type
   $scope.sortingTypeList = [
-    { text: "등록순", value: "registration" },
+    { text: "최신순", value: "registration" },
     { text: "거리순", value: "location" },
-    { text: "위험도", value: "warning" }
+    { text: "위험순", value: "warning" }
   ];
 
   //sort type default value

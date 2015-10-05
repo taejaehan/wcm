@@ -1,10 +1,10 @@
-var mServerUrl = 'http://192.168.10.35:3000/wcm_php';
-var mServerUpload = mServerUrl + '/upload/';
-var mServerAPI = mServerUrl + '/controllers/index.php';
-
-// var mServerUrl = 'http://192.168.20.186:3000';
+// var mServerUrl = 'http://192.168.10.35:3000/wcm_php';
 // var mServerUpload = mServerUrl + '/upload/';
-// var mServerAPI = mServerUrl + '';
+// var mServerAPI = mServerUrl + '/controllers/index.php';
+
+var mServerUrl = 'http://192.168.20.186:3000';
+var mServerUpload = mServerUrl + '/upload/';
+var mServerAPI = mServerUrl + '';
 
 //사진이 없을 경우 보여주는 이미지 링크
 var mNoImage = 'img/default.png';
@@ -51,6 +51,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile) {
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
+
   });
 })
 
@@ -59,6 +60,8 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile) {
 wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
   $ionicConfigProvider.tabs.position('bottom');
+  $ionicConfigProvider.navBar.alignTitle('center');
+  $ionicConfigProvider.views.maxCache(0);
   
   $stateProvider
   .state("fblogin", {
@@ -74,7 +77,8 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
     .state('tabs', {
       url: "/tab",
       abstract: true,
-      templateUrl: "templates/tabs.html"
+      templateUrl: "templates/tabs.html",
+      controller : "WriteController"
     })
     .state('tabs.home', {
       url: "/home",
@@ -185,7 +189,7 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
       }
     })
 
-    // $urlRouterProvider.otherwise("/tab/home");
     $urlRouterProvider.otherwise("/fblogin");
+
 });
 
