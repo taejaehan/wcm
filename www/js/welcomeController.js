@@ -70,8 +70,7 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
                     username: formData.username,
                     userid: formData.user_id,
                     userimage: formData.userimage.split("amp;").join("&"),
-                    isAuthenticated: true,
-                    likse : []
+                    isAuthenticated: true
                   };
       
       window.localStorage['user'] = JSON.stringify(user);

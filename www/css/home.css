@@ -176,25 +176,39 @@ button.more {
 .content-flush {
   top: 0px !important;
 }
-.slider-pager{
-	bottom : 0;
-	top : 30px;
+.slider-pager {
+	/*top : 30px;*/
+	bottom: 80px;
 }
 
 .overlay-box{
 	height: 100%;
 	padding-top: 20px;
 }
+
+.overlay-box h1 {
+	font-size: 25px;
+}
+
+.overlay-box h2 {
+	font-size: 15px;
+}
+
+.overlay-box button {
+	z-index: 1000;
+}
+
 .info_box{
 	text-align: center;
 	width: 80%;
 	margin-left: 10%;
-	padding-top : 50%;
+	padding-top : 35%;
 }
+
 .info_box h1{
 	color : #E0624D;
 }
-.info_box h4{
+.info_box h2{
 	color : #eee;
 }
 
@@ -207,11 +221,21 @@ button.more {
 	/*background-color: red !important;*/
 }
 
+a.overlay-close {
+	color: white;
+	display: inline-block;
+	width: 25px;
+	height: 30px;
+	top: 70px;
+	right: 15px;
+	position: absolute;
+	z-index: 1;
+}
 
 .checkbox_custrom{
 	position: absolute;
-	top : 55px;
-  border : none;
+	top: 60px;
+  border: none;
   background-color: transparent !important;
   color: #fff;
 }

@@ -69,7 +69,7 @@
 
         </ion-item>
 
-        <ion-infinite-scroll on-infinite="doRefresh()" distance="10%">
+        <ion-infinite-scroll ng-if="!noMoreItemsAvailable" on-infinite="doRefresh()" distance="10%">
         </ion-infinite-scroll>
 
       </div>
@@ -94,40 +94,41 @@
   <ion-content class="content-flush has-header" scroll="false">
     <div class="overlay-spacer"></div>
     <ion-checkbox ng-model="notShowChecked.checked" ng-change="notShowChanged()"class="checkbox_custrom">다시 보지않기</ion-checkbox>
+    <a ng-click="overlayClose()" class="overlay-close"><i class="icon ion-close" style="font-size: 30px;"></i></a>
     <ion-slide-box class="overlay-box">
       <ion-slide>
         <div class="box blue">
           <div class="info_box">
             <h1>Welcome to</h1>
             <h1>We Change Makers!</h1>
-            <h4>대한민국의 안전 사각지대를 공유하고 함께 해결해나가는 We Change Makers에 오신 것을 환영합니다</h4>
+            <h2>대한민국의 안전 사각지대를 공유하고 함께 해결해나가는 We Change Makers에 오신 것을 환영합니다</h2>
           </div>
         </div>
       </ion-slide>
       <ion-slide>
         <div class="box red">
-          <img class="info_01" ng-src="../img/info_01.png">
+          <img class="info_01" ng-src="img/info_01.png">
           <div class="info_box">
             <h1>내 주변 위험정보를 한 눈에!</h1>
-            <h4>We Change Makers에서는 당신 주변의 위험한 지역을 실시간으로 확인할 수 있습니다.</h4>
+            <h2>We Change Makers에서는 당신 주변의 위험한 지역을 실시간으로 확인할 수 있습니다.</h2>
           </div>
-          <img class="info_02" ng-src="../img/info_02.png">
+          <img class="info_02" ng-src="img/info_02.png">
         </div>
       </ion-slide>
       <ion-slide>
         <div class="box red">
           <div class="info_box">
             <h1>위험한 곳을 직접 제보하세요!</h1>
-            <h4>씽크홀, 균열 등 위험요소를 발견했다면 지금 바로 공유하고 해결을 요청하세요! 사진을 찍고 위치를 태그 하는 것으로 간단히 위험정보를 공유할 수 있습니다</h4>
+            <h2>씽크홀, 균열 등 위험요소를 발견했다면 지금 바로 공유하고 해결을 요청하세요! 사진을 찍고 위치를 태그 하는 것으로 간단히 위험정보를 공유할 수 있습니다</h2>
           </div>
-          <img class="info_03" ng-src="../img/info_03.png">
+          <img class="info_03" ng-src="img/info_03.png">
         </div>
       </ion-slide>
       <ion-slide>
         <div class="box red">
           <div class="info_box">
             <h1>이건 내가 해결할게요!</h1>
-            <h4>앱에 접수된 위험정보 중 당신이 해결하거나 도움을 줄 수 있는 부분이 있다면 덧글을 통해 직접 참여하세요!</h4>
+            <h2>앱에 접수된 위험정보 중 당신이 해결하거나 도움을 줄 수 있는 부분이 있다면 덧글을 통해 직접 참여하세요!</h2>
           </div>
         </div>
       </ion-slide>
@@ -135,10 +136,12 @@
         <div class="box red">
           <div class="info_box">
             <h1>안전한 대한민국 함께 만들어가요!</h1>
-            <h4>이제 대한민국을 안전하게 바꾸어나갈 준비 끝! 안전을 지켜주고 싶은 가족과 친구들에게 공유하는 것도 잊지 마세요</h4>
+            <h2>이제 대한민국을 안전하게 바꾸어나갈 준비 끝! 안전을 지켜주고 싶은 가족과 친구들에게 공유하는 것도 잊지 마세요</h2>
           </div>
           <div>
-          <button class="button button-block button-positive" ng-click="facebookLogin()"><i class="icon ion-social-facebook"></i> Login using Facebook</button></a>
+          <!-- <button class="button button-block button-positive" ng-click="facebookLogin()"><i class="icon ion-social-facebook"></i> Login using Facebook</button></a> -->
+          <button class="button button-block button-positive" ng-click="facebookLogin()"><i class="fa fa-facebook-official"></i> Facebook Login</button></a>
+          <button class="button button-block btn-default" ng-click="skipLogin()"><i class="fa fa-check"></i> Skip Login</button> 
           </div>
         </div>
       </ion-slide>
