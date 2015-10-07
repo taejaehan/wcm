@@ -2,8 +2,8 @@
 // var mServerUpload = mServerUrl + '/upload/';
 // var mServerAPI = mServerUrl + '/controllers/index.php';
 
-var mServerUrl = 'https://wcm.major-apps-1.com';
-var mServerUpload = mServerUrl + '/upload/';
+var mServerUrl = 'https://wcm_test.major-apps-1.com';
+var mServerUpload = mServerUrl + '/uploads/';
 var mServerAPI = mServerUrl + '';
 
 
