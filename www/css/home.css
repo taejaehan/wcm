@@ -189,12 +189,12 @@ button.more {
 	text-align: center;
 	width: 80%;
 	margin-left: 10%;
-	padding-top : 50%;
+	padding-top : 20%;
 }
-.info_box h1{
+.info_box h2{
 	color : #E0624D;
 }
-.info_box h4{
+.info_box h5{
 	color : #eee;
 }
 

@@ -32,7 +32,7 @@ wcm.controller("LoginController", function($scope, $rootScope, $state, $http, Au
 	// 	      var postData = 'userData='+JSON.stringify(formData);
 	// 	      var request = $http({
 	// 	          method: "post",
-	// 	          url: mServerAPI + "/users",
+	// 	          url: mServerAPI + "/user",
 	// 	          crossDomain : true,
 	// 	          data: postData,
 	// 	          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},

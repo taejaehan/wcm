@@ -2,6 +2,8 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 
 	var user = JSON.parse(window.localStorage['user'] || '{}');
 
+	console.log('ProfileController user ' + user);
+	console.log('ProfileController user.isAuthenticated ' + user.isAuthenticated);
 	if (user.isAuthenticated === true) {
 		$scope.userCheck = true;
 		$scope.user = user;
@@ -179,6 +181,10 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 		AuthService.logout();
 
 		window.localStorage['user'] = null;
+		if(ionic.Platform.isWebView()){
+			Preferences.put('loginId', null); 
+		}
+		
 		$state.go('fblogin');
 	}
 	

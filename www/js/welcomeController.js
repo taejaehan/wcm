@@ -20,7 +20,7 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
                                  sns: "fb"
                                };
 
-                $scope.uploadUser(formData);
+                $scope.userLogin(formData);
 
                 // $rootScope.$emit('loginSuccess');
                 // window.state.go('tabs.home');
@@ -40,7 +40,7 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
                          userimage: userImage,
                          sns: "fb",
                        };
-      $scope.uploadUser(formData);
+      $scope.userLogin(formData);
     }
   }
 
@@ -49,94 +49,67 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
     AuthService.skipLogin();
   }
 
-
-  $scope.uploadUser = function(formData)
+  /*
+  * 해당 user_id가 db에 없으면 넣고, 있으면 해당 user 정보를 가져온다
+  * @param : formData {user_id:'', username:'',userimage:'',sns:''}
+  */
+  $scope.userLogin = function(formData)
   {
     var userData = 'userData='+JSON.stringify(formData);
     
     var request = $http({
        method: "post",
-       url: mServerAPI + "/users",
+       url: mServerAPI + "/user",
        crossDomain : true,
        data: userData,
        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
        cache: false
     });
 
-    /* Successful HTTP post request or not */
     request.success(function(data) {
-      // alert('success : '+JSON.stringify(data));
+
+      /* user data 넣어주기 시작 */
       var user = {
                     username: formData.username,
                     userid: formData.user_id,
                     userimage: formData.userimage.split("amp;").join("&"),
                     isAuthenticated: true,
-                    likse : []
+                    likes : [],
+                    changes : []
                   };
-      
-      window.localStorage['user'] = JSON.stringify(user);
-
-
-      // user가 watch한 게시물 정보 가져오기 
-      var request1 = $http({
-          method: "get",
-          url: mServerAPI + "/like/" + formData.user_id,
-          crossDomain : true,
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-          cache: false
-      });
-
-      // user가 change supporters인 게시물 정보 가져오기
-      var request2 = $http({
-          method: "get",
-          url: mServerAPI + "/change/" + formData.user_id,
-          crossDomain : true,
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-          cache: false
-      });
-
-      request1.success(function(data1) {
-        user.likes = [];
-        
-        if (data1.likes.length != 0) {
-          for(var i = 0; i < data1.likes.length; i++ ) {
-            user.likes.push(data1.likes[i].post_id); 
+      //로그인 했었던 유저라면(db에 user_id가 있다면) watch와 change를 push
+      if(data.users != null){
+        console.log('Existent User : ' + data.users[0].username);
+        if (data.users[0].likes.length != 0) {
+          for(var i = 0; i < data.users[0].likes.length; i++ ) {
+            user.likes.push(data.users[0].likes[i].post_id); 
           }
         }
-        window.localStorage['user'] = JSON.stringify(user);
-
-        request2.success(function(data2) {
-          user.changes = [];
-          
-          if (data2.changes.length != 0) {
-            for(var i = 0; i < data2.changes.length; i++ ) {
-              user.changes.push(data2.changes[i].post_id); 
-            }
-          } 
-          window.localStorage['user'] = JSON.stringify(user);
-
-          if(document.getElementById('welcomeOverlay') != null){
-            document.getElementById('welcomeOverlay').setAttribute('style','display:none');
+        if (data.users[0].changes.length != 0) {
+          for(var i = 0; i < data.users[0].changes.length; i++ ) {
+            user.changes.push(data.users[0].changes[i].post_id); 
           }
-          if(ionic.Platform.isWebView()){
-            Preferences.get('notShowPref', function(notShowPref) {
-              console.log('before notShowPref : ' + notShowPref);
-            });
-            if($scope.notShowChecked.checked){
-              Preferences.put('notShowPref', 'true');
-            }else{
-              Preferences.put('notShowPref', 'false');
-            };
-            Preferences.get('notShowPref', function(notShowPref) {
-              console.log('after notShowPref : ' + notShowPref);
-            });
-          }
+        }
+      }else{  //새로 가입한 유저라면
+        console.log('New User : ' + formData.username);
+      }
+      window.localStorage['user'] = JSON.stringify(user);
+      /* user data 넣어주기 끝 */
 
+      //overlay창 닫기
+      if(document.getElementById('welcomeOverlay') != null){
+        document.getElementById('welcomeOverlay').setAttribute('style','display:none');
+      }
 
-          $state.go("tabs.home");
-        });
-      }); 
+      //com.portnou.cordova.plugin.preferences plugin에서 앱의 prefrences에 저장
+      if(ionic.Platform.isWebView()){
+        //로그인 후 무조건 다시보지 않기
+        Preferences.put('notShowPref', true); 
+        //로그인 아이디 저장
+        Preferences.put('loginId', formData.user_id); 
+      }
 
+      $state.go("tabs.home");
 
     })
     .error(function(error){

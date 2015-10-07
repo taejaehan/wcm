@@ -5,15 +5,19 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
 
-  $scope.$on('$ionicView.afterEnter', function(){
-    
+  $scope.$on('$ionicView.beforeEnter', function(){
+
     //앱에서 열였다면
     if(ionic.Platform.isWebView()){
+
       //com.portnou.cordova.plugin.preferences plugin에서 앱의 prefrences에 저장
+      //다시 보지 않기
       Preferences.get('notShowPref', function(notShowPref) {
         console.log('success notShowPref : ' +  notShowPref);
         if(document.getElementById('welcomeOverlay') != null){
            //다시 보지 않기가 true라면 
+           console.log("notShowPref == true : " +  (notShowPref == "true"));
+           console.log("notShowPref == false : " +  (notShowPref == "false"));
           if(notShowPref == 'true'){
             console.log('display none');
             document.getElementById('welcomeOverlay').setAttribute('style','display:none');
@@ -21,6 +25,48 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             console.log('display block');
             document.getElementById('welcomeOverlay').setAttribute('style','display:block');
           }
+        }
+      }, function(error){
+        console.log('error: : ' +  error);
+      });
+
+      //로그인 한 상태라면 prefresnces에 저장된 user id로 서버에서 유저 정보를 가져와 localStorage에 저장
+      Preferences.get('loginId', function(loginId) {
+        if(loginId != null){
+          console.log('success loginId : ' +  loginId);
+          var request = $http({
+             method: "get",
+             url: mServerAPI + "/user/" + loginId,
+             crossDomain : true,
+             headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+             cache: false
+          });
+
+          request.success(function(data) {
+            console.log('Get User data : ' + data);
+            var user = {
+              username: data.users[0].username,
+              userid: data.users[0].user_id,
+              userimage: data.users[0].userimage.split("amp;").join("&"),
+              isAuthenticated: true,
+              likse : [],
+              changes : [],
+            }; 
+            //user watch list저장
+            if (data.users[0].likes.length != 0) {
+              for(var i = 0; i < data.users[0].likes.length; i++ ) {
+                user.likes.push(data.users[0].likes[i].post_id); 
+              }
+            }
+            //user changer list저장
+            if (data.users[0].changes.length != 0) {
+              for(var i = 0; i < data.users[0].changes.length; i++ ) {
+                user.changes.push(data.users[0].changes[i].post_id); 
+              }
+            }
+        
+            window.localStorage['user'] = JSON.stringify(user);
+          });
         }
       }, function(error){
         console.log('error: : ' +  error);
@@ -71,7 +117,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       // //cordova.file.dataDirectory안에 cardImage 디렉토리 (없다면 만들고) 안에 이미지 다운로드 시작
       // $cordovaFile.checkDir(cordova.file.dataDirectory, "cardImage")
       // .then(function (success) {
-      //   console.log('checkDir success : ' + JSON.stringify(success));
+      //   console.log('checkDir success : ' + success));
       //   $scope.fileDownload();
       //   // success
       // }, function (error) {

@@ -11,3 +11,9 @@
 	font-size: 17px;
 	margin: 30px 0px 30px 0px;
 }
+
+.fb-login{
+	margin-top: 50px !important;
+	background-color : #425F9C !important;
+	border-color : #425F9C !important;
+}

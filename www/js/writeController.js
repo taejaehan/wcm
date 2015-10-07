@@ -9,26 +9,37 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     "location":"",
     "imgPath":""
   };
+  $scope.submitDisabled = true;
 
   $scope.$on('$ionicView.afterEnter', function(){
+    $scope.writeUserCheck();
+  });
+  $scope.$on('$ionicView.afterEnter', function(){
 
-    //id가 없다면 add
-    if($stateParams.id == null){
-      $scope.uploadTitle = 'Add';
-      if(!($ionicHistory.viewHistory().forwardView != null 
-        && $ionicHistory.viewHistory().forwardView.stateName == "tabs.location_w")){
-        $scope.currentLocation();
+    $scope.submitDisabled = false;
+    
+    if (user != null && user.isAuthenticated === true) {
+
+      //id가 없다면 add
+      if($stateParams.id == null){
+        $scope.uploadTitle = 'Add';
+        if(!($ionicHistory.viewHistory().forwardView != null 
+          && $ionicHistory.viewHistory().forwardView.stateName == "tabs.location_w")){
+          $scope.currentLocation();
+        }
+        
       }
-      
-    }
-    //id가 있으면 해당 card edit
-    else{
-      $scope.uploadTitle = 'Edit';
-      if(cardId == null){
-        cardId = $stateParams.id;
-        $scope.getCard();
+      //id가 있으면 해당 card edit
+      else{
+        $scope.uploadTitle = 'Edit';
+        if(cardId == null){
+          cardId = $stateParams.id;
+          $scope.getCard();
+        }
       }
     }
+
+    // $scope.writeUserCheck();
   });
 
 

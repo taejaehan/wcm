@@ -1,5 +1,5 @@
-var mServerUrl = 'http://192.168.10.35:3000/wcm_php';
-var mServerUpload = mServerUrl + '/upload/';
+var mServerUrl = 'http://192.168.20.74:3000/wcm_php';
+var mServerUpload = mServerUrl + '/uploads/';
 var mServerAPI = mServerUrl + '/controllers/index.php';
 
 // var mServerUrl = 'http://192.168.20.186:3000';
