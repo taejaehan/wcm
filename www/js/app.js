@@ -1,10 +1,11 @@
-var mServerUrl = 'http://192.168.20.74:3000/wcm_php';
-var mServerUpload = mServerUrl + '/uploads/';
-var mServerAPI = mServerUrl + '/controllers/index.php';
+// var mServerUrl = 'http://192.168.20.74:3000/wcm_php';
+// var mServerUpload = mServerUrl + '/uploads/';
+// var mServerAPI = mServerUrl + '/controllers/index.php';
 
-// var mServerUrl = 'http://192.168.20.186:3000';
-// var mServerUpload = mServerUrl + '/upload/';
-// var mServerAPI = mServerUrl + '';
+var mServerUrl = 'https://wcm_test.major-apps-1.com';
+var mServerUpload = mServerUrl + '/uploads/';
+var mServerAPI = mServerUrl + '';
+
 
 //사진이 없을 경우 보여주는 이미지 링크
 var mNoImage = 'img/default.png';
@@ -78,7 +79,7 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
       url: "/tab",
       abstract: true,
       templateUrl: "templates/tabs.html",
-      // controller : "WriteController"
+      controller: 'TabController'
     })
     .state('tabs.home', {
       url: "/home",
@@ -189,8 +190,9 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
       }
     })
 
-    // $urlRouterProvider.otherwise("/fblogin");
-    $urlRouterProvider.otherwise("/tab/home");
+    $urlRouterProvider.otherwise("/fblogin");
+    // $urlRouterProvider.otherwise("/tab/home");
 
 });
+
 

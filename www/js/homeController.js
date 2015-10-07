@@ -4,6 +4,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
+  $scope.noMoreItemsAvailable = false;
 
   $scope.$on('$ionicView.beforeEnter', function(){
 
@@ -314,6 +315,8 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
           for (var i = 0; i < data.cards.length; i++) {
             
+            $scope.noMoreItemsAvailable = true;
+
             if (data.cards[i].status === "0") {
               data.cards[i].statusDescription = "위험요소가 등록되었습니다.";
             } else if (data.cards[i].status === "33") {
@@ -671,4 +674,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       }
     }
   }
+
+  $scope.overlayClose = function() {
+    document.getElementById('welcomeOverlay').setAttribute('style','display:none');
+  }
+
 });

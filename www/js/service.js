@@ -75,12 +75,10 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window) {
     $state.go('tabs.home', {}, { reload: true });
   };
 
-
   return {
     login: login,
     logout: logout,
-    skipLogin: skipLogin,
-    username: function() {return username;},
+    skipLogin: skipLogin
   };
 
 })
