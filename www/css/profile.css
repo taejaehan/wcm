@@ -34,6 +34,11 @@
 	display: block;
 }
 
+#profile_page .my-change-list {
+	width: 100%;
+	display: inline-block;
+}
+
 #profile_page .my-change-list p.change-title {
 	font-size: 18px;
 	text-align: center;
@@ -80,6 +85,14 @@ button.logout {
 	border-top: 1px solid grey;
 }
 
+#profile_page .jumbotron.login {
+	width: 100%;
+  height: auto;
+  position: absolute;
+  margin-bottom: 0;
+  margin-left: -10px;
+}
+
 #profile_page .jumbotron .row {
 	margin: 0px;
 }
@@ -112,20 +125,6 @@ button.logout {
 	padding-top: 25px;
 }
 
-
-/*#profile_page .tab {
-	width: 49%;
-	display: inline-block;
-}
-
-.nav-tabs>li {
-  float: left;
-  margin-bottom: -6px;
-}
-
-.nav-tabs {
-  border-bottom: 1px solid #ddd !important; 
-}*/
 
 i.ion-chevron-right {
 	float: right;

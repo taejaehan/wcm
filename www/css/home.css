@@ -32,8 +32,10 @@
 	width : 100%;
 }
 
-#home_page .content .post-image {
+#home_page .content img.post-image {
 	margin-bottom: 20px;
+	display: block;
+	width: 100%;
 }
 
 #home_page .profile {
@@ -62,11 +64,6 @@
 	float: right;
 	top : -20px;
 	margin-left : 10px;
-}
-
-#home_page .content img {
-	width: 100%;
-	height: 200px;
 }
 
 #home_page p.progressText {
@@ -135,14 +132,6 @@ button.more {
 
 }
 
-.center-cropped{
-	width: 100%;
-	height: 300px;
-	min-height: 100px;
-	background-size: cover;
-	background-position: center center;
-	background-repeat: no-repeat;
-}
 .progress{
 	margin-bottom: 10px;
 	height: 15px;

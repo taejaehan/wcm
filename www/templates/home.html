@@ -37,8 +37,8 @@
                 <p class="fa fa-map-marker"> {{card.location_name}}</p>
               </a>
               <a ng-href="#/tab/home/{{ card.id }}">
-                <div class="center-cropped post-image" style="background-image: url('{{card.img_path}}');">
-                </div>
+                <!-- <div class="center-cropped post-image" style="background-image: url('{{card.img_path}}');"></div> -->
+                <img ng-src="{{card.img_path}}" class="post-image">
               </a>
               <h2><strong>{{card.title}}</strong></h2>
             </div>

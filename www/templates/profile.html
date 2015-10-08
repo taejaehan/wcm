@@ -3,13 +3,13 @@
     <div id="profile_page">
 
 	    <form class="form-horizontal profile-form" ng-class="{'user active' : userCheck, 'user non-active' : !userCheck}">
-		    <img src="{{ user.userimage }}">
+		    <img ng-src="{{ user.userimage }}">
 
 			  <div class="form-group username">
 			    <a ng-click="config()"><label>{{ user.username }} <i class="ion-gear-a"></i></label></a>
 			  </div>
 
-			  <div class="form-group jumbotron">
+			  <div class="form-group jumbotron login">
 			  	<div class="row">
 				    <a href="#" ng-click="showChanges()" class="col col-30" ng-class="{'active' : watch, 'non-active' : !watch}">My Change List</a>
 				    <a href="#" ng-click="showActivities()" class="col col-30" ng-class="{'active' : !watch, 'non-active' : watch}">Activity</a>
