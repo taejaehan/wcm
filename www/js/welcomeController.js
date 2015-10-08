@@ -1,4 +1,4 @@
-wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOauth, AuthService, $window) {
+wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOauth, AuthService, $window, $cordovaPreferences) {
 
   console.log('user : ' + window.localStorage['user']);
   // if(window.localStorage['user'] != null && window.localStorage['user'] != 'null'){
@@ -106,7 +106,12 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
         //로그인 후 무조건 다시보지 않기
         Preferences.put('notShowPref', true); 
         //로그인 아이디 저장
-        Preferences.put('loginId', formData.user_id); 
+        Preferences.put('loginId', formData.user_id);
+
+        $cordovaPreferences.set('notShowPref', true);
+
+        $cordovaPreferences.set('loginId', formData.user_id);
+
       }
 
       $state.go("tabs.home");
