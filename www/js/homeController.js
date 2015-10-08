@@ -76,6 +76,10 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           console.log('error: : ' +  error);
         });
       }
+    }else{
+      if(document.getElementById('welcomeOverlay') != null){
+        document.getElementById('welcomeOverlay').setAttribute('style','display:none');
+      }
     }
   });
 

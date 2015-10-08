@@ -291,23 +291,26 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
 
     newFileName = n + ".jpg";
 
-    var url = mServerAPI + "/upload";
+    var url = mServerUpload;
     var targetPath = imagePath;
     var filename = targetPath.split("/").pop();
     var options = {
         fileKey: "file",
         fileName: newFileName,
         chunkedMode: false,
-        mimeType: "image/jpg"
+        mimeType: "image/jpg",
+        headers : {
+          Connection: "close"
+        }
     };
     if(ionic.Platform.isWebView()){
       $cordovaFileTransfer.upload(url, targetPath, options).then(function(result) {
-        console.log(JSON.stringify(result.response));
+        console.log('success :  ' + JSON.stringify(result.response));
         //서버에 파일을 저장한 후 db를 set
         $scope.uploadDb(newFileName);
       }, function(err) {
         $ionicLoading.hide();
-        console.log(JSON.stringify(err));
+        console.log('error : ' + JSON.stringify(err));
       }, function (progress) {
         $ionicLoading.hide();
         // constant progress updates
