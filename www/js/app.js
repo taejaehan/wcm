@@ -1,5 +1,5 @@
 // var mServerUrl = 'http://192.168.20.74:3000/wcm_php';
-// var mServerUpload = mServerUrl + '/uploads/';
+// var mServerUpload = mServerUrl + '/controllers/uploads/';
 // var mServerAPI = mServerUrl + '/controllers/index.php';
 
 var mServerUrl = 'https://wcm_test.major-apps-1.com';
@@ -190,8 +190,8 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
       }
     })
 
-    $urlRouterProvider.otherwise("/fblogin");
-    // $urlRouterProvider.otherwise("/tab/home");
+    // $urlRouterProvider.otherwise("/fblogin");
+    $urlRouterProvider.otherwise("/tab/home");
 
 });
 

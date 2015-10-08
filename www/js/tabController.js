@@ -1,8 +1,8 @@
 wcm.controller("TabController", function($scope, $state, $ionicPopup) {
-
-  var user = JSON.parse(window.localStorage['user'] || '{}');
-
+  
   $scope.writeUserCheck = function() {
+    var user = JSON.parse(window.localStorage['user'] || '{}');
+    console.log('TabController user.isAuthenticated : ' + user.isAuthenticated);
     if (user.isAuthenticated === true) {
       $state.go("tabs.write");
     } else {
