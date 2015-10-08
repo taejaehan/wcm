@@ -8,74 +8,73 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   $scope.$on('$ionicView.beforeEnter', function(){
 
-    //앱에서 열였다면
+    // //앱에서 열였다면
     if(ionic.Platform.isWebView()){
-
+      console.log('typeof Preferences != undefined : ' + (typeof Preferences != 'undefined'));
       //com.portnou.cordova.plugin.preferences plugin에서 앱의 prefrences에 저장
-      //다시 보지 않기
-      Preferences.get('notShowPref', function(notShowPref) {
-        console.log('success notShowPref : ' +  notShowPref);
-        if(document.getElementById('welcomeOverlay') != null){
-           //다시 보지 않기가 true라면 
-           console.log("notShowPref == true : " +  (notShowPref == "true"));
-           console.log("notShowPref == false : " +  (notShowPref == "false"));
-          if(notShowPref == 'true'){
-            console.log('display none');
-            document.getElementById('welcomeOverlay').setAttribute('style','display:none');
-          }else{
-            console.log('display block');
-            document.getElementById('welcomeOverlay').setAttribute('style','display:block');
+      if(typeof Preferences != 'undefined'){
+        //다시 보지 않기
+        Preferences.get('notShowPref', function(notShowPref) {
+          console.log('success notShowPref : ' +  notShowPref);
+          if(document.getElementById('welcomeOverlay') != null){
+             //다시 보지 않기가 true라면 
+             console.log("notShowPref == true : " +  (notShowPref == "true"));
+             console.log("notShowPref == false : " +  (notShowPref == "false"));
+            if(notShowPref == 'true'){
+              console.log('display none');
+              document.getElementById('welcomeOverlay').setAttribute('style','display:none');
+            }else{
+              console.log('display block');
+              document.getElementById('welcomeOverlay').setAttribute('style','display:block');
+            }
           }
-        }
-      }, function(error){
-        console.log('error: : ' +  error);
-      });
+        }, function(error){
+          console.log('error: : ' +  error);
+        });
 
-      //로그인 한 상태라면 prefresnces에 저장된 user id로 서버에서 유저 정보를 가져와 localStorage에 저장
-      Preferences.get('loginId', function(loginId) {
-        if(loginId != null){
-          console.log('success loginId : ' +  loginId);
-          var request = $http({
-             method: "get",
-             url: mServerAPI + "/user/" + loginId,
-             crossDomain : true,
-             headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-             cache: false
-          });
+        //로그인 한 상태라면 prefresnces에 저장된 user id로 서버에서 유저 정보를 가져와 localStorage에 저장
+        Preferences.get('loginId', function(loginId) {
+          if(loginId != null){
+            console.log('success loginId : ' +  loginId);
+            var request = $http({
+               method: "get",
+               url: mServerAPI + "/user/" + loginId,
+               crossDomain : true,
+               headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+               cache: false
+            });
 
-          request.success(function(data) {
-            console.log('Get User data : ' + data);
-            var user = {
-              username: data.users[0].username,
-              userid: data.users[0].user_id,
-              userimage: data.users[0].userimage.split("amp;").join("&"),
-              isAuthenticated: true,
-              likse : [],
-              changes : [],
-            }; 
-            //user watch list저장
-            if (data.users[0].likes.length != 0) {
-              for(var i = 0; i < data.users[0].likes.length; i++ ) {
-                user.likes.push(data.users[0].likes[i].post_id); 
+            request.success(function(data) {
+              console.log('Get User data : ' + data);
+              var user = {
+                username: data.users[0].username,
+                userid: data.users[0].user_id,
+                userimage: data.users[0].userimage.split("amp;").join("&"),
+                isAuthenticated: true,
+                likes : [],
+                changes : [],
+              }; 
+
+              //user watch list저장
+              if (data.users[0].likes.length > 0) {
+                for(var i = 0; i < data.users[0].likes.length; i++ ) {
+                  user.likes.push(data.users[0].likes[i].post_id); 
+                }
               }
-            }
-            //user changer list저장
-            if (data.users[0].changes.length != 0) {
-              for(var i = 0; i < data.users[0].changes.length; i++ ) {
-                user.changes.push(data.users[0].changes[i].post_id); 
+              console.log('data.users[0].changes.length : ' + data.users[0].changes.length);
+              //user changer list저장
+              if (data.users[0].changes.length > 0) {
+                for(var i = 0; i < data.users[0].changes.length; i++ ) {
+                  user.changes.push(data.users[0].changes[i].post_id); 
+                }
               }
-            }
-        
-            window.localStorage['user'] = JSON.stringify(user);
-          });
-        }
-      }, function(error){
-        console.log('error: : ' +  error);
-      });
-
-    }else{
-      if(document.getElementById('welcomeOverlay') != null){
-        document.getElementById('welcomeOverlay').setAttribute('style','display:none');
+          
+              window.localStorage['user'] = JSON.stringify(user);
+            });
+          }
+        }, function(error){
+          console.log('error: : ' +  error);
+        });
       }
     }
   });
@@ -107,6 +106,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   */
   $ionicPlatform.ready(function() {
     console.log('$ionicPlatform ready');
+    console.log('$ionicPlatform ionic.Platform.isWebView() : ' + ionic.Platform.isWebView());
 
     //앱에서 켰다면 
     if(ionic.Platform.isWebView()){
@@ -246,11 +246,11 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       /* isOffline */
       $ionicPopup.alert({
         title: 'We Change Makers',
-        template: 'Check your network connection.'
+        template: 'getNewCards Check your network connection.'
       });
 
       //미리 가져온 cardlist 사용
-      $scope.offlineCard();
+      // $scope.offlineCard();
 
       //Stop the ion-refresher from spinning
       $scope.$broadcast('scroll.refreshComplete');
@@ -263,10 +263,16 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   */
   $scope.doRefresh = function(init) {
 
-    //app에서 띄운 webview가 아니거나 online일 경우만
-    if (!(ionic.Platform.isWebView()) || $cordovaNetwork.isOnline()) {
-      /* isOnline */  
-      $timeout( function() {
+    console.log('doRefresh');
+
+    $scope.noMoreItemsAvailable = true;
+
+    $timeout( function() { 
+      // console.log('doRefresh (!(ionic.Platform.isWebView()) : ' + !ionic.Platform.isWebView());
+      // console.log('doRefresh $cordovaNetwork.isOnline() : ' + $cordovaNetwork.isOnline());
+      //app에서 띄운 webview가 아니거나 online일 경우만
+      if (!(ionic.Platform.isWebView()) || $cordovaNetwork.isOnline()) {
+        /* isOnline */  
         // init이면 처음 페이지 데이터를 다시 가져옴
         if(init == 'init'){
           $scope.page = 0;
@@ -315,7 +321,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
           for (var i = 0; i < data.cards.length; i++) {
             
-            $scope.noMoreItemsAvailable = true;
+            $scope.noMoreItemsAvailable = false;
 
             if (data.cards[i].status === "0") {
               data.cards[i].statusDescription = "위험요소가 등록되었습니다.";
@@ -361,22 +367,21 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
         //Stop the ion-refresher from spinning
         $scope.$broadcast('scroll.refreshComplete');  
-      },1000);
-  
-    } else {
+      } else {
 
-      /* isOffline */
-      $ionicPopup.alert({
-        title: 'We Change Makers',
-        template: 'Check your network connection.'
-      });
+        /* isOffline */
+        $ionicPopup.alert({
+          title: 'We Change Makers',
+          template: 'doRefresh Check your network connection.'
+        });
 
-      //미리 가져온 cardlist 사용
-      $scope.offlineCard();
-      
-      //Stop the ion-refresher from spinning
-      $scope.$broadcast('scroll.refreshComplete');
-    }
+        //미리 가져온 cardlist 사용
+        // $scope.offlineCard();
+        
+        //Stop the ion-refresher from spinning
+        $scope.$broadcast('scroll.refreshComplete');
+      }
+    },10);
   }
 
   /*

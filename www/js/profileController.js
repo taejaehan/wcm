@@ -26,16 +26,18 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 
 	  request1.success(function(data) {
 	  	for (var i = 0; i < data.changes.length; i++) {
-	  		if (data.changes[i].post[0].status === "33") {
-          data.changes[i].post[0].statusDescription = "위험요소가 등록되었습니다.";
-        } else if (data.changes[i].post[0].status === "66") {
-          data.changes[i].post[0].statusDescription = "위험요소를 해결 중 입니다.";
-        } else {
-          data.changes[i].post[0].statusDescription = "위험요소가 해결 되었습니다.";
-        }
+	  		if(data.changes[i].post.length > 0 ){	//add by tjhan 151007
+		  		if (data.changes[i].post[0].status === "33") {
+	          data.changes[i].post[0].statusDescription = "위험요소가 등록되었습니다.";
+	        } else if (data.changes[i].post[0].status === "66") {
+	          data.changes[i].post[0].statusDescription = "위험요소를 해결 중 입니다.";
+	        } else {
+	          data.changes[i].post[0].statusDescription = "위험요소가 해결 되었습니다.";
+	        }
 
-	  		var change = data.changes[i].post[0];
-	  		$scope.changes.push(change);
+		  		var change = data.changes[i].post[0];
+		  		$scope.changes.push(change);
+		  	}
 	  	}
 
 	  	if(data.changes.length === 0) {
@@ -184,7 +186,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 		if(ionic.Platform.isWebView()){
 			Preferences.put('loginId', null); 
 		}
-		
+
 		$state.go('fblogin');
 	}
 	
