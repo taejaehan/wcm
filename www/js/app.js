@@ -196,31 +196,31 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 });
 
 
-wcm.factory('$cordovaPreferences', ['$window', '$q', function ($window, $q) {
-  return {
-    set: function (key, value) {
-      var q = $q.defer();
+// wcm.factory('$cordovaPreferences', ['$window', '$q', function ($window, $q) {
+//   return {
+//     set: function (key, value) {
+//       var q = $q.defer();
 
-      $window.appgiraffe.plugins.applicationPreferences.set(key, value, function (result) {
-        q.resolve(result);
-      }, function (err) {
-        q.reject(err);
-      });
+//       $window.appgiraffe.plugins.applicationPreferences.set(key, value, function (result) {
+//         q.resolve(result);
+//       }, function (err) {
+//         q.reject(err);
+//       });
 
-      return q.promise;
-    },
+//       return q.promise;
+//     },
 
-    get: function (key) {
-      var q = $q.defer();
+//     get: function (key) {
+//       var q = $q.defer();
 
-      $window.appgiraffe.plugins.applicationPreferences.get(key, function (value) {
-        q.resolve(value);
-      }, function (err) {
-        q.reject(err);
-      });
+//       $window.appgiraffe.plugins.applicationPreferences.get(key, function (value) {
+//         q.resolve(value);
+//       }, function (err) {
+//         q.reject(err);
+//       });
 
-      return q.promise;
-    }
-  };
-}]);
+//       return q.promise;
+//     }
+//   };
+// }]);
 

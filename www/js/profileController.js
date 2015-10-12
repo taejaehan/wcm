@@ -28,11 +28,14 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 	  	for (var i = 0; i < data.changes.length; i++) {
 	  		if(data.changes[i].post.length > 0 ){	//add by tjhan 151007
 		  		if (data.changes[i].post[0].status === "33") {
-	          data.changes[i].post[0].statusDescription = "위험요소가 등록되었습니다.";
+	          data.changes[i].post[0].statusDescription = "프로젝트가 시작되었습니다.";
+	          data.changes[i].post[0].statusIcon = "ion-alert-circled";
 	        } else if (data.changes[i].post[0].status === "66") {
-	          data.changes[i].post[0].statusDescription = "위험요소를 해결 중 입니다.";
+	          data.changes[i].post[0].statusDescription = "프로젝트를 진행합니다.";
+	          data.changes[i].post[0].statusIcon = "ion-gear-b";
 	        } else {
-	          data.changes[i].post[0].statusDescription = "위험요소가 해결 되었습니다.";
+	          data.changes[i].post[0].statusDescription = "프로젝트가 완료되었습니다.";
+	          data.changes[i].post[0].statusIcon = "ion-happy-outline";
 	        }
 
 		  		var change = data.changes[i].post[0];
@@ -58,14 +61,15 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 	  request2.success(function(data) {
 
 	  	for (var i = 0; i < data.cards.length; i++) {
-	  		if (data.cards[i].status === "0") {
-          data.cards[i].statusDescription = "위험요소가 등록되었습니다.";
-        } else if (data.cards[i].status === "33") {
-          data.cards[i].statusDescription = "위험요소가 등록되었습니다.";
+	  		if (data.cards[i].status === "33") {
+          data.cards[i].statusDescription = "프로젝트가 시작되었습니다.";
+          data.cards[i].statusIcon = "ion-alert-circled";
         } else if (data.cards[i].status === "66") {
-          data.cards[i].statusDescription = "위험요소를 해결 중 입니다.";
+          data.cards[i].statusDescription = "프로젝트를 진행합니다.";
+          data.cards[i].statusIcon = "ion-gear-b";
         } else {
-          data.cards[i].statusDescription = "위험요소가 해결 되었습니다.";
+          data.cards[i].statusDescription = "프로젝트가 완료되었습니다.";
+          data.cards[i].statusIcon = "ion-happy-outline";
         }
 
 	  		var card = data.cards[i];
@@ -101,11 +105,14 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
           if ($scope.cards[i].id === card.id) {
             
             if (card.status === "33") {
-		          $scope.cards[i].statusDescription = "위험요소가 등록되었습니다.";
+		          $scope.cards[i].statusDescription = "프로젝트가 시작되었습니다.";
+		          $scope.cards[i].statusIcon = "ion-alert-circled";
 		        } else if (card.status === "66") {
-		          $scope.cards[i].statusDescription = "위험요소를 해결 중 입니다.";
+		          $scope.cards[i].statusDescription = "프로젝트를 진행합니다.";
+		          $scope.cards[i].statusIcon = "ion-gear-b";
 		        } else {
-		          $scope.cards[i].statusDescription = "위험요소가 해결 되었습니다.";
+		          $scope.cards[i].statusDescription = "프로젝트가 완료되었습니다.";
+		          $scope.cards[i].statusIcon = "ion-happy-outline";
 		        }
             break;
           } 

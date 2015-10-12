@@ -58,25 +58,25 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     if(ionic.Platform.isWebView()){
       console.log($cordovaPreferences);
       
-      if (isIOS) {
-        if(typeof $cordovaPreferences != 'undefined'){
-          $cordovaPreferences.get('notShowPref', function(notShowPref) {
-            if(document.getElementById('welcomeOverlay') != null){
-              if(notShowPref == 'true'){
-                document.getElementById('welcomeOverlay').setAttribute('style','display:none');
-              }else{
-                document.getElementById('welcomeOverlay').setAttribute('style','display:block');
-              }
-            }
-          });
+      // if (isIOS) {
+      //   if(typeof $cordovaPreferences != 'undefined'){
+      //     $cordovaPreferences.get('notShowPref', function(notShowPref) {
+      //       if(document.getElementById('welcomeOverlay') != null){
+      //         if(notShowPref == 'true'){
+      //           document.getElementById('welcomeOverlay').setAttribute('style','display:none');
+      //         }else{
+      //           document.getElementById('welcomeOverlay').setAttribute('style','display:block');
+      //         }
+      //       }
+      //     });
 
-          $cordovaPreferences.get('loginId', function(loginId) {
-            saveLocalUser();
-          }, function(error){
-            console.log('error: : ' +  error);
-          });
-        }
-      }
+      //     $cordovaPreferences.get('loginId', function(loginId) {
+      //       saveLocalUser();
+      //     }, function(error){
+      //       console.log('error: : ' +  error);
+      //     });
+      //   }
+      // }
 
       if (isAndroid) {
         if(typeof Preferences != 'undefined'){

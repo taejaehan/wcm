@@ -426,14 +426,23 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
     if (user.isAuthenticated === true) {
 
-      if ((user.changes.length === 0) || (user.changes.indexOf($stateParams.postId) === -1)) {
-        ChangeMakerPost();
-      
-      } else {
+      if ($scope.card.status == 100) {
         $ionicPopup.alert({
           title: 'We Change Makers',
-          template: '이미 참여하셨습니다'
+          template: '프로젝트가 종료되었습니다.'
         });
+        
+      } else {
+
+        if ((user.changes.length === 0) || (user.changes.indexOf($stateParams.postId) === -1)) {
+          ChangeMakerPost();
+        
+        } else {
+          $ionicPopup.alert({
+            title: 'We Change Makers',
+            template: '이미 참여하셨습니다'
+          });
+        }
       }
 
     } else {
@@ -452,8 +461,8 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
           }
         ]
       });
-
     }
+
   }
 
   // Change Supporters 프로필 팝업

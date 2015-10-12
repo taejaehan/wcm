@@ -45,7 +45,7 @@ img.posting-image {
 #detail_page .progressText {
 	color: #8f8f8f;
 	font-weight: 500;
-	font-size: 14px;
+	font-size: 13px;
 }
 
 #detail_page .progressText i {
@@ -122,6 +122,10 @@ img.posting-image {
 	float: left;
 }
 
+#detail_page .change-member .member-list img.status-100 {
+	border: 2px solid #6fba2c;
+}
+
 .progress {
 	border-radius: 50px;
 }
@@ -131,13 +135,17 @@ img.posting-image {
 	border-radius: 50px;
 	color: white;
   width: 90%;
-  height: 45px;
+  height: 40px;
   border: none;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: bold;
 	display: block;
 	padding: 3px 30px 3px 30px;
 	margin: 0 auto;
+}
+
+#detail_page .change-member .change-button.status-100 {
+	background-color: #6fba2c;
 }
 
 #detail_page .change-member .change-button i {
