@@ -4,135 +4,106 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
+  var isIOS = ionic.Platform.isIOS();
+  var isAndroid = ionic.Platform.isAndroid();
+
   $scope.noMoreItemsAvailable = false;
+
+
+  //로그인 한 상태라면 prefresnces에 저장된 user id로 서버에서 유저 정보를 가져와 localStorage에 저장
+  var saveLocalUser = function() {
+    if(loginId != null){
+      console.log('success loginId : ' +  loginId);
+      var request = $http({
+         method: "get",
+         url: mServerAPI + "/user/" + loginId,
+         crossDomain : true,
+         headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+         cache: false
+      });
+
+      request.success(function(data) {
+        console.log('Get User data : ' + data);
+        var user = {
+          username: data.users[0].username,
+          userid: data.users[0].user_id,
+          userimage: data.users[0].userimage.split("amp;").join("&"),
+          isAuthenticated: true,
+          likes : [],
+          changes : [],
+        }; 
+
+        //user watch list저장
+        if (data.users[0].likes.length > 0) {
+          for(var i = 0; i < data.users[0].likes.length; i++ ) {
+            user.likes.push(data.users[0].likes[i].post_id); 
+          }
+        }
+        console.log('data.users[0].changes.length : ' + data.users[0].changes.length);
+        //user changer list저장
+        if (data.users[0].changes.length > 0) {
+          for(var i = 0; i < data.users[0].changes.length; i++ ) {
+            user.changes.push(data.users[0].changes[i].post_id); 
+          }
+        }
+    
+        window.localStorage['user'] = JSON.stringify(user);
+      });
+    }
+  }
 
   $scope.$on('$ionicView.beforeEnter', function(){
 
     // //앱에서 열였다면
     if(ionic.Platform.isWebView()){
-      console.log('typeof Preferences != undefined : ' + (typeof Preferences != 'undefined'));
-      console.log('typeof Preferences != undefined : ' + (typeof $cordovaPreferences != 'undefined'));
-      //com.portnou.cordova.plugin.preferences plugin에서 앱의 prefrences에 저장
+      console.log($cordovaPreferences);
       
-      if(typeof Preferences != 'undefined'){
-        $cordovaPreferences.get('notShowPref', function(notShowPref) {
-          if(document.getElementById('welcomeOverlay') != null){
-            if(notShowPref == 'true'){
-              document.getElementById('welcomeOverlay').setAttribute('style','display:none');
-            }else{
-              document.getElementById('welcomeOverlay').setAttribute('style','display:block');
+      if (isIOS) {
+        if(typeof $cordovaPreferences != 'undefined'){
+          $cordovaPreferences.get('notShowPref', function(notShowPref) {
+            if(document.getElementById('welcomeOverlay') != null){
+              if(notShowPref == 'true'){
+                document.getElementById('welcomeOverlay').setAttribute('style','display:none');
+              }else{
+                document.getElementById('welcomeOverlay').setAttribute('style','display:block');
+              }
             }
-          }
-        });
+          });
 
-        $cordovaPreferences.get('loginId', function(loginId) {
-          if(loginId != null){
-            console.log('success loginId : ' +  loginId);
-            var request = $http({
-               method: "get",
-               url: mServerAPI + "/user/" + loginId,
-               crossDomain : true,
-               headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-               cache: false
-            });
-
-            request.success(function(data) {
-              console.log('Get User data : ' + data);
-              var user = {
-                username: data.users[0].username,
-                userid: data.users[0].user_id,
-                userimage: data.users[0].userimage.split("amp;").join("&"),
-                isAuthenticated: true,
-                likes : [],
-                changes : [],
-              }; 
-
-              //user watch list저장
-              if (data.users[0].likes.length > 0) {
-                for(var i = 0; i < data.users[0].likes.length; i++ ) {
-                  user.likes.push(data.users[0].likes[i].post_id); 
-                }
-              }
-              console.log('data.users[0].changes.length : ' + data.users[0].changes.length);
-              //user changer list저장
-              if (data.users[0].changes.length > 0) {
-                for(var i = 0; i < data.users[0].changes.length; i++ ) {
-                  user.changes.push(data.users[0].changes[i].post_id); 
-                }
-              }
-          
-              window.localStorage['user'] = JSON.stringify(user);
-            });
-          }
-        });
+          $cordovaPreferences.get('loginId', function(loginId) {
+            saveLocalUser();
+          }, function(error){
+            console.log('error: : ' +  error);
+          });
+        }
       }
 
-      if(typeof Preferences != 'undefined'){
-        //다시 보지 않기
-        Preferences.get('notShowPref', function(notShowPref) {
-          console.log('success notShowPref : ' +  notShowPref);
-          if(document.getElementById('welcomeOverlay') != null){
-             //다시 보지 않기가 true라면 
-             console.log("notShowPref == true : " +  (notShowPref == "true"));
-             console.log("notShowPref == false : " +  (notShowPref == "false"));
-            if(notShowPref == 'true'){
-              console.log('display none');
-              document.getElementById('welcomeOverlay').setAttribute('style','display:none');
-            }else{
-              console.log('display block');
-              document.getElementById('welcomeOverlay').setAttribute('style','display:block');
+      if (isAndroid) {
+        if(typeof Preferences != 'undefined'){
+          //다시 보지 않기
+          Preferences.get('notShowPref', function(notShowPref) {
+            if(document.getElementById('welcomeOverlay') != null){
+               //다시 보지 않기가 true라면 
+              if(notShowPref == 'true'){
+                document.getElementById('welcomeOverlay').setAttribute('style','display:none');
+              }else{
+                document.getElementById('welcomeOverlay').setAttribute('style','display:block');
+              }
             }
-          }
-        }, function(error){
-          console.log('error: : ' +  error);
-        });
+          }, function(error){
+            console.log('error: : ' +  error);
+          });
 
-
-        //로그인 한 상태라면 prefresnces에 저장된 user id로 서버에서 유저 정보를 가져와 localStorage에 저장
-        Preferences.get('loginId', function(loginId) {
-          if(loginId != null){
-            console.log('success loginId : ' +  loginId);
-            var request = $http({
-               method: "get",
-               url: mServerAPI + "/user/" + loginId,
-               crossDomain : true,
-               headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-               cache: false
-            });
-
-            request.success(function(data) {
-              console.log('Get User data : ' + data);
-              var user = {
-                username: data.users[0].username,
-                userid: data.users[0].user_id,
-                userimage: data.users[0].userimage.split("amp;").join("&"),
-                isAuthenticated: true,
-                likes : [],
-                changes : [],
-              }; 
-
-              //user watch list저장
-              if (data.users[0].likes.length > 0) {
-                for(var i = 0; i < data.users[0].likes.length; i++ ) {
-                  user.likes.push(data.users[0].likes[i].post_id); 
-                }
-              }
-              console.log('data.users[0].changes.length : ' + data.users[0].changes.length);
-              //user changer list저장
-              if (data.users[0].changes.length > 0) {
-                for(var i = 0; i < data.users[0].changes.length; i++ ) {
-                  user.changes.push(data.users[0].changes[i].post_id); 
-                }
-              }
-          
-              window.localStorage['user'] = JSON.stringify(user);
-            });
-          }
-        }, function(error){
-          console.log('error: : ' +  error);
-        });
+          //로그인 한 상태라면 prefresnces에 저장된 user id로 서버에서 유저 정보를 가져와 localStorage에 저장
+          Preferences.get('loginId', function(loginId) {
+            saveLocalUser();
+          }, function(error){
+            console.log('error: : ' +  error);
+          });
+        }
       }
     }
+
   });
 
   //sort type
@@ -379,14 +350,15 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             
             $scope.noMoreItemsAvailable = false;
 
-            if (data.cards[i].status === "0") {
-              data.cards[i].statusDescription = "위험요소가 등록되었습니다.";
-            } else if (data.cards[i].status === "33") {
-              data.cards[i].statusDescription = "위험요소가 등록되었습니다.";
+            if (data.cards[i].status === "33") {
+              data.cards[i].statusDescription = "프로젝트가 시작되었습니다.";
+              data.cards[i].statusIcon = "ion-alert-circled";
             } else if (data.cards[i].status === "66") {
-              data.cards[i].statusDescription = "위험요소를 해결 중 입니다.";
+              data.cards[i].statusDescription = "프로젝트를 진행합니다.";
+              data.cards[i].statusIcon = "ion-gear-b";
             } else {
-              data.cards[i].statusDescription = "위험요소가 해결 되었습니다.";
+              data.cards[i].statusDescription = "프로젝트가 완료되었습니다.";
+              data.cards[i].statusIcon = "ion-happy-outline";
             }
 
             if (data.cards[i].img_path == '') {

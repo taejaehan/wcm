@@ -33,10 +33,13 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
       if (data.cards[0].status === "33") {
         $scope.card.statusDescription = "프로젝트가 시작되었습니다.";
+        $scope.statusIcon = "ion-alert-circled";
       } else if (data.cards[0].status === "66") {
         $scope.card.statusDescription = "프로젝트를 진행합니다.";
+        $scope.statusIcon = "ion-gear-b";
       } else {
         $scope.card.statusDescription = "프로젝트가 완료되었습니다.";
+        $scope.statusIcon = "ion-happy-outline";
       }
 
       // 카드에 해당하는 change supporters 체크

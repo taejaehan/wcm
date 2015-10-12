@@ -9,47 +9,32 @@
 	display: block;
 }
 
+#home_page hr {
+	margin: 0px;
+}
+
 #home_page .posts {
 	padding: 0 0 10px 0;
-	background-color: #ddd;
+	background-color: #ededeb;
 	border : none;
 }
 
 #home_page .post-body {
 	padding: 5px 10px 0px 10px;
 	background-color: #fff;
-	border-radius: 10px;
+	border-radius: 5px;
 	margin: 10px 10px 0px 10px;
-	box-shadow: 2px 3px 10px 2px #888888;
-}
-
-#home_page h2 {
-	text-align: center;
-	margin: 20px;
-}
-#home_page .content h2{
-	margin : 10px 0;
-	width : 100%;
-}
-
-#home_page p.fa-map-marker {
-  line-height: 18px;
-}
-
-#home_page .content img.post-image {
-	margin-bottom: 20px;
-	display: block;
-	width: 100%;
+	box-shadow: 0px 1px 5px 1px #a0a0a0;
 }
 
 #home_page .profile {
-	margin: 10px 0px 10px 0px;
+	margin-top: 10px;
 }
 
 #home_page .profile img {
 	width: 40px;
 	height: 40px;
-	border-radius: 5px;
+	border-radius: 20px;
 	float: left;
 	margin-right: 10px;
 }
@@ -62,46 +47,78 @@
 #home_page .profile p.date {
 	font-size: 12px;
 	display: inline-block;
+	color: #a0a0a0;
 }
 
-#home_page .profile .float-edit {
-	float: right;
-	top : -20px;
-	margin-left : 10px;
+#home_page .profile i {
+	font-size: 35px;
+	position: absolute;
+	top: 25px;
+	color: #c7c7c7;
+}
+
+#home_page .profile i.edit {
+	right: 60px;
+}
+
+#home_page .profile i.delete {
+	right: 25px;
+}
+
+#home_page .content .title {
+	text-align: left;
+	margin: 10px 0px 5px 0px;
+}
+
+#home_page .content .address i {
+	color: #ea5c50;
+}
+
+#home_page .content img.post-image {
+	margin: 10px 0px 20px 0px;
+	display: block;
+	width: 100%;
+}
+
+#home_page .content p.address {
+	color: #a0a0a0;
+	font-size: 13px;
+}
+
+#home_page .content .snsHover {
+	color: white;
+	background: black;
+	opacity: 0.6;
+	bottom: 0px;
+	width: 100%;
+	height: 30px;
+	position: absolute;
+	text-align: right;
+	font-size: 17px;
+	padding: 5px 10px 0px 0px;
+}
+
+#home_page .content .snsHover i {
+	margin-left: 10px;
 }
 
 #home_page p.progressText {
 	text-align: center;
-	margin-bottom: 20px;
-}
-
-#home_page p.progress-100 {
-	color: #00B050;
-}
-
-#home_page p.progress-66 {
-	color: #E6AD00;
-}
-
-#home_page p.progress-33 {
-	color: #d9534f;
-}
-
-#home_page .additional-function {
-	color: grey;
-	text-align: center;
+	margin-bottom: 10px;
+	color: #a0a0a0;
+	font-weight: bold;
 	font-size: 13px;
 }
 
-#home_page .additional-function span {
-	margin: 0px 5px 0px 5px;
+#home_page .progressText i {
+	color: #efae28;
+	font-size: 15px;
 }
 
 #home_page .sns-link {
-	/*border-top: 1px solid #eee;*/
 	width: 90%;
-	height: 	50px;
-	padding-top : 15px;
+	height: 40px;
+	padding-top: 8px;
 	margin: 0 auto;
 }
 
@@ -112,19 +129,17 @@
 	text-align: center;
 	padding: 2px 0px 2px 0px;
 	font-size: 14px;
-
-	border: 1px solid #7F7266;
-	border-radius: 6px;
-	color: grey;
+	color: #a0a0a0;
+	font-weight: 600;
 }
 
 #home_page .sns-link .active {
-	background-color: #695B4D;
-	color: white;
+	color: #e85d54;
+	font-weight: 900;
 }
 
 #home_page .sns-link .non-active {
-	color: #695B4D;
+	color: #a0a0a0;
 }
 
 button.more {
@@ -133,24 +148,25 @@ button.more {
 	display: block;
 	bottom: 0px;
 	z-index: 100;
-
 }
 
 .progress{
-	margin-bottom: 10px;
 	height: 15px;
+	width: 90%;
+	margin: 0 auto;
+	margin-bottom: 10px;
 }
 .progress .progress-100{
-	background-color: #00B050;
+	background-color: #89c553;
 }
+
 .progress .progress-66{
-	background-color: #FFC000;
+	background-color: #efae28;
 }
+
 .progress .progress-33{
-	background-color: #d9534f;
+	background-color: #ea5c50;
 }
-
-
 
 .dark-overlay {
   background-color: #222 !important;
