@@ -4,16 +4,11 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   var latlng, cardId, progress;
   var imgPath = '';
 
-  $scope.cardData = {
-    // "title" : "",
-    // "description" : "",
-    // "location":"",
-    // "imgPath":""
-  };
+  $scope.cardData = {};
 
   $scope.imgCheck = false;
-
   $scope.submitDisabled = true;
+
 
   $scope.$on('$ionicView.afterEnter', function(){
 
@@ -42,14 +37,17 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
 
     if ($rootScope.cardTitle != undefined) {
       document.getElementById('card_title').value = $rootScope.cardTitle;
+      $scope.cardData.title = $rootScope.cardTitle;
     }
 
     if ($rootScope.cardDescription != undefined) {
       document.getElementById('card_des').value = $rootScope.cardDescription;
+      $scope.cardData.description = $rootScope.cardDescription;
     }
 
     if ($rootScope.cardFile != undefined) {
       document.getElementById('card_file').value = $rootScope.cardFile;
+      $scope.cardData.imgPath = $rootScope.cardFile;
     }
 
   });
