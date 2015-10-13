@@ -54,9 +54,8 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   $scope.$on('$ionicView.beforeEnter', function(){
 
-    // //앱에서 열였다면
+    // 앱에서 열였다면
     if(ionic.Platform.isWebView()){
-      console.log($cordovaPreferences);
       
       // if (isIOS) {
       //   if(typeof $cordovaPreferences != 'undefined'){
@@ -79,6 +78,8 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       // }
 
       if (isAndroid) {
+        console.log('typeof Preferences != undefined : ' + (typeof Preferences != 'undefined'));
+        //com.portnou.cordova.plugin.preferences plugin에서 앱의 prefrences에 저장
         if(typeof Preferences != 'undefined'){
           //다시 보지 않기
           Preferences.get('notShowPref', function(notShowPref) {
@@ -101,6 +102,10 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             console.log('error: : ' +  error);
           });
         }
+      }
+    }else{
+      if(document.getElementById('welcomeOverlay') != null){
+        document.getElementById('welcomeOverlay').setAttribute('style','display:none');
       }
     }
 

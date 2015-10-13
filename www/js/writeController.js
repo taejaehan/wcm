@@ -326,23 +326,45 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
 
     newFileName = n + ".jpg";
 
-    var url = mServerAPI + "/upload";
+    var url = mServerUrl + '/upload';
     var targetPath = imagePath;
     var filename = targetPath.split("/").pop();
+
+    // var options = new FileUploadOptions();
+    // options.fileKey = "file";
+    // options.fileName = newFileName;
+    // options.mimeType = "image/jpg";
+    // options.chunkedMode = false;
+    // options.mimeType = "image/jpg";
+    
+    // var params = {};
+    // params.value1 = "test";
+    // params.value2 = "param";
+    // options.params = params;
+    // options.headers = {
+    //     Connection: "close"
+    // }
     var options = {
         fileKey: "file",
         fileName: newFileName,
         chunkedMode: false,
         mimeType: "image/jpg"
     };
+    // options.headers = {
+    //     Connection: "close"
+    // }
+    console.log('url :  ' + url);
+    console.log('targetPath :  ' + targetPath);
+    console.log('options :  ' + options);
+
     if(ionic.Platform.isWebView()){
       $cordovaFileTransfer.upload(url, targetPath, options).then(function(result) {
-        console.log(JSON.stringify(result.response));
+        console.log('success :  ' + JSON.stringify(result.response));
         //서버에 파일을 저장한 후 db를 set
         $scope.uploadDb(newFileName);
       }, function(err) {
         $ionicLoading.hide();
-        console.log(JSON.stringify(err));
+        console.log('error : ' + JSON.stringify(err));
       }, function (progress) {
         $ionicLoading.hide();
         // constant progress updates

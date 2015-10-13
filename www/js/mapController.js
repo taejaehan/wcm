@@ -90,7 +90,17 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
       marker.draggable = true;
       google.maps.event.addListener(marker, 'dragend', function() { 
         var latlng = marker.getPosition();
-        var movedLatlng = {lat: latlng.H,  lng: latlng.L};
+
+        //latlng.H로 나올때도 있고 latlng.lat()으로 나올때도 있다? -_-?
+        var lat, lng;
+        if(latlng.H != null){
+          lat = latlng.H
+          lng = latlng.L
+        }else{
+          lat = latlng.lat();
+          lng = latlng.lng();
+        }
+        var movedLatlng = {lat: lat,  lng: lng};
         $scope.setLocationName(movedLatlng);
       });
 
@@ -132,7 +142,17 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
             animation: google.maps.Animation.DROP,
           });
 
-          var searchedLatlng = {lat: place.geometry.location.H , lng: place.geometry.location.L};
+           //latlng.H로 나올때도 있고 latlng.lat()으로 나올때도 있다? -_-?
+          var lat, lng;
+          if(place.geometry.location.H != null){
+            lat = place.geometry.location.H
+            lng = place.geometry.location.L
+          }else{
+            lat = place.geometry.location.lat();
+            lng = place.geometry.location.lng();
+          }
+
+          var searchedLatlng = {lat: lat , lng: lng};
           $scope.setLocationName(searchedLatlng);
 
           if (place.geometry.viewport) {
