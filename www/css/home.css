@@ -168,64 +168,89 @@ button.more {
 }
 
 .dark-overlay {
-  background-color: #222 !important;
-  opacity: 0.85;
-  /*display: none;*/
+  opacity: 0.9;
 }
-.dark-item {
+
+/*.dark-item {
   background-color: transparent !important;
   color: #fff !important;
   border-color: #444 !important;
 }
-
+*/
 .overlay-spacer {
   height: 43px;
 }
+
 .content-flush {
   top: 0px !important;
 }
+
 .slider-pager {
-	/*top : 30px;*/
 	bottom: 80px;
 }
 
 .overlay-box{
 	height: 100%;
-	padding-top: 20px;
 }
 
-.overlay-box h1 {
-	font-size: 25px;
+.slide-1-back, .slide-5-back {
+	background-color: #31b69f;
 }
 
-.overlay-box h2 {
-	font-size: 15px;
+.slide-2-back, .slide-3-back, .slide-4-back {
+	background-color: #0d2f29;
 }
 
-.overlay-box button {
+.overlay-box figure.slide-1 {
+	background: url("../img/Mark01.png") no-repeat;
+	width: 85%;
+	height: 95%;
+	background-size: contain;
+	margin: 0 auto;
+}
+
+.overlay-box figure.slide-2 {
+	background: url("../img/Mark02.png") no-repeat;
+	width: 85%;
+	height: 95%;
+	background-size: contain;
+	margin: 0 auto;
+}
+
+.overlay-box figure.slide-3 {
+	background: url("../img/Mark03.png") no-repeat;
+	width: 85%;
+	height: 95%;
+	background-size: contain;
+	margin: 0 auto;
+}
+
+.overlay-box figure.slide-4 {
+	background: url("../img/Mark04.png") no-repeat;
+	width: 85%;
+	height: 95%;
+	background-size: contain;
+	margin: 0 auto;
+}
+
+.overlay-box figure.slide-5 {
+	background: url("../img/Mark05-1.png") no-repeat;
+	width: 85%;
+	height: 95%;
+	background-size: contain;
+	margin: 0 auto;
+}
+
+.overlay-box .slide-5-back figure.fb {
+	background: url("../img/fb-button.png") no-repeat;
+	background-size: contain;
+	width: 70%;
+	height: 8%;
 	z-index: 1000;
-}
-
-.info_box{
-	text-align: center;
-	width: 80%;
-	margin-left: 10%;
-	padding-top : 20%;
-}
-.info_box h2{
-	color : #E0624D;
-}
-.info_box h5{
-	color : #eee;
-}
-
-.blue{
-	height: 100%;
-	/*background-color: blue !important;*/
-}
-.red{
-	height: 100%;
-	/*background-color: red !important;*/
+	position: absolute;
+	top: 25%;
+	left: 15%;
+	margin: 0 auto;
 }
 
 a.overlay-close {

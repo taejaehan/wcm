@@ -95,54 +95,31 @@
     <div class="overlay-spacer"></div>
     <!-- <ion-checkbox ng-model="notShowChecked.checked" class="checkbox_custrom">다시 보지않기</ion-checkbox> -->
     <a ng-click="overlayClose()" class="overlay-close"><i class="icon ion-close" style="font-size: 30px;"></i></a>
+
     <ion-slide-box class="overlay-box">
-      <ion-slide>
-        <div class="box blue">
-          <div class="info_box">
-            <h2>Welcome to We Change Makers!</h2>
-            <h5>대한민국의 위험정보를 공유하고 함께 해결해나가는 We Change Makers에 함께 하신 것을 환영합니다</h5>
-          </div>
-        </div>
+
+      <ion-slide class="slide-1-back">
+        <figure class="slide-1"></figure>
       </ion-slide>
-      <ion-slide>
-        <div class="box red">
-          <!-- <img class="info_01" ng-src="../img/info_01.png"> -->
-          <div class="info_box">
-            <h2>내 주변 위험정보를 한 눈에</h2>
-            <h5>앱에 등록된 위험정보를 실시간으로 조회할 수 있습니다</h5>
-          </div>
-          <!-- <img class="info_02" ng-src="../img/info_02.png"> -->
-        </div>
+
+      <ion-slide class="slide-2-back">
+        <figure class="slide-2"></figure>
       </ion-slide>
-      <ion-slide>
-        <div class="box red">
-          <div class="info_box">
-            <h2>위험을 직접 제보하세요</h2>
-            <h5>포트홀, 균열 등 위험요소를 발견하면 공유하고 해결을 요청하세요</h5>
-          </div>
-          <!-- <img class="info_03" ng-src="../img/info_03.png"> -->
-        </div>
+
+      <ion-slide class="slide-3-back">
+        <figure class="slide-3"></figure>
       </ion-slide>
-      <ion-slide>
-        <div class="box red">
-          <div class="info_box">
-            <h2>이건 내가 해결할게요</h2>
-            <h5>여러분이 직접 해결하거나 도움을 줄 수 있는 위험정보가 있다면 자신 있게 참여하세요</h5>
-          </div>
-        </div>
+
+      <ion-slide class="slide-4-back">
+        <figure class="slide-4"></figure>
       </ion-slide>
-      <ion-slide>
-        <div class="box red">
-          <div class="info_box">
-            <h2>안전한 대한민국 함께 만들어가요!</h2>
-            <h5>안전 준비 끝! 안전을 지켜주고 싶은 사람들에게도 앱을 공유해주세요</h5>
-          </div>
-          <div>
-          <button class="button button-block button-positive fb-login" ng-click="facebookLogin()"><i class="icon ion-social-facebook"></i> 페이스북으로 로그인하고</br>We Change Makers 시작하기</button></a>
-          <button class="button button-block btn-default" ng-click="skipLogin()"><i class="fa fa-check"></i> Skip Login</button> 
-          </div>
-        </div>
+
+      <ion-slide class="slide-5-back">
+        <figure class="slide-5"></figure>
+        <figure class="fb" ng-click="facebookLogin()"></figure> 
+          <!-- <button class="button button-block btn-default" ng-click="skipLogin()"><i class="fa fa-check"></i> Skip Login</button>  -->
       </ion-slide>
+
     </ion-slide-box>
   </ion-content>
 </ion-pane>

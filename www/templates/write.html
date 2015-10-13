@@ -1,7 +1,13 @@
 <ion-view view-title="{{uploadTitle}}">
+  <ion-nav-buttons side="left">
+    <button type="submit" class="button button-icon" ng-click="cancelCard()">
+        취소
+    </button>
+  </ion-nav-buttons>
   <ion-nav-buttons side="right">
     <button type="submit" class="button button-icon" ng-click="uploadCard(cardForm)">
-        <i class="icon ion-checkmark"></i>
+        <!-- <i class="icon ion-checkmark"></i> -->
+        완료
     </button>
   </ion-nav-buttons>
   <form name="cardForm" novalidate="" class="css-form" >
@@ -10,37 +16,19 @@
     <!-- Title -->
     <div class="form-group" id="wrtie_page">
       <label class="item item-input"  
-         ng-class="{ 'has-errors' : cardForm.title.$invalid , 'no-errors' : cardForm.title.$valid }" >
-      <!-- <span class="input-label">Title</span>   -->
-      <input id="card_title"
-         type="text"  
-         name="title"
-         placeholder="제목"
-         ng-model="cardData.title" 
-         required>
+         ng-class="{ 'has-errors' : cardForm.title.$invalid , 'no-errors' : cardForm.title.$valid }">
+
+      <!-- <input id="card_title" type="text" name="title" ng-model="cardData.title" ng-value="cardTitle" required> -->
+
+      <input id="card_title" type="text" name="title" placeholder="제목" ng-model="cardData.title" required  oninvalid="this.setCustomValidity('User ID is a must')">
+
       </label>
+
       <div class="error-container"  
          ng-show="cardForm.title.$error"
          ng-messages="cardForm.title.$error">
          <div ng-messages-include="error-list.html"></div>
       </div>
-      
-      <!-- Description -->
-      <label class="item item-input"  
-         ng-class="{ 'has-errors' : cardForm.description.$invalid  && cardForm.$submitted, 'no-errors' : cardForm.description.$valid  && cardForm.$submitted}">
-        <textarea id="card_des"
-         rows="5" 
-         name="description"
-         placeholder="발견된 위험의 종류, 주변상황, 구체적인 장소정보 등을 자유롭게 적어주세요"
-         ng-model="cardData.description" 
-         required></textarea>
-      </label>  
-      <div class="error-container"  
-         ng-show="cardForm.description.$error && cardForm.$submitted"
-         ng-messages="cardForm.description.$error">
-         <div ng-messages-include="error-list.html"></div>
-      </div>
-
       
       <!-- Location -->
       <label class="item item-input"  
@@ -50,7 +38,7 @@
       <input id="card_location"
          type="text"  
          name="location"
-         placeholder="Location"
+         placeholder="위치 추가"
          ng-model="cardData.location"
          lat="" 
          long=""
@@ -63,15 +51,37 @@
          ng-messages="cardForm.location.$error">
          <div ng-messages-include="error-list.html"></div>
       </div> 
+
+
+      <!-- Description -->
+      <label class="item item-input"  
+         ng-class="{ 'has-errors' : cardForm.description.$invalid  && cardForm.$submitted, 'no-errors' : cardForm.description.$valid  && cardForm.$submitted}">
+        <textarea id="card_des"
+         rows="9" 
+         name="description"
+         placeholder="발견된 위험의 종류, 주변상황, 구체적인 장소정보 등을 자유롭게 적어주세요"
+         ng-model="cardData.description"
+         ng-value="inputData.description"
+         required></textarea>
+      </label>  
+      <div class="error-container"  
+         ng-show="cardForm.description.$error && cardForm.$submitted"
+         ng-messages="cardForm.description.$error">
+         <div ng-messages-include="error-list.html"></div>
+      </div>
+
       
       <!-- File -->
       <label class="item item-input"  
          ng-class="{ 'has-errors-img' : cardForm.file.$invalid && cardForm.$submitted, 'no-errors-img' : cardForm.file.$valid  && cardForm.$submitted}">
       <div id="picture_list">
         <img id="card_img" ng-show="imgURI !== undefined" ng-src="{{imgURI}}">
+
+        <a ng-click="test()" class="close-link"><i class="ion-close-circled img-close" ng-show="imgCheck"></i></a>
+        
         <img ng-show="imgURI === undefined" ng-src="http://placehold.it/100x100">
         <button id="change_pic" class="button button-icon" ng-click="showPictureSheet()">
-            <i class="icon ion-ios-reverse-camera"></i>
+          <i class="icon ion-ios-reverse-camera"></i>
         </button>
       </div>
       <input id="card_file"

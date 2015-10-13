@@ -122,6 +122,10 @@ img.posting-image {
 	float: left;
 }
 
+#detail_page .change-member .member-list img.status-66 {
+	border: 2px solid #efae28;
+}
+
 #detail_page .change-member .member-list img.status-100 {
 	border: 2px solid #6fba2c;
 }
@@ -142,6 +146,10 @@ img.posting-image {
 	display: block;
 	padding: 3px 30px 3px 30px;
 	margin: 0 auto;
+}
+
+#detail_page .change-member .change-button.status-66 {
+	background-color: #efae28;
 }
 
 #detail_page .change-member .change-button.status-100 {

@@ -3,12 +3,16 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var latlng, cardId, progress;
   var imgPath = '';
+
   $scope.cardData = {
-    "title" : "",
-    "description" : "",
-    "location":"",
-    "imgPath":""
+    // "title" : "",
+    // "description" : "",
+    // "location":"",
+    // "imgPath":""
   };
+
+  $scope.imgCheck = false;
+
   $scope.submitDisabled = true;
 
   $scope.$on('$ionicView.afterEnter', function(){
@@ -35,6 +39,19 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
         }
       }
     }
+
+    if ($rootScope.cardTitle != undefined) {
+      document.getElementById('card_title').value = $rootScope.cardTitle;
+    }
+
+    if ($rootScope.cardDescription != undefined) {
+      document.getElementById('card_des').value = $rootScope.cardDescription;
+    }
+
+    if ($rootScope.cardFile != undefined) {
+      document.getElementById('card_file').value = $rootScope.cardFile;
+    }
+
   });
 
 
@@ -77,7 +94,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     //   // $scope.currentLocation();
     //   return;
     // };
-
+    $scope.imgCheck = true;
     if(ionic.Platform.isWebView()){
       var options = { 
           quality : 100, 
@@ -107,6 +124,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
         // $scope.imgURI = "data:image/jpeg;base64," + imageData;
         // alert('imagePath :' + imagePath);
         $scope.imgURI = imagePath;
+        $scope.imgCheck = true;
         $scope.cardForm.file.$setTouched();
         $scope.cardForm.file.$setViewValue(imagePath);
 
@@ -223,6 +241,25 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     };
 
     $scope.cardForm.location.$setViewValue('done');
+
+    
+
+    // if ($rootScope.cardTitle == undefined) {
+    //   $rootScope.cardTitle = $scope.cardData.title;
+    // } 
+
+    // if ($rootScope.cardDescription == undefined) {
+    //   $rootScope.cardDescription = $scope.cardData.description;
+    // } 
+
+    // if ($rootScope.cardFile == undefined) {
+    //   $rootScope.cardFile = $scope.cardData.file;
+    // } 
+
+    $rootScope.cardTitle = $scope.cardData.title;
+    $rootScope.cardDescription = $scope.cardData.description;
+    $rootScope.cardFile = $scope.cardData.file;
+
   }
 
   /*
@@ -441,6 +478,11 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
         $scope.cardForm.file.$setUntouched();
         $scope.cardForm.file.$setViewValue('');
         $scope.imgURI = undefined;
+
+        delete $rootScope.cardTitle;
+        delete $rootScope.cardDescription;
+        delete $rootScope.cardFile;
+
         //go to the home
         $state.go('tabs.home');
         
@@ -493,5 +535,18 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       $scope.setLocationName(lat, long);
     });
   }
+
+  $scope.cancelCard = function() {
+    $state.go('tabs.home');
+    delete $rootScope.cardTitle;
+    delete $rootScope.cardDescription;
+    delete $rootScope.cardFile;
+  }
+
+  $scope.test = function() {
+    alert("Test");
+    console.log("hahah");
+  }
+
 });
 
