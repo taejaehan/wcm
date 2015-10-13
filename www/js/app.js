@@ -202,7 +202,6 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
 
 // wcm.factory('$cordovaPreferences', ['$window', '$q', function ($window, $q) {
-
 //   return {
 //     set: function (key, value) {
 //       var q = $q.defer();

@@ -1,5 +1,6 @@
 #profile_page {
-	padding: 20px 10px 0px 10px;
+	background-color: #eead39;
+	padding-top:20px;
 }
 
 #profile_page .user.active {
@@ -16,9 +17,8 @@
 }
 
 #profile_page .profile-form img {
-	width: 50px;
-	height: 50px;
-	margin-right: 20px;
+	width: 80px;
+	height: 80px;
 	border-radius: 50px;
 	margin: 0 auto;
 	display: block;
@@ -26,6 +26,8 @@
 
 #profile_page .profile-form .username {
 	margin-top: 4px;
+	padding-bottom: 15px;
+	margin-bottom: 0px;
 }
 
 #profile_page .profile-form .username label {
@@ -34,31 +36,50 @@
 	display: block;
 }
 
+#profile_page .profile-form .username i {
+	color: white;
+}
+
 #profile_page .my-change-list {
 	width: 100%;
 	display: inline-block;
+	border-width: 0px;
 }
 
-#profile_page .my-change-list p.change-title {
+#profile_page .title, #profile_page .my-card-list .title p {
 	font-size: 18px;
 	text-align: center;
 	color: black;
+	margin-top: 20px;
 }
 
-#profile_page .my-change-list .change-list {
-	width: 49%;
+#profile_page .my-change-list a.change-list {
+	width: 50%;
+	height: 35px;
+	color: #828282;
+	margin: 0px;
+	font-size: 13px;
+	padding: 8px 0px 0px 0px;
+	border: none;
+}
+
+#profile_page .change-list-button {
+	width: 100%;
+	border: 1px solid #e0e0e0;
+	border-left: none;
+	border-bottom: none;
+}
+
+#profile_page .change-list-button a.change-list.right {
+	border-left: 1px solid #e0e0e0;
 }
 
 #profile_page .my-change-list, .my-card-list {
-	border-radius: 10px;
+	border-radius: 5px;
 	margin-top: 10px;
-	box-shadow: 1px 2px 8px 1px #888888;
-}
-
-#profile_page .my-card-list .title p {
-	font-size: 18px;
-	text-align: center;
-	color: black;
+	box-shadow: 0px 1px 2px 1px #b7b6b6;
+	padding: 0;
+	border: none;
 }
 
 #profile_page .profile-form .form-group .progress {
@@ -68,6 +89,17 @@
 
 #profile_page .progress-button {
 	text-align: center;
+	border-top: 1px solid #e0e0e0;
+	height: 35px;
+}
+
+#profile_page .progress-button a {
+	color: #a0a0a0;
+	text-decoration: none;
+	text-align: center;
+	width: 33.2%;
+	display: inline-block;
+	padding-top: 8px;
 }
 
 #profile_page p.progressText {
@@ -76,51 +108,74 @@
 	font-size: 12px;
 }
 
+#profile_page .progressText i {
+	color: #efae28;
+	font-size: 13px;
+	font-weight: bolder;
+}
+
 button.logout {
 	margin-left: 10px;
 }
 
-#profile_page .jumbotron {
-	padding: 0px 20px 40px 20px;
-	border-top: 1px solid grey;
+#profile_page .row {
+	padding: 0;
+	margin: 0;
 }
 
-#profile_page .jumbotron.login {
+#profile_page a.menu-tab {
+	background-color: #f0f0ee;
+	width: 49%;
+	height: 50px;
+	text-align: center;
+	padding-top: 15px;
+	text-decoration: none;
+	font-weight: 700;
+}
+
+#profile_page a.menu-tab.non-active {
+	background-color: white;
+	color: #858484;
+	font-weight: 400;
+}
+
+#profile_page .left-tab {
+	border-top-right-radius: 5px;
+}
+
+#profile_page .right-tab {
+	border-top-left-radius: 5px;
+	margin-left: 2%;
+}
+
+#profile_page .login {
 	width: 100%;
   height: auto;
   position: absolute;
   margin-bottom: 0;
-  margin-left: -10px;
+  margin-left: 0px;
+	padding: 0px 10px 20px 10px;
+	background-color: #f0f0ee;
 }
 
-#profile_page .jumbotron .row {
-	margin: 0px;
-}
-
-#profile_page .jumbotron .row a {
-	text-align: center;
-	text-decoration: none;
-	color: #666666;
-}
-
-#profile_page .jumbotron .row a.active {
+#profile_page .login .row a.active {
 	border-bottom: 4px solid #666666;
 	margin-bottom: 10px;
 	display: block;
 }
 
-#profile_page .jumbotron .info-1.non-active, .info-2.non-active{
+#profile_page .info-1.non-active, .info-2.non-active{
 	display: none;
 }
 
-#profile_page .jumbotron.non-login {
+#profile_page .non-login {
 	border: none;
 	border-radius: 10px;
   height: 120px;
   text-align: center;
 }
 
-#profile_page .jumbotron.non-login p {
+#profile_page .non-login p {
 	font-size: 15px;
 	padding-top: 25px;
 }

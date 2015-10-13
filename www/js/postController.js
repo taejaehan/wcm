@@ -33,10 +33,13 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
       if (data.cards[0].status === "33") {
         $scope.card.statusDescription = "프로젝트가 시작되었습니다.";
+        $scope.statusIcon = "ion-alert-circled";
       } else if (data.cards[0].status === "66") {
         $scope.card.statusDescription = "프로젝트를 진행합니다.";
+        $scope.statusIcon = "ion-gear-b";
       } else {
         $scope.card.statusDescription = "프로젝트가 완료되었습니다.";
+        $scope.statusIcon = "ion-happy-outline";
       }
 
       // 카드에 해당하는 change supporters 체크
@@ -423,14 +426,23 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
     if (user.isAuthenticated === true) {
 
-      if ((user.changes.length === 0) || (user.changes.indexOf($stateParams.postId) === -1)) {
-        ChangeMakerPost();
-      
-      } else {
+      if ($scope.card.status == 100) {
         $ionicPopup.alert({
           title: 'We Change Makers',
-          template: '이미 참여하셨습니다'
+          template: '프로젝트가 종료되었습니다.'
         });
+        
+      } else {
+
+        if ((user.changes.length === 0) || (user.changes.indexOf($stateParams.postId) === -1)) {
+          ChangeMakerPost();
+        
+        } else {
+          $ionicPopup.alert({
+            title: 'We Change Makers',
+            template: '이미 참여하셨습니다'
+          });
+        }
       }
 
     } else {
@@ -449,8 +461,8 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
           }
         ]
       });
-
     }
+
   }
 
   // Change Supporters 프로필 팝업

@@ -1,6 +1,10 @@
-#detail_page img {
+#detail_page {
+	padding: 0px 10px 0px 10px;
+}
+
+img.posting-image {
 	width: 100%;
-	margin-bottom : 10px;
+	margin-bottom : 5px;
 }
 
 #detail_page h1 {
@@ -9,38 +13,54 @@
 	text-align: center;
 }
 
+#detail_page hr {
+	margin: 0px;
+}
+
 #detail_page p {
 	width : 100%;
 	text-align: center;
+	font-size: 15px;
 }
+
+#detail_page p.description {
+	margin-bottom: 25px;
+}
+
 #detail_page #post_location_name {
-	margin-bottom : 30px;
+	margin: 5px 0px 15px 5px;
+	text-align: left;
+	color: darkgrey;
+	font-size: 14px;
+}
+
+#detail_page #post_location_name i {
+	color: #ea5c50;
 }
 
 #detail_page #map {
 	display: none;
 }
 
-#detail_page p.progress-100 {
-	color: #00B050;
-}
-
-#detail_page p.progress-66 {
-	color: #E6AD00;
-}
-
-#detail_page p.progress-33 {
-	color: #d9534f;
-}
-
-#detail_page .additional-function {
-	color: grey;
-	text-align: center;
+#detail_page .progressText {
+	color: #8f8f8f;
+	font-weight: 500;
 	font-size: 13px;
 }
 
-#detail_page .additional-function span {
-	margin: 0px 5px 0px 5px;
+#detail_page .progressText i {
+	color: #efae28;
+}
+
+#detail_page .additional-function {
+	color: #a0a0a0;
+	text-align: right;
+	font-size: 15px;
+	margin: 0px 10px 5px 0px;
+}
+
+#detail_page .additional-function i {
+	margin-left: 10px;
 }
 
 #detail_page hr {
@@ -49,47 +69,32 @@
 
 #detail_page .sns-link {
 	width: 100%;
-	height: 	50px;
-	padding-top : 15px;
-}
-
-#detail_page .sns-link a {
-	width: 33%;
-	text-decoration: none;
-	display: inline-block;
-	text-align: center;
-	padding: 2px 0px 2px 0px;
-	font-size: 14px;
-
-	border: 1px solid #7F7266;
-	border-radius: 6px;
-	color: grey;
+	height: 33px;
 }
 
 #detail_page .sns-link .active {
-	background-color: #695B4D;
-	color: white;
+	color: #e85d54;
+	font-weight: bolder;
 }
 
 #detail_page .sns-link .non-active {
-	color: #695B4D;
+	color: #a0a0a0;
 }
 
 #detail_page .sns-link a {
 	width: 32%;
-	text-decoration: none;
 	display: inline-block;
+	padding: 2px 0px 2px 0px;
 	text-align: center;
-	color: #695B4D;
+	text-decoration: none;
+	color: #a0a0a0;
 	font-size: 14px;
 }
 
 #detail_page .change-member {
-	border-top: 1px solid #A9A199;
-	border-bottom: 1px solid #A9A199;
 	margin-top: 10px;
-	padding: 20px 0px 10px 0px;
-	height: 95px;
+	padding: 20px 0px 0px 0px;
+	height: 85px;
 }
 
 #detail_page .change-member.active {
@@ -112,17 +117,47 @@
 	border-radius: 50px;
 	border: 2px solid #FF4719;
 	display: inline-block !important;
-	margin-right: 10px;
+	margin-left: 10px;
+	margin-bottom: 10px;
 	float: left;
 }
 
+#detail_page .change-member .member-list img.status-66 {
+	border: 2px solid #efae28;
+}
+
+#detail_page .change-member .member-list img.status-100 {
+	border: 2px solid #6fba2c;
+}
+
+.progress {
+	border-radius: 50px;
+}
+
 #detail_page .change-member .change-button {
-	border: 2px solid #FF4719;
-	border-radius: 10px;
-	color: #E62E00;
+	background-color: #ea5c50;
+	border-radius: 50px;
+	color: white;
+  width: 90%;
+  height: 40px;
+  border: none;
+  font-size: 20px;
+  font-weight: bold;
 	display: block;
 	padding: 3px 30px 3px 30px;
 	margin: 0 auto;
+}
+
+#detail_page .change-member .change-button.status-66 {
+	background-color: #efae28;
+}
+
+#detail_page .change-member .change-button.status-100 {
+	background-color: #6fba2c;
+}
+
+#detail_page .change-member .change-button i {
+	font-weight: 900;
 }
 
 #detail_page .change-member p {

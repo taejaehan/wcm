@@ -24,45 +24,45 @@
               <img ng-src="{{ card.user[0].userimage }}">
               <p class="username">{{card.user[0].username}}</p>
               <p class="date">{{ card.create_time }}</p>
-              <button class="button button-icon float-edit" ng-style="userChecked(card)" ng-click="deleteCard(card.id)">
-                  <i class="icon ion-ios-trash-outline"></i>
-              </button>
-              <button class="button button-icon float-edit" ng-style="userChecked(card)" ng-click="editCard(card.id)">  
-                  <i class="icon ion-ios-compose-outline"></i>
-              </button>
+    
+              <i class="ion-trash-a delete" ng-style="userChecked(card)" ng-click="deleteCard(card.id)"></i>
+              <i class="ion-compose edit" ng-style="userChecked(card)" ng-click="editCard(card.id)"></i>
             </div>
+            <hr>
 
             <div class="content">
+              <h2 class="title"><strong>{{card.title}}</strong></h2>
+
               <a href="#" ng-click="showMap(card.location_lat, card.location_long)">
-                <p class="fa fa-map-marker"> {{card.location_name}}</p>
+                <p class="address"><i class="fa fa-map-marker"></i> {{card.location_name}}</p>
               </a>
               <a ng-href="#/tab/home/{{ card.id }}">
-                <!-- <div class="center-cropped post-image" style="background-image: url('{{card.img_path}}');"></div> -->
-                <img ng-src="{{card.img_path}}" class="post-image">
+                <div class="img-group">
+                  <img ng-src="{{card.img_path}}" class="post-image">
+                  <div class="snsHover">
+                    <i class="ion-ios-eye"></i> {{ card.like_count }}
+                    <i class="ion-chatbubble-working"></i> {{ card.comments_count }}
+                    <i class="ion-forward"></i> 0
+                  </div>
+                </div>
               </a>
-              <h2><strong>{{card.title}}</strong></h2>
             </div>
 
             <div class="progress">
               <div class="progress-bar progress-bar-danger progress-bar-striped progress-{{card.status}}" role="progressbar" aria-valuenow="{{card.status}}" aria-valuemin="0" aria-valuemax="100" style="width: {{card.status}}%">
               </div>
             </div>
-            <p class="progressText progress-{{card.status}}">{{ card.statusDescription }}</p>
+            <p class="progressText"><i class="icon {{card.statusIcon}}"></i> {{ card.statusDescription }}</p>
 
-            <div class="additional-function">
-              <span>Watch {{ card.like_count }}</span>
-              <span>댓글 {{ card.comments_count }}</span>
-              <span>공유 0</span>
-            </div>
-
+            <hr>
+            
             <div class="sns-link">
               <a href="#" ng-click="toggleLike(card.watch = !card.watch, card.id)" ng-class="{'active' : card.watch, 'non-active' : !card.watch}" id="like">
-                <i class="fa fa-thumbs-up"></i> Watch
+                <i class="ion-ios-eye"></i>  Watch
               </a>
-              <a ng-href="#/tab/home/{{ card.id }}#comment"><i class="fa fa-commenting">
-                </i> 댓글달기
+              <a ng-href="#/tab/home/{{ card.id }}#comment"><i class="ion-chatbubble-working"></i> 댓글달기
               </a>
-              <a href="#" id="sns-share"><i class="fa fa-share"></i> 공유하기</a>
+              <a href="#" id="sns-share"><i class="ion-forward"></i> 공유하기</a>
             </div>
 
           </div>
@@ -95,54 +95,31 @@
     <div class="overlay-spacer"></div>
     <!-- <ion-checkbox ng-model="notShowChecked.checked" class="checkbox_custrom">다시 보지않기</ion-checkbox> -->
     <a ng-click="overlayClose()" class="overlay-close"><i class="icon ion-close" style="font-size: 30px;"></i></a>
+
     <ion-slide-box class="overlay-box">
-      <ion-slide>
-        <div class="box blue">
-          <div class="info_box">
-            <h2>Welcome to We Change Makers!</h2>
-            <h5>대한민국의 위험정보를 공유하고 함께 해결해나가는 We Change Makers에 함께 하신 것을 환영합니다</h5>
-          </div>
-        </div>
+
+      <ion-slide class="slide-1-back">
+        <figure class="slide-1"></figure>
       </ion-slide>
-      <ion-slide>
-        <div class="box red">
-          <!-- <img class="info_01" ng-src="../img/info_01.png"> -->
-          <div class="info_box">
-            <h2>내 주변 위험정보를 한 눈에</h2>
-            <h5>앱에 등록된 위험정보를 실시간으로 조회할 수 있습니다</h5>
-          </div>
-          <!-- <img class="info_02" ng-src="../img/info_02.png"> -->
-        </div>
+
+      <ion-slide class="slide-2-back">
+        <figure class="slide-2"></figure>
       </ion-slide>
-      <ion-slide>
-        <div class="box red">
-          <div class="info_box">
-            <h2>위험을 직접 제보하세요</h2>
-            <h5>포트홀, 균열 등 위험요소를 발견하면 공유하고 해결을 요청하세요</h5>
-          </div>
-          <!-- <img class="info_03" ng-src="../img/info_03.png"> -->
-        </div>
+
+      <ion-slide class="slide-3-back">
+        <figure class="slide-3"></figure>
       </ion-slide>
-      <ion-slide>
-        <div class="box red">
-          <div class="info_box">
-            <h2>이건 내가 해결할게요</h2>
-            <h5>여러분이 직접 해결하거나 도움을 줄 수 있는 위험정보가 있다면 자신 있게 참여하세요</h5>
-          </div>
-        </div>
+
+      <ion-slide class="slide-4-back">
+        <figure class="slide-4"></figure>
       </ion-slide>
-      <ion-slide>
-        <div class="box red">
-          <div class="info_box">
-            <h2>안전한 대한민국 함께 만들어가요!</h2>
-            <h5>안전 준비 끝! 안전을 지켜주고 싶은 사람들에게도 앱을 공유해주세요</h5>
-          </div>
-          <div>
-          <button class="button button-block button-positive fb-login" ng-click="facebookLogin()"><i class="icon ion-social-facebook"></i> 페이스북으로 로그인하고</br>We Change Makers 시작하기</button></a>
-          <button class="button button-block btn-default" ng-click="skipLogin()"><i class="fa fa-check"></i> Skip Login</button> 
-          </div>
-        </div>
+
+      <ion-slide class="slide-5-back">
+        <figure class="slide-5"></figure>
+        <figure class="fb" ng-click="facebookLogin()"></figure> 
+          <!-- <button class="button button-block btn-default" ng-click="skipLogin()"><i class="fa fa-check"></i> Skip Login</button>  -->
       </ion-slide>
+
     </ion-slide-box>
   </ion-content>
 </ion-pane>

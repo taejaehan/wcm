@@ -1,43 +1,49 @@
 <ion-view view-title="{{card.title}}">
-  <ion-content padding="true">
-  	<div id="detail_page">
+  <ion-content>
+  	
+    <img ng-src="{{ card.img_path }}" class="posting-image">
+    <div id="detail_page">
 
-      <img ng-src="{{ card.img_path }}">
-      <p>{{ card.description }}</p>
-      <a href="#" ng-click="showMap()">
-        <p id="post_location_name" class="fa fa-map-marker">{{ card.location_name }}</p>
+      <div class="additional-function">
+        <i class="ion-ios-eye"></i> {{ like_count }}
+        <i class="ion-chatbubble-working"></i> {{ comments_count }}
+        <i class="ion-forward"></i> 0
+      </div>
+      <hr>
+
+      <a href="#" ng-click="showMap()" >
+        <p id="post_location_name"><i class="fa fa-map-marker"></i> {{ card.location_name }}</p>
       </a>
+
+      <p class="description">{{ card.description }}</p>
 
       <div class="progress">
         <div class="progress-bar progress-bar-danger progress-bar-striped progress-{{ card.status }}" role="progressbar" aria-valuenow="{{ card.status }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ card.status }}%">
         </div>
       </div>
-      <p class="progressText progress-{{ card.status }}">{{ card.statusDescription }}</p>
-
-      <div class="additional-function">
-        <span>Watch {{ like_count }}</span>
-        <span>댓글 {{ comments_count }}</span>
-        <span>공유 0</span>
-      </div>
-
-      <div class="sns-link">
-        <a href="#" ng-click="toggleLike(watch = !watch)" ng-class="{'active' : card.watch, 'non-active' : !card.watch}" id="like">
-          <i class="fa fa-thumbs-up"></i> Watch
-        </a>
-        <a href="#"><i class="fa fa-commenting"></i> 댓글달기</a>
-        <a href="#" id="sns-share"><i class="fa fa-share"></i> 공유하기</a>
-      </div>
+      <p class="progressText"><i class="icon {{statusIcon}}"></i> {{ card.statusDescription }}</p>
 
       <div ng-class="{'change-member' : !changerImage, 'change-member active' : changerImage}">
         <div ng-repeat="changer in changers" ng-class="{'member-list ng-hide' : !changerImage, 'member-list ng-show' : changerImage}">
-          <a href="#" ng-click="openProfile(changer.changeUser[0])"><img ng-src="{{changer.changeUser[0].userimage}}" ng-show="{{ changerImage }}"></a>
+          <a href="#" ng-click="openProfile(changer.changeUser[0])"><img ng-src="{{changer.changeUser[0].userimage}}" ng-show="{{ changerImage }}" class="status-{{ card.status }}"></a>
         </div>
 
         <div class="change-description">
-          <button class="change-button btn btn-default" ng-click="weChange()"><i class="icon ion-wrench"></i> 우리가 바꿔요!</button>
-          <p>ChangeMaker가 되어 해당 이슈를 직접 해결합니다</p>
+          <button class="change-button btn btn-default status-{{ card.status }}" ng-click="weChange()"><i class="icon ion-wrench"></i> 우리가 바꿔요</button>
+          <!-- <p>ChangeMaker가 되어 해당 이슈를 직접 해결합니다</p> -->
         </div>
       </div>
+      <hr>
+
+      <div class="sns-link">
+        <a href="#" ng-click="toggleLike(watch = !watch)" ng-class="{'active' : card.watch, 'non-active' : !card.watch}" id="like">
+          <i class="ion-ios-eye"></i> Watch
+        </a>
+        <a href="#"><i class="ion-chatbubble-working"></i> 댓글달기</a>
+        <a href="#" id="sns-share"><i class="ion-forward"></i> 공유하기</a>
+      </div>
+      <hr>
+
 
       <!-- ========================== comment section ========================== -->
       <div id="comment_section">

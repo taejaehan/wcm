@@ -2,12 +2,12 @@
 /* flip in */
 
 .nav-bar-block, .bar {
-  background-color: #E0624D !important;
-  border-color : #E0624D !important;
+  background-color: #efae28 !important;
+  border-color : #efae28 !important;
 }
 .tabs-dark > .tabs, .tabs.tabs-dark {
-  background-color: #E0624D !important;
-  border-color : #E0624D !important;
+  background-color: #e0e0e0 !important;
+  border-color : #e0e0e0 !important;
 }
 
 .header-offline{
@@ -19,6 +19,13 @@
   color :#fff;
 }
 
+.tab-item .icon {
+  color: #a0a0a0;
+}
+
+span.tab-title {
+  color: #a0a0a0;
+}
 
 @keyframes flipInX {
   0% {
