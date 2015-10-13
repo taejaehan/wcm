@@ -11,61 +11,61 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     // //앱에서 열였다면
     if(ionic.Platform.isWebView()){
       console.log('typeof Preferences != undefined : ' + (typeof Preferences != 'undefined'));
-      console.log('typeof Preferences != undefined : ' + (typeof $cordovaPreferences != 'undefined'));
+      // console.log('typeof Preferences != undefined : ' + (typeof $cordovaPreferences != 'undefined'));
       //com.portnou.cordova.plugin.preferences plugin에서 앱의 prefrences에 저장
       
-      if(typeof Preferences != 'undefined'){
-        $cordovaPreferences.get('notShowPref', function(notShowPref) {
-          if(document.getElementById('welcomeOverlay') != null){
-            if(notShowPref == 'true'){
-              document.getElementById('welcomeOverlay').setAttribute('style','display:none');
-            }else{
-              document.getElementById('welcomeOverlay').setAttribute('style','display:block');
-            }
-          }
-        });
+      // if(typeof Preferences != 'undefined'){
+      //   $cordovaPreferences.get('notShowPref', function(notShowPref) {
+      //     if(document.getElementById('welcomeOverlay') != null){
+      //       if(notShowPref == 'true'){
+      //         document.getElementById('welcomeOverlay').setAttribute('style','display:none');
+      //       }else{
+      //         document.getElementById('welcomeOverlay').setAttribute('style','display:block');
+      //       }
+      //     }
+      //   });
 
-        $cordovaPreferences.get('loginId', function(loginId) {
-          if(loginId != null){
-            console.log('success loginId : ' +  loginId);
-            var request = $http({
-               method: "get",
-               url: mServerAPI + "/user/" + loginId,
-               crossDomain : true,
-               headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-               cache: false
-            });
+      //   $cordovaPreferences.get('loginId', function(loginId) {
+      //     if(loginId != null){
+      //       console.log('success loginId : ' +  loginId);
+      //       var request = $http({
+      //          method: "get",
+      //          url: mServerAPI + "/user/" + loginId,
+      //          crossDomain : true,
+      //          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+      //          cache: false
+      //       });
 
-            request.success(function(data) {
-              console.log('Get User data : ' + data);
-              var user = {
-                username: data.users[0].username,
-                userid: data.users[0].user_id,
-                userimage: data.users[0].userimage.split("amp;").join("&"),
-                isAuthenticated: true,
-                likes : [],
-                changes : [],
-              }; 
+      //       request.success(function(data) {
+      //         console.log('Get User data : ' + data);
+      //         var user = {
+      //           username: data.users[0].username,
+      //           userid: data.users[0].user_id,
+      //           userimage: data.users[0].userimage.split("amp;").join("&"),
+      //           isAuthenticated: true,
+      //           likes : [],
+      //           changes : [],
+      //         }; 
 
-              //user watch list저장
-              if (data.users[0].likes.length > 0) {
-                for(var i = 0; i < data.users[0].likes.length; i++ ) {
-                  user.likes.push(data.users[0].likes[i].post_id); 
-                }
-              }
-              console.log('data.users[0].changes.length : ' + data.users[0].changes.length);
-              //user changer list저장
-              if (data.users[0].changes.length > 0) {
-                for(var i = 0; i < data.users[0].changes.length; i++ ) {
-                  user.changes.push(data.users[0].changes[i].post_id); 
-                }
-              }
+      //         //user watch list저장
+      //         if (data.users[0].likes.length > 0) {
+      //           for(var i = 0; i < data.users[0].likes.length; i++ ) {
+      //             user.likes.push(data.users[0].likes[i].post_id); 
+      //           }
+      //         }
+      //         console.log('data.users[0].changes.length : ' + data.users[0].changes.length);
+      //         //user changer list저장
+      //         if (data.users[0].changes.length > 0) {
+      //           for(var i = 0; i < data.users[0].changes.length; i++ ) {
+      //             user.changes.push(data.users[0].changes[i].post_id); 
+      //           }
+      //         }
           
-              window.localStorage['user'] = JSON.stringify(user);
-            });
-          }
-        });
-      }
+      //         window.localStorage['user'] = JSON.stringify(user);
+      //       });
+      //     }
+      //   });
+      // }
 
       if(typeof Preferences != 'undefined'){
         //다시 보지 않기

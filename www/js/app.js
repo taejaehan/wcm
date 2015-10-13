@@ -1,10 +1,15 @@
-var mServerUrl = 'http://192.168.20.74:3000/wcm_php';
-var mServerUpload = mServerUrl + '/controllers/uploads/';
-var mServerAPI = mServerUrl + '/controllers/index.php';
+var mServerUrl, mServerUpload, mServerAPI = '';
+var localServer = false;
 
-// var mServerUrl = 'https://wcm_test.major-apps-1.com';
-// var mServerUpload = mServerUrl + '/uploads/';
-// var mServerAPI = mServerUrl + '';
+if (localServer) {
+  mServerUrl = 'http://192.168.10.105:3000';
+  mServerUpload = mServerUrl + '/uploads/';
+  mServerAPI = mServerUrl + '/index.php';
+} else {
+  mServerUrl = 'https://wcm.major-apps-1.com';
+  mServerUpload = mServerUrl + '/uploads/';
+  mServerAPI = mServerUrl + '/index.php';
+}
 
 
 //사진이 없을 경우 보여주는 이미지 링크
@@ -196,32 +201,32 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 });
 
 
-wcm.factory('$cordovaPreferences', ['$window', '$q', function ($window, $q) {
+// wcm.factory('$cordovaPreferences', ['$window', '$q', function ($window, $q) {
 
-  return {
-    set: function (key, value) {
-      var q = $q.defer();
+//   return {
+//     set: function (key, value) {
+//       var q = $q.defer();
 
-      $window.appgiraffe.plugins.applicationPreferences.set(key, value, function (result) {
-        q.resolve(result);
-      }, function (err) {
-        q.reject(err);
-      });
+//       $window.appgiraffe.plugins.applicationPreferences.set(key, value, function (result) {
+//         q.resolve(result);
+//       }, function (err) {
+//         q.reject(err);
+//       });
 
-      return q.promise;
-    },
+//       return q.promise;
+//     },
 
-    get: function (key) {
-      var q = $q.defer();
+//     get: function (key) {
+//       var q = $q.defer();
 
-      $window.appgiraffe.plugins.applicationPreferences.get(key, function (value) {
-        q.resolve(value);
-      }, function (err) {
-        q.reject(err);
-      });
+//       $window.appgiraffe.plugins.applicationPreferences.get(key, function (value) {
+//         q.resolve(value);
+//       }, function (err) {
+//         q.reject(err);
+//       });
 
-      return q.promise;
-    }
-  };
-}]);
+//       return q.promise;
+//     }
+//   };
+// }]);
 

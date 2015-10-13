@@ -103,15 +103,16 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
 
       //com.portnou.cordova.plugin.preferences plugin에서 앱의 prefrences에 저장
       if(ionic.Platform.isWebView()){
-        //로그인 후 무조건 다시보지 않기
-        Preferences.put('notShowPref', true); 
-        //로그인 아이디 저장
-        Preferences.put('loginId', formData.user_id);
-
-        $cordovaPreferences.set('notShowPref', true);
-
-        $cordovaPreferences.set('loginId', formData.user_id);
-
+        if(ionic.Platform.isAndroid()){
+          //로그인 후 무조건 다시보지 않기
+          Preferences.put('notShowPref', true); 
+          //로그인 아이디 저장
+          Preferences.put('loginId', formData.user_id);
+        }
+        if(ionic.Platform.isIOS()){
+          $cordovaPreferences.set('notShowPref', true);
+          $cordovaPreferences.set('loginId', formData.user_id);
+        }
       }
 
       $state.go("tabs.home");

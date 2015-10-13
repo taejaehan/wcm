@@ -291,18 +291,37 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
 
     newFileName = n + ".jpg";
 
-    var url = mServerUpload;
+    var url = mServerUrl + '/upload';
     var targetPath = imagePath;
     var filename = targetPath.split("/").pop();
+
+    // var options = new FileUploadOptions();
+    // options.fileKey = "file";
+    // options.fileName = newFileName;
+    // options.mimeType = "image/jpg";
+    // options.chunkedMode = false;
+    // options.mimeType = "image/jpg";
+    
+    // var params = {};
+    // params.value1 = "test";
+    // params.value2 = "param";
+    // options.params = params;
+    // options.headers = {
+    //     Connection: "close"
+    // }
     var options = {
         fileKey: "file",
         fileName: newFileName,
         chunkedMode: false,
-        mimeType: "image/jpg",
-        headers : {
-          Connection: "close"
-        }
+        mimeType: "image/jpg"
     };
+    // options.headers = {
+    //     Connection: "close"
+    // }
+    console.log('url :  ' + url);
+    console.log('targetPath :  ' + targetPath);
+    console.log('options :  ' + options);
+
     if(ionic.Platform.isWebView()){
       $cordovaFileTransfer.upload(url, targetPath, options).then(function(result) {
         console.log('success :  ' + JSON.stringify(result.response));
