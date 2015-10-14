@@ -1,0 +1,26 @@
+{
+  "name": "ng-timeago",
+  "main": "./ngtimeago.js",
+  "version": "0.0.2",
+  "keywords": [
+    "angular",
+    "timeago",
+    "timenow",
+    "fbliketime",
+    "time"
+  ],
+  "dependencies": {
+    "angular": "*"
+  },
+  "homepage": "https://github.com/uttesh/ngtimeago",
+  "_release": "0.0.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.0.2",
+    "commit": "aee9516b68aa17168e8d7dbc3009f3c21d577922"
+  },
+  "_source": "git://github.com/uttesh/ngtimeago.git",
+  "_target": "~0.0.2",
+  "_originalSource": "ng-timeago",
+  "_direct": true
+}

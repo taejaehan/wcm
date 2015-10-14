@@ -58,7 +58,6 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   * 카메라 또는 앨범을 선택할 수 있는 시트를 보여준다
   */
   $scope.showPictureSheet = function(){
-
     // Show the action sheet
    var hideSheet = $ionicActionSheet.show({
      buttons: [
@@ -240,19 +239,6 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
 
     $scope.cardForm.location.$setViewValue('done');
 
-    
-
-    // if ($rootScope.cardTitle == undefined) {
-    //   $rootScope.cardTitle = $scope.cardData.title;
-    // } 
-
-    // if ($rootScope.cardDescription == undefined) {
-    //   $rootScope.cardDescription = $scope.cardData.description;
-    // } 
-
-    // if ($rootScope.cardFile == undefined) {
-    //   $rootScope.cardFile = $scope.cardData.file;
-    // } 
 
     $rootScope.cardTitle = $scope.cardData.title;
     $rootScope.cardDescription = $scope.cardData.description;

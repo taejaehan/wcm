@@ -6,7 +6,7 @@ if (localServer) {
   mServerUpload = mServerUrl + '/uploads/';
   mServerAPI = mServerUrl + '/index.php';
 } else {
-  mServerUrl = 'https://wcm.major-apps-1.com';
+  mServerUrl = 'https://wcm_test.major-apps-1.com';
   mServerUpload = mServerUrl + '/uploads/';
   mServerAPI = mServerUrl + '/index.php';
 }
@@ -15,7 +15,8 @@ if (localServer) {
 //사진이 없을 경우 보여주는 이미지 링크
 var mNoImage = 'img/default.png';
 
-var wcm = angular.module('wcm', ['ionic', 'ngCordova']);
+var wcm = angular.module('wcm', ['ionic', 'ngCordova', 'ngTimeago', 'ng']);
+
 
 //controller간 데이터를 전달하기 위해 사용한다
 wcm.factory('Scopes', function($rootScope) {
@@ -61,6 +62,46 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $cordovaPreferences) {
   });
 })
 
+// to solve ios9 <Error: $rootScope:infdig Infinite $digest Loop> problem
+wcm.config(['$provide', function($provide) {
+  'use strict';
+
+  $provide.decorator('$browser', ['$delegate', '$window', function($delegate, $window) {
+
+    if (isIOS9UIWebView($window.navigator.userAgent)) {
+      return applyIOS9Shim($delegate);
+    }
+
+    return $delegate;
+
+    function isIOS9UIWebView(userAgent) {
+      return /(iPhone|iPad|iPod).* OS 9_\d/.test(userAgent) && !/Version\/9\./.test(userAgent);
+    }
+
+    function applyIOS9Shim(browser) {
+      var pendingLocationUrl = null;
+      var originalUrlFn= browser.url;
+
+      browser.url = function() {
+        if (arguments.length) {
+          pendingLocationUrl = arguments[0];
+          return originalUrlFn.apply(browser, arguments);
+        }
+
+        return pendingLocationUrl || originalUrlFn.apply(browser, arguments);
+      };
+
+      window.addEventListener('popstate', clearPendingLocationUrl, false);
+      window.addEventListener('hashchange', clearPendingLocationUrl, false);
+
+      function clearPendingLocationUrl() {
+        pendingLocationUrl = null;
+      }
+
+      return browser;
+    }
+  }]);
+}]);
 
 
 wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {

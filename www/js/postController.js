@@ -116,10 +116,10 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
 
   // toggle like_count
-  $scope.toggleLike = function(e) {
+  $scope.toggleLike = function(watch) {
     if (user.isAuthenticated === true) {
       
-      if (e === true) {
+      if (watch === true) {
         if (user.likes.indexOf($scope.postId) === -1) {
           $scope.like_count ++;
           $scope.card.watch = true;
@@ -204,9 +204,8 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
 
     } else {
-      $scope.card.watch = false;   
-
-      var myPopup = $ionicPopup.show({
+      
+      var myPopup1 = $ionicPopup.show({
         template: "로그인 후에 이용 가능합니다",
         title: 'We Change Makers',
       
@@ -221,6 +220,8 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
           }
         ]
       });
+
+      $scope.card.watch = false;
 
       var i = 0;
       while( i < $rootScope.allData.cards.length) {
@@ -303,7 +304,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       }
 
     } else {
-      var myPopup = $ionicPopup.show({
+      var myPopup2 = $ionicPopup.show({
         template: "로그인 후에 이용 가능합니다",
         title: 'We Change Makers',
       
@@ -321,7 +322,6 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
       document.getElementById("comment").value = "";
     }
-
   }
   
 
@@ -446,7 +446,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       }
 
     } else {
-      var myPopup = $ionicPopup.show({
+      var myPopup3 = $ionicPopup.show({
         template: "로그인 후에 이용 가능합니다",
         title: 'We Change Makers',
       
@@ -475,11 +475,8 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       scope: $scope,
       buttons: [
        {
-         text: '<b>Ok</b>',
-         type: 'button-positive',
-         onTap: function(e) {
-           return 'ok button'
-         }
+          text: '<b>Ok</b>',
+          type: 'button-positive'
        },
       ]
     });
@@ -488,6 +485,11 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   // 지도 보기
   $scope.showMap = function() {
     $state.go('tabs.location_h', { 'latlng': latlng, 'progress' : progress});
+  }
+
+
+  $scope.test = function() {
+    $state.go('tabs.home');
   }
 
 });

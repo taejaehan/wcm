@@ -77,10 +77,9 @@
       <div id="picture_list">
         <img id="card_img" ng-show="imgURI !== undefined" ng-src="{{imgURI}}">
 
-        <!-- <a ng-click="test()" class="close-link"><i class="ion-close-circled img-close" ng-show="imgCheck"></i></a> -->
-        <a ng-click="test()" class="close-link" ng-show="imgCheck"></a>
+        <a ng-click="test()" class="close-link" ng-show="imgCheck"><i class="ion-close-circled img-close" ng-show="imgCheck"></i></a>
 
-        <img ng-show="imgURI === undefined" ng-src="http://placehold.it/100x100">
+        <!-- <img ng-show="imgURI === undefined" ng-src="http://placehold.it/100x100"> -->
         <button id="change_pic" class="button button-icon" ng-click="showPictureSheet()">
           <i class="icon ion-ios-reverse-camera"></i>
         </button>

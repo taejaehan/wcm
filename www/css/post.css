@@ -23,6 +23,14 @@ img.posting-image {
 	font-size: 15px;
 }
 
+#detail_page span.timeago {
+	text-align: left;
+	display: inline-block;
+	color: darkgrey;
+	margin-left: 10px;
+	margin-bottom: 5px;
+}
+
 #detail_page p.description {
 	margin-bottom: 25px;
 }
@@ -54,9 +62,10 @@ img.posting-image {
 
 #detail_page .additional-function {
 	color: #a0a0a0;
-	text-align: right;
+	float: right;
 	font-size: 15px;
-	margin: 0px 10px 5px 0px;
+	display: inline-block;
+	margin-right: 10px;
 }
 
 #detail_page .additional-function i {
@@ -93,12 +102,12 @@ img.posting-image {
 
 #detail_page .change-member {
 	margin-top: 10px;
-	padding: 20px 0px 0px 0px;
+	padding: 10px 0px 0px 0px;
 	height: 85px;
 }
 
 #detail_page .change-member.active {
-	height: 150px;
+	height: 140px;
 }
 
 #detail_page .change-member .member-list {
