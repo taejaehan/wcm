@@ -565,21 +565,26 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   // Delete Card
   $scope.deleteCard = function(id) {
-  
-    if (confirm('Are you sure you want to delete?')) {
-      var request = $http({
-          method: "get",
-          url: mServerAPI + "/cardDetail/" + id + "/delete",
-          crossDomain : true,
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
-      });
+    var confirmPopup = $ionicPopup.confirm({
+      title: 'We Change Makers',
+      template: 'Are you sure you want to delete?'
+    });
 
-      request.success(function() {
-        location.reload();
-      });
-    } else {
-      
-    }
+    confirmPopup.then(function(res) {
+
+      if(res) {
+        var request = $http({
+            method: "get",
+            url: mServerAPI + "/cardDetail/" + id + "/delete",
+            crossDomain : true,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
+        });
+
+        request.success(function() {
+          location.reload();
+        });
+      }
+    });
   }
   
   // Edit Card  
