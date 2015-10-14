@@ -11,7 +11,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   //로그인 한 상태라면 prefresnces에 저장된 user id로 서버에서 유저 정보를 가져와 localStorage에 저장
   $scope.saveLocalUser = function(loginId) {
     if(loginId != null){
-      console.log('success loginId : ' +  loginId);
       var request = $http({
          method: "get",
          url: mServerAPI + "/user/" + loginId,
@@ -21,7 +20,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       });
 
       request.success(function(data) {
-        console.log('Get User data : ' + data);
         var user = {
           username: data.users[0].username,
           userid: data.users[0].user_id,
@@ -37,7 +35,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             user.likes.push(data.users[0].likes[i].post_id); 
           }
         }
-        console.log('data.users[0].changes.length : ' + data.users[0].changes.length);
+
         //user changer list저장
         if (data.users[0].changes.length > 0) {
           for(var i = 0; i < data.users[0].changes.length; i++ ) {
@@ -152,7 +150,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   $ionicPlatform.ready(function() {
     console.log('$ionicPlatform ready');
     console.log('$ionicPlatform mIsWebView : ' + mIsWebView);
-
     //앱에서 켰다면 
     if(mIsWebView){
 
@@ -212,9 +209,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           var targetPath = cordova.file.dataDirectory+ 'cardImage/' + fileName;
           var options = {};
           var trustHosts = true;
-
-          console.log('fullpath : ' + filePath);
-          console.log('targetPath : ' + targetPath);
 
           $cordovaFileTransfer.download(filePath, targetPath, options, trustHosts)
           .then(function(result) {
@@ -307,8 +301,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   * @param : init(String) 'init'이면 처음 페이지 데이터를 다시 가져옴
   */
   $scope.doRefresh = function(init) {
-
-    console.log('doRefresh');
 
     $scope.noMoreItemsAvailable = true;
 
@@ -427,7 +419,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         //Stop the ion-refresher from spinning
         $scope.$broadcast('scroll.refreshComplete');
       }
-    },10);
+    },100);
   }
 
   /*
@@ -540,7 +532,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         }
       
       }
-      console.log("success");
       $scope.page++;
 
       $scope.$broadcast('scroll.infiniteScrollComplete');  
@@ -622,7 +613,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           if (user.likes.indexOf(id) === -1) {
             user.likes.push(id);
             window.localStorage['user'] = JSON.stringify(user);
-            console.log(user.likes);
+            
             var userId = parseInt(user.userid);
             var postId = parseInt(id);
             var formData1 = { user_id: userId,
@@ -661,7 +652,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             var index = user.likes.indexOf(id);
             user.likes.splice(index, 1);
             window.localStorage['user'] = JSON.stringify(user);
-            console.log(user.likes);
+            
             var userId = parseInt(user.userid);
             var postId = parseInt(id);
             var formData1 = { user_id: userId,

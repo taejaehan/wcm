@@ -177,7 +177,7 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
          
         var posOptions = {
             enableHighAccuracy: true,
-            timeout: 20000,
+            timeout: 4000,
             maximumAge: 0
         };
         $cordovaGeolocation.getCurrentPosition(posOptions).then(function (position) {

@@ -3,17 +3,11 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var latlng, cardId, progress;
   var imgPath = '';
+  $scope.cardData = {};
 
-  $scope.cardData = {
-    // "title" : "",
-    // "description" : "",
-    // "location":"",
-    // "imgPath":""
-  };
   $scope.$on('$ionicView.afterEnter', function(){
 
     if (user != null && user.isAuthenticated === true) {
-
       //id가 없다면 add
       if($stateParams.id == null){
         $scope.uploadTitle = 'Add';
@@ -78,7 +72,6 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   * 카메라 또는 앨범을 선택할 수 있는 시트를 보여준다
   */
   $scope.showPictureSheet = function(){
-
     // Show the action sheet
    var hideSheet = $ionicActionSheet.show({
      buttons: [
@@ -242,9 +235,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       //맵을 보여준 후 dirty설정
       $scope.cardForm.location.$setDirty();
     };
-
     // $scope.cardForm.location.$setViewValue('done');
-
   }
 
   /*
