@@ -241,7 +241,10 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
     if (user.isAuthenticated === true) {
       var comment = document.getElementById("comment").value;
       if ( comment === "" ) {
-        alert('내용을 입력하세요.');
+        $ionicPopup.alert({
+          title: 'We Change Makers',
+          template: '내용을 입력하세요'
+        });
       } else {
         $scope.username = user.username;
         $scope.userimage = user.userimage;

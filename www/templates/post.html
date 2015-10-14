@@ -12,7 +12,7 @@
       </div>
       <hr>
 
-      <a href="#" ng-click="showMap()" >
+      <a ng-click="showMap()" >
         <p id="post_location_name"><i class="fa fa-map-marker"></i> {{ card.location_name }}</p>
       </a>
 
@@ -25,7 +25,7 @@
 
       <div ng-class="{'change-member' : !changerImage, 'change-member active' : changerImage}">
         <div ng-repeat="changer in changers" ng-class="{'member-list ng-hide' : !changerImage, 'member-list ng-show' : changerImage}">
-          <a href="#" ng-click="openProfile(changer.changeUser[0])"><img ng-src="{{changer.changeUser[0].userimage}}" ng-show="{{ changerImage }}" class="status-{{ card.status }}"></a>
+          <img ng-src="{{changer.changeUser[0].userimage}}" ng-click="openProfile(changer.changeUser[0])" ng-show="{{ changerImage }}" class="status-{{ card.status }}">
         </div>
 
         <div class="change-description">
@@ -36,11 +36,11 @@
       <hr>
 
       <div class="sns-link">
-        <a href="#" ng-click="toggleLike(watch = !watch)" ng-class="{'active' : card.watch, 'non-active' : !card.watch}" id="like">
+        <a ng-click="toggleLike(watch = !watch)" ng-class="{'active' : card.watch, 'non-active' : !card.watch}" id="like">
           <i class="ion-ios-eye"></i> Watch
         </a>
-        <a href="#"><i class="ion-chatbubble-working"></i> 댓글달기</a>
-        <a href="#" id="sns-share"><i class="ion-forward"></i> 공유하기</a>
+        <a><i class="ion-chatbubble-working"></i> 댓글달기</a>
+        <a id="sns-share"><i class="ion-forward"></i> 공유하기</a>
       </div>
       <hr>
 

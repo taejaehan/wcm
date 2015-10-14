@@ -33,7 +33,7 @@
             <div class="content">
               <h2 class="title"><strong>{{card.title}}</strong></h2>
 
-              <a href="#" ng-click="showMap(card.location_lat, card.location_long)">
+              <a ng-click="showMap(card.location_lat, card.location_long)">
                 <p class="address"><i class="fa fa-map-marker"></i> {{card.location_name}}</p>
               </a>
               <a ng-href="#/tab/home/{{ card.id }}">
@@ -57,12 +57,12 @@
             <hr>
             
             <div class="sns-link">
-              <a href="#" ng-click="toggleLike(card.watch = !card.watch, card.id)" ng-class="{'active' : card.watch, 'non-active' : !card.watch}" id="like">
+              <a ng-click="toggleLike(card.watch = !card.watch, card.id)" ng-class="{'active' : card.watch, 'non-active' : !card.watch}" id="like">
                 <i class="ion-ios-eye"></i>  Watch
               </a>
               <a ng-href="#/tab/home/{{ card.id }}#comment"><i class="ion-chatbubble-working"></i> 댓글달기
               </a>
-              <a href="#" id="sns-share"><i class="ion-forward"></i> 공유하기</a>
+              <a id="sns-share"><i class="ion-forward"></i> 공유하기</a>
             </div>
 
           </div>
