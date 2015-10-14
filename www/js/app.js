@@ -1,7 +1,7 @@
 var mServerUrl, mServerUpload, mServerAPI = '';
-var localServer = false;
+var mLocalServer = false; //local serve 여부
 
-if (localServer) {
+if (mLocalServer) {
   mServerUrl = 'http://192.168.10.105:3000';
   mServerUpload = mServerUrl + '/uploads/';
   mServerAPI = mServerUrl + '/index.php';
@@ -11,6 +11,10 @@ if (localServer) {
   mServerAPI = mServerUrl + '/index.php';
 }
 
+//연결된 device에 대한 정보 (boolean)
+var mIsWebView = ionic.Platform.isWebView(); 
+var mIsIOS = ionic.Platform.isIOS();
+var mIsAndroid = ionic.Platform.isAndroid();
 
 //사진이 없을 경우 보여주는 이미지 링크
 var mNoImage = 'img/default.png';

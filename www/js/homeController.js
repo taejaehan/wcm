@@ -4,14 +4,12 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
-  var isIOS = ionic.Platform.isIOS();
-  var isAndroid = ionic.Platform.isAndroid();
 
   $scope.noMoreItemsAvailable = false;
 
 
   //로그인 한 상태라면 prefresnces에 저장된 user id로 서버에서 유저 정보를 가져와 localStorage에 저장
-  var saveLocalUser = function() {
+  $scope.saveLocalUser = function(loginId) {
     if(loginId != null){
       console.log('success loginId : ' +  loginId);
       var request = $http({
@@ -55,9 +53,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   $scope.$on('$ionicView.beforeEnter', function(){
 
     // 앱에서 열였다면
-    if(ionic.Platform.isWebView()){
+    if(mIsWebView){
       
-      // if (isIOS) {
+      // if (mIsIOS) {
       //   if(typeof $cordovaPreferences != 'undefined'){
       //     $cordovaPreferences.get('notShowPref', function(notShowPref) {
       //       if(document.getElementById('welcomeOverlay') != null){
@@ -70,38 +68,53 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       //     });
 
       //     $cordovaPreferences.get('loginId', function(loginId) {
-      //       saveLocalUser();
+      //       $scope.saveLocalUser(loginId);
       //     }, function(error){
       //       console.log('error: : ' +  error);
       //     });
       //   }
       // }
 
-      if (isAndroid) {
-        console.log('typeof Preferences != undefined : ' + (typeof Preferences != 'undefined'));
-        //com.portnou.cordova.plugin.preferences plugin에서 앱의 prefrences에 저장
-        if(typeof Preferences != 'undefined'){
-          //다시 보지 않기
-          Preferences.get('notShowPref', function(notShowPref) {
-            if(document.getElementById('welcomeOverlay') != null){
-               //다시 보지 않기가 true라면 
-              if(notShowPref == 'true'){
-                document.getElementById('welcomeOverlay').setAttribute('style','display:none');
-              }else{
-                document.getElementById('welcomeOverlay').setAttribute('style','display:block');
-              }
-            }
-          }, function(error){
-            console.log('error: : ' +  error);
-          });
+      if (mIsAndroid) {
 
-          //로그인 한 상태라면 prefresnces에 저장된 user id로 서버에서 유저 정보를 가져와 localStorage에 저장
-          Preferences.get('loginId', function(loginId) {
-            saveLocalUser();
-          }, function(error){
-            console.log('error: : ' +  error);
-          });
+        var tryNum = 0;
+        //com.portnou.cordova.plugin.preferences plugin에서 앱의 prefrences에 저장
+        var tryLogin = function(){
+          console.log('typeof Preferences != undefined : ' + (typeof Preferences != 'undefined'));
+          if(typeof Preferences != 'undefined'){
+            console.log('Preferences OK');
+            //다시 보지 않기
+            Preferences.get('notShowPref', function(notShowPref) {
+              if(document.getElementById('welcomeOverlay') != null){
+                 //다시 보지 않기가 true라면 
+                if(notShowPref == 'true'){
+                  document.getElementById('welcomeOverlay').setAttribute('style','display:none');
+                }else{
+                  document.getElementById('welcomeOverlay').setAttribute('style','display:block');
+                }
+              }
+            }, function(error){
+              console.log('error: : ' +  error);
+            });
+
+            //로그인 한 상태라면 prefresnces에 저장된 user id로 서버에서 유저 정보를 가져와 localStorage에 저장
+            Preferences.get('loginId', function(loginId) {
+              $scope.saveLocalUser(loginId);
+            }, function(error){
+              console.log('error: : ' +  error);
+            });
+          }else{
+            console.log('Preferences NO : ' + tryNum);
+            if(tryNum < 4 ){
+              $timeout( function() {
+                tryLogin();
+                tryNum++;
+              }, 1000);
+            }
+          }
         }
+        
+        tryLogin();
       }
     }else{
       if(document.getElementById('welcomeOverlay') != null){
@@ -138,10 +151,10 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   */
   $ionicPlatform.ready(function() {
     console.log('$ionicPlatform ready');
-    console.log('$ionicPlatform ionic.Platform.isWebView() : ' + ionic.Platform.isWebView());
+    console.log('$ionicPlatform mIsWebView : ' + mIsWebView);
 
     //앱에서 켰다면 
-    if(ionic.Platform.isWebView()){
+    if(mIsWebView){
 
       // card이미지를  file system에 저장하는 부분 임시로 주석처리 by tjhan 20151002
       // console.log('cordova.file : ' + cordova.file);
@@ -240,7 +253,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   $scope.getNewCards = function() {
 
     //app에서 띄운 webview가 아니거나 online일 경우만
-    if (!(ionic.Platform.isWebView()) || $cordovaNetwork.isOnline()) {
+    if (!(mIsWebView) || $cordovaNetwork.isOnline()) {
 
       /* isOnline */  
       $timeout( function() {
@@ -300,10 +313,10 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     $scope.noMoreItemsAvailable = true;
 
     $timeout( function() { 
-      // console.log('doRefresh (!(ionic.Platform.isWebView()) : ' + !ionic.Platform.isWebView());
+      // console.log('doRefresh (!(mIsWebView) : ' + !mIsWebView);
       // console.log('doRefresh $cordovaNetwork.isOnline() : ' + $cordovaNetwork.isOnline());
       //app에서 띄운 webview가 아니거나 online일 경우만
-      if (!(ionic.Platform.isWebView()) || $cordovaNetwork.isOnline()) {
+      if (!(mIsWebView) || $cordovaNetwork.isOnline()) {
         /* isOnline */  
         // init이면 처음 페이지 데이터를 다시 가져옴
         if(init == 'init'){

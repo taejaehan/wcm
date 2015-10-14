@@ -1,10 +1,9 @@
 #picture_list {
-  margin-right: 15px;
-  width: 100%;
+  margin : 5px;
 }
 
 #card_img{
-  width: 100%;
+  width : 100%;
   height: 100%;
 }
 
@@ -12,7 +11,7 @@
   width: 100px;
   height: 100px;
   border: 1px solid #aaa;
-  display: block;
+  /*display: block;*/
 }
 
 /*.error-container {
@@ -54,6 +53,10 @@ label.item.has-errors-img img{
   border: 2px solid #ea5c50;
 }
 
+label.item.has-errors-img #picture_list{  
+  border: 2px solid #ea5c50;
+}
+
 /*label.item.no-errors-img img{  
   border: 2px solid #65B614;
 }
@@ -66,12 +69,12 @@ label.item.has-errors-img img{
   color: #ea5c50;
 }
 
-#wrtie_page i.img-close {
+#wrtie_page i.img-change {
   font-size: 40px;
   position: absolute;
 }
 
-#wrtie_page a.close-link {
+#wrtie_page a.change-link {
   width: 40px;
   height: 50px;
   position: absolute;

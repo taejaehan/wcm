@@ -190,7 +190,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 		AuthService.logout();
 
 		window.localStorage['user'] = null;
-		if(ionic.Platform.isWebView()){
+		if(mIsWebView){
 			Preferences.put('loginId', null); 
 		}
 
