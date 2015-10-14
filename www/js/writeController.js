@@ -4,6 +4,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   var latlng, cardId, progress;
   var imgPath = '';
   $scope.cardData = {};
+  $scope.cancelClick = false;
 
   $scope.$on('$ionicView.afterEnter', function(){
 
@@ -11,11 +12,15 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       //id가 없다면 add
       if($stateParams.id == null){
         $scope.uploadTitle = 'Add';
-        if(!($ionicHistory.viewHistory().forwardView != null 
-          && $ionicHistory.viewHistory().forwardView.stateName == "tabs.location_w")){
-          $scope.currentLocation();
-        }
         
+        if ($rootScope.cardLocation == undefined || $rootScope.cardLocation == '') {
+          $scope.currentLocation();
+        };
+        // if(!($ionicHistory.viewHistory().forwardView != null 
+        //   && $ionicHistory.viewHistory().forwardView != null 
+        //   && $ionicHistory.viewHistory().forwardView.stateName == "tabs.location_w")){
+        //   $scope.currentLocation();
+        // }
       }
       //id가 있으면 해당 card edit
       else{
@@ -57,13 +62,15 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
 
   //DOM에서 view가 사라질때 (현재 버젼에서는 tab을 이동하거나 같은 tab에서 다른 view로 이동시 발생함) 
   $scope.$on('$ionicView.unloaded', function(){
-    console.log('writeController unloaded');
-    $rootScope.cardTitle = $scope.cardData.title;
-    $rootScope.cardDescription = $scope.cardData.description;
-    $rootScope.cardFile = $scope.cardData.file;
-    $rootScope.cardLocation = document.getElementById("card_location").value;
-    $rootScope.cardLocationLat = document.getElementById("card_location").getAttribute('lat');
-    $rootScope.cardLocationLng = document.getElementById("card_location").getAttribute('ng');
+    console.log('writeController unloaded - cancelClick : ' + $scope.cancelClick);
+    if(!$scope.cancelClick){
+      $rootScope.cardTitle = $scope.cardData.title;
+      $rootScope.cardDescription = $scope.cardData.description;
+      $rootScope.cardFile = $scope.cardData.file;
+      $rootScope.cardLocation = document.getElementById("card_location").value;
+      $rootScope.cardLocationLat = document.getElementById("card_location").getAttribute('lat');
+      $rootScope.cardLocationLng = document.getElementById("card_location").getAttribute('long');
+    }
 
   });
 
@@ -115,7 +122,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       if(index == 0){
         options['sourceType'] = Camera.PictureSourceType.CAMERA
         //ios일 경우 찍은 사진을 앨범에 저장
-        if(ionic.Platform.isIOS()){
+        if(mIsIOS){
           options['saveToPhotoAlbum'] = true;
         }
       }else if(index == 1){
@@ -497,6 +504,8 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   */
   $scope.cancelCard = function() {
 
+    console.log('writeController cancelCard');
+    $scope.cancelClick = true;
     //history를 없애서 write afterenter시에 forwardView를 판단하는 부분을 reset
     $ionicHistory.clearHistory();
     //reset inputs datas
