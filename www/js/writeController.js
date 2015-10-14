@@ -3,27 +3,24 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var latlng, cardId, progress;
   var imgPath = '';
-
   $scope.cardData = {};
-
-  $scope.imgCheck = false;
-  $scope.submitDisabled = true;
-
+  $scope.cancelClick = false;
 
   $scope.$on('$ionicView.afterEnter', function(){
 
-    $scope.submitDisabled = false;
-    
     if (user != null && user.isAuthenticated === true) {
-
       //id가 없다면 add
       if($stateParams.id == null){
         $scope.uploadTitle = 'Add';
-        if(!($ionicHistory.viewHistory().forwardView != null 
-          && $ionicHistory.viewHistory().forwardView.stateName == "tabs.location_w")){
-          $scope.currentLocation();
-        }
         
+        if ($rootScope.cardLocation == undefined || $rootScope.cardLocation == '') {
+          $scope.currentLocation();
+        };
+        // if(!($ionicHistory.viewHistory().forwardView != null 
+        //   && $ionicHistory.viewHistory().forwardView != null 
+        //   && $ionicHistory.viewHistory().forwardView.stateName == "tabs.location_w")){
+        //   $scope.currentLocation();
+        // }
       }
       //id가 있으면 해당 card edit
       else{
@@ -37,21 +34,45 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
 
     if ($rootScope.cardTitle != undefined) {
       document.getElementById('card_title').value = $rootScope.cardTitle;
-      $scope.cardData.title = $rootScope.cardTitle;
+      $scope.cardForm.title.$setViewValue($rootScope.cardTitle);
     }
 
     if ($rootScope.cardDescription != undefined) {
       document.getElementById('card_des').value = $rootScope.cardDescription;
-      $scope.cardData.description = $rootScope.cardDescription;
+      $scope.cardForm.description.$setViewValue($rootScope.cardDescription);
     }
 
     if ($rootScope.cardFile != undefined) {
-      document.getElementById('card_file').value = $rootScope.cardFile;
-      $scope.cardData.imgPath = $rootScope.cardFile;
+      // document.getElementById('card_file').value = $rootScope.cardFile;
+      $scope.imgURI =$rootScope.cardFile;
+      $scope.cardForm.file.$setTouched();
+      $scope.cardForm.file.$setViewValue($rootScope.cardFile);
+    }
+
+    if ($rootScope.cardLocation != undefined) {
+      if(document.getElementById("card_location") != null){
+        document.getElementById('card_location').value = $rootScope.cardLocation;
+        document.getElementById('card_location').setAttribute('lat' , $rootScope.cardLocationLat);
+        document.getElementById('card_location').setAttribute('long' , $rootScope.cardLocationLng);
+        document.getElementById('card_location').validity.valid = true;
+        $scope.cardForm.location.$setViewValue($rootScope.cardLocation);
+      }
+    }
+  });
+
+  //DOM에서 view가 사라질때 (현재 버젼에서는 tab을 이동하거나 같은 tab에서 다른 view로 이동시 발생함) 
+  $scope.$on('$ionicView.unloaded', function(){
+    console.log('writeController unloaded - cancelClick : ' + $scope.cancelClick);
+    if(!$scope.cancelClick){
+      $rootScope.cardTitle = $scope.cardData.title;
+      $rootScope.cardDescription = $scope.cardData.description;
+      $rootScope.cardFile = $scope.cardData.file;
+      $rootScope.cardLocation = document.getElementById("card_location").value;
+      $rootScope.cardLocationLat = document.getElementById("card_location").getAttribute('lat');
+      $rootScope.cardLocationLng = document.getElementById("card_location").getAttribute('long');
     }
 
   });
-
 
 
   /*
@@ -83,16 +104,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   * @param index : 0 = camera , 1 = album
   */
   $scope.getPicture = function(index){
-    //device가 undefined이면 사진을 찍지 않고 바로 위치정보로 넘어감
-    // var platform;
-    // if(typeof device != 'undefined'){
-    //   platform = device.platform;;
-    // }else{
-    //   // $scope.currentLocation();
-    //   return;
-    // };
-    $scope.imgCheck = true;
-    if(ionic.Platform.isWebView()){
+    if(mIsWebView){
       var options = { 
           quality : 100, 
           destinationType : Camera.DestinationType.FILE_URI, 
@@ -110,7 +122,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       if(index == 0){
         options['sourceType'] = Camera.PictureSourceType.CAMERA
         //ios일 경우 찍은 사진을 앨범에 저장
-        if(ionic.Platform.isIOS()){
+        if(mIsIOS){
           options['saveToPhotoAlbum'] = true;
         }
       }else if(index == 1){
@@ -118,10 +130,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       }
 
       $cordovaCamera.getPicture(options).then(function(imagePath){
-        // $scope.imgURI = "data:image/jpeg;base64," + imageData;
-        // alert('imagePath :' + imagePath);
         $scope.imgURI = imagePath;
-        $scope.imgCheck = true;
         $scope.cardForm.file.$setTouched();
         $scope.cardForm.file.$setViewValue(imagePath);
 
@@ -133,13 +142,9 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
          });
       });
     }else{
-      // cordova같은 webview가 아니고 index(1) 앨범을 선택한 경우 임시로 테스트 사진을 넣어준다
-     // if(index == 1){
-     //    document.getElementById("card_file_hidden").click();
-     //  }
-      $scope.imgURI = 'http://placehold.it/100x100';
+      $scope.imgURI = 'img/default.png';
       $scope.cardForm.file.$setTouched();
-      $scope.cardForm.file.$setViewValue('http://placehold.it/100x100');
+      $scope.cardForm.file.$setViewValue('img/default.png');
     };
   }
   /*
@@ -228,6 +233,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
 
   /*맵 보여주기*/
   $scope.showMap = function() {
+    
     console.log('showMap latlng : ' + latlng);
     if(cardId == null){
       $state.go('tabs.location_w', { 'latlng': latlng});
@@ -236,14 +242,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       //맵을 보여준 후 dirty설정
       $scope.cardForm.location.$setDirty();
     };
-
-    $scope.cardForm.location.$setViewValue('done');
-
-
-    $rootScope.cardTitle = $scope.cardData.title;
-    $rootScope.cardDescription = $scope.cardData.description;
-    $rootScope.cardFile = $scope.cardData.file;
-
+    // $scope.cardForm.location.$setViewValue('done');
   }
 
   /*
@@ -316,34 +315,21 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     var targetPath = imagePath;
     var filename = targetPath.split("/").pop();
 
-    // var options = new FileUploadOptions();
-    // options.fileKey = "file";
-    // options.fileName = newFileName;
-    // options.mimeType = "image/jpg";
-    // options.chunkedMode = false;
-    // options.mimeType = "image/jpg";
-    
-    // var params = {};
-    // params.value1 = "test";
-    // params.value2 = "param";
-    // options.params = params;
-    // options.headers = {
-    //     Connection: "close"
-    // }
     var options = {
         fileKey: "file",
         fileName: newFileName,
         chunkedMode: false,
         mimeType: "image/jpg"
     };
-    // options.headers = {
-    //     Connection: "close"
-    // }
+
     console.log('url :  ' + url);
     console.log('targetPath :  ' + targetPath);
     console.log('options :  ' + options);
 
-    if(ionic.Platform.isWebView()){
+    if(mIsWebView){
+
+      console.log('$cordovaFileTransfer :  ' + $cordovaFileTransfer);
+
       $cordovaFileTransfer.upload(url, targetPath, options).then(function(result) {
         console.log('success :  ' + JSON.stringify(result.response));
         //서버에 파일을 저장한 후 db를 set
@@ -370,15 +356,15 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   */
   $scope.uploadDb = function(newFileName) {
 
-    //user관련 부분이 없으면 테스트 용도로 kakao 정보를 넣어준다
+    //user관련 부분이 없으면 테스트 용도로 facebook 정보를 넣어준다
     if (window.localStorage['user'] != null) {
       var user = JSON.parse(window.localStorage['user'] || '{}');
       $scope.userid = user.userid;  
     }else{
-      $scope.userid = 879359548800156;
+      $scope.userid = 1826451354247937;
     }
     if($scope.userid == null){
-      $scope.userid = 879359548800156;
+      $scope.userid = 1826451354247937;
     }
 
     console.log("userId : "  + $scope.userid);
@@ -454,43 +440,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     });
     request.success(function(data) {
 
-        /*if(formData.img_path == ''){
-          formData.img_path = mNoImage;
-        }
-        //home에서 추가/변경된 card update
-       if(cardId == null){ 
-          //TODO user관련 정보 찾아와서 update할것 
-          $rootScope.allData.cards.unshift(formData);
-        }else{
-          for(var i = 0; i < $rootScope.allData.cards.length ; i++){
-            if($rootScope.allData.cards[i].id == cardId){
-              $rootScope.allData.cards[i].description = formData.description;
-              $rootScope.allData.cards[i].location_lat = formData.location_lat;
-              $rootScope.allData.cards[i].location_long = formData.location_long;
-              $rootScope.allData.cards[i].location_name = formData.location_name;
-              $rootScope.allData.cards[i].img_path = formData.img_path;
-            }
-          }
-        }*/
-
-        //reset inputs
-        $scope.cardForm.$setPristine();
-        $scope.cardForm.title.$setViewValue('');
-        document.getElementById('card_title').value = '';
-        $scope.cardForm.description.$setViewValue('');
-        document.getElementById('card_des').value = '';
-        $scope.cardForm.location.$setViewValue('');
-        document.getElementById('card_location').value = '';
-        $scope.cardForm.file.$setUntouched();
-        $scope.cardForm.file.$setViewValue('');
-        $scope.imgURI = undefined;
-
-        delete $rootScope.cardTitle;
-        delete $rootScope.cardDescription;
-        delete $rootScope.cardFile;
-
-        //go to the home
-        $state.go('tabs.home');
+        $scope.cancelCard();
         
         $ionicLoading.hide();
 
@@ -498,7 +448,15 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
           title: 'We change Makers',
           template: '게시물이 성공적으로 등록되었습니다.'
         });
+    });
+    request.error(function(error){
+      console.log('error : ' + JSON.stringify(error));
+      $ionicLoading.hide();
 
+      $ionicPopup.alert({
+        title: 'We change Makers',
+        template: '잠시 후에 다시 시도해주세요.'
+      });
     });
   }
 
@@ -541,17 +499,25 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       $scope.setLocationName(lat, long);
     });
   }
-
+  /*
+  * cancel버튼을 누르거나 upload완료시에 발생
+  */
   $scope.cancelCard = function() {
-    $state.go('tabs.home');
+
+    console.log('writeController cancelCard');
+    $scope.cancelClick = true;
+    //history를 없애서 write afterenter시에 forwardView를 판단하는 부분을 reset
+    $ionicHistory.clearHistory();
+    //reset inputs datas
     delete $rootScope.cardTitle;
     delete $rootScope.cardDescription;
     delete $rootScope.cardFile;
-  }
+    delete $rootScope.cardLocation;
+    delete $rootScope.cardLocationLat;
+    delete $rootScope.cardLocationLng;
 
-  $scope.test = function() {
-    alert("Test");
-    console.log("hahah");
+    $state.go('tabs.home');
+    
   }
 
 });

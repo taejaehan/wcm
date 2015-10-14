@@ -1,13 +1,11 @@
 wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOauth, AuthService, $window, $cordovaPreferences) {
 
   console.log('user : ' + window.localStorage['user']);
-  var isIOS = ionic.Platform.isIOS();
-  var isAndroid = ionic.Platform.isAndroid();
 
   $scope.facebookLogin = function(){
 
     //webview 앱에서 실행했을 때만 facebook login
-    if(ionic.Platform.isWebView()){
+    if(mIsWebView){
       $cordovaOauth.facebook("1020667507964480", ["public_profile"], {redirect_uri: "http://localhost/"}).then(function(result){
             $http.get("https://graph.facebook.com/v2.2/me", {params: {access_token: result.access_token, fields: "name,picture", format: "json" }}).then(function(results) {
 
@@ -101,15 +99,31 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
       }
 
       //com.portnou.cordova.plugin.preferences plugin에서 앱의 prefrences에 저장
-      if(ionic.Platform.isWebView()){
-        if (isAndroid) {
+      if(mIsWebView){
+        if (mIsAndroid) {
+
+          console.log('welcomController typeof Preferences != undefined : ' + (typeof Preferences != 'undefined'));
           //로그인 후 무조건 다시보지 않기
           Preferences.put('notShowPref', true); 
+
+
+          Preferences.get('loginId', function(loginId) {
+            console.log('success before: : ' +  loginId);
+          }, function(error){
+            console.log('error: : ' +  error);
+          });
+
           //로그인 아이디 저장
           Preferences.put('loginId', formData.user_id);
+
+          Preferences.get('loginId', function(loginId) {
+           console.log('success after: : ' +  loginId);
+          }, function(error){
+            console.log('error: : ' +  error);
+          });
         }
 
-        if (isIOS) {
+        if (mIsIOS) {
           $cordovaPreferences.set('notShowPref', true);
           $cordovaPreferences.set('loginId', formData.user_id);
           console.log($window.appgiraffe.plugins.applicationPreferences.get('notShowPref'));

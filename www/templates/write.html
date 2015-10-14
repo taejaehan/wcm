@@ -76,9 +76,7 @@
          ng-class="{ 'has-errors-img' : cardForm.file.$invalid && cardForm.$submitted, 'no-errors-img' : cardForm.file.$valid  && cardForm.$submitted}">
       <div id="picture_list">
         <img id="card_img" ng-show="imgURI !== undefined" ng-src="{{imgURI}}">
-
-        <a ng-click="test()" class="close-link" ng-show="imgCheck"><i class="ion-close-circled img-close" ng-show="imgCheck"></i></a>
-
+        <a class="change-link"><i class="ion-ios-reverse-camera img-change" ng-show="imgURI !== undefined"></i></a>
         <!-- <img ng-show="imgURI === undefined" ng-src="http://placehold.it/100x100"> -->
         <button id="change_pic" class="button button-icon" ng-click="showPictureSheet()">
           <i class="icon ion-ios-reverse-camera"></i>
