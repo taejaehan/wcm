@@ -6,7 +6,7 @@ if (mLocalServer) {
   mServerUpload = mServerUrl + '/uploads/';
   mServerAPI = mServerUrl + '/index.php';
 } else {
-  mServerUrl = 'https://wcm_test.major-apps-1.com';
+  mServerUrl = 'https://wcm.major-apps-1.com';
   mServerUpload = mServerUrl + '/uploads/';
   mServerAPI = mServerUrl + '/index.php';
 }
