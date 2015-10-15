@@ -35,7 +35,13 @@ wcm.factory('Scopes', function($rootScope) {
     };
 })
 
-wcm.run(function($ionicPlatform, $http, $cordovaFile, $cordovaPreferences) {
+wcm.filter('reverse', function() {
+  return function(items) {
+    return items.slice().reverse();
+  };
+});
+
+wcm.run(function($ionicPlatform, $http, $cordovaFile) {
   // Kakao.init('2b1444fba3c133df8405882491640b80');
 
   $ionicPlatform.ready(function() {
@@ -245,32 +251,4 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
 });
 
-
-// wcm.factory('$cordovaPreferences', ['$window', '$q', function ($window, $q) {
-//   return {
-//     set: function (key, value) {
-//       var q = $q.defer();
-
-//       $window.appgiraffe.plugins.applicationPreferences.set(key, value, function (result) {
-//         q.resolve(result);
-//       }, function (err) {
-//         q.reject(err);
-//       });
-
-//       return q.promise;
-//     },
-
-//     get: function (key) {
-//       var q = $q.defer();
-
-//       $window.appgiraffe.plugins.applicationPreferences.get(key, function (value) {
-//         q.resolve(value);
-//       }, function (err) {
-//         q.reject(err);
-//       });
-
-//       return q.promise;
-//     }
-//   };
-// }]);
 
