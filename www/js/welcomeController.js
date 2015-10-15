@@ -111,7 +111,6 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
           //로그인 후 무조건 다시보지 않기
           Preferences.put('notShowPref', true); 
 
-
           Preferences.get('loginId', function(loginId) {
             console.log('success before: : ' +  loginId);
           }, function(error){
@@ -126,7 +125,6 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
           }, function(error){
             console.log('error: : ' +  error);
           });
-
       }
 
       $state.go("tabs.home");
