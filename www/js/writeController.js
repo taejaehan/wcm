@@ -25,6 +25,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       //id가 있으면 해당 card edit
       else{
         $scope.uploadTitle = 'Edit';
+        document.getElementById('writeCancel').style.display = "none";
         if(cardId == null){
           cardId = $stateParams.id;
           $scope.getCard();
