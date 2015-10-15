@@ -20,7 +20,7 @@
 			    <div ng-class="{'info-1 active' : watch, 'info-1 non-active' : !watch}">
 			    	{{ message1 }}
 
-				    <ion-item ng-repeat="change in changes" class="my-change-list">
+				    <ion-item ng-repeat="change in changes | reverse" class="my-change-list">
 				    	<p class="title">{{ change.title }}</p>
 
 				    	<div class="progress">
@@ -39,7 +39,7 @@
 
 			    <div ng-class="{'info-2 active' : !watch, 'info-2 non-active' : watch}">
 			    	{{ message2 }}
-			    	<ion-item ng-repeat="card in cards" class="my-card-list">
+			    	<ion-item ng-repeat="card in cards | reverse" class="my-card-list">
 				    	<a href="#/tab/home/{{ card.id }}" class="title"><p>{{ card.title }}</p></a>
 
 				    	<div class="progress">

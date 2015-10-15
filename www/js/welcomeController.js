@@ -106,7 +106,6 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
 
       //com.portnou.cordova.plugin.preferences plugin에서 앱의 prefrences에 저장
       if(mIsWebView){
-        if (mIsAndroid) {
 
           console.log('welcomController typeof Preferences != undefined : ' + (typeof Preferences != 'undefined'));
           //로그인 후 무조건 다시보지 않기
@@ -127,13 +126,6 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
           }, function(error){
             console.log('error: : ' +  error);
           });
-        }
-
-        if (mIsIOS) {
-          $cordovaPreferences.set('notShowPref', true);
-          $cordovaPreferences.set('loginId', formData.user_id);
-          console.log($window.appgiraffe.plugins.applicationPreferences.get('notShowPref'));
-        }
 
       }
 

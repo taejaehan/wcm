@@ -52,28 +52,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
     // 앱에서 열였다면
     if(mIsWebView){
-      
-      // if (mIsIOS) {
-      //   if(typeof $cordovaPreferences != 'undefined'){
-      //     $cordovaPreferences.get('notShowPref', function(notShowPref) {
-      //       if(document.getElementById('welcomeOverlay') != null){
-      //         if(notShowPref == 'true'){
-      //           document.getElementById('welcomeOverlay').setAttribute('style','display:none');
-      //         }else{
-      //           document.getElementById('welcomeOverlay').setAttribute('style','display:block');
-      //         }
-      //       }
-      //     });
-
-      //     $cordovaPreferences.get('loginId', function(loginId) {
-      //       $scope.saveLocalUser(loginId);
-      //     }, function(error){
-      //       console.log('error: : ' +  error);
-      //     });
-      //   }
-      // }
-
-      if (mIsAndroid) {
 
         var tryNum = 0;
         //com.portnou.cordova.plugin.preferences plugin에서 앱의 prefrences에 저장
@@ -113,8 +91,8 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         }
         
         tryLogin();
-      }
-    }else{
+
+    } else {
       if(document.getElementById('welcomeOverlay') != null){
         document.getElementById('welcomeOverlay').setAttribute('style','display:none');
       }
@@ -585,21 +563,26 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   // Delete Card
   $scope.deleteCard = function(id) {
-  
-    if (confirm('Are you sure you want to delete?')) {
-      var request = $http({
-          method: "get",
-          url: mServerAPI + "/cardDetail/" + id + "/delete",
-          crossDomain : true,
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
-      });
+    var confirmPopup = $ionicPopup.confirm({
+      title: 'We Change Makers',
+      template: 'Are you sure you want to delete?'
+    });
 
-      request.success(function() {
-        location.reload();
-      });
-    } else {
-      
-    }
+    confirmPopup.then(function(res) {
+
+      if(res) {
+        var request = $http({
+            method: "get",
+            url: mServerAPI + "/cardDetail/" + id + "/delete",
+            crossDomain : true,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
+        });
+
+        request.success(function() {
+          location.reload();
+        });
+      }
+    });
   }
   
   // Edit Card  
@@ -725,6 +708,14 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   $scope.overlayClose = function() {
     document.getElementById('welcomeOverlay').setAttribute('style','display:none');
+    if (mIsIOS) {
+      appgiraffe.plugins.applicationPreferences.set('notShowPref', true, function(result) {
+              alert("We got a setting: " + result);
+          }, function(error) {
+              alert("Failed to retrieve a setting: " + error);
+          }
+      );
+    }
   }
 
 });
