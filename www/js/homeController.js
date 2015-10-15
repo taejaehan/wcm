@@ -1,4 +1,4 @@
-wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth,$ionicPlatform, $ionicSlideBoxDelegate, $cordovaPreferences) {
+wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth,$ionicPlatform, $ionicSlideBoxDelegate, $cordovaPreferences, $ionicLoading) {
 
   navigator.geolocation.watchPosition(showPosition);
 
@@ -302,6 +302,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   */
   $scope.doRefresh = function(init) {
 
+    $ionicLoading.show({
+      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Loading'
+    });
     $scope.noMoreItemsAvailable = true;
 
     $timeout( function() { 
@@ -352,6 +355,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             cache: false
         });
         request.error(function(error){
+          $ionicLoading.hide();
           console.log('error : ' + JSON.stringify(error))
         })
         request.success(function(data) {
@@ -396,7 +400,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
                 }
               }
             }
-          }
+          };
+
+          $ionicLoading.hide();
 
           $scope.page++;
           $scope.$broadcast('scroll.infiniteScrollComplete');  

@@ -1,5 +1,6 @@
 <ion-view view-title="{{warningTitle}}">
   <ion-nav-buttons side="right">
+    <!-- marker양 선택하는 부분 주석처리함-->
     <!-- <ion-checkbox class="checkbox_custrom" ng-model="usegmm.checked" ng-change="change()">
     </ion-checkbox>
     <select id="nummarkers">
@@ -9,14 +10,31 @@
       <option value="500">500</option>
       <option value="1000">1000</option>
     </select> -->
-    <button type="submit" class="button button-icon location-button" ng-click="changeMarkers()">
-      <!-- <i class="icon ion-location"></i> -->
-      <img id="location-button-img" src="img/location_y.png" class="location-button-icon"/>
-    </button>
+    
+    <!--아래 change-marker-type으로 대체됨-->
+    <!-- <button type="submit" class="button button-icon location-button" ng-click="changeMarkers()">
+     <img id="location-button-img" src="img/location_y.png" class="location-button-icon"/>
+    </button> -->
   </ion-nav-buttons>
   <ion-content>
-    <input id="pac-input-warn" class="controls pac-input" type="text" placeholder="Search Box">
+    <div id="input-box-div" class="input-box">
+      <input id="pac-input-warn" class="controls pac-input" type="text" placeholder="장소를 입력하세요">
+    </div>
     <div id="map-warn" class="map" data-tap-disabled="true"></div>
-    <a id="find-me-warn" ng-click="centerOnMe()" class="button button-icon icon ion-ios-search find-me"> 현재위치 찾기</a>
+    <a id="find-me-warn" ng-click="centerOnMe()" class="button button-icon icon ion-pinpoint map-icon find-me"></a>
+    <a id="change-marker-type" ng-click="showSelectPopover($event)" class="button button-icon icon ion-plus-round map-icon change-marker-type"></a>
   </ion-content>
+  <script id="templates/markerSelectPopover.html" type="text/ng-template">
+    <ion-popover-view class="custom_popover">
+      <ion-content>
+        <ion-radio ng-repeat="item in markerTypeList"
+            ng-value="item.value"
+            ng-model="data.markerType"
+            ng-change="showMarkers(item.value)"
+            icon="{{item.radio_calss}}">
+          {{ item.text }}
+        </ion-radio>
+      </ion-content>
+    </ion-popover-view>
+  </script>
 </ion-view>

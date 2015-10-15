@@ -1,7 +1,9 @@
 <ion-view view-title="Location">
   <ion-content>
-    <input id="pac-input" class="controls pac-input" type="text" placeholder="Search Box">
+  		<div id="input-box-div" class="input-box">
+      <input id="pac-input" class="controls pac-input" type="text" placeholder="장소를 입력하세요">
+    </div>
     <div id="map-find" class="map" data-tap-disabled="true"></div>
-    <a id="find-me" ng-click="centerOnMe()" class="button button-icon icon ion-ios-search find-me"> 현재위치 찾기</a>
+    <a id="find-me" ng-click="centerOnMe()" class="button button-icon icon ion-pinpoint map-icon find-me find-me-text">&nbsp;&nbsp;현재 위치 찾기</a>
   </ion-content>
 </ion-view>

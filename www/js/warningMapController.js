@@ -1,17 +1,48 @@
-wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGeolocation, $ionicLoading, $ionicActionSheet) {
+wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGeolocation, $ionicLoading, $ionicActionSheet, $ionicPopup, $ionicPopover) {
     
+    var DISCOVERED  = 0;
+    var ONGOING     = 1;
+    var COMPLETED  = 2;
+
+    var DISCOVERED_TEXT  = "해결이 필요한 위험";
+    var ONGOING_TEXT  = "해결중 위험";
+    var COMPLETED_TEXT  = "해결 완료된 위험";
+
     $scope.cards = null;
     $scope.map = null;
     $scope.markerClusterer = null;
     $scope.markers = [];
     $scope.infoWindow = null;
     $scope.usegmm = { checked: true };
-    $scope.warningTitle = 'Ongoing';
+    $scope.warningTitle = ONGOING_TEXT;
 
     $scope.$on('$ionicView.loaded', function(){
       $scope.init();
     });
     
+    //sort type
+    $scope.markerTypeList = [
+      { 
+        text: COMPLETED_TEXT, 
+        radio_calss:"popover_select_g", 
+        value: COMPLETED
+      },
+      { 
+        text: ONGOING_TEXT, 
+        radio_calss:"popover_select_y", 
+        value: ONGOING 
+      },
+      { text: DISCOVERED_TEXT, 
+        radio_calss:"popover_select_r", 
+        value: DISCOVERED 
+      }
+    ];
+
+    //sort type default value
+    $scope.data = {
+      markerType: ONGOING
+    };
+
     /*
     * WarningMap을 초기화합니다
     */
@@ -40,16 +71,21 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
       // google.maps.event.addDomListener(numMarkers, 'change', $scope.change);
       $scope.infoWindow = new google.maps.InfoWindow();
 
-      $scope.showMarkers(1);
+      $scope.showMarkers(ONGOING);
 
       // find me 넣기
       var findMe = document.getElementById('find-me-warn');
-      $scope.map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(findMe);
+      $scope.map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(findMe);
 
+      // change marker 넣기
+      var changeMarkers = document.getElementById('change-marker-type');
+      $scope.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(changeMarkers);
+      
       /****************************** Serch box start ******************************/
       var input = document.getElementById('pac-input-warn');
       var searchBox = new google.maps.places.SearchBox(input);
-      $scope.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+      var inputBox = document.getElementById('input-box-div');
+      $scope.map.controls[google.maps.ControlPosition.TOP_LEFT].push(inputBox);
 
       // Bias the SearchBox results towards current map's viewport.
       $scope.map.addListener('bounds_changed', function() {
@@ -87,7 +123,7 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
          
         var posOptions = {
             enableHighAccuracy: true,
-            timeout: 20000,
+            timeout: 4000,
             maximumAge: 0
         };
         $cordovaGeolocation.getCurrentPosition(posOptions).then(function (position) {
@@ -116,9 +152,13 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
 
     /*
     * marker 및 cluster를 보여줍니다
-    * @param - index 0 - discoverd , 1 - ongoing,  2-completed
+    * @param - type DISCOVERED, ONGOING, COMPLETED
     */
-    $scope.showMarkers = function(index) {
+    $scope.showMarkers = function(type) {
+
+      // if($scope.popover != null){
+      //   $scope.popover.hide();
+      // }
 
       var markerUrl, clusterUrl, clusterBigUrl, clusterTextColor;
       $scope.markers = [];
@@ -134,37 +174,37 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
       for (var i = 0; i < $scope.cards.length; i++) {
 
         //card type에 따라 이미지/색을 변경 한다 index 0 - discoverd , 1 - ongoing,  2-completed
-        switch(index){
-          case 0 :
+        switch(type){
+          case DISCOVERED :
             if($scope.cards[i].status != '0' && $scope.cards[i].status != '33') continue;
             markerUrl = 'img/location_r.png';
             clusterUrl = 'img/cluster_r.png';
             clusterBigUrl = 'img/cluster_r_big.png';
             clusterTextColor = '#9c3625';
-            $scope.warningTitle = 'Discovered';
+            $scope.warningTitle = DISCOVERED_TEXT;
             break;
-          case 1 :
+          case ONGOING :
             if($scope.cards[i].status != '66') continue;
             markerUrl = 'img/location_y.png';
             clusterUrl = 'img/cluster_y.png';
             clusterBigUrl = 'img/cluster_y_big.png';
             clusterTextColor = '#e38b0d';
-            $scope.warningTitle = 'Ongoing';
+            $scope.warningTitle = ONGOING_TEXT;
             break;
-          case 2 :
+          case COMPLETED :
             if($scope.cards[i].status != '100') continue;
             markerUrl = 'img/location_g.png';
             clusterUrl = 'img/cluster_g.png';
             clusterBigUrl = 'img/cluster_g_big.png';
             clusterTextColor = '#264804';
-            $scope.warningTitle = 'Completed';
+            $scope.warningTitle = COMPLETED_TEXT;
             break;
           default : 
             markerUrl = 'img/location_y.png';
             clusterUrl = 'img/cluster_y.png';
             clusterBigUrl = 'img/cluster_y_big.png';
             clusterTextColor = '#e38b0d';
-            $scope.warningTitle = 'Ongoing';
+            $scope.warningTitle = ONGOING_TEXT;
         }
 
         var titleText = $scope.cards[i].title;
@@ -210,15 +250,19 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
       height: 56,
       url: clusterUrl,
       width: 56,
-      textColor : clusterTextColor,
-      textSize : 16
+      // textColor : clusterTextColor,
+      textColor : '#eee',
+      textSize : 16,
+      fontWeight : "lighter"  //동작안됨;
       },
       {
       height: 80,
       url: clusterBigUrl,
       width: 80,
-      textColor : clusterTextColor,
-      textSize : 20
+      // textColor : clusterTextColor,
+      textColor : '#fff',
+      textSize : 20,
+      fontWeight : "normal" //동작안됨;
       }]}
       $scope.markerClusterer = new MarkerClusterer($scope.map, $scope.markers,mcOptions);
       if(document.getElementById('location-button-img') != null){
@@ -270,30 +314,17 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
       }
     };
 
-    /*
-    * marker type을 변경 할 수 있는 sheet를 띄웁니다
-    */
-    $scope.changeMarkers = function() {
-      // Show the marker sheet
-     var hideSheet = $ionicActionSheet.show({
-       buttons: [
-         { text: 'Discovered' },
-         { text: 'Ongoing' },
-         { text: 'Completed' }
-       ],
-       cssClass : 'warning_sheet',
-       // destructiveText: 'Delete',
-       titleText: 'Selcet Wanring',
-       cancelText: 'Cancel',
-       cancel: function() {
-          // add cancel code..
-        },
-       buttonClicked: function(index) {
-          console.log('index :  ' + index);
-          $scope.clear();
-          $scope.showMarkers(index);
-          return true;
-       },
-     });
-    }
+  /*
+  * plus 버튼을 눌렀을 때 popover show
+  * $event 클릭된 event
+  */
+  $scope.showSelectPopover = function ($event) {
+    console.log('showSelectPopover!');
+   $ionicPopover.fromTemplateUrl('templates/markerSelectPopover.html', {
+     scope: $scope
+   }).then(function(popover) {
+     $scope.popover = popover;
+     $scope.popover.show($event);
+   });
+  };
 });

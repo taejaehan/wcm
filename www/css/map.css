@@ -7,14 +7,20 @@
     height: 100%;
 }
 
+.input-box{
+  background-color: #efae28;
+  width: 100%;
+}
 .pac-input {
   background-color: #fff;
   font-family: Roboto;
   font-size: 15px;
   font-weight: 300;
-  padding: 0 11px 0 13px;
+  padding: 0 11px 0 13px !important;
   text-overflow: ellipsis;
-  width: 100%;
+  width: 96%;
+  margin : 10px 2%;
+  /*display: initial !important;*/
 }
 
 .pac-input:focus {
@@ -65,15 +71,28 @@
   background-position: center;
 } */
 
-.find-me{
-  background-color : #bbb;
-  color: #fff;
-  width: 150px;
-  height: 20px;
-  font-size: 14px;
+.map-icon{
+  background-color : #fff;
+  color: #a0a0a0; 
+  width: 50px;
   border: 1px solid darkgrey;
-  border-radius: 10px;
-  margin-bottom : 10px;
+  border-radius: 25px;
+  margin: 0 0 30px 30px;
+  box-shadow: 0px 0px 10px darkgrey;
+}
+.find-me{
+  margin: 0 0 10px 10px;  
+}
+
+.find-me-text{
+  width: 160px;
+  height: 20px;
+  font-size : 16px;
+  margin: 0 0 20px 10px;
+}
+
+.change-marker-type{
+  margin: 0 10px 22px 0 ; /*google의 RIGHT_BOTTOM과 LEFT_BOTTOM 높이차이로 인해 find-me 보다 +12px*/
 }
 
 .location-button{
@@ -106,3 +125,69 @@
 .info-img{
   width: 300px;
 }
+
+
+
+/*
+* 기본적으로 ionic의 popover를 사용하고 
+* 배경화면 어두운 정도는 전체적으로 적용하되
+* 나머지는 custom_popover에서 필요한 부분만 override하여 사용
+* by tjhan 151015
+*/
+
+/*popover시 배경화면 어두운 정도*/
+.popover-backdrop.active{
+  background-color: rgba(0, 0, 0, 0.6);
+}
+/*custom_popover*/
+.custom_popover{
+  background-color: rgba(0,0,0,0);
+  box-shadow: none;
+  border: none;
+  height: 205px;  /*65px 3줄 + 10px margin값*/
+  left: initial !important;
+  right: 6px !important;
+}
+.custom_popover .item, .custom_popover .item-content{
+  height: 65px;
+  background-color: rgba(0,0,0,0) !important;
+  border: none;
+  color: #ddd;
+}
+
+/*popover시에 나오는 radio버튼 3가지*/
+.custom_popover .popover_select_g{
+  background: url('../img/sel_location_g.png');
+  width: 55px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.custom_popover .popover_select_y{
+  background: url('../img/sel_location_y.png');
+  width: 55px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.custom_popover .popover_select_r{
+  background: url('../img/sel_location_r.png');
+  width: 55px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+/*popover시에 나오는 radio버튼 미 선택*/
+.custom_popover .item-radio .radio-icon{
+  opacity: 0.2;
+  visibility: inherit;
+}
+/*popover시에 나오는 radio버튼 선택*/
+.custom_popover  .item-radio input:checked ~ .item-content{
+  color: #fff;
+}
+.custom_popover .item-radio input:checked ~ .radio-icon{
+  opacity: 1;
+}
+

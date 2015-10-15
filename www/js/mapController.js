@@ -111,7 +111,8 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
        // serch 박스 넣기
       var input = document.getElementById('pac-input');
       var searchBox = new google.maps.places.SearchBox(input);
-      map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+      var inputBox = document.getElementById('input-box-div');
+      map.controls[google.maps.ControlPosition.TOP_LEFT].push(inputBox);
       // Bias the SearchBox results towards current map's viewport.
       map.addListener('bounds_changed', function() {
         searchBox.setBounds(map.getBounds());
@@ -206,7 +207,10 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
              
         }, function(err) {
             $ionicLoading.hide();
-            alert('You can not use the location information');
+            $ionicPopup.alert({
+               title: 'wcm',
+               template: 'You can not use the location information'
+             });
             console.log('CURRENT LOCATION ERROR :  ' + err);
         });
     }
@@ -249,5 +253,5 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
         }
       });
     }
-                  
+             
 });
