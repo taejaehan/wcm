@@ -23,7 +23,12 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
     request.success(function(data) {
       $scope.card = data.cards[0];
-      $scope.card.img_path = mServerUpload + $scope.card.img_path;
+      if (data.cards[0].img_path == '') {
+        $scope.card.img_path = mNoImage;
+      }else {
+        $scope.card.img_path = mServerUpload + data.cards[0].img_path;
+      }
+      // $scope.card.img_path = mServerUpload + $scope.card.img_path;
 
       $scope.like_count = data.cards[0].like_count;
 

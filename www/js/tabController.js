@@ -1,13 +1,23 @@
 wcm.controller("TabController", function($scope, $state, $ionicPopup) {
   
-  $scope.writeUserCheck = function() {
+  $scope.userLoginCheck = function(tab) {
     var user = JSON.parse(window.localStorage['user'] || '{}');
     console.log('TabController user.isAuthenticated : ' + user.isAuthenticated);
     if (user.isAuthenticated === true) {
-      $state.go("tabs.write");
+      if(tab == 'write'){
+        $state.go("tabs.write");
+      }else if(tab == 'profile'){
+        $state.go("tabs.profile");
+      }
     } else {
+      var message;
+      if(tab == 'write'){
+        message = "로그인 후 글쓰기 기능을 이용하실수 있습니다.";
+      }else if(tab == 'profile'){
+        message = "로그인 후 프로필 기능을 이용하실수 있습니다.";
+      }
       var myPopup = $ionicPopup.show({
-        template: "페이스북으로 로그인 후 글쓰기 기능을 이용하실수 있습니다.",
+        template: message,
         title: 'We Change Makers',
       
         buttons: [

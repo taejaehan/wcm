@@ -13,9 +13,11 @@ wcm.filter('timeago', function() {
                 },
                 nowTime = (new Date()).getTime(),
 
-                //date = (new Date(input)).getTime(),
-                date = (new Date(input.replace(/-/g, '/'))).getTime(),
+                // replace에서 error나서 replace부분 주석처리하고 위에 주석처리 해제함 by tjhan 151016
+                date = (new Date(input)).getTime(),
+                // date = (new Date(input.replace(/-/g, '/'))).getTime(),
                 //refreshMillis= 6e4, //A minute
+                
                 allowFuture = p_allowFuture || false,
                 strings= {
                     prefixAgo: '',

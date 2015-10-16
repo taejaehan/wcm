@@ -9,6 +9,22 @@
 	display: block;
 }
 
+/*popover height*/
+.home_popover{
+	height: 175px;
+}
+/*popover시 배경화면 어두운 정도*/
+.popover-backdrop.active{
+  background-color: rgba(0, 0, 0, 0.6) !important;
+}
+/*Android에서만 적용됨 (popOver의 margin값)*/
+.platform-android .popover{
+  margin-top: 10px; /*home에서 sorting popover의 margin -32px를 덮어씀*/
+}
+/*active 탭에 대한 icon과 글자 색*/
+.tab-item-active .icon, .tab-item-active .tab-title{
+	color : #fff;	
+}
 #home_page hr {
 	margin: 0px;
 }
@@ -193,6 +209,19 @@ button.more {
 	height: 100%;
 }
 
+.welcome-slide{
+	width: 20%;
+	height: 100%;
+	position: absolute;
+	top : 0;
+}
+.slide-prev{
+	left: 0;
+}
+.slide-next{
+	right: 0;
+}
+
 .slide-1-back, .slide-5-back {
 	background-color: #31b69f;
 }
@@ -295,8 +324,4 @@ span.slider-pager-page{
 	position:absolute;
 	bottom: 50px;
 	right : 32%;
-}
-
-.home_popover{
-	height: 165px;
 }

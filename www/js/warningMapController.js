@@ -1,13 +1,5 @@
-wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGeolocation, $ionicLoading, $ionicActionSheet, $ionicPopup, $ionicPopover) {
+wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGeolocation, $ionicLoading, $ionicActionSheet, $ionicPopup, $ionicPopover, $window) {
     
-    var DISCOVERED  = 0;
-    var ONGOING     = 1;
-    var COMPLETED  = 2;
-
-    var DISCOVERED_TEXT  = "해결이 필요한 위험";
-    var ONGOING_TEXT  = "해결중 위험";
-    var COMPLETED_TEXT  = "해결 완료된 위험";
-
     $scope.cards = null;
     $scope.map = null;
     $scope.markerClusterer = null;
@@ -19,7 +11,14 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
     $scope.$on('$ionicView.loaded', function(){
       $scope.init();
     });
-    
+      
+    $scope.$on('$ionicView.beforeLeave', function(){
+      console.log('beforeLeave');
+      if($scope.popover != null && $scope.popover._isShown){
+        $scope.popover.hide();
+      }
+    });
+      
     //sort type
     $scope.markerTypeList = [
       { 
@@ -69,7 +68,47 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
       //marker 숫자 제한하는 select 부분 listener등록 주석처리함
       // var numMarkers = document.getElementById('nummarkers');
       // google.maps.event.addDomListener(numMarkers, 'change', $scope.change);
-      $scope.infoWindow = new google.maps.InfoWindow();
+
+      //infoWindow
+      $scope.infoWindow = new google.maps.InfoWindow({
+        maxWidth : 1000
+      });
+      //google map infoWindow에 custom style처리가 없어서 dom으로 찾아 처리
+      google.maps.event.addListener($scope.infoWindow, 'domready', function() {
+
+        var iwOuter = document.getElementsByClassName('gm-style-iw');
+
+        iwOuter[0].children[0].style.backgroundColor = '#fff';
+
+        /* The DIV we want to change is above the .gm-style-iw DIV.
+        * So, we use jQuery and create a iwBackground variable,
+        * and took advantage of the existing reference to .gm-style-iw for the previous DIV with .prev().
+        */
+        var iwBackground = iwOuter[0].previousSibling;
+        while(iwBackground && iwBackground.nodeType != 1) {
+          iwBackground = iwBackground.previousSibling;
+        };
+        // Remove the background shadow DIV
+        iwBackground.children[1].style.display ='none';
+        // Remove the white background DIV
+        iwBackground.children[3].style.display ='none';
+        //tail remove
+        iwBackground.children[0].style.display ='none';
+        iwBackground.children[2].style.display ='none';
+        var iwCloseBtn = iwOuter[0].nextSibling;
+        while(iwCloseBtn && iwCloseBtn.nodeType != 1) {
+          iwCloseBtn = iwCloseBtn.nextSibling;
+        };
+        // Apply the desired effect to the close button
+        iwCloseBtn.style.width =  '20px'; // by default the close button has an opacity of 0.7;
+        iwCloseBtn.style.height =  '20px'; // by default the close button has an opacity of 0.7;
+        iwCloseBtn.style.opacity =  '1'; // by default the close button has an opacity of 0.7;
+        iwCloseBtn.style.right = '55px';  // button repositioning
+        iwCloseBtn.style.top = '25px';  // button repositioning
+        // iwCloseBtn.style.border = '2px solid #48b5e9';// increasing button border and new color
+        // iwCloseBtn.style.borderRadius = '13px';// circular effect
+        // iwCloseBtn.style.boxShadow = '0 0 5px #3990B9';  // 3D effect to highlight the button
+      });
 
       $scope.showMarkers(ONGOING);
 
@@ -156,9 +195,9 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
     */
     $scope.showMarkers = function(type) {
 
-      // if($scope.popover != null){
-      //   $scope.popover.hide();
-      // }
+      if($scope.popover != null && $scope.popover._isShown){
+        $scope.popover.hide();
+      }
 
       var markerUrl, clusterUrl, clusterBigUrl, clusterTextColor;
       $scope.markers = [];
@@ -176,7 +215,7 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
         //card type에 따라 이미지/색을 변경 한다 index 0 - discoverd , 1 - ongoing,  2-completed
         switch(type){
           case DISCOVERED :
-            if($scope.cards[i].status != '0' && $scope.cards[i].status != '33') continue;
+            if($scope.cards[i].status != PROGRESS_REGISTER && $scope.cards[i].status != PROGRESS_START) continue;
             markerUrl = 'img/location_r.png';
             clusterUrl = 'img/cluster_r.png';
             clusterBigUrl = 'img/cluster_r_big.png';
@@ -184,7 +223,7 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
             $scope.warningTitle = DISCOVERED_TEXT;
             break;
           case ONGOING :
-            if($scope.cards[i].status != '66') continue;
+            if($scope.cards[i].status != PROGRESS_ONGOING) continue;
             markerUrl = 'img/location_y.png';
             clusterUrl = 'img/cluster_y.png';
             clusterBigUrl = 'img/cluster_y_big.png';
@@ -192,7 +231,7 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
             $scope.warningTitle = ONGOING_TEXT;
             break;
           case COMPLETED :
-            if($scope.cards[i].status != '100') continue;
+            if($scope.cards[i].status != PROGRESS_COMPLETED) continue;
             markerUrl = 'img/location_g.png';
             clusterUrl = 'img/cluster_g.png';
             clusterBigUrl = 'img/cluster_g_big.png';
@@ -282,6 +321,24 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
           e.preventDefault();
         }
         var title = pic.title;
+        var status = pic.status;
+        var location = pic.location_name;
+        var location_img;
+        switch(status){
+          case PROGRESS_REGISTER :
+          case PROGRESS_START : 
+            location_img = "img/location_r.png"
+            break;
+          case PROGRESS_ONGOING :
+            location_img = "img/location_y.png"
+            break;
+          case PROGRESS_COMPLETED :
+            location_img = "img/location_g.png"
+            break;
+          default :
+            location_img = "img/location_y.png"
+            break;
+        }
         var url = "#/tab/home/"+pic.id;
         var fileurl = pic.img_path;
         if(fileurl == '' || fileurl == mNoImage){
@@ -292,15 +349,26 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
 
         var username = '';
 
-        var infoHtml = '<div class="info"><h3>' + title +
-          '</h3><div class="info-body">' +
-          '<a href="' + url + '"><img src="' +
-          fileurl + '" class="info-img"/></a></div>' +
-          '<a href="http://facebook.com/' + pic.user[0].user_id + '" target="_blank">' + pic.user[0].username +
-          '</a></div></div>';
+        var infoHtml = 
+          '<div class="info">'+
+             '<div class="info-top">'+
+              '<h3>' + title + '</h3>'+
+              '<img class="info_location_img" src='+location_img+' />' + 
+              '<span class="info_location_text">' + location +'</span>' +
+            '</div>' +
+            '<a href="' + url + '">'+
+              '<div class="info-body">'+
+                  '<img src="' + fileurl + '" class="info-img"/>'+
+                  '<div class="detail_view">' + '자세히 보기 &gt;' + '</div>'
+              '</div>' +
+            '</a>'+
+            // '<a href="http://facebook.com/' + pic.user[0].user_id + '" target="_blank">' + pic.user[0].username +
+            // '</a>'+
+          '</div>';
 
         $scope.infoWindow.setContent(infoHtml);
         $scope.infoWindow.setPosition(latlng);
+        // $scope.infoWindow.setOptions({maxWidth : 600});
         $scope.infoWindow.open($scope.map);
       };
     };

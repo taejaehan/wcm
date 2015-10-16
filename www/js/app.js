@@ -19,6 +19,23 @@ var mIsAndroid = ionic.Platform.isAndroid();
 //사진이 없을 경우 보여주는 이미지 링크
 var mNoImage = 'img/default.png';
 
+/*map의 marker type*/
+var DISCOVERED  = 0;
+var ONGOING     = 1;
+var COMPLETED  = 2;
+var DISCOVERED_TEXT  = "해결이 필요한 위험";
+var ONGOING_TEXT  = "해결중 위험";
+var COMPLETED_TEXT  = "해결 완료된 위험";
+
+/*카드 진행상태 타입*/
+var PROGRESS_REGISTER = "0";
+var PROGRESS_START = "33";
+var PROGRESS_ONGOING = "66";
+var PROGRESS_COMPLETED = "100";
+var PROGRESS_START_TEXT = "위험요소가 등록되었습니다.";
+var PROGRESS_ONGOING_TEXT = "위험요소를 해결 중 입니다.";
+var PROGRESS_COMPLETED_TEXT = "위험요소가 해결 되었습니다.";
+
 var wcm = angular.module('wcm', ['ionic', 'ngCordova', 'ngTimeago', 'ng']);
 
 
@@ -35,9 +52,13 @@ wcm.factory('Scopes', function($rootScope) {
     };
 })
 
+/*filter가 뭔지 모르겠으나 items가 없을 경우 에러나서 예외처리함 by tjhan 151016*/
 wcm.filter('reverse', function() {
   return function(items) {
-    return items.slice().reverse();
+    console.log('filter items : ' + items);
+    if(items !=null){
+      return items.slice().reverse();
+    };
   };
 });
 
@@ -146,10 +167,19 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
         }
       }
     })
-    .state("tabs.post", {
+    .state("tabs.post_h", {
       url: "/home/:postId",
       views: {
         'home-tab': {
+          templateUrl: "templates/post.html",
+          controller: 'PostController'
+        }
+      }
+    })
+    .state("tabs.post_p", {   //profile에서 접근하는 post view추가 by tjhan 151016
+      url: "/profile/:postId",
+      views: {
+        'profile-tab': {
           templateUrl: "templates/post.html",
           controller: 'PostController'
         }

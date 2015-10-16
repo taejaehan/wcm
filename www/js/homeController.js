@@ -7,7 +7,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   $scope.noMoreItemsAvailable = false;
 
-
   //로그인 한 상태라면 prefresnces에 저장된 user id로 서버에서 유저 정보를 가져와 localStorage에 저장
   $scope.saveLocalUser = function(loginId) {
     if(loginId != null){
@@ -75,7 +74,10 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
             //로그인 한 상태라면 prefresnces에 저장된 user id로 서버에서 유저 정보를 가져와 localStorage에 저장
             Preferences.get('loginId', function(loginId) {
-              $scope.saveLocalUser(loginId);
+              console.log('loginId : ' + loginId);
+              if(loginId != null && loginId != ''){
+                $scope.saveLocalUser(loginId);
+              }
             }, function(error){
               console.log('error: : ' +  error);
             });
@@ -95,7 +97,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
     } else {
       if(document.getElementById('welcomeOverlay') != null){
-        // document.getElementById('welcomeOverlay').setAttribute('style','display:none');
+        document.getElementById('welcomeOverlay').setAttribute('style','display:none');
       }
     }
 
@@ -170,7 +172,16 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     }
   });
   
-  $scope.nextSlide = function() {
+  /*
+  * welcome slider previous
+  */
+  $scope.sliderPrev = function() {
+    $ionicSlideBoxDelegate.previous();
+  }
+  /*
+  * welcome slider next
+  */
+  $scope.sliderNext = function() {
     $ionicSlideBoxDelegate.next();
   }
 
@@ -339,14 +350,14 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             
             $scope.noMoreItemsAvailable = false;
 
-            if (data.cards[i].status === "33") {
-              data.cards[i].statusDescription = "프로젝트가 시작되었습니다.";
+            if (data.cards[i].status === PROGRESS_START) {
+              data.cards[i].statusDescription = PROGRESS_START_TEXT;
               data.cards[i].statusIcon = "ion-alert-circled";
-            } else if (data.cards[i].status === "66") {
-              data.cards[i].statusDescription = "프로젝트를 진행합니다.";
+            } else if (data.cards[i].status === PROGRESS_ONGOING) {
+              data.cards[i].statusDescription = PROGRESS_ONGOING_TEXT;
               data.cards[i].statusIcon = "ion-gear-b";
             } else {
-              data.cards[i].statusDescription = "프로젝트가 완료되었습니다.";
+              data.cards[i].statusDescription = PROGRESS_COMPLETED_TEXT;
               data.cards[i].statusIcon = "ion-happy-outline";
             }
 
@@ -472,14 +483,12 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
       for (var i = 0; i < data.cards.length; i++) {
         
-        if (data.cards[i].status === "0") {
-          data.cards[i].statusDescription = "위험요소가 등록되었습니다.";
-        } else if (data.cards[i].status === "33") {
-          data.cards[i].statusDescription = "위험요소가 등록되었습니다.";
-        } else if (data.cards[i].status === "66") {
-          data.cards[i].statusDescription = "위험요소를 해결 중 입니다.";
+        if (data.cards[i].status === PROGRESS_REGISTER || data.cards[i].status === PROGRESS_START) {
+          data.cards[i].statusDescription = PROGRESS_START_TEXT;
+        } else if (data.cards[i].status === PROGRESS_ONGOING) {
+          data.cards[i].statusDescription = PROGRESS_ONGOING_TEXT;
         } else {
-          data.cards[i].statusDescription = "위험요소가 해결 되었습니다.";
+          data.cards[i].statusDescription = PROGRESS_COMPLETED_TEXT;
         }
 
         if (data.cards[i].img_path == '') {
@@ -703,14 +712,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   $scope.overlayClose = function() {
     document.getElementById('welcomeOverlay').setAttribute('style','display:none');
-    if (mIsIOS) {
-      appgiraffe.plugins.applicationPreferences.set('notShowPref', true, function(result) {
-              alert("We got a setting: " + result);
-          }, function(error) {
-              alert("Failed to retrieve a setting: " + error);
-          }
-      );
-    }
+    console.log('overlayClose Preferences != undefined : ' + (typeof Preferences != 'undefined'));
+    //닫고나 면 무조건 다시보지 않기
+    Preferences.put('notShowPref', true); 
   }
 
 });

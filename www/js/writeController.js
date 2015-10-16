@@ -1,8 +1,10 @@
 wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaCamera, $cordovaFile, $cordovaFileTransfer, $timeout, $cordovaGeolocation, $ionicLoading, $http, $stateParams, $ionicPopup, $ionicActionSheet, $ionicHistory) {
 
   var user = JSON.parse(window.localStorage['user'] || '{}');
-  var latlng, cardId, progress;
+  var latlng, progress;
   var imgPath = '';
+
+  $scope.cardId;
   $scope.cardData = {};
   $scope.cancelClick = false;
 
@@ -25,8 +27,8 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       //id가 있으면 해당 card edit
       else{
         $scope.uploadTitle = 'Edit';
-        if(cardId == null){
-          cardId = $stateParams.id;
+        if($scope.cardId == null){
+          $scope.cardId = $stateParams.id;
           $scope.getCard();
         }
       }
@@ -63,7 +65,8 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   //DOM에서 view가 사라질때 (현재 버젼에서는 tab을 이동하거나 같은 tab에서 다른 view로 이동시 발생함) 
   $scope.$on('$ionicView.unloaded', function(){
     console.log('writeController unloaded - cancelClick : ' + $scope.cancelClick);
-    if(!$scope.cancelClick){
+    //$scope.cardId가 null이고(새로 글쓰는 상태에서) cancel를 클릭하여 다른 view나 tab으로 간것이 아니라면)
+    if($scope.cardId == null && !$scope.cancelClick){
       $rootScope.cardTitle = $scope.cardData.title;
       $rootScope.cardDescription = $scope.cardData.description;
       $rootScope.cardFile = $scope.cardData.file;
@@ -235,7 +238,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   $scope.showMap = function() {
     
     console.log('showMap latlng : ' + latlng);
-    if(cardId == null){
+    if($scope.cardId == null){
       $state.go('tabs.location_w', { 'latlng': latlng});
     }else{
       $state.go('tabs.location_h', { 'latlng': latlng, 'progress' : progress});
@@ -271,10 +274,10 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
 
     //찍은 사진이 있다면 
     if($scope.imgURI != null){ 
-      //cardId가 null이면 (new add)
-      if(cardId == null){ 
+      //$scope.cardId가 null이면 (new add)
+      if($scope.cardId == null){ 
         $scope.savePicture();
-      }else{ //cardId가 있을 경우(edit일 경우)
+      }else{ //$scope.cardId가 있을 경우(edit일 경우)
 
         //file을 변경했을 경우에만 다시 저장
         if($scope.cardForm.file.$dirty){
@@ -372,8 +375,8 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     var user_app_id = $scope.userid;
 
     var url, title, description, location_lat, location_long, location_name= '';
-    //cardId가 null이면 (new add)
-    if(cardId == null){
+    //$scope.cardId가 null이면 (new add)
+    if($scope.cardId == null){
       url = mServerAPI + "/card";
       title = document.getElementById("card_title").value;
       description = document.getElementById("card_des").value;
@@ -383,12 +386,12 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       if(newFileName != null) {
         imgPath = newFileName;
       }
-    }else{  //cardId가 있으면 (edit)
+    }else{  //$scope.cardId가 있으면 (edit)
       if($scope.cardForm.title.$dirty ||
         $scope.cardForm.description.$dirty ||
         $scope.cardForm.location.$dirty ||
         $scope.cardForm.file.$dirty){
-          url = mServerAPI + "/cardDetail/" + cardId;
+          url = mServerAPI + "/cardDetail/" + $scope.cardId;
           title = document.getElementById("card_title").value;
           description = document.getElementById("card_des").value;
           location_lat =  document.getElementById("card_location").getAttribute('lat');
@@ -411,7 +414,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
 
       while( i < $rootScope.allData.cards.length) {
 
-        if ($rootScope.allData.cards[i].id === cardId) {
+        if ($rootScope.allData.cards[i].id === $scope.cardId) {
           $rootScope.allData.cards[i].title = document.getElementById("card_title").value;
           $rootScope.allData.cards[i].img_path = newFileName;
           break;
@@ -465,10 +468,10 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   */
   $scope.getCard = function() {
 
-    if(cardId == null) return;
+    if($scope.cardId == null) return;
     var request = $http({
       method: "get",
-      url: mServerAPI + "/cardDetail/" + cardId,
+      url: mServerAPI + "/cardDetail/" + $scope.cardId,
       crossDomain : true,
       headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
       cache: false

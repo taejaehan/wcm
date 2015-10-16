@@ -1,4 +1,4 @@
-wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocation, $ionicLoading, $compile, $ionicHistory, $rootScope) {
+wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocation, $ionicLoading, $compile, $ionicHistory, $rootScope, $ionicPopup) {
 
     var map , marker, infowindow;
     $scope.$on('$ionicView.afterEnter', function(){
@@ -40,14 +40,14 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
       // 진행 상황에 따른 marker 색을 변경합니다
       var imageUrl;
       switch($stateParams.progress){
-        case '0' :
-        case '33' :
+        case PROGRESS_REGISTER :
+        case PROGRESS_START :
           imageUrl = 'img/location_r.png';
           break;
-        case '66' :
+        case PROGRESS_ONGOING :
           imageUrl = 'img/location_y.png';
           break;
-        case '100' :
+        case PROGRESS_COMPLETED :
           imageUrl = 'img/location_g.png';
           break;
         default : 

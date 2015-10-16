@@ -48,29 +48,6 @@
 /* when showing the picture */
 .ng-hide-remove      { animation:0.5s flipInX ease; }
 
-/* .checkbox_custrom{
-  padding-left : 43px;
-}
-
-.checkbox_custrom input:checked:before, .checkbox_custrom input:checked + .checkbox-icon:before{
-  
-  background : url('http://chart.apis.google.com/chart?cht=mm&chs=24x32&chco=FFFFFF,008CFF,000000&ext=.png');
-  border : none;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 20px;
-}
-.checkbox_custrom input:after, .checkbox-icon:after{
-  border : none;
-}
-.checkbox_custrom input:before, .checkbox-icon:before{
-  background : url('http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/images/m1.png');
-  border : none;
-  background-size: 30px;
-  background-repeat: no-repeat;
-  background-position: center;
-} */
-
 .map-icon{
   background-color : #fff;
   color: #a0a0a0; 
@@ -122,8 +99,37 @@
   background-color : #65b614;
 }
 
+.info-top{
+  padding : 10px 10px 5px 10px;
+}
 .info-img{
-  width: 300px;
+  width: 100%;
+  display: block;
+}
+.info_location_img{
+  width : 20px;
+  height : 20px;
+}
+.info_location_text{
+  position: relative;
+  top: -5px;
+  left: 0;
+}
+.info .detail_view{
+  text-align: center;
+  font-size: 130%;
+  height: 40px;
+  padding-top: 10px;
+  color: #bbb;
+}
+
+.gm-style-iw {
+  /* width: 300px !important; */
+  /*background-color: #fff;*/
+  background-color: rgba(0,0,0,0); 
+  top: 15px !important;
+  left: 0 !important;
+  border-radius: 2px 2px 10px 10px; 
 }
 
 
@@ -134,14 +140,9 @@
 * 나머지는 custom_popover에서 필요한 부분만 override하여 사용
 * by tjhan 151015
 */
-
-/*popover시 배경화면 어두운 정도*/
-.popover-backdrop.active{
-  background-color: rgba(0, 0, 0, 0.6);
-}
 /*custom_popover*/
 .custom_popover{
-  background-color: rgba(0,0,0,0);
+  background-color: rgba(0,0,0,0) !important;
   box-shadow: none;
   border: none;
   height: 205px;  /*65px 3줄 + 10px margin값*/
@@ -153,6 +154,17 @@
   background-color: rgba(0,0,0,0) !important;
   border: none;
   color: #ddd;
+}
+
+/*IOS에서만 적용됨 (아래쪽 화살표)*/
+.custom_popover .popover-arrow{
+  visibility: hidden;
+}
+
+/*Android에서만 적용됨 (popOver의 margin값)*/
+.platform-android .popover.popover-bottom{
+  margin-top: -10px; /*marker type popover의 margin 32px를 덮어씀*/
+  box-shadow: none;
 }
 
 /*popover시에 나오는 radio버튼 3가지*/

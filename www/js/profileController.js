@@ -27,14 +27,14 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 	  request1.success(function(data) {
 	  	for (var i = 0; i < data.changes.length; i++) {
 	  		if(data.changes[i].post.length > 0 ){	//add by tjhan 151007
-		  		if (data.changes[i].post[0].status === "33") {
-	          data.changes[i].post[0].statusDescription = "프로젝트가 시작되었습니다.";
+		  		if (data.changes[i].post[0].status === PROGRESS_START) {
+	          data.changes[i].post[0].statusDescription = PROGRESS_START_TEXT;
 	          data.changes[i].post[0].statusIcon = "ion-alert-circled";
-	        } else if (data.changes[i].post[0].status === "66") {
-	          data.changes[i].post[0].statusDescription = "프로젝트를 진행합니다.";
+	        } else if (data.changes[i].post[0].status === PROGRESS_ONGOING) {
+	          data.changes[i].post[0].statusDescription = PROGRESS_ONGOING_TEXT;
 	          data.changes[i].post[0].statusIcon = "ion-gear-b";
 	        } else {
-	          data.changes[i].post[0].statusDescription = "프로젝트가 완료되었습니다.";
+	          data.changes[i].post[0].statusDescription = PROGRESS_COMPLETED_TEXT;
 	          data.changes[i].post[0].statusIcon = "ion-happy-outline";
 	        }
 
@@ -61,14 +61,14 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 	  request2.success(function(data) {
 
 	  	for (var i = 0; i < data.cards.length; i++) {
-	  		if (data.cards[i].status === "33") {
-          data.cards[i].statusDescription = "프로젝트가 시작되었습니다.";
+	  		if (data.cards[i].status === PROGRESS_START) {
+          data.cards[i].statusDescription = PROGRESS_START_TEXT;
           data.cards[i].statusIcon = "ion-alert-circled";
-        } else if (data.cards[i].status === "66") {
-          data.cards[i].statusDescription = "프로젝트를 진행합니다.";
+        } else if (data.cards[i].status === PROGRESS_ONGOING) {
+          data.cards[i].statusDescription = PROGRESS_ONGOING_TEXT;
           data.cards[i].statusIcon = "ion-gear-b";
         } else {
-          data.cards[i].statusDescription = "프로젝트가 완료되었습니다.";
+          data.cards[i].statusDescription = PROGRESS_COMPLETED_TEXT;
           data.cards[i].statusIcon = "ion-happy-outline";
         }
 
@@ -104,14 +104,14 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 
           if ($scope.cards[i].id === card.id) {
             
-            if (card.status === "33") {
-		          $scope.cards[i].statusDescription = "프로젝트가 시작되었습니다.";
+            if (card.status === PROGRESS_START) {
+		          $scope.cards[i].statusDescription = PROGRESS_START_TEXT;
 		          $scope.cards[i].statusIcon = "ion-alert-circled";
-		        } else if (card.status === "66") {
-		          $scope.cards[i].statusDescription = "프로젝트를 진행합니다.";
+		        } else if (card.status === PROGRESS_ONGOING) {
+		          $scope.cards[i].statusDescription = PROGRESS_ONGOING_TEXT;
 		          $scope.cards[i].statusIcon = "ion-gear-b";
 		        } else {
-		          $scope.cards[i].statusDescription = "프로젝트가 완료되었습니다.";
+		          $scope.cards[i].statusDescription = PROGRESS_COMPLETED_TEXT;
 		          $scope.cards[i].statusIcon = "ion-happy-outline";
 		        }
             break;
@@ -122,17 +122,17 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 	  };
 
 	  $scope.idea = function(card) {
-	  	card.status = "33";
+	  	card.status = PROGRESS_START;
 	  	statusPost(card);
 	  }
 
 	  $scope.doing = function(card) {
-	  	card.status = "66";
+	  	card.status = PROGRESS_ONGOING;
 	  	statusPost(card);
 	  }
 
 	  $scope.done =function(card) {
-	  	card.status = "100";
+	  	card.status = PROGRESS_COMPLETED;
 	  	statusPost(card);
 	  }
 

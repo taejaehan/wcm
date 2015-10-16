@@ -1,9 +1,9 @@
 <ion-view view-title="We Change Makers">
   <ion-nav-buttons side="right">
-    <button type="submit" class="button button-icon" ng-click="openPopover($event)">
+    <button type="submit" ng-if="!noMoreItemsAvailable" class="button button-icon" ng-click="openPopover($event)">
       <i class="icon ion-android-list"></i>
     </button>
-    <button type="submit" class="button button-icon" ng-click="findWarning()">
+    <button type="submit" ng-if="!noMoreItemsAvailable" class="button button-icon" ng-click="findWarning()">
       <i class="icon ion-location"></i>
     </button>
   </ion-nav-buttons>
@@ -99,24 +99,38 @@
     <ion-slide-box class="overlay-box">
 
       <ion-slide class="slide-1-back">
-        <figure class="slide-1"></figure>
+        <figure class="slide-1">
+          <a class="welcome-slide slide-next" ng-click="sliderNext()" ></a>
+        </figure>
       </ion-slide>
 
       <ion-slide class="slide-2-back">
-        <figure class="slide-2"></figure>
+        <figure class="slide-2">
+          <a class="welcome-slide slide-prev" ng-click="sliderPrev()" ></a>
+          <a class="welcome-slide slide-next" ng-click="sliderNext()" ></a>
+        </figure>
       </ion-slide>
 
       <ion-slide class="slide-3-back">
-        <figure class="slide-3"></figure>
+        <figure class="slide-3">
+          <a class="welcome-slide slide-prev" ng-click="sliderPrev()" ></a>
+          <a class="welcome-slide slide-next" ng-click="sliderNext()" ></a>
+        </figure>
       </ion-slide>
 
       <ion-slide class="slide-4-back">
-        <figure class="slide-4"></figure>
+        <figure class="slide-4">
+          <a class="welcome-slide slide-prev" ng-click="sliderPrev()" ></a>
+          <a class="welcome-slide slide-next" ng-click="sliderNext()" ></a>
+        </figure>
       </ion-slide>
 
       <ion-slide class="slide-5-back">
-        <figure class="slide-5"></figure>
-        <figure class="fb" ng-click="facebookLogin()"></figure> 
+        <figure class="slide-5">
+          <a class="welcome-slide slide-prev" ng-click="sliderPrev()" ></a>
+        </figure>
+        <figure class="fb" ng-click="facebookLogin()">
+        </figure> 
           <!-- <button class="button button-block btn-default" ng-click="skipLogin()"><i class="fa fa-check"></i> Skip Login</button>  -->
       </ion-slide>
 
