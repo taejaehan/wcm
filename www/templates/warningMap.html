@@ -10,7 +10,6 @@
       <option value="500">500</option>
       <option value="1000">1000</option>
     </select> -->
-    
     <!--아래 change-marker-type으로 대체됨-->
     <!-- <button type="submit" class="button button-icon location-button" ng-click="changeMarkers()">
      <img id="location-button-img" src="img/location_y.png" class="location-button-icon"/>
@@ -37,4 +36,25 @@
       </ion-content>
     </ion-popover-view>
   </script>
+  <script id="templates/modal.html" type="text/ng-template">
+      <ion-modal-view class="marker-modal">
+        <ion-content>
+          <div class="header">
+            <div>
+              <h1 class="title">{{ markerTitle }}</h1>
+              <button class="button button-clear ion-close-round button-primary" ng-click="modal.hide()"></button>
+            </div>
+            <div>
+              <img class="location-icon" src="{{markerLocationImg}}"/>
+              <span class="location-text">{{markerLocation}}</span>
+            </div>
+          </div>
+          <div class="content">
+            <div class="center-cropped post-image" style="background-image: url('{{markerImg}}');">
+            </div>
+            <div class="card-view">자세히 보기 &gt;</div>
+          </div>
+        </ion-content>
+      </ion-modal-view>
+    </script>
 </ion-view>

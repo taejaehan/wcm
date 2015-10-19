@@ -1,4 +1,4 @@
-wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGeolocation, $ionicLoading, $ionicActionSheet, $ionicPopup, $ionicPopover, $window) {
+wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGeolocation, $ionicLoading, $ionicActionSheet, $ionicPopup, $ionicPopover, $window, $ionicModal) {
     
     $scope.cards = null;
     $scope.map = null;
@@ -7,6 +7,19 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
     $scope.infoWindow = null;
     $scope.usegmm = { checked: true };
     $scope.warningTitle = ONGOING_TEXT;
+
+
+    //마커를 클릭했을 때 나오는 정보
+    $scope.markerTitle = '';
+    $scope.markerLocation = '';
+    $scope.markerImg = '';
+
+    //마커를 클릭했을 때 나오는 상세 정보 view modal
+    $ionicModal.fromTemplateUrl('templates/modal.html', {
+      scope: $scope
+    }).then(function(modal) {
+      $scope.modal = modal;
+    });
 
     $scope.$on('$ionicView.loaded', function(){
       $scope.init();
@@ -71,15 +84,14 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
 
       //infoWindow
       $scope.infoWindow = new google.maps.InfoWindow({
-        maxWidth : 1000
+        maxWidth : 300
       });
-      //google map infoWindow에 custom style처리가 없어서 dom으로 찾아 처리
+
+      /*google map infoWindow에 custom style처리가 없어서 dom으로 찾아 처리*/
       google.maps.event.addListener($scope.infoWindow, 'domready', function() {
 
         var iwOuter = document.getElementsByClassName('gm-style-iw');
-
         iwOuter[0].children[0].style.backgroundColor = '#fff';
-
         /* The DIV we want to change is above the .gm-style-iw DIV.
         * So, we use jQuery and create a iwBackground variable,
         * and took advantage of the existing reference to .gm-style-iw for the previous DIV with .prev().
@@ -99,15 +111,27 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
         while(iwCloseBtn && iwCloseBtn.nodeType != 1) {
           iwCloseBtn = iwCloseBtn.nextSibling;
         };
+        
+        /*CLOSE 버튼 시작*/
         // Apply the desired effect to the close button
         iwCloseBtn.style.width =  '20px'; // by default the close button has an opacity of 0.7;
         iwCloseBtn.style.height =  '20px'; // by default the close button has an opacity of 0.7;
         iwCloseBtn.style.opacity =  '1'; // by default the close button has an opacity of 0.7;
-        iwCloseBtn.style.right = '55px';  // button repositioning
-        iwCloseBtn.style.top = '25px';  // button repositioning
-        // iwCloseBtn.style.border = '2px solid #48b5e9';// increasing button border and new color
-        // iwCloseBtn.style.borderRadius = '13px';// circular effect
-        // iwCloseBtn.style.boxShadow = '0 0 5px #3990B9';  // 3D effect to highlight the button
+        iwCloseBtn.style.right = '40px';  // button repositioning
+        iwCloseBtn.style.top = '30px';  // button repositioning
+         // close button img
+        iwCloseBtn.children[0].src = 'img/close.png';
+        iwCloseBtn.children[0].style.position = 'initial';
+        iwCloseBtn.children[0].style.width = '100%';
+        iwCloseBtn.children[0].style.height = '100%';
+        //실제로 버튼이 눌리는 곳
+        var iwCloseBtnTransparent = iwCloseBtn.nextSibling;
+        while(iwCloseBtnTransparent && iwCloseBtnTransparent.nodeType != 1) {
+          iwCloseBtnTransparent = iwCloseBtnTransparent.nextSibling;
+        };
+        iwCloseBtnTransparent.style.right = '30px';  // button repositioning
+        iwCloseBtnTransparent.style.top = '20px';  // button repositioning
+        /*CLOSE 버튼 끝*/
       });
 
       $scope.showMarkers(ONGOING);
@@ -366,10 +390,21 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
             // '</a>'+
           '</div>';
 
+        
+
         $scope.infoWindow.setContent(infoHtml);
         $scope.infoWindow.setPosition(latlng);
-        // $scope.infoWindow.setOptions({maxWidth : 600});
         $scope.infoWindow.open($scope.map);
+
+        // $scope.markerTitle = pic.title;
+        // $scope.markerLocation = pic.location_name;
+        // $scope.markerLocationImg = location_img;
+        // $scope.markerImg = fileurl;
+        // console.log('markerTitle : ' + $scope.markerTitle);
+        // console.log('markerLocation : ' + $scope.markerLocation);
+        // console.log('markerLocationImg : ' + $scope.markerLocationImg);
+        // console.log('markerImg : ' + $scope.markerImg);
+        // $scope.modal.show();
       };
     };
 

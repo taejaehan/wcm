@@ -65,6 +65,8 @@ wcm.filter('reverse', function() {
 wcm.run(function($ionicPlatform, $http, $cordovaFile) {
   // Kakao.init('2b1444fba3c133df8405882491640b80');
 
+  
+
   $ionicPlatform.ready(function() {
     window.localStorage.clear();
     // window.localStorage['user'] = null;
@@ -85,6 +87,8 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile) {
     // for form inputs)
     if(window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+      //세로 고정 (cordova-plugin-screen-orientation 플러그인 사용)
+      screen.lockOrientation('portrait');
     }
     if(window.StatusBar) {
       StatusBar.styleDefault();
