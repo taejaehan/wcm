@@ -15,7 +15,6 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 		$scope.message1 = '';
 		$scope.message2 = '';
 
-
 		// User가 Change Supporters로 참여중인 Change List 가져오기
 		var request1 = $http({
 	    method: "get",
@@ -197,6 +196,10 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 
 		$state.go('fblogin');
 	}
+
+	$scope.editProfile = function() {
+		$state.go("tabs.editProfile");
+	}
 	
 	$scope.showChanges = function() {
 		$scope.watch = true;
@@ -225,6 +228,36 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
   $scope.inquire = function() {
     $state.go("tabs.inquire");
   }
+  
+  $scope.editDone = function() {
+  	var edit_name = document.getElementById("edit-name").value;
+  	var formData = { username: edit_name };
+    var postData = 'userData='+JSON.stringify(formData);
 
+    var request = $http({
+        method: "post",
+        url: mServerAPI + "/user/" + user.userid,
+        crossDomain : true,
+        data: postData,
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+        cache: false
+    });
 
+  	var myPopup1 = $ionicPopup.show({
+      template: "변경이 완료되었습니다.",
+      title: 'We Change Makers',
+    
+      buttons: [
+        {
+          text: '<b>OK</b>',
+          type: 'button-positive',
+          onTap: function(e) {
+            $state.go("tabs.profile");
+          }
+        }
+      ]
+    });
+  }
+
+ 
 });

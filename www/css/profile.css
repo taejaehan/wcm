@@ -215,3 +215,12 @@ i.ion-chevron-right {
 .privacy h5 {
 	margin-left: 40px;
 }
+
+.edit-name {
+	background-color: #f0f0ee;
+	height: 100%;
+}
+
+.edit-name p {
+	padding: 15px 15px 5px 15px;
+}
