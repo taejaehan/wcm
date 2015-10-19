@@ -1,4 +1,4 @@
-wcm.controller("ProfileController", function($scope, $state, $http, AuthService, $window, $ionicPopup) {
+wcm.controller("ProfileController", function($scope, $state, $http, AuthService, $window, $ionicPopup, $ionicHistory) {
 
 	var user = JSON.parse(window.localStorage['user'] || '{}');
 
@@ -243,7 +243,13 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
         cache: false
     });
 
-  	var myPopup1 = $ionicPopup.show({
+    request.success(function() {
+    	user.username = edit_name;
+    	window.localStorage['user'] = JSON.stringify(user);
+    	console.log(user);
+    });
+
+  	var myPopup = $ionicPopup.show({
       template: "변경이 완료되었습니다.",
       title: 'We Change Makers',
     
@@ -252,7 +258,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
           text: '<b>OK</b>',
           type: 'button-positive',
           onTap: function(e) {
-            $state.go("tabs.profile");
+            $ionicHistory.goBack();
           }
         }
       ]
