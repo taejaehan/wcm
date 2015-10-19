@@ -55,7 +55,6 @@ wcm.factory('Scopes', function($rootScope) {
 /*filter가 뭔지 모르겠으나 items가 없을 경우 에러나서 예외처리함 by tjhan 151016*/
 wcm.filter('reverse', function() {
   return function(items) {
-    console.log('filter items : ' + items);
     if(items !=null){
       return items.slice().reverse();
     };
@@ -234,6 +233,15 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
       views: {
         'profile-tab': {
           templateUrl: "templates/profile.html",
+          controller: 'ProfileController'
+        }
+      }
+    })
+    .state('tabs.editProfile', {
+      url: "/profile/edit",
+      views: {
+        'profile-tab': {
+          templateUrl: "templates/editprofile.html",
           controller: 'ProfileController'
         }
       }

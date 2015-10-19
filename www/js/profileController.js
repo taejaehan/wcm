@@ -1,4 +1,4 @@
-wcm.controller("ProfileController", function($scope, $state, $http, AuthService, $window, $ionicPopup) {
+wcm.controller("ProfileController", function($scope, $state, $http, AuthService, $window, $ionicPopup, $ionicHistory) {
 
 	var user = JSON.parse(window.localStorage['user'] || '{}');
 
@@ -14,7 +14,6 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 		$scope.watch = true;
 		$scope.message1 = '';
 		$scope.message2 = '';
-
 
 		// User가 Change Supporters로 참여중인 Change List 가져오기
 		var request1 = $http({
@@ -197,6 +196,10 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 
 		$state.go('fblogin');
 	}
+
+	$scope.editProfile = function() {
+		$state.go("tabs.editProfile");
+	}
 	
 	$scope.showChanges = function() {
 		$scope.watch = true;
@@ -225,6 +228,42 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
   $scope.inquire = function() {
     $state.go("tabs.inquire");
   }
+  
+  $scope.editDone = function() {
+  	var edit_name = document.getElementById("edit-name").value;
+  	var formData = { username: edit_name };
+    var postData = 'userData='+JSON.stringify(formData);
 
+    var request = $http({
+        method: "post",
+        url: mServerAPI + "/user/" + user.userid,
+        crossDomain : true,
+        data: postData,
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+        cache: false
+    });
 
+    request.success(function() {
+    	user.username = edit_name;
+    	window.localStorage['user'] = JSON.stringify(user);
+    	console.log(user);
+    });
+
+  	var myPopup = $ionicPopup.show({
+      template: "변경이 완료되었습니다.",
+      title: 'We Change Makers',
+    
+      buttons: [
+        {
+          text: '<b>OK</b>',
+          type: 'button-positive',
+          onTap: function(e) {
+            $ionicHistory.goBack();
+          }
+        }
+      ]
+    });
+  }
+
+ 
 });
