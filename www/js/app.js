@@ -147,11 +147,6 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
         templateUrl: "templates/welcome.html",
         controller: "WelcomeController"
     })
-    .state("login", {
-      url: "/login",
-        templateUrl: "templates/login.html",
-        controller: "LoginController"
-    })
     .state('tabs', {
       url: "/tab",
       abstract: true,
