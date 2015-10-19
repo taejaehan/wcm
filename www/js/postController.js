@@ -31,6 +31,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       // $scope.card.img_path = mServerUpload + $scope.card.img_path;
 
       $scope.like_count = data.cards[0].like_count;
+      $scope.createTime = moment(data.cards[0].create_time, "YYYY-MM-DD h:mm:ss").fromNow();
 
       latlng = new google.maps.LatLng($scope.card.location_lat, $scope.card.location_long);
       progress = data.cards[0].status;

@@ -4,6 +4,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 
 	console.log('ProfileController user ' + user);
 	console.log('ProfileController user.isAuthenticated ' + user.isAuthenticated);
+	
 	if (user.isAuthenticated === true) {
 		$scope.userCheck = true;
 		$scope.user = user;

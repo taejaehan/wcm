@@ -1,19 +1,68 @@
-.welcome_page.jumbotron {
-	padding: 60px 20px 0px 20px;
-	height: 100%;
-}
-
 .welcome_page {
-	text-align: center;
+	background-color: #f0f0ee;
+	height: 100%;
+	width: 100%;
 }
 
-.welcome_page p {
-	font-size: 17px;
-	margin: 30px 0px 30px 0px;
+.welcome_page figure.login {
+	background: url("../img/loginpage.png") no-repeat;
+	margin:0 auto;
+	width: 85%;
+	height: 100%;
+	background-size: contain;
 }
 
-.fb-login{
-	margin-top: 50px !important;
-	background-color : #425F9C !important;
-	border-color : #425F9C !important;
+.welcome_page a.fb-btn {
+	background: url("../img/fb-btn.png") no-repeat;
+	background-size: contain;
+	width: 70%;
+	height: 8%;
+	position: absolute;
+	top: 60%;
+	left: 15%;
+}
+
+.welcome_page a.skip-btn {
+	background: url("../img/skip-btn.png") no-repeat;
+	background-size: contain;
+	width: 70%;
+	height: 8%;
+	position: absolute;
+	top: 69%;
+	left: 15%;
+}
+
+@media only screen  and (min-width : 768px) {
+	.welcome_page figure.login {
+		width: 640px;
+		height: 1036px;
+	}
+
+	.welcome_page a.fb-btn {
+		width: 547px;
+		height: 90px;
+		top: 65%;
+	}
+
+	.welcome_page a.skip-btn {
+		width: 547px;
+		height: 90px;
+		top: 76%;
+	}
+}
+
+@media only screen  and (min-width : 1200px) {
+	.welcome_page a.fb-btn {
+		width: 547px;
+		height: 90px;
+		top: 72%;
+		left: 30%;
+	}
+
+	.welcome_page a.skip-btn {
+		width: 547px;
+		height: 90px;
+		top: 85%;
+		left: 30%;
+	}
 }

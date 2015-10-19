@@ -1,13 +1,10 @@
 <ion-view view-title="WeChangeMakers">
   <ion-content>
 
-  	<div class="welcome_page jumbotron">
-			<h2>WeChangeMakers</h2>
-			<p>안전한 세상을 만들려 합니다.<br />우리 서비스가 없어지는 그날 까지...</p>
-			<p>지금 쉽게 동참하세요!</p>
-
-			<button class="button button-block button-positive" ng-click="facebookLogin()"><i class="fa fa-facebook-official"></i> Facebook Login</button></a>
-			<button class="button button-block btn-default" ng-click="skipLogin()"><i class="fa fa-check"></i> Skip Login</button> 
+  	<div class="welcome_page">
+  		<figure class="login"></figure>
+			<a class="fb-btn" ng-click="facebookLogin()"></a>
+			<a class="skip-btn" ng-click="skipLogin()"></a>
     </div>
 
   </ion-content>
