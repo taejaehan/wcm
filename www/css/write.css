@@ -1,5 +1,6 @@
 #picture_list {
   margin : 5px;
+  width: 100%;
 }
 
 #card_img{
@@ -80,4 +81,8 @@ label.item.has-errors-img #picture_list{
   position: absolute;
   right: 25px;
   z-index: 100;
+}
+
+#wrtie_page .item-input{
+  padding : 6px;
 }

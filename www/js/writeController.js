@@ -29,7 +29,9 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
         $scope.uploadTitle = 'Edit';
         if($scope.cardId == null){
           $scope.cardId = $stateParams.id;
-          $scope.getCard();
+          if($ionicHistory.forwardView() == null || $ionicHistory.forwardView().stateName != 'tabs.location_h'){
+            $scope.getCard();
+          }
         }
       }
     }
@@ -66,13 +68,22 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   $scope.$on('$ionicView.unloaded', function(){
     console.log('writeController unloaded - cancelClick : ' + $scope.cancelClick);
     //$scope.cardId가 null이고(새로 글쓰는 상태에서) cancel를 클릭하여 다른 view나 tab으로 간것이 아니라면)
-    if($scope.cardId == null && !$scope.cancelClick){
+    if(($scope.cardId == null && !$scope.cancelClick) 
+      || $ionicHistory.currentView().stateName == 'tabs.location_h'){
       $rootScope.cardTitle = $scope.cardData.title;
       $rootScope.cardDescription = $scope.cardData.description;
       $rootScope.cardFile = $scope.cardData.file;
       $rootScope.cardLocation = document.getElementById("card_location").value;
       $rootScope.cardLocationLat = document.getElementById("card_location").getAttribute('lat');
       $rootScope.cardLocationLng = document.getElementById("card_location").getAttribute('long');
+    }else{
+      //reset inputs datas
+      delete $rootScope.cardTitle;
+      delete $rootScope.cardDescription;
+      delete $rootScope.cardFile;
+      delete $rootScope.cardLocation;
+      delete $rootScope.cardLocationLat;
+      delete $rootScope.cardLocationLng;
     }
 
   });
@@ -207,6 +218,9 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
             document.getElementById("card_location").setAttribute('lat' , lat);
             document.getElementById("card_location").setAttribute('long' , long);
             document.getElementById("card_location").value = results[1].formatted_address;
+            $rootScope.cardLocation = results[1].formatted_address;
+            $rootScope.cardLocationLat = latlng.lat;
+            $rootScope.cardLocationLng = latlng.lng;
           }
           // 해당 input을 valid시킴
           // $scope.cardForm.location.$setDirty();
@@ -493,6 +507,8 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       $scope.cardForm.file.$setViewValue(imgUrl);
       document.getElementById("card_file").value = imgUrl;
       $scope.cardForm.file.$setPristine();
+      document.getElementById("change_pic").setAttribute('style' , 'display:none');
+
 
       var lat = data.cards[0].location_lat;
       var long = data.cards[0].location_long;

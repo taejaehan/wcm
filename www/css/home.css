@@ -185,6 +185,7 @@ button.more {
 
 .dark-overlay {
   opacity: 0.9;
+  display: none;
 }
 
 /*.dark-item {

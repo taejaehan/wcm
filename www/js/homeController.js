@@ -47,7 +47,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     }
   }
 
-  $scope.$on('$ionicView.beforeEnter', function(){
+  $scope.$on('$ionicView.afterEnter', function(){
 
     // 앱에서 열였다면
     if(mIsWebView){
