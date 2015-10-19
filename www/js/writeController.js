@@ -7,7 +7,8 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   $scope.cardId;
   $scope.cardData = {};
   $scope.cancelClick = false;
-
+  $scope.uploadTitle = '';
+  
   $scope.$on('$ionicView.afterEnter', function(){
 
     if (user != null && user.isAuthenticated === true) {
@@ -129,6 +130,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
           targetWidth: 300,
           targetHeight: 300,
           popoverOptions: CameraPopoverOptions,   //ios only 
+          correctOrientation : true,
           // sourceType: Camera.PictureSourceType.CAMERA
           // sourceType: Camera.PictureSourceType.PHOTOLIBRARY
           // saveToPhotoAlbum: true  /*android 일 경우 해당 옵션을 사용하면 capture되지 않음*/

@@ -61,14 +61,16 @@ wcm.filter('reverse', function() {
   };
 });
 
-wcm.run(function($ionicPlatform, $http, $cordovaFile) {
+wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading) {
   // Kakao.init('2b1444fba3c133df8405882491640b80');
-
-  
 
   $ionicPlatform.ready(function() {
     window.localStorage.clear();
     // window.localStorage['user'] = null;
+
+    $ionicLoading.show({
+      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Loading..'
+    });
 
     var request = $http({
         method: "get",
@@ -79,7 +81,12 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile) {
     });
 
     request.success(function(data) {
+      $ionicLoading.hide();
       window.localStorage['cardList'] = JSON.stringify(data);
+    });
+    request.error(function(error){
+      $ionicLoading.hide();
+      console.log('error : ' + JSON.stringify(error))
     });
 
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard

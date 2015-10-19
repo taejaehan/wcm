@@ -1,4 +1,4 @@
-wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth,$ionicPlatform, $ionicSlideBoxDelegate, $cordovaPreferences) {
+wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth,$ionicPlatform, $ionicSlideBoxDelegate, $cordovaPreferences, $ionicLoading) {
 
   navigator.geolocation.watchPosition(showPosition);
 
@@ -275,7 +275,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       /* isOffline */
       $ionicPopup.alert({
         title: 'We Change Makers',
-        template: 'getNewCards Check your network connection.'
+        template: 'Check your network connection.'
       });
 
       //미리 가져온 cardlist 사용
@@ -302,6 +302,10 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         /* isOnline */  
         // init이면 처음 페이지 데이터를 다시 가져옴
         if(init == 'init'){
+
+          $ionicLoading.show({
+            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Loading'
+          });
           $scope.page = 0;
           $rootScope.allData = { 
                           cards: []
@@ -315,8 +319,14 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           });
 
           request.success(function(data) {
+            $ionicLoading.hide();
             window.localStorage['cardList'] = JSON.stringify(data);
           });
+
+          request.error(function(error){
+            $ionicLoading.hide();
+            console.log('error : ' + JSON.stringify(error))
+          })
         }
 
         if($scope.currentLat == null){
@@ -372,6 +382,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             if(data.cards[i].user[0].userimage != null){
               data.cards[i].user[0].userimage = data.cards[i].user[0].userimage.split("amp;").join("&");
             }
+
+            data.cards[i].userId = data.cards[i].user[0].user_id;
+
             var object =  data.cards[i];
             $rootScope.allData.cards.push(object);
             if(user != null){
@@ -400,7 +413,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         /* isOffline */
         $ionicPopup.alert({
           title: 'We Change Makers',
-          template: 'doRefresh Check your network connection.'
+          template: 'Check your network connection.'
         });
 
         //미리 가져온 cardlist 사용
@@ -502,6 +515,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           data.cards[i].user[0].userimage = data.cards[i].user[0].userimage.split("amp;").join("&");
         }
         data.cards[i].address = data.cards[i].location_name;
+        data.cards[i].userId = data.cards[i].user[0].user_id;
 
         var object =  data.cards[i];
         $rootScope.allData.cards.push(object);
@@ -715,6 +729,11 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     console.log('overlayClose Preferences != undefined : ' + (typeof Preferences != 'undefined'));
     //닫고나 면 무조건 다시보지 않기
     Preferences.put('notShowPref', true); 
+  }
+
+  $scope.profileClcik = function(id){
+    // card에서 글쓴이를 클릭하면 해당 유저의 facebook 웹 페이지를 연다
+    window.open("https://www.facebook.com/" + id);
   }
 
 });
