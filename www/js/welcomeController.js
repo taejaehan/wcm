@@ -28,9 +28,11 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
                 // $rootScope.$emit('loginSuccess');
                 // window.state.go('tabs.home');
             }, function(error) {
+                $ionicLoading.hide();
                 alert("Error: " + JSON.stringify(error));
             });
       },  function(error){
+            $ionicLoading.hide();
             alert("Error: " + JSON.stringify(error));
       });
     } else {  //app에서 실행한게 아니면 테스트용도로 넣어줌 
