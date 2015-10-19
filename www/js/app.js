@@ -36,7 +36,7 @@ var PROGRESS_START_TEXT = "위험요소가 등록되었습니다.";
 var PROGRESS_ONGOING_TEXT = "위험요소를 해결 중 입니다.";
 var PROGRESS_COMPLETED_TEXT = "위험요소가 해결 되었습니다.";
 
-var wcm = angular.module('wcm', ['ionic', 'ngCordova', 'ngTimeago', 'ng']);
+var wcm = angular.module('wcm', ['ionic', 'ngCordova', 'ng']);
 
 
 //controller간 데이터를 전달하기 위해 사용한다
