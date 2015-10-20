@@ -20,7 +20,7 @@
         <ion-item ng-repeat="card in allData.cards" class="posts">
           <div class="post-body">
             
-            <div class="profile" ng-click="profileClcik({{ card.userId }})">
+            <div class="profile">
               <img ng-src="{{ card.user[0].userimage }}">
               <p class="username">{{card.user[0].username}}</p>
               <p class="date">{{ card.create_time }}</p>

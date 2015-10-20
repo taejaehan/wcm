@@ -185,7 +185,6 @@ button.more {
 
 .dark-overlay {
   opacity: 0.9;
-  display: none;
 }
 
 /*.dark-item {
@@ -311,3 +310,18 @@ span.slider-pager-page{
 	color: #fff !important;
 }
 
+.info_01{
+	position:absolute;
+	top: 0;
+	right : 2%;
+}
+.info_02{
+	position:absolute;
+	bottom: 50px;
+	right : 23%;;
+}
+.info_03{
+	position:absolute;
+	bottom: 50px;
+	right : 32%;
+}
