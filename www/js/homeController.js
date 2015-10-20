@@ -733,7 +733,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   $scope.profileClcik = function(id){
     // card에서 글쓴이를 클릭하면 해당 유저의 facebook 웹 페이지를 연다
-    window.open("https://www.facebook.com/" + id);
+    window.open("https://www.facebook.com/" + id, '_system', null);
   }
 
 });
