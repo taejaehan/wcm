@@ -47,6 +47,24 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     }
   }
 
+  $scope.$on('$ionicView.beforeEnter', function(){
+    if(typeof Preferences != 'undefined'){
+      console.log('Preferences OK');
+      //다시 보지 않기
+      Preferences.get('notShowPref', function(notShowPref) {
+        if(document.getElementById('welcomeOverlay') != null){
+           //다시 보지 않기가 true라면 
+          if(notShowPref == 'true'){
+            document.getElementById('welcomeOverlay').setAttribute('style','display:none');
+          }else{
+            document.getElementById('welcomeOverlay').setAttribute('style','display:block');
+          }
+        }
+      });
+    }
+  
+  });
+
   $scope.$on('$ionicView.afterEnter', function(){
 
     // 앱에서 열였다면
@@ -732,8 +750,10 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   }
 
   $scope.profileClcik = function(id){
+    console.log('id : ' + id);
     // card에서 글쓴이를 클릭하면 해당 유저의 facebook 웹 페이지를 연다
-    window.open("https://www.facebook.com/" + id, '_system', null);
+    // window.open("fb://profile/1826451354247937", "_system");
+    // window.location = "https://www.facebook.com/" + id;
   }
 
 });

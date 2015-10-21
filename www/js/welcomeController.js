@@ -13,7 +13,7 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
 
       $cordovaOauth.facebook("1020667507964480", ["public_profile"], {redirect_uri: "http://localhost/"}).then(function(result){
             $http.get("https://graph.facebook.com/v2.2/me", {params: {access_token: result.access_token, fields: "name,picture", format: "json" }}).then(function(results) {
-
+                // console.log('results : ' +JSON.stringify(results));
                 $ionicLoading.hide();
                 //url 중에 "&"은 "amp;"로 치환해야 에러가 나지 않는다
                 var formData = {
