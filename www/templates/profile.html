@@ -1,4 +1,9 @@
 <ion-view view-title="Profile">
+	<ion-nav-buttons side="right">
+    <button type="submit" ng-if="adminUser" class="button button-icon" ng-click="sendPushNotification()">
+      <i class="icon ion-cube"></i>
+    </button>
+  </ion-nav-buttons>
   <ion-content>
     <div id="profile_page">
 

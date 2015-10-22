@@ -47,7 +47,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     }
   }
 
-  $scope.$on('$ionicView.afterEnter', function(){
+  $scope.$on('$ionicView.beforeEnter', function(){
 
     // 앱에서 열였다면
     if(mIsWebView){
@@ -555,6 +555,27 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   // warnings map show
   $scope.findWarning = function() {
     $state.go("tabs.map");
+    // var formData = { 
+    //       device_uuid: "47061fcd268ae89a",
+    //       device_token: "APA91bE_M-ByYSbnr0-T-N_ik0JqwsDIOIW0nrYqAM2EnnjACmy9DeKFUdJid0m-RzZ6JN5F_2OkUIdEzM6Rbch8uDwE5tEc7Y_aWQVGVrWnDDY5Z2e-8eLJ1FU0jXOKmYOXw5j0Cue7"
+    //     };
+    // var postData = 'deviceData='+JSON.stringify(formData);
+
+    // var request = $http({
+    //     method: "post",
+    //     url: mServerAPI + "/device",
+    //     crossDomain : true,
+    //     data: postData,
+    //     headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+    //     cache: false
+    // });
+    // request.error(function(error){
+    //   console.log('************3.Saving data FAIL at WCM database************');
+    //   console.log('error : ' + JSON.stringify(error));
+    // })
+    // request.success(function(data) {
+    //   console.log('************3.Saving data SUCCESS at WCM database************');
+    // });
   }
 
   // 각 card의 location map show

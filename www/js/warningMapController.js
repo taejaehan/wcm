@@ -183,7 +183,7 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
         $ionicLoading.show({
             template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!'
         });
-         
+        
         var posOptions = {
             enableHighAccuracy: true,
             timeout: 4000,
@@ -211,6 +211,10 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
              });
             console.log('CURRENT LOCATION ERROR :  ' + err);
         });
+
+        $timeout(function() {
+          $ionicLoading.hide();
+        }, 1000);
     }
 
     /*

@@ -1,4 +1,11 @@
 {
   "name": "wmc",
-  "app_id": "4c6751b1"
+  "app_id": "e02f6eed",
+  "browsers": [
+    {
+      "platform": "android",
+      "browser": "crosswalk",
+      "version": "12.41.296.5"
+    }
+  ]
 }
