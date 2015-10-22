@@ -1,6 +1,6 @@
 <ion-view view-title="{{uploadTitle}}">
   <ion-nav-buttons side="left">
-    <button type="submit" class="button button-icon" ng-click="cancelCard()" ng-if="!cardId">
+    <button type="submit" class="button button-icon" ng-click="cancelCard()">
         취소
     </button>
   </ion-nav-buttons>
@@ -17,8 +17,6 @@
     <div class="form-group" id="wrtie_page">
       <label class="item item-input"  
          ng-class="{ 'has-errors' : cardForm.title.$invalid , 'no-errors' : cardForm.title.$valid }">
-
-      <!-- <input id="card_title" type="text" name="title" ng-model="cardData.title" ng-value="cardTitle" required> -->
 
       <input id="card_title" type="text" name="title" placeholder="제목" ng-model="cardData.title" required="required"/>
 

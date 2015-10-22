@@ -48,6 +48,27 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   }
 
   $scope.$on('$ionicView.beforeEnter', function(){
+<<<<<<< HEAD
+=======
+    if(typeof Preferences != 'undefined'){
+      console.log('Preferences OK');
+      //다시 보지 않기
+      Preferences.get('notShowPref', function(notShowPref) {
+        if(document.getElementById('welcomeOverlay') != null){
+           //다시 보지 않기가 true라면 
+          if(notShowPref == 'true'){
+            document.getElementById('welcomeOverlay').setAttribute('style','display:none');
+          }else{
+            document.getElementById('welcomeOverlay').setAttribute('style','display:block');
+          }
+        }
+      });
+    }
+  
+  });
+
+  $scope.$on('$ionicView.afterEnter', function(){
+>>>>>>> 39d96e70c95b149646ed5af63fa5efd6de60a031
 
     // 앱에서 열였다면
     if(mIsWebView){

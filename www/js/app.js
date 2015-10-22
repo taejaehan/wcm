@@ -346,9 +346,9 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
       }
     })
     .state('tabs.edit', {
-      url: "/home/edit/:id/",
+      url: "/write/edit/:id/",
       views: {
-        'home-tab': {
+        'write-tab': {
           templateUrl: "templates/write.html",
           controller : "WriteController"
         }

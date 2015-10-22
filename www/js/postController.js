@@ -496,11 +496,6 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
     $state.go('tabs.location_h', { 'latlng': latlng, 'progress' : progress});
   }
 
-
-  $scope.test = function() {
-    $state.go('tabs.home');
-  }
-
 });
 
 
