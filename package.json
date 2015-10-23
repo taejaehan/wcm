@@ -25,6 +25,7 @@
     "phonegap-plugin-push"
   ],
   "cordovaPlatforms": [
-    "android"
+    "android",
+    "ios"
   ]
 }
