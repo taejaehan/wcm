@@ -29,7 +29,6 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
         $scope.card.img_path = mServerUpload + data.cards[0].img_path;
       }
       // $scope.card.img_path = mServerUpload + $scope.card.img_path;
-
       $scope.like_count = data.cards[0].like_count;
       $scope.createTime = moment(data.cards[0].create_time, "YYYY-MM-DD h:mm:ss").fromNow();
 
@@ -37,14 +36,14 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       progress = data.cards[0].status;
 
 
-      if (data.cards[0].status === "33") {
-        $scope.card.statusDescription = "프로젝트가 시작되었습니다.";
+      if (data.cards[0].status === PROGRESS_START) {
+        $scope.card.statusDescription = PROGRESS_START_TEXT;
         $scope.statusIcon = "ion-alert-circled";
-      } else if (data.cards[0].status === "66") {
-        $scope.card.statusDescription = "프로젝트를 진행합니다.";
+      } else if (data.cards[0].status ===PROGRESS_ONGOING) {
+        $scope.card.statusDescription = PROGRESS_ONGOING_TEXT;
         $scope.statusIcon = "ion-gear-b";
-      } else {
-        $scope.card.statusDescription = "프로젝트가 완료되었습니다.";
+      } else if (data.cards[0].status ===PROGRESS_COMPLETED) {
+        $scope.card.statusDescription = PROGRESS_COMPLETED_TEXT;
         $scope.statusIcon = "ion-happy-outline";
       }
 
@@ -355,7 +354,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
     var confirmPopup = $ionicPopup.confirm({
       title: 'We Change Makers',
-      template: 'Are you sure you want to delete?'
+      template: '댓글을 정말로 삭제하겠습니까?'
     });
 
     confirmPopup.then(function(res) {

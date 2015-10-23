@@ -34,9 +34,9 @@ var PROGRESS_REGISTER = "0";
 var PROGRESS_START = "33";
 var PROGRESS_ONGOING = "66";
 var PROGRESS_COMPLETED = "100";
-var PROGRESS_START_TEXT = "위험요소가 등록되었습니다.";
-var PROGRESS_ONGOING_TEXT = "위험요소를 해결 중 입니다.";
-var PROGRESS_COMPLETED_TEXT = "위험요소가 해결 되었습니다.";
+var PROGRESS_START_TEXT = "위험요소가 등록되었습니다";
+var PROGRESS_ONGOING_TEXT = "위험요소가 해결되고 있습니다";
+var PROGRESS_COMPLETED_TEXT = "위험요소가 해결되었습니다";
 
 var wcm = angular.module('wcm', ['ionic','ngCordova', 'ng'])
 
@@ -70,7 +70,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading) {
     console.log('$ionicPlatform ready');
 
     $ionicLoading.show({
-      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Initializing..'
+      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>초기화..'
     });
 
     window.localStorage.clear();
@@ -104,6 +104,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading) {
         });
 
         request.success(function(data) {
+          $ionicLoading.hide();
           console.log('************5.Login Success************');
           var user = {
             username: data.users[0].username,
@@ -166,7 +167,13 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading) {
               //ionic플랫폼에 저장되는 user id로 device uuid를 사용한다 by tjhna 151022
               var deviceUuid = ionic.Platform.device().uuid;
 
-              Ionic.io();
+              if(Ionic != null){
+                console.log('Ionic OK');
+                Ionic.io();
+              }else{
+                console.log('Ionic NO');
+                $ionicLoading.hide();
+              }
 
               /*************************push************************/
               /********아래쪽 user를 load한 후 실행한다**********/
@@ -299,6 +306,8 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading) {
       } // tryRegisterAndLogin function 끝
 
       tryRegisterAndLogin();
+    }else{  
+      $ionicLoading.hide();
     } // if(mIsWebView) 끝
   }); //$ionicPlatform.ready 끝
 })//wcm.run 끝

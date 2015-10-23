@@ -36,7 +36,7 @@
 
       <div class="sns-link">
         <a ng-click="toggleLike(watch = !watch)" ng-class="{'active' : card.watch, 'non-active' : !card.watch}" id="like">
-          <i class="ion-ios-eye"></i> Watch
+          <i class="ion-ios-eye"></i> 위험해요
         </a>
         <a><i class="ion-chatbubble-working"></i> 댓글달기</a> 
         <a href="https://www.facebook.com/dialog/share?app_id=1020667507964480&display=popup&href=www.google.com&redirect_uri=http://localhost:8100" target="_blank"><i class="ion-forward"></i> 공유하기</a>
@@ -61,7 +61,7 @@
 
         <form class="comment-form" ng-submit="addComment()">
           <input type="text" name="comment" id="comment" ng-model="comment" placeholder="댓글을 입력하세요...">
-          <button class="btn btn-default">done</button>
+          <button class="btn btn-default">올리기</button>
         </form>
       </div>
 

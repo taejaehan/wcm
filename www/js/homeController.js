@@ -82,7 +82,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
     /*cardList를 모두 가져와 localStorage['cardList'] 저장(WarningMap에 사용)*/
     $ionicLoading.show({
-      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Loading..'
+      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
     });
     var request = $http({
         method: "get",
@@ -230,7 +230,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       /* isOffline */
       $ionicPopup.alert({
         title: 'We Change Makers',
-        template: 'Check your network connection.'
+        template: '인터넷에 연결 상태를 확인하세요'
       });
 
       //미리 가져온 cardlist 사용
@@ -259,7 +259,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         if(init == 'init'){
 
           $ionicLoading.show({
-            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Loading'
+            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
           });
           $scope.page = 0;
           $rootScope.allData = { 
@@ -368,7 +368,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         /* isOffline */
         $ionicPopup.alert({
           title: 'We Change Makers',
-          template: 'Check your network connection.'
+          template: '인터넷에 연결 상태를 확인하세요'
         });
 
         //미리 가져온 cardlist 사용

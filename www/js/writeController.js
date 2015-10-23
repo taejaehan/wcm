@@ -97,12 +97,12 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     // Show the action sheet
    var hideSheet = $ionicActionSheet.show({
      buttons: [
-       { text: 'Camera' },
-       { text: 'Album' }
+       { text: '새로 찍기' },
+       { text: '앨범에서 선택' }
      ],
      // destructiveText: 'Delete',
-     titleText: 'Get Picture',
-     cancelText: 'Cancel',
+     titleText: '사진 첨부하기',
+     cancelText: '취소',
      cancel: function() {
         // add cancel code..
       },
@@ -171,7 +171,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     if(document.getElementById("card_location") != null && document.getElementById("card_location").value != '') return;
 
     $ionicLoading.show({
-        template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!',
+        template: '<ion-spinner icon="bubbles"></ion-spinner><br/>위치를 찾고 있습니다',
         duration : 5000,
     });
     
@@ -276,8 +276,8 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
 
     if(form.$invalid){
       $ionicPopup.alert({
-         title: 'Invalid',
-         template: 'Fill in all the fields'
+         title: '잠시만요!',
+         template: '모든 내용을 입력해주세요'
        });
       return;
     }
