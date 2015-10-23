@@ -4,6 +4,7 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
 
   $scope.facebookLogin = function(){
 
+    console.log('facebookLogin');
     //webview 앱에서 실행했을 때만 facebook login
     if(mIsWebView){
 
@@ -14,7 +15,6 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
       $cordovaOauth.facebook("1020667507964480", ["public_profile"], {redirect_uri: "http://localhost/"}).then(function(result){
             $http.get("https://graph.facebook.com/v2.2/me", {params: {access_token: result.access_token, fields: "name,picture", format: "json" }}).then(function(results) {
                 // console.log('results : ' +JSON.stringify(results));
-                $ionicLoading.hide();
                 //url 중에 "&"은 "amp;"로 치환해야 에러가 나지 않는다
                 var formData = {
                                  user_id: results.data.id,
@@ -60,6 +60,7 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
   */
   $scope.userLogin = function(formData)
   {
+    console.log('userLogin formData : ' + formData.username);
     var userData = 'userData='+JSON.stringify(formData);
     
     var request = $http({
@@ -73,6 +74,7 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
 
     request.success(function(data) {
 
+      $ionicLoading.hide();
       /* user data 넣어주기 시작 */
       var user = {
                     username: formData.username,
@@ -133,6 +135,7 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
 
     })
     .error(function(error){
+      $ionicLoading.hide();
       alert('ERROR : '+JSON.stringify(error));
     });
 

@@ -303,42 +303,44 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 
 			if(message == null ) return;
 
-			var confirmPopup = $ionicPopup.confirm({
-			title: 'Push 메세지를 보냅니다',
-			template: message
-			});
-			confirmPopup.then(function(res) {
-				if(res) {
-					console.log('START SEND PUSH MESSAGE');
-					// Define relevant info
-					var privateKey = '624387cf842c14a8ceb263e8119cdb747e8104fa698492e6';
-					var tokens = [];
-					var appId = 'e02f6eed';
+			// Define relevant info
+			var tokens = [];
+			var receiverNum = 0;
 
-			  		var request = $http({
-			         method: "get",
-			         url: mServerAPI + "/devices",
-			         crossDomain : true,
-			         headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-			         cache: false
-			     });
+			//DB에 저장된 PUSH를 받기로 한 device의 TOKEN을 가져옵니다
+	  		var request = $http({
+	         method: "get",
+	         url: mServerAPI + "/devices",
+	         crossDomain : true,
+	         headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+	         cache: false
+	     });
+	     request.success(function(data) {
+	       $ionicLoading.hide();
+	       console.log('Push Device Number : ' + data.devices.length);
+	       receiverNum = data.devices.length;
+	       for (var i = 0; i < data.devices.length; i++) {
+	       	tokens.push(data.devices[i].device_token);
+	       }
 
-			  		//DB에 저장된 TOKEN을 가져오면 push 메세지를 보낸다
-			     request.success(function(data) {
-			       $ionicLoading.hide();
-			       console.log('Push Device Number : ' + data.devices.length);
-			       for (var i = 0; i < data.devices.length; i++) {
-			       	tokens.push(data.devices[i].device_token);
-			       }
-			       // Encode your key
-						var auth = btoa(privateKey + ':');
+	       //psuh 최종 확인 컨펌
+				var confirmPopup = $ionicPopup.confirm({
+				title: receiverNum + ' 명에게 Push 메세지를 보냅니다',
+				template: message
+				});
+				confirmPopup.then(function(res) {
+					if(res) {
+						console.log('START SEND PUSH MESSAGE');
+				     /** PUSH 메세지를 발송 **/
+				     // Encode your key
+						var auth = btoa(mPrivateKey + ':');
 						// Build the request object
 						var req = {
 						  method: 'POST',
 						  url: 'https://push.ionic.io/api/v1/push',
 						  headers: {
 						    'Content-Type': 'application/json',
-						    'X-Ionic-Application-Id': appId,
+						    'X-Ionic-Application-Id': mAppId,
 						    'Authorization': 'basic ' + auth
 						  },
 						  data: {
@@ -356,16 +358,17 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 						  // Handle error 
 						  console.log("Ionic Push: Push error...");
 						});
-			     });
+					} else {
+						console.log('CANCEL SEND PUSH MESSAGE');
+					}
+				});
+				
+	     });
+	     request.error(function(error){
+	       $ionicLoading.hide();
+	       console.log('error : ' + JSON.stringify(error))
+	     });
 
-			     request.error(function(error){
-			       $ionicLoading.hide();
-			       console.log('error : ' + JSON.stringify(error))
-			     });
-				} else {
-					console.log('CANCEL SEND PUSH MESSAGE');
-				}
-			});
 		});
 	}
   
