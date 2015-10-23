@@ -11,6 +11,10 @@ if (mLocalServer) {
   mServerAPI = mServerUrl + '/index.php';
 }
 
+//push 보낼 때 사용하는 app정보
+var mAppId = "e02f6eed";
+var mPrivateKey = 'dd9f336bb59a9b792d398d719e464b264020bb07c61f8b7b';
+
 //연결된 device에 대한 정보 (boolean)
 var mIsWebView, mIsIOS,  mIsAndroid;
 
@@ -34,7 +38,7 @@ var PROGRESS_START_TEXT = "위험요소가 등록되었습니다.";
 var PROGRESS_ONGOING_TEXT = "위험요소를 해결 중 입니다.";
 var PROGRESS_COMPLETED_TEXT = "위험요소가 해결 되었습니다.";
 
-var wcm = angular.module('wcm', ['ionic', 'ngCordova', 'ng'])
+var wcm = angular.module('wcm', ['ionic','ngCordova', 'ng'])
 
 //controller간 데이터를 전달하기 위해 사용한다
 wcm.factory('Scopes', function($rootScope) {
@@ -63,73 +67,121 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading) {
   console.log('wcm RUN');
   $ionicPlatform.ready(function() {
 
+    console.log('$ionicPlatform ready');
+
+    $ionicLoading.show({
+      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Initializing..'
+    });
+
+    window.localStorage.clear();
+    // window.localStorage['user'] = null;
+
+    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+    // for form inputs)
+    if(window.cordova && window.cordova.plugins.Keyboard) {
+      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+      //세로 고정 (cordova-plugin-screen-orientation 플러그인 사용)
+      screen.lockOrientation('portrait');
+    }
+    if(window.StatusBar) {
+      StatusBar.styleDefault();
+    }
+
     //$ionicPlatform이 ready되면 연결된 device에 대한 정보를 저장 (boolean)
     mIsWebView = ionic.Platform.isWebView(); 
     mIsIOS = ionic.Platform.isIOS();
     mIsAndroid = ionic.Platform.isAndroid();
 
+    //로그인 한 상태라면 prefresnces에 저장된 user id로 서버에서 유저 정보를 가져와 localStorage에 저장
+    var saveLocalUser = function(loginId) {
+      if(loginId != null){
+        var request = $http({
+           method: "get",
+           url: mServerAPI + "/user/" + loginId,
+           crossDomain : true,
+           headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+           cache: false
+        });
+
+        request.success(function(data) {
+          console.log('************5.Login Success************');
+          var user = {
+            username: data.users[0].username,
+            userid: data.users[0].user_id,
+            userimage: data.users[0].userimage.split("amp;").join("&"),
+            isAuthenticated: true,
+            likes : [],
+            changes : [],
+          }; 
+
+          //user watch list저장
+          if (data.users[0].likes.length > 0) {
+            for(var i = 0; i < data.users[0].likes.length; i++ ) {
+              user.likes.push(data.users[0].likes[i].post_id); 
+            }
+          }
+
+          //user changer list저장
+          if (data.users[0].changes.length > 0) {
+            for(var i = 0; i < data.users[0].changes.length; i++ ) {
+              user.changes.push(data.users[0].changes[i].post_id); 
+            }
+          }
+      
+          window.localStorage['user'] = JSON.stringify(user);
+        });
+      }
+    };
+
     if(mIsWebView){
-      /*
-      * IONIC PUSH를 위한 SETTING by tjhan 151022
+      /******************************************************************************
+      * IONIC PUSH를 위한 SETTING by tjhan 151023
       * prefrences에 deviceUuid가 있다면 해당 device는 ionic user와 wcm db에 
       * (device uuid와 해당 device의 token이) 등록되어 있고 push가 가능한 상태이다
       * prefrences에 없다면 새롭게 user와 device를 등록하는데
       * ionic user에 해당 device uuid가 이미 있다면(깔았다가 지웠다면) 
       * 새롭게 등록하지 않고 해당 ionic user와 wcm db의 token을 수정한다
-      */
+      ******************************************************************************/
       var tryNum = 0;
-
-      var tryDeviceRegister = function(){
+      var tryRegisterAndLogin = function(){
         
-        console.log('tryDeviceRegister Preferences OK');
+        console.log('tryRegisterAndLogin Preferences OK');
 
         if(typeof Preferences != 'undefined'){
-          //prefrences에 deviceUuid가 없을 경우에만 실행
+
+          //prefrences에 deviceUuid 체크
           Preferences.get('deviceUuid', function(deviceUuid) {
             console.log('success : ' +  deviceUuid);
             console.log('deviceUuid == "" : ' +  (deviceUuid == ''));
             console.log('deviceUuid == null : ' +  (deviceUuid == null));
 
+            //deviceUuid에 값이 있다면 push 받을 수 있는 device
             if(deviceUuid == '' || deviceUuid == null){
               console.log('************0.Start device register************');
-              /*********************************
-              * user추가 및 push 등록 시작
-              *********************************/
+              /*****************************************************************************
+              *********************** user추가 및 push 등록 시작    **********************
+              *****************************************************************************/
               console.log('ionic.Platform.device() : ' + ionic.Platform.device());
               console.log('ionic.Platform.device().uuid : ' + ionic.Platform.device().uuid);
               //ionic플랫폼에 저장되는 user id로 device uuid를 사용한다 by tjhna 151022
               var deviceUuid = ionic.Platform.device().uuid;
 
               Ionic.io();
-              /*************user************/
-              //현재 device uuid로 등록된 user가 있다면 load하고 없다면 새로 추가한다
-              var user = Ionic.User.current();
-              Ionic.User.load(deviceUuid).then(function(success) {
-                //이미 유저가 있으면(해당 디바이스의 uuid가 등록되어 있다면) 해당 유저 load
-                console.log('************1.loadedUser user is registered Already************');
-                Ionic.User.current(success);
-                user = Ionic.User.current();
-              }, function(error) {
-                 //유저가 없다면(등록되어 있지 않다면) 
-                console.log('************1.loadedUser No registered User************ : ' + JSON.stringify(error));
 
-                if (!user.id) {
-                  // user.id = Ionic.User.anonymousId();
-                  console.log('deviceUuid : ' + deviceUuid);
-                  user.id = deviceUuid;
-                }
-                //새로운 user를 등록한다
-                user.save().then(function(success) {
-                  console.log('************1.New user was saved************');
-                }, function(error) {
-                  console.log('************1.New user was NOT saved************');
-                });
-              });
-
-              /*************push************/
+              /*************************push************************/
+              /********아래쪽 user를 load한 후 실행한다**********/
               var push = new Ionic.Push({
                 //debug false이면 폰에서만 동작
                 "debug": false,
+                "pluginConfig": {
+                  "ios": {
+                    "badge": true,
+                    "sound": true
+                   },
+                   "android": {
+                     "iconColor": "#343434"
+                   }
+                },
                 //push가 오면
                 "onNotification": function(notification) {
                   var payload = notification.payload;
@@ -143,61 +195,99 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading) {
                   push.addTokenToUser(user);
                   user.save().then(function(response) {
                     console.log('************2.user addTokenToUser was saved************');
+
+                    /*wcm DB에 저장*/
+                    var formData = { 
+                          device_uuid: deviceUuid,
+                          device_token: data.token
+                        };
+                    var postData = 'deviceData='+JSON.stringify(formData);
+                    var request = $http({
+                        method: "post",
+                        url: mServerAPI + "/device",
+                        crossDomain : true,
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+                        data: postData,
+                        cache: false
+                    });
+                    request.error(function(error){
+                      $ionicLoading.hide();
+                      console.log('************3.Saving data FAIL at WCM database************');
+                      console.log('error : ' + JSON.stringify(error));
+                    })
+                    request.success(function(data) {
+                      console.log('************3.Saving data SUCCESS at WCM database************');
+                      //로그인 아이디 Prefrences에 저장
+                      if(typeof Preferences != 'undefined'){
+                        Preferences.put('deviceUuid', deviceUuid);
+                        console.log('************4.Device uuid is saved at Preferences************');
+                      }
+                      $ionicLoading.hide();
+                    });
                   }, function(error) {
+                    $ionicLoading.hide();
                     console.log('************2.user addTokenToUser was NOT saved************');
                   });
-
-                  var formData = { 
-                        device_uuid: deviceUuid,
-                        device_token: data.token
-                      };
-                  var postData = 'deviceData='+JSON.stringify(formData);
-
-                  var request = $http({
-                      method: "post",
-                      url: mServerAPI + "/device",
-                      crossDomain : true,
-                      headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-                      data: postData,
-                      cache: false
-                  });
-                  request.error(function(error){
-                    console.log('************3.Saving data FAIL at WCM database************');
-                    console.log('error : ' + JSON.stringify(error));
-                  })
-                  request.success(function(data) {
-                    console.log('************3.Saving data SUCCESS at WCM database************');
-                  });
-
-                  if(typeof Preferences != 'undefined'){
-                    //로그인 아이디 저장
-                    Preferences.put('deviceUuid', deviceUuid);
-                    console.log('************4.Device uuid is saved at Preferences************');
-                  }
-
-                },
-                "pluginConfig": {
-                  "ios": {
-                    "badge": true,
-                    "sound": true
-                   },
-                   "android": {
-                     "iconColor": "#343434"
-                   }
                 }
               });
-              push.register();
-              /*********************************
-              * user추가 및 push 등록 끝
-              *********************************/
+
+              /*************user************/
+              //현재 device uuid로 등록된 user가 있다면 load하고 없다면 새로 추가한다
+              var user = Ionic.User.current();
+              Ionic.User.load(deviceUuid).then(function(success) {
+                //이미 유저가 있으면(해당 디바이스의 uuid가 등록되어 있다면) 해당 유저 load
+                console.log('************1.loadedUser user is registered Already************');
+                Ionic.User.current(success);
+                user = Ionic.User.current();
+
+                push.register();
+              }, function(error) {
+                 //유저가 없다면(등록되어 있지 않다면) 
+                console.log('************1.loadedUser No registered User************ : ' + JSON.stringify(error));
+
+                if (!user.id) {
+                  // user.id = Ionic.User.anonymousId();
+                  console.log('deviceUuid : ' + deviceUuid);
+                  user.id = deviceUuid;
+                }
+                //새로운 user를 등록한다
+                user.save().then(function(success) {
+                  console.log('************1.New user was saved************');
+                  push.register();
+                }, function(error) {
+                  $ionicLoading.hide();
+                  console.log('************1.New user was NOT saved************');
+                });
+              });
+              /*****************************************************************************
+              *********************** user추가 및 push 등록 끝  *************************
+              *****************************************************************************/
+
             }else{
-               console.log('************0.device uuid : ' + deviceUuid + ' is registered************');
+              $ionicLoading.hide();
+              console.log('************0.device uuid : ' + deviceUuid + ' is registered************');
             }
           }, function(error){
+            $ionicLoading.hide();
             console.log('get deviceUuid error: : ' +  error);
           }); //Preferences.get('deviceUuid', function(deviceUuid) 끝
+
+
+          /*
+          *로그인 한 상태라면 prefresnces에 저장된 user id로 서버에서 유저 정보를 가져와 localStorage에 저장
+          */
+          Preferences.get('loginId', function(loginId) {
+            console.log('tryRegisterAndLogin loginId : ' + loginId);
+            if(loginId != null && loginId != ''){
+              saveLocalUser(loginId);
+            }
+          }, function(error){
+            console.log('error: : ' +  error);
+          });
+
+
         }else{
-          console.log('Preferences NO : ' + tryNum);
+          console.log('tryRegisterAndLogin Preferences NO : ' + tryNum);
           //Preferences를 찾아서 3번 시도한다
           if(tryNum < 4 ){
             $timeout( function() {
@@ -206,48 +296,12 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading) {
             }, 1000);
           }
         } // if(typeof Preferences != 'undefined') 끝
-      } // tryDeviceRegister function 끝
+      } // tryRegisterAndLogin function 끝
 
-      tryDeviceRegister();
+      tryRegisterAndLogin();
     } // if(mIsWebView) 끝
-
-    window.localStorage.clear();
-    // window.localStorage['user'] = null;
-
-    $ionicLoading.show({
-      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Loading..'
-    });
-
-    var request = $http({
-        method: "get",
-        url: mServerAPI + "/cards",
-        crossDomain : true,
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-        cache: false
-    });
-
-    request.success(function(data) {
-      $ionicLoading.hide();
-      window.localStorage['cardList'] = JSON.stringify(data);
-    });
-    request.error(function(error){
-      $ionicLoading.hide();
-      console.log('error : ' + JSON.stringify(error))
-    });
-
-    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-    // for form inputs)
-    if(window.cordova && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-      //세로 고정 (cordova-plugin-screen-orientation 플러그인 사용)
-      screen.lockOrientation('portrait');
-    }
-    if(window.StatusBar) {
-      StatusBar.styleDefault();
-    }
-
-  });
-})
+  }); //$ionicPlatform.ready 끝
+})//wcm.run 끝
 
 // to solve ios9 <Error: $rootScope:infdig Infinite $digest Loop> problem
 wcm.config(['$provide', function($provide) {

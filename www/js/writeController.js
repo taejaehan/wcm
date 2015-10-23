@@ -171,7 +171,8 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     if(document.getElementById("card_location") != null && document.getElementById("card_location").value != '') return;
 
     $ionicLoading.show({
-        template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!'
+        template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!',
+        duration : 5000,
     });
     
     var posOptions = {

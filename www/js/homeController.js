@@ -1,4 +1,4 @@
-wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth,$ionicPlatform, $ionicSlideBoxDelegate, $cordovaPreferences, $ionicLoading) {
+wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth, $ionicSlideBoxDelegate, $cordovaPreferences, $ionicLoading) {
 
   navigator.geolocation.watchPosition(showPosition);
 
@@ -6,55 +6,32 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
 
   $scope.noMoreItemsAvailable = false;
+  //sort type
+  $scope.sortingTypeList = [
+    { text: "최신순", value: "registration" },
+    { text: "거리순", value: "location" },
+    { text: "위험순", value: "warning" }
+  ];
+  //sort type default value
+  $scope.data = {
+    sortingType: 'registration'
+  };
+  //처음 view에서 다시보지 않기의 초기값
+  $scope.notShowChecked = { checked: false };
 
-  //로그인 한 상태라면 prefresnces에 저장된 user id로 서버에서 유저 정보를 가져와 localStorage에 저장
-  $scope.saveLocalUser = function(loginId) {
-    if(loginId != null){
-      var request = $http({
-         method: "get",
-         url: mServerAPI + "/user/" + loginId,
-         crossDomain : true,
-         headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-         cache: false
-      });
-
-      request.success(function(data) {
-        var user = {
-          username: data.users[0].username,
-          userid: data.users[0].user_id,
-          userimage: data.users[0].userimage.split("amp;").join("&"),
-          isAuthenticated: true,
-          likes : [],
-          changes : [],
-        }; 
-
-        //user watch list저장
-        if (data.users[0].likes.length > 0) {
-          for(var i = 0; i < data.users[0].likes.length; i++ ) {
-            user.likes.push(data.users[0].likes[i].post_id); 
-          }
-        }
-
-        //user changer list저장
-        if (data.users[0].changes.length > 0) {
-          for(var i = 0; i < data.users[0].changes.length; i++ ) {
-            user.changes.push(data.users[0].changes[i].post_id); 
-          }
-        }
-    
-        window.localStorage['user'] = JSON.stringify(user);
-      });
-    }
-  }
+  $scope.downloaded = false;
+  $scope.page = 0;
+  $rootScope.allData = { 
+                          cards: []
+                       };
 
   $scope.$on('$ionicView.beforeEnter', function(){
 
     // 앱에서 열였다면
     if(mIsWebView){
-
         var tryNum = 0;
         //com.portnou.cordova.plugin.preferences plugin에서 앱의 prefrences에 저장
-        var tryLogin = function(){
+        var tryNotShowOvelray = function(){
           console.log('typeof Preferences != undefined : ' + (typeof Preferences != 'undefined'));
           if(typeof Preferences != 'undefined'){
             console.log('Preferences OK');
@@ -71,120 +48,85 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             }, function(error){
               console.log('error: : ' +  error);
             });
-
-            //로그인 한 상태라면 prefresnces에 저장된 user id로 서버에서 유저 정보를 가져와 localStorage에 저장
-            Preferences.get('loginId', function(loginId) {
-              console.log('loginId : ' + loginId);
-              if(loginId != null && loginId != ''){
-                $scope.saveLocalUser(loginId);
-              }
-            }, function(error){
-              console.log('error: : ' +  error);
-            });
           }else{
             console.log('Preferences NO : ' + tryNum);
             //Preferences를 찾아서 3번 시도한다
             if(tryNum < 4 ){
               $timeout( function() {
-                tryLogin();
+                tryNotShowOvelray();
                 tryNum++;
               }, 1000);
             }
           }
         }
-        
-        tryLogin();
 
-    } else {
+        tryNotShowOvelray();
+
+    } else {    //web에서는 overlay를 보여주지 않는다 
       if(document.getElementById('welcomeOverlay') != null){
         document.getElementById('welcomeOverlay').setAttribute('style','display:none');
       }
     }
 
-  });
+    /*인터넷 연결 상태 listeners*/
+    // listen for Online event
+    $rootScope.$on('$cordovaNetwork:online', function(event, networkState){
+      var onlineState = networkState;
+      $scope.closeSubHeader();
+    })
+    // listen for Offline event
+    $rootScope.$on('$cordovaNetwork:offline', function(event, networkState){
+      var offlineState = networkState;
+      $scope.showSubHeader();
+    })
 
-  //sort type
-  $scope.sortingTypeList = [
-    { text: "최신순", value: "registration" },
-    { text: "거리순", value: "location" },
-    { text: "위험순", value: "warning" }
-  ];
+    /*cardList를 모두 가져와 localStorage['cardList'] 저장(WarningMap에 사용)*/
+    $ionicLoading.show({
+      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Loading..'
+    });
+    var request = $http({
+        method: "get",
+        url: mServerAPI + "/cards",
+        crossDomain : true,
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+        cache: false
+    });
 
+    request.success(function(data) {
+      $ionicLoading.hide();
+      window.localStorage['cardList'] = JSON.stringify(data);
+    });
+    request.error(function(error){
+      $ionicLoading.hide();
+      console.log('error : ' + JSON.stringify(error))
+    });
 
-  //sort type default value
-  $scope.data = {
-    sortingType: 'registration'
-  };
+    // card이미지를  file system에 저장하는 부분 넣으면 너무 느려서 임시로 주석처리 by tjhan 20151002
+    /*app file system안에 폴더만들고 이미지 저장*/
+    /*console.log('cordova.file : ' + cordova.file);
+    console.log('cordova.file.dataDirectory : ' + cordova.file.dataDirectory);
+    //cordova.file.dataDirectory안에 cardImage 디렉토리 (없다면 만들고) 안에 이미지 다운로드 시작
+    $cordovaFile.checkDir(cordova.file.dataDirectory, "cardImage")
+    .then(function (success) {
+      console.log('checkDir success : ' + success));
+      $scope.fileDownload();
+      // success
+    }, function (error) {
+      // error
+      console.log('checkDir error : ' + JSON.stringify(error));
+      $cordovaFile.createDir(cordova.file.dataDirectory, "cardImage", true)
+      .then(function (success) {
+        console.log('CREATE success : ' + JSON.stringify(success));
+        $scope.fileDownload();
+        // success
+      }, function (error) {
+        console.log('CREATE error : ' + JSON.stringify(error));
+        // error
+      });
+    });*/
 
-  //처음 view에서 다시보지 않기의 초기값
-  $scope.notShowChecked = { checked: false };
-
-  $scope.downloaded = false;
-  $scope.page = 0;
-  $rootScope.allData = { 
-                          cards: []
-                       };
-
-  /*
-  * deviceready > app file system안에 폴더만들고 이미지 저장, 인터넷 연결 listener
-  */
-  $ionicPlatform.ready(function() {
-    console.log('$ionicPlatform ready');
-    console.log('$ionicPlatform mIsWebView : ' + mIsWebView);
-    //앱에서 켰다면 
-    if(mIsWebView){
-
-      // card이미지를  file system에 저장하는 부분 임시로 주석처리 by tjhan 20151002
-      // console.log('cordova.file : ' + cordova.file);
-      // console.log('cordova.file.dataDirectory : ' + cordova.file.dataDirectory);
-
-      // //cordova.file.dataDirectory안에 cardImage 디렉토리 (없다면 만들고) 안에 이미지 다운로드 시작
-      // $cordovaFile.checkDir(cordova.file.dataDirectory, "cardImage")
-      // .then(function (success) {
-      //   console.log('checkDir success : ' + success));
-      //   $scope.fileDownload();
-      //   // success
-      // }, function (error) {
-      //   // error
-      //   console.log('checkDir error : ' + JSON.stringify(error));
-      //   $cordovaFile.createDir(cordova.file.dataDirectory, "cardImage", true)
-      //   .then(function (success) {
-      //     console.log('CREATE success : ' + JSON.stringify(success));
-      //     $scope.fileDownload();
-      //     // success
-      //   }, function (error) {
-      //     console.log('CREATE error : ' + JSON.stringify(error));
-      //     // error
-      //   });
-      // });
-
-      /*인터넷 연결 상태 listeners*/
-      // listen for Online event
-      $rootScope.$on('$cordovaNetwork:online', function(event, networkState){
-        var onlineState = networkState;
-        $scope.closeSubHeader();
-      })
-      // listen for Offline event
-      $rootScope.$on('$cordovaNetwork:offline', function(event, networkState){
-        var offlineState = networkState;
-        $scope.showSubHeader();
-      })
-    }
   });
   
-  /*
-  * welcome slider previous
-  */
-  $scope.sliderPrev = function() {
-    $ionicSlideBoxDelegate.previous();
-  }
-  /*
-  * welcome slider next
-  */
-  $scope.sliderNext = function() {
-    $ionicSlideBoxDelegate.next();
-  }
-
   /*
   *   서버에서 이미지 가져와서 app file system안에 저장
   */
@@ -218,16 +160,29 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   }
 
   /*
+  * welcome slider previous
+  */
+  $scope.sliderPrev = function() {
+    $ionicSlideBoxDelegate.previous();
+  }
+  /*
+  * welcome slider next
+  */
+  $scope.sliderNext = function() {
+    $ionicSlideBoxDelegate.next();
+  }
+
+  /*
   * 인터넷 연결 끊김 sub header 닫기
   */
   $scope.closeSubHeader = function(){
-   // document.getElementById('sub_header_offline').setAttribute('style','display:none');
+   document.getElementById('sub_header_offline').setAttribute('style','display:none');
   }
   /*
   * 인터넷 연결 끊김 sub header 보이기
   */
   $scope.showSubHeader = function(){
-    //document.getElementById('sub_header_offline').setAttribute('style','display:block');
+    document.getElementById('sub_header_offline').setAttribute('style','display:block');
   }
 
   /*
@@ -555,27 +510,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   // warnings map show
   $scope.findWarning = function() {
     $state.go("tabs.map");
-    // var formData = { 
-    //       device_uuid: "47061fcd268ae89a",
-    //       device_token: "APA91bE_M-ByYSbnr0-T-N_ik0JqwsDIOIW0nrYqAM2EnnjACmy9DeKFUdJid0m-RzZ6JN5F_2OkUIdEzM6Rbch8uDwE5tEc7Y_aWQVGVrWnDDY5Z2e-8eLJ1FU0jXOKmYOXw5j0Cue7"
-    //     };
-    // var postData = 'deviceData='+JSON.stringify(formData);
-
-    // var request = $http({
-    //     method: "post",
-    //     url: mServerAPI + "/device",
-    //     crossDomain : true,
-    //     data: postData,
-    //     headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-    //     cache: false
-    // });
-    // request.error(function(error){
-    //   console.log('************3.Saving data FAIL at WCM database************');
-    //   console.log('error : ' + JSON.stringify(error));
-    // })
-    // request.success(function(data) {
-    //   console.log('************3.Saving data SUCCESS at WCM database************');
-    // });
   }
 
   // 각 card의 location map show

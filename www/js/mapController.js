@@ -173,7 +173,8 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
     */
     $scope.centerOnMe = function() {
         $ionicLoading.show({
-            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!'
+            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!',
+            duration : 5000
         });
          
         var posOptions = {
