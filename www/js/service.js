@@ -55,8 +55,8 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window) {
 
     } else {
       $ionicPopup.alert({
-        title: 'Login failed',
-        template: 'Please check your credentials.'
+        title: '로그인 실패',
+        template: '인터넷에 연결 상태를 확인하세요'
       });
     }
   };
