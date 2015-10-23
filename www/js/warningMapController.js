@@ -207,8 +207,8 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
         }, function(err) {
             $ionicLoading.hide();
             $ionicPopup.alert({
-               title: 'wcm',
-               template: 'You can not use the location information'
+              title: 'We Change Makers',
+              template: '위치 정보를 사용할 수 없습니다'
              });
             console.log('CURRENT LOCATION ERROR :  ' + err);
         });

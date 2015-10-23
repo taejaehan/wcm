@@ -1,4 +1,4 @@
-wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth, $ionicSlideBoxDelegate, $cordovaPreferences, $ionicLoading) {
+wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth, $ionicSlideBoxDelegate, $cordovaPreferences, $ionicLoading, $ionicHistory) {
 
   navigator.geolocation.watchPosition(showPosition);
 
@@ -25,8 +25,17 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
                           cards: []
                        };
 
+  $scope.$on('$ionicView.unloaded', function(){
+    $rootScope.isHomeView =false;
+  });
   $scope.$on('$ionicView.beforeEnter', function(){
 
+    $rootScope.isHomeView =true;
+
+    console.log('$ionicHistory forwardView : ' + $ionicHistory.forwardView());
+    console.log('$ionicHistory currentHistoryId : ' + $ionicHistory.currentHistoryId());
+    console.log('$ionicHistory backView() : ' + $ionicHistory.backView());
+    
     // 앱에서 열였다면
     if(mIsWebView){
         var tryNum = 0;

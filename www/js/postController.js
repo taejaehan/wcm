@@ -495,6 +495,30 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
     $state.go('tabs.location_h', { 'latlng': latlng, 'progress' : progress});
   }
 
+  $scope.showDialog = function (card) { 
+                facebookConnectPlugin.showDialog( {
+                  method: "feed" ,
+                  picture: card.img_path,
+                  name: card.title,
+                  message:'First photo post',    
+                  caption: 'via We Change Makers',
+                  description: card.description,
+                  link: 'http://wechangemakers.org/'
+              }, 
+                    function (response) { alert(JSON.stringify(response)) },
+                    function (response) { alert(JSON.stringify(response)) });
+            }
+
+
+    //          {
+    //     method: "feed",
+    //     picture:'https://www.google.co.jp/logos/doodles/2014/doodle-4-google-2014-japan-winner-5109465267306496.2-hp.png',
+    //     name:'Test Post',
+    //     message:'First photo post',    
+    //     caption: 'Testing using phonegap plugin',
+    //     description: 'Posting photo using phonegap facebook plugin'
+    // }
+
 });
 
 

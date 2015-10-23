@@ -20,7 +20,8 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
                                  user_id: results.data.id,
                                  username: results.data.name,
                                  userimage: results.data.picture.data.url.split("&").join("amp;"),
-                                 sns: "fb"
+                                 sns: "fb",
+                                 device_uuid : mDeviceUuid
                                };
 
                 $scope.userLogin(formData);
@@ -44,6 +45,7 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
                          username: "Dev Major",
                          userimage: userImage,
                          sns: "fb",
+                         device_uuid : 'd874c9deb9f6ef80'
                        };
       $scope.userLogin(formData);
     }
@@ -129,6 +131,41 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
           }, function(error){
             console.log('error: : ' +  error);
           });
+
+          if(Ionic != null){
+            console.log('Ionic OK');
+            Ionic.io();
+
+            var user = Ionic.User.current();
+            var saveUser = function(){
+              user.set('name', formData.username);
+              user.set('image', formData.userimage.split("amp;").join("&"));
+              user.save().then(function(success) {
+                console.log("saveUser success: " + JSON.stringify(success));
+              }, function(error) {
+                console.log("saveUser Error: " + JSON.stringify(error));
+              });
+            };
+            //facebook 로그인 후 ionic user를 수정한다
+            Ionic.User.load(mDeviceUuid).then(function(success) {
+              console.log('loadUser success : ' + JSON.stringify(success));
+              Ionic.User.current(success);
+              user = Ionic.User.current();
+              saveUser();
+            }, function(error) {
+              if (!user.id) {
+                console.log('loadUser error : ' + JSON.stringify(error));
+                //ionic플랫폼에 저장되는 user id로 device uuid를 사용한다 by tjhan 151023
+                console.log('deviceUuid : ' + mDeviceUuid);
+                user.id = mDeviceUuid;
+              }
+              saveUser();
+            });
+          }else{
+            console.log('Ionic NO');
+            $ionicLoading.hide();
+          }
+          
       }
 
       $state.go("tabs.home");
