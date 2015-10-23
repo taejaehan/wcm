@@ -67,6 +67,11 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading) {
   console.log('wcm RUN');
   $ionicPlatform.ready(function() {
 
+    if (!window.cordova) {
+        var appId = prompt("Enter FB Application ID", "");
+        facebookConnectPlugin.browserInit('1020667507964480');
+    }
+
     console.log('$ionicPlatform ready');
 
     $ionicLoading.show({
