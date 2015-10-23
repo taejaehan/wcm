@@ -34,7 +34,7 @@ var PROGRESS_START_TEXT = "위험요소가 등록되었습니다.";
 var PROGRESS_ONGOING_TEXT = "위험요소를 해결 중 입니다.";
 var PROGRESS_COMPLETED_TEXT = "위험요소가 해결 되었습니다.";
 
-var wcm = angular.module('wcm', ['ionic','ionic.service.core', 'ngCordova', 'ng', 'ionic.service.push'])
+var wcm = angular.module('wcm', ['ionic', 'ngCordova', 'ng'])
 
 //controller간 데이터를 전달하기 위해 사용한다
 wcm.factory('Scopes', function($rootScope) {
@@ -58,7 +58,7 @@ wcm.filter('reverse', function() {
   };
 });
 
-wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPush) {
+wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading) {
 
   console.log('wcm RUN');
   $ionicPlatform.ready(function() {

@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.ionicframework.wmc477336" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>wmc</name>
+<widget id="com.dmajor.wcm" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>wcm</name>
     <description>
         An Ionic Framework and Cordova project.
     </description>
@@ -68,4 +68,7 @@
         <splash height="480" src="resources\ios\splash\Default~iphone.png" width="320" />
     </platform>
     <icon src="resources\android\icon\drawable-xhdpi-icon.png" />
+    <preference name="xwalkVersion" value="14+" />
+    <preference name="xwalkCommandLine" value="--disable-pull-to-refresh-effect" />
+    <preference name="xwalkMode" value="embedded" />
 </widget>
