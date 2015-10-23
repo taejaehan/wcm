@@ -386,10 +386,10 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 		if($scope.pushNotification.checked) pushStatus = 1;
 		else pushStatus = 0;
 
-		var deviceUuid = ionic.Platform.device().uuid;
+		console.log('pushNotification mDeviceUuid : ' + mDeviceUuid);
 		var request = $http({
 		  method: "post",
-		  url: mServerAPI + "/push/" + deviceUuid + '/' + pushStatus,
+		  url: mServerAPI + "/push/" + mDeviceUuid + '/' + pushStatus,
 		  crossDomain : true,
 		  headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
 		});

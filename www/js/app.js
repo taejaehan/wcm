@@ -16,7 +16,7 @@ var mAppId = "e02f6eed";
 var mPrivateKey = 'dd9f336bb59a9b792d398d719e464b264020bb07c61f8b7b';
 
 //연결된 device에 대한 정보 (boolean)
-var mIsWebView, mIsIOS,  mIsAndroid;
+var mIsWebView, mIsIOS,  mIsAndroid, mDeviceUuid;
 
 //사진이 없을 경우 보여주는 이미지 링크
 var mNoImage = 'img/default.png';
@@ -91,6 +91,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading) {
     mIsWebView = ionic.Platform.isWebView(); 
     mIsIOS = ionic.Platform.isIOS();
     mIsAndroid = ionic.Platform.isAndroid();
+    mDeviceUuid = ionic.Platform.device().uuid;
 
     //로그인 한 상태라면 prefresnces에 저장된 user id로 서버에서 유저 정보를 가져와 localStorage에 저장
     var saveLocalUser = function(loginId) {
@@ -164,9 +165,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading) {
               *****************************************************************************/
               console.log('ionic.Platform.device() : ' + ionic.Platform.device());
               console.log('ionic.Platform.device().uuid : ' + ionic.Platform.device().uuid);
-              //ionic플랫폼에 저장되는 user id로 device uuid를 사용한다 by tjhna 151022
-              var deviceUuid = ionic.Platform.device().uuid;
-
+              
               if(Ionic != null){
                 console.log('Ionic OK');
                 Ionic.io();
@@ -192,7 +191,13 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading) {
                 //push가 오면
                 "onNotification": function(notification) {
                   var payload = notification.payload;
-                  alert('onNotification : ' + notification, payload);
+                  console.log('notification : ' + notification);
+                  console.log('payload : ' + payload);
+                  // alert('onNotification : ' + notification, payload);
+                  $ionicPopup.alert({
+                    title: 'We Change Makers',
+                    template: payload
+                  });
                 },
                 //push가 등록되면 해당 push token을 위에 설정한 user에 넣고 db에도 넣는다
                 "onRegister": function(data) {
@@ -205,7 +210,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading) {
 
                     /*wcm DB에 저장*/
                     var formData = { 
-                          device_uuid: deviceUuid,
+                          device_uuid: mDeviceUuid,
                           device_token: data.token
                         };
                     var postData = 'deviceData='+JSON.stringify(formData);
@@ -226,7 +231,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading) {
                       console.log('************3.Saving data SUCCESS at WCM database************');
                       //로그인 아이디 Prefrences에 저장
                       if(typeof Preferences != 'undefined'){
-                        Preferences.put('deviceUuid', deviceUuid);
+                        Preferences.put('deviceUuid', mDeviceUuid);
                         console.log('************4.Device uuid is saved at Preferences************');
                       }
                       $ionicLoading.hide();
@@ -241,7 +246,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading) {
               /*************user************/
               //현재 device uuid로 등록된 user가 있다면 load하고 없다면 새로 추가한다
               var user = Ionic.User.current();
-              Ionic.User.load(deviceUuid).then(function(success) {
+              Ionic.User.load(mDeviceUuid).then(function(success) {
                 //이미 유저가 있으면(해당 디바이스의 uuid가 등록되어 있다면) 해당 유저 load
                 console.log('************1.loadedUser user is registered Already************');
                 Ionic.User.current(success);
@@ -252,10 +257,12 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading) {
                  //유저가 없다면(등록되어 있지 않다면) 
                 console.log('************1.loadedUser No registered User************ : ' + JSON.stringify(error));
 
+
                 if (!user.id) {
                   // user.id = Ionic.User.anonymousId();
-                  console.log('deviceUuid : ' + deviceUuid);
-                  user.id = deviceUuid;
+                  //ionic플랫폼에 저장되는 user id로 device uuid를 사용한다 by tjhna 151022
+                  console.log('deviceUuid : ' + mDeviceUuid);
+                  user.id = mDeviceUuid;
                 }
                 //새로운 user를 등록한다
                 user.save().then(function(success) {

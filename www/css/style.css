@@ -19,6 +19,31 @@
   color :#fff;
 }
 
+.wcm-tab{
+  background-repeat: no-repeat;
+  background-position:center;
+  background-size: 30%;
+}
+.wcm-home{
+  background-image: url('../img/tab_home.png');
+}
+.wcm-write{
+  background-image: url('../img/tab_write.png');
+}
+.wcm-profile{
+  background-image: url('../img/tab_profile.png');
+}
+
+.tab-item-active .wcm-home{
+  background-image: url('../img/tab_home_active.png');
+}
+.tab-item-active .wcm-write{
+  background-image: url('../img/tab_write_active.png');
+}
+.tab-item-active .wcm-profile{
+  background-image: url('../img/tab_profile_active.png');
+}
+
 .tab-item .icon {
   color: #a0a0a0;
 }

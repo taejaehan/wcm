@@ -192,9 +192,9 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
 
         $ionicLoading.hide();
         $ionicPopup.alert({
-           title: 'We Change Makers',
-           template: 'You can not use the location information'
-         });
+          title: 'We Change Makers',
+          template: '위치 정보를 사용할 수 없습니다'
+        });
         //서울 초기값 세팅
         var lat  = 37.574515;
         var long = 126.976930;
