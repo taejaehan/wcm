@@ -238,7 +238,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 
     var request = $http({
         method: "post",
-        url: mServerAPI + "/user/" + user.userid,
+        url: mServerAPI + "/profile/" + user.userid,
         crossDomain : true,
         data: postData,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
