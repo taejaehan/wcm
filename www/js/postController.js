@@ -30,6 +30,8 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       }
       // $scope.card.img_path = mServerUpload + $scope.card.img_path;
       $scope.like_count = data.cards[0].like_count;
+      $scope.share_count = data.cards[0].share_count;
+
       $scope.createTime = moment(data.cards[0].create_time, "YYYY-MM-DD h:mm:ss").fromNow();
 
       latlng = new google.maps.LatLng($scope.card.location_lat, $scope.card.location_long);
@@ -496,28 +498,46 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   }
 
   $scope.showDialog = function (card) { 
-                facebookConnectPlugin.showDialog( {
-                  method: "feed" ,
-                  picture: card.img_path,
-                  name: card.title,
-                  message:'First photo post',    
-                  caption: 'via We Change Makers',
-                  description: card.description,
-                  link: 'http://wechangemakers.org/'
-              }, 
-                    function (response) { alert(JSON.stringify(response)) },
-                    function (response) { alert(JSON.stringify(response)) });
-            }
+    facebookConnectPlugin.showDialog( {
+      method: "feed" ,
+      picture: card.img_path,
+      name: card.title,
+      message:'First photo post',    
+      caption: 'via We Change Makers',
+      description: card.description,
+      link: 'http://wechangemakers.org/'
+    }, 
+      // function (response) { alert(JSON.stringify(response)) },
+      // function (response) { alert(JSON.stringify(response)) }
+      function (success) {
+        $ionicPopup.alert({
+          title: 'We Change Makers',
+          template: '페이스북에 공유 되었습니다.'
+        });
 
+        $scope.share_count ++;
+        
+        var share_count = $scope.share_count;
+        var formData = { share_count: share_count };
+        var postData = 'shareData='+JSON.stringify(formData);
 
-    //          {
-    //     method: "feed",
-    //     picture:'https://www.google.co.jp/logos/doodles/2014/doodle-4-google-2014-japan-winner-5109465267306496.2-hp.png',
-    //     name:'Test Post',
-    //     message:'First photo post',    
-    //     caption: 'Testing using phonegap plugin',
-    //     description: 'Posting photo using phonegap facebook plugin'
-    // }
+        var request = $http({
+            method: "post",
+            url: mServerAPI + "/cardDetail/" + $scope.postId + "/share",
+            crossDomain : true,
+            data: postData,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+            cache: false
+        });
+      },
+      function (error) {
+        $ionicPopup.alert({
+          title: 'We Change Makers',
+          template: '페이스북 공유에 실패하였습니다.'
+        });
+      }
+    );
+  }
 
 });
 

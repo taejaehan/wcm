@@ -713,6 +713,21 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           title: 'We Change Makers',
           template: '페이스북에 공유 되었습니다.'
         });
+
+        $rootScope.allData.cards[i].share_count ++;
+        
+        var share_count = $rootScope.allData.cards[i].share_count ++;
+        var formData = { share_count: share_count };
+        var postData = 'shareData='+JSON.stringify(formData);
+
+        var request = $http({
+            method: "post",
+            url: mServerAPI + "/cardDetail/" + $scope.postId + "/share",
+            crossDomain : true,
+            data: postData,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+            cache: false
+        });
       },
       function (errir) {
         $ionicPopup.alert({
