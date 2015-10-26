@@ -419,6 +419,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   * $event 클릭된 event
   */
   $scope.openPopover = function ($event) {
+    console.log('openPopover');
    $ionicPopover.fromTemplateUrl('templates/popover.html', {
      scope: $scope
    }).then(function(popover) {

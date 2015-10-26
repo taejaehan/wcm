@@ -283,7 +283,8 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     }
 
     $ionicLoading.show({
-        template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Uploading'
+        template: '<ion-spinner icon="bubbles"></ion-spinner><br/>업로드..',
+        duration : 10000,
     });
 
     console.log('$scope.imgURI : ' + $scope.imgURI);
@@ -349,14 +350,13 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     if(mIsWebView){
 
       console.log('$cordovaFileTransfer :  ' + $cordovaFileTransfer);
-
       $cordovaFileTransfer.upload(url, targetPath, options).then(function(result) {
-        console.log('success :  ' + JSON.stringify(result.response));
+        console.log('$cordovaFileTransfer success :  ' + JSON.stringify(result.response));
         //서버에 파일을 저장한 후 db를 set
         $scope.uploadDb(newFileName);
       }, function(err) {
         $ionicLoading.hide();
-        console.log('error : ' + JSON.stringify(err));
+        console.log('$cordovaFileTransfer error : ' + JSON.stringify(err));
       }, function (progress) {
         $ionicLoading.hide();
         // constant progress updates

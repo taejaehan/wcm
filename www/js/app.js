@@ -62,7 +62,7 @@ wcm.filter('reverse', function() {
   };
 });
 
-wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading) {
+wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup) {
 
   console.log('wcm RUN');
   $ionicPlatform.ready(function() {
@@ -192,11 +192,11 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading) {
                 "onNotification": function(notification) {
                   var payload = notification.payload;
                   console.log('notification : ' + notification);
-                  console.log('payload : ' + payload);
+                  console.log('payload : ' + JSON.stringify(payload));
                   // alert('onNotification : ' + notification, payload);
                   $ionicPopup.alert({
                     title: 'We Change Makers',
-                    template: payload
+                    template: payload.message
                   });
                 },
                 //push가 등록되면 해당 push token을 위에 설정한 user에 넣고 db에도 넣는다
