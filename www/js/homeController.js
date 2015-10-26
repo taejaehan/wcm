@@ -695,11 +695,31 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     Preferences.put('notShowPref', true); 
   }
 
-  $scope.profileClcik = function(id){
-    console.log('id : ' + id);
-    // card에서 글쓴이를 클릭하면 해당 유저의 facebook 웹 페이지를 연다
-    // window.open("fb://profile/1826451354247937", "_system");
-    // window.location = "https://www.facebook.com/" + id;
+  $scope.showDialog = function (card) { 
+    facebookConnectPlugin.showDialog( {
+      method: "feed" ,
+      picture: card.img_path,
+      name: card.title,
+      message:'First photo post',    
+      caption: 'via We Change Makers',
+      description: card.description,
+      link: 'http://wechangemakers.org/'
+    }, 
+      // function (response) { alert(JSON.stringify(response)) },
+      // function (response) { alert(JSON.stringify(response)) }
+      function (success) {
+        $ionicPopup.alert({
+          title: 'We Change Makers',
+          template: '페이스북에 공유 되었습니다.'
+        });
+      },
+      function (errir) {
+        $ionicPopup.alert({
+          title: 'We Change Makers',
+          template: '페이스북 공유에 실패하였습니다.'
+        });
+      }
+    );
   }
 
 });
