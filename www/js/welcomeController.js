@@ -12,12 +12,13 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
         template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Login'
       });
 
+
       $cordovaOauth.facebook("1020667507964480", ["public_profile"], {redirect_uri: "http://localhost/"}).then(function(result){
             $http.get("https://graph.facebook.com/v2.2/me", {params: {access_token: result.access_token, fields: "name,picture", format: "json" }}).then(function(results) {
                 // console.log('results : ' +JSON.stringify(results));
                 //url 중에 "&"은 "amp;"로 치환해야 에러가 나지 않는다
                 var formData = {
-                                 user_id: results.data.id,
+                                 user_id: String(results.data.id),
                                  username: results.data.name,
                                  userimage: results.data.picture.data.url.split("&").join("amp;"),
                                  sns: "fb",

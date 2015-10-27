@@ -70,7 +70,18 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
   mIsWebView = ionic.Platform.isWebView(); 
   mIsIOS = ionic.Platform.isIOS();
   mIsAndroid = ionic.Platform.isAndroid();
-  mDeviceUuid = ionic.Platform.device().uuid;
+
+  window.plugins.uniqueDeviceID.get(success, fail);
+
+  function success(uuid)
+  {
+      mDeviceUuid = uuid;
+  };
+
+  function fail()
+  {
+      console.error('uuid fail');
+  };
 
   $ionicPlatform.ready(function() {
 
