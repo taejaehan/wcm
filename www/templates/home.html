@@ -55,10 +55,9 @@
               <a ng-click="toggleLike(card.watch = !card.watch, card.id)" ng-class="{'active' : card.watch, 'non-active' : !card.watch}" id="like">
                 <i class="ion-ios-eye"></i>  위험해요 {{ card.like_count }}
               </a>
-              <a ng-href="#/tab/home/{{ card.id }}#comment"><i class="ion-chatbubble-working"></i> 댓글달기  {{ card.comments_count }}
+              <a ng-href="#/tab/home/{{ card.id }}#comment"><i class="ion-chatbubble-working"></i> 댓글달기 {{ card.comments_count }}
               </a>
-              <!-- <a href="https://www.facebook.com/dialog/share?app_id=1020667507964480&display=popup&href=www.google.com&redirect_uri=http://localhost:8100" target="_blank"><i class="ion-forward"></i> 공유하기</a> -->
-              <a ng-click="showDialog(card)"><i class="ion-forward"></i> 공유하기 {{ card.share_count }}</a>
+              <a ng-click="showDialog(card)"><i class="ion-forward"></i> 공유하기 {{ card.share_count }}</a> 
 
             </div>
 

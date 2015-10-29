@@ -65,13 +65,25 @@ wcm.filter('reverse', function() {
 wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup) {
 
   console.log('wcm RUN');
-
   //$ionicPlatform이 ready되면 연결된 device에 대한 정보를 저장 (boolean)
   mIsWebView = ionic.Platform.isWebView(); 
   mIsIOS = ionic.Platform.isIOS();
   mIsAndroid = ionic.Platform.isAndroid();
-  mDeviceUuid = ionic.Platform.device().uuid;
+  // mDeviceUuid = ionic.Platform.device().uuid;
   
+
+  window.plugins.uniqueDeviceID.get(success, fail);
+
+  function success(uuid)
+  {
+      mDeviceUuid = uuid;
+  };
+
+  function fail()
+  {
+      console.error('uuid fail');
+  };
+
   $ionicPlatform.ready(function() {
 
     if (!window.cordova) {
