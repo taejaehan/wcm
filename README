@@ -1,0 +1,49 @@
+plugin 설치 (16개)
+
+************Plugins************ 
+cordova plugin add com.ionic.keyboard
+cordova plugin add cordova-plugin-console
+cordova plugin add cordova-plugin-device
+cordova plugin add cordova-plugin-geolocation
+cordova plugin add cordova-plugin-inappbrowser
+cordova plugin add cordova-plugin-splashscreen
+cordova plugin add cordova-plugin-whitelist
+cordova plugin add cordova-plugin-camera
+cordova plugin add cordova-plugin-file
+cordova plugin add cordova-plugin-file-transfer
+cordova plugin add cordova-plugin-network-information
+cordova plugin add cordova-plugin-screen-orientation
+cordova plugin add phonegap-plugin-push
+cordova plugin add com.portnou.cordova.plugin.preferences
+cordova plugin add cordova-plugin-facebook4 --save --variable APP_ID="1020667507964480" --variable APP_NAME="We Change Makers"
+cordova plugin add cordova-plugin-crosswalk-webview (Only Android)
+
+************************************Android************************************
+1. com.portnou.cordova.plugin.preferences
+(Prefrencees.java) 이름(prefrencees.java > Prefrencees.java)과 내용 변경 하기(import안된 부분 있음)(2곳)
+\plugins\com.portnou.cordova.plugin.preferences\src\android
+\platforms\android\src\com\portnou\cordova\plugin\preferences
+
+2. cordova-plugin-crosswalk-webview
+android에만 적용되는 plugin
+('minsdkversion 14 cannot be smaller than version 15'에러가 나기때문에 minSdkVersion을 15로 바꿔줘야 한다 (2곳)
+\plugins\cordova-plugin-crosswalk-webview\platforms\android\xwalk.gradle:
+\platforms\android\cordova-plugin-crosswalk-webview\wcm-xwalk.gradle
+)
+
+3. cordova-plugin-facebook4
+페이스북 공유시 content가 없이 나오므로 param값 수정해야한다
+buildContent funtion에 있는 href를 link로 바꾼다(2곳)
+\plugins\cordova-plugin-facebook4\src\android
+\platforms\android\src\org\apache\cordova\facebook
+
+************Android 실행 방법************
+ionic platform add android
+ionic build android
+android studio에서 해당 android porject load후 RUN
+
+************************************IOS************************************ 
+
+테스트 해보지 않았지만 페이스북 공유시 content가 없이 나온다면 
+\plugins\cordova-plugin-facebook4\src\ios\FacebookConnectPlugin.m
+에서 href를 link로 바꿔줘야 될 듯 하다

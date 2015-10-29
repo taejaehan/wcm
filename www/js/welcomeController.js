@@ -30,11 +30,19 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
                 // window.state.go('tabs.home');
             }, function(error) {
                 $ionicLoading.hide();
-                alert("Error: " + JSON.stringify(error));
+                console.log('ERROR : '+JSON.stringify(error));
+                $ionicPopup.alert({
+                  title: 'We Change Makers',
+                  template: JSON.stringify(error)
+                });
             });
       },  function(error){
             $ionicLoading.hide();
-            alert("Error: " + JSON.stringify(error));
+            console.log('ERROR : '+JSON.stringify(error));
+            $ionicPopup.alert({
+              title: 'We Change Makers',
+              template: JSON.stringify(error)
+            });
       });
     } else {  //app에서 실행한게 아니면 테스트용도로 넣어줌 
 
@@ -173,7 +181,11 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
     })
     .error(function(error){
       $ionicLoading.hide();
-      alert('ERROR : '+JSON.stringify(error));
+      console.log('ERROR : '+JSON.stringify(error));
+      $ionicPopup.alert({
+        title: 'We Change Makers',
+        template: JSON.stringify(error)
+      });
     });
 
   }

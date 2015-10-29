@@ -435,6 +435,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   }
 
   $scope.sortBy = function(sortType) {
+    console.log("sortBy sortType : " + sortType);
     $scope.popover.hide();
     $scope.page = 0;
 
@@ -454,8 +455,12 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           cache: false
       });  
 
-
+    request.error(function(error){
+      $ionicLoading.hide();
+      console.log('sort error : ' + JSON.stringify(error))
+    });
     request.success(function(data) { 
+      console.log("sort success data : " + JSON.stringify(data));
 
       $rootScope.allData.cards = [];
 
@@ -697,6 +702,19 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   }
 
   $scope.showDialog = function (card) { 
+
+    // facebookConnectPlugin.login(["public_profile"], 
+    //   function (userData) {
+    //     console.log("login success ");
+    //     console.log("UserInfo : ", userData);
+    //     console.log("UserInfo : ", JSON.stringify(userData));
+    //   },
+    //   function loginError (error) {
+    //     console.log("login error ");
+    //     console.error(JSON.stringify(error));
+    //   }
+    // );
+
     facebookConnectPlugin.showDialog( {
       method: "feed" ,
       picture: card.img_path,
@@ -715,7 +733,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         });
 
         $rootScope.allData.cards[i].share_count ++;
-        
         var share_count = $rootScope.allData.cards[i].share_count ++;
         var formData = { share_count: share_count };
         var postData = 'shareData='+JSON.stringify(formData);

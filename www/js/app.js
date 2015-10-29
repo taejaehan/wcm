@@ -65,6 +65,13 @@ wcm.filter('reverse', function() {
 wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup) {
 
   console.log('wcm RUN');
+
+  //$ionicPlatform이 ready되면 연결된 device에 대한 정보를 저장 (boolean)
+  mIsWebView = ionic.Platform.isWebView(); 
+  mIsIOS = ionic.Platform.isIOS();
+  mIsAndroid = ionic.Platform.isAndroid();
+  mDeviceUuid = ionic.Platform.device().uuid;
+  
   $ionicPlatform.ready(function() {
 
     if (!window.cordova) {
@@ -91,12 +98,6 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
-
-    //$ionicPlatform이 ready되면 연결된 device에 대한 정보를 저장 (boolean)
-    mIsWebView = ionic.Platform.isWebView(); 
-    mIsIOS = ionic.Platform.isIOS();
-    mIsAndroid = ionic.Platform.isAndroid();
-    mDeviceUuid = ionic.Platform.device().uuid;
 
     //로그인 한 상태라면 prefresnces에 저장된 user id로 서버에서 유저 정보를 가져와 localStorage에 저장
     var saveLocalUser = function(loginId) {
@@ -306,6 +307,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
 
 
         }else{
+
           console.log('tryRegisterAndLogin Preferences NO : ' + tryNum);
           //Preferences를 찾아서 3번 시도한다
           if(tryNum < 4 ){
