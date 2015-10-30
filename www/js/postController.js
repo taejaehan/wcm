@@ -55,9 +55,6 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
         
         if ($scope.changers.length === 0) {
           for(var j = 0; j < data.cards[0].changer.length; j++) {
-            if(data.cards[0].changer[j].changeUser[0].userimage != null){
-              data.cards[0].changer[j].changeUser[0].userimage = data.cards[0].changer[j].changeUser[0].userimage.split("amp;").join("&");
-            }
             $scope.changers.push(data.cards[0].changer[j]);
           }
         } 
@@ -111,7 +108,6 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
             $scope.comments.push(object);
             $scope.comments_count ++;
           } else {
-            object.user[0].userimage = object.user[0].userimage.split("amp;").join("&");
             $scope.comments.push(object);
             $scope.comments_count ++;
           }

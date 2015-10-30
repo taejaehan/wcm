@@ -69,27 +69,8 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
   mIsWebView = ionic.Platform.isWebView(); 
   mIsIOS = ionic.Platform.isIOS();
   mIsAndroid = ionic.Platform.isAndroid();
-  // mDeviceUuid = ionic.Platform.device().uuid;
-  
-
-  window.plugins.uniqueDeviceID.get(success, fail);
-
-  function success(uuid)
-  {
-      mDeviceUuid = uuid;
-  };
-
-  function fail()
-  {
-      console.error('uuid fail');
-  };
 
   $ionicPlatform.ready(function() {
-
-    if (!window.cordova) {
-        var appId = prompt("Enter FB Application ID", "");
-        facebookConnectPlugin.browserInit('1020667507964480');
-    }
 
     console.log('$ionicPlatform ready');
 
@@ -162,6 +143,25 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
       * ionic user에 해당 device uuid가 이미 있다면(깔았다가 지웠다면) 
       * 새롭게 등록하지 않고 해당 ionic user와 wcm db의 token을 수정한다
       ******************************************************************************/
+
+      /*ionic.Platform.device().uuid가 android에서는 유지되나 ios에서 매번 변경되어
+      * window.plugins.uniqueDeviceID 플러그인으로 교체
+      */
+      window.plugins.uniqueDeviceID.get(success, fail);
+      function success(uuid)
+      {   
+          console.log('ionic.Platform.device().uuid : ' + ionic.Platform.device().uuid);
+          console.error('uniqueDeviceID success uuid : ' + uuid);
+          mDeviceUuid = uuid;
+      };
+      function fail()
+      {
+          console.error('uuid fail');
+      };
+      
+      // //웹 앱에서 facebookConnectPlugin를 사용하기 위해 facebook app id를 init한다
+      // facebookConnectPlugin.browserInit('1020667507964480');
+
       var tryNum = 0;
       var tryRegisterAndLogin = function(){
         
@@ -317,6 +317,28 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
             console.log('error: : ' +  error);
           });
 
+          //facebook 연결 상태 확인 테스트 중 by tjhan 151030
+          // facebookConnectPlugin.api(
+          //   "/me", 
+          //   ["public_profile", 'email', 'user_friends'], 
+          //   function (UserInfo) {
+          //     console.log("fbapi success");
+          //     console.log("fbapi success : " + JSON.stringify(UserInfo));
+          //   }, 
+          //   function loginError (error) {
+          //     console.log("fbapi error");
+          //     console.log("fbapi error : " + JSON.stringify(error));
+          //   }
+          // );
+          // facebookConnectPlugin.getLoginStatus(function (userInfo) {
+          //   console.log("LoginStatus success ");
+          //   console.log("LoginStatus : ", userInfo);
+          //   console.log("LoginStatus : ", JSON.stringify(userInfo));
+          // },
+          // function loginError (error) {
+          //   console.log("login error ");
+          //   console.error("login error : " + JSON.stringify(error));
+          // });
 
         }else{
 

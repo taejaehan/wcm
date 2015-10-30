@@ -1,4 +1,4 @@
-plugin 설치 (16개)
+plugin 설치 (17개)
 
 ************Plugins************ 
 cordova plugin add com.ionic.keyboard
@@ -13,12 +13,13 @@ cordova plugin add cordova-plugin-file
 cordova plugin add cordova-plugin-file-transfer
 cordova plugin add cordova-plugin-network-information
 cordova plugin add cordova-plugin-screen-orientation
+cordova plugin add https://github.com/Paldom/UniqueDeviceID
 cordova plugin add phonegap-plugin-push
 cordova plugin add com.portnou.cordova.plugin.preferences
 cordova plugin add cordova-plugin-facebook4 --save --variable APP_ID="1020667507964480" --variable APP_NAME="We Change Makers"
 cordova plugin add cordova-plugin-crosswalk-webview (Only Android)
 
-************************************Android************************************
+******************************Android 20151029******************************
 1. com.portnou.cordova.plugin.preferences
 (Prefrencees.java) 이름(prefrencees.java > Prefrencees.java)과 내용 변경 하기(import안된 부분 있음)(2곳)
 \plugins\com.portnou.cordova.plugin.preferences\src\android
@@ -39,10 +40,9 @@ buildContent funtion에 있는 href를 link로 바꾼다(2곳)
 
 ************Android 실행 방법************
 ionic platform add android
-ionic build android
-android studio에서 해당 android porject load후 RUN
+ionic run android
 
-************************************IOS************************************ 
+******************************IOS 20151029****************************** 
 
 테스트 해보지 않았지만 페이스북 공유시 content가 없이 나온다면 
 \plugins\cordova-plugin-facebook4\src\ios\FacebookConnectPlugin.m

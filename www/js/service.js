@@ -1,4 +1,4 @@
-wcm.service('AuthService', function($state, $ionicPopup, $http, $window) {
+wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicLoading) {
   
   var login = function(name, pw) {
 
@@ -61,11 +61,33 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window) {
     }
   };
 
-
+  /*
+  * logout시에 facebook과 연결을 끊는다 by tjhan 151030
+  */
   var logout = function() {
-    isAuthenticated = false;
-    window.localStorage.removeItem('user');
-    $state.go('fblogin');
+
+    $ionicLoading.show({
+      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로그아웃..'
+    });
+
+    facebookConnectPlugin.logout(function (success) {
+      $ionicLoading.hide();
+      console.log("logout success ");
+      console.log("logout : ", success);
+      isAuthenticated = false;
+      window.localStorage.removeItem('user');
+      $state.go('fblogin');
+    },
+    function loginError (error) {
+      $ionicLoading.hide();
+      console.log("logout error ");
+      console.error("logout error : " + JSON.stringify(error));
+      $ionicPopup.alert({
+        title: 'We Change Makers',
+        template: JSON.stringify(error)
+      });
+    });
+   
   };
 
 

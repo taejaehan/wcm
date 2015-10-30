@@ -342,9 +342,8 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             }
 
             data.cards[i].address = data.cards[i].location_name;
-            //url 중에 "&"은 "amp;"로 db에 저장되어 있으므로 변환한다
             if(data.cards[i].user[0].userimage != null){
-              data.cards[i].user[0].userimage = data.cards[i].user[0].userimage.split("amp;").join("&");
+              data.cards[i].user[0].userimage = data.cards[i].user[0].userimage;
             }
 
             data.cards[i].userId = data.cards[i].user[0].user_id;
@@ -420,12 +419,12 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   */
   $scope.openPopover = function ($event) {
     console.log('openPopover');
-   $ionicPopover.fromTemplateUrl('templates/popover.html', {
-     scope: $scope
-   }).then(function(popover) {
-     $scope.popover = popover;
-     $scope.popover.show($event);
-   });
+    $ionicPopover.fromTemplateUrl('templates/popover.html', {
+      scope: $scope
+    }).then(function(popover) {
+      $scope.popover = popover;
+      $scope.popover.show($event);
+    });
   };
 
 
@@ -480,9 +479,8 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           data.cards[i].img_path = mServerUpload + data.cards[i].img_path;
         }
 
-        //url 중에 "&"은 "amp;"로 db에 저장되어 있으므로 변환한다
         if(data.cards[i].user[0].userimage != null){
-          data.cards[i].user[0].userimage = data.cards[i].user[0].userimage.split("amp;").join("&");
+          data.cards[i].user[0].userimage = data.cards[i].user[0].userimage;
         }
         data.cards[i].address = data.cards[i].location_name;
         data.cards[i].userId = data.cards[i].user[0].user_id;
@@ -702,19 +700,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   }
 
   $scope.showDialog = function (card) { 
-
-    // facebookConnectPlugin.login(["public_profile"], 
-    //   function (userData) {
-    //     console.log("login success ");
-    //     console.log("UserInfo : ", userData);
-    //     console.log("UserInfo : ", JSON.stringify(userData));
-    //   },
-    //   function loginError (error) {
-    //     console.log("login error ");
-    //     console.error(JSON.stringify(error));
-    //   }
-    // );
-
     facebookConnectPlugin.showDialog( {
       method: "feed" ,
       picture: card.img_path,

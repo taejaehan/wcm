@@ -1,4 +1,4 @@
-wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOauth, AuthService, $window, $cordovaPreferences, $ionicLoading) {
+wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOauth, AuthService, $window, $cordovaPreferences, $ionicLoading, $ionicPopup, $timeout) {
 
   console.log('user : ' + window.localStorage['user']);
 
@@ -9,50 +9,98 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
     if(mIsWebView){
 
       $ionicLoading.show({
-        template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Login'
+        template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로그인..'
       });
 
+      /*
+      * cordova-plugin-facebook4 플러그인을 이용하여 native앱으로 wcm앱을 인증받아 로그인한다 
+      * 원래 로그인 성공시 userInfo가 와야하는데 오지 않아서 api를 호출하여 유저 정보를 가져온다
+      * by tjhan 151030
+      */
+      facebookConnectPlugin.login(["public_profile", 'email', 'user_friends'], 
+        function (userData) {
+          console.log("login success ");
+          console.log("UserInfo : ", userData);
+          console.log("UserInfo : ", JSON.stringify(userData));
 
-      $cordovaOauth.facebook("1020667507964480", ["public_profile"], {redirect_uri: "http://localhost/"}).then(function(result){
-            $http.get("https://graph.facebook.com/v2.2/me", {params: {access_token: result.access_token, fields: "name,picture", format: "json" }}).then(function(results) {
-                // console.log('results : ' +JSON.stringify(results));
-                //url 중에 "&"은 "amp;"로 치환해야 에러가 나지 않는다
-                var formData = {
-                                 user_id: String(results.data.id),
-                                 username: results.data.name,
-                                 userimage: results.data.picture.data.url.split("&").join("amp;"),
-                                 sns: "fb",
-                                 device_uuid : mDeviceUuid
-                               };
+          facebookConnectPlugin.api(
+            "/me", 
+            ["public_profile", 'email', 'user_friends'], 
+            function (UserInfo) {
+              console.log("api success");
+              console.log("api success : " + JSON.stringify(UserInfo));
+              console.log("user id : " + UserInfo.id);
+              console.log("user name : " + UserInfo.name);
 
-                $scope.userLogin(formData);
+              var formData = {
+                               user_id: String(UserInfo.id),
+                               username: UserInfo.name,
+                               userimage: 'https://graph.facebook.com/'+UserInfo.id+'/picture',
+                               sns: "fb",
+                               device_uuid : mDeviceUuid
+                             };
+              $scope.userLogin(formData);
+            }, 
+            function loginError (error) {
+              $ionicLoading.hide();
+              console.log("api error");
+              console.log("api error : " + JSON.stringify(error));
+              $ionicPopup.alert({
+                title: 'We Change Makers',
+                template: JSON.stringify(error)
+              });
+            }
+          );
+        },
+        function loginError (error) {
+          $ionicLoading.hide();
+          console.log("login error ");
+          console.error("login error : " + JSON.stringify(error));
+          $ionicPopup.alert({
+            title: 'We Change Makers',
+            template: JSON.stringify(error)
+          });
+        }
+      );
+      // 예전에 사용하던 cordova내장된 facebook 로그인 주석처리 (android및 ISO테스트 완료되면 삭제 예정)  
+      // $cordovaOauth.facebook("1020667507964480", ["public_profile"], {redirect_uri: "http://localhost/"}).then(function(result){
+      //       $http.get("https://graph.facebook.com/v2.2/me", {params: {access_token: result.access_token, fields: "name,picture", format: "json" }}).then(function(results) {
+      //           // console.log('results : ' +JSON.stringify(results));
+      //           //url 중에 "&"은 "amp;"로 치환해야 에러가 나지 않는다
+      //           var formData = {
+      //                            user_id: String(results.data.id),
+      //                            username: results.data.name,
+      //                            userimage: results.data.picture.data.url.split("&").join("amp;"),
+      //                            sns: "fb",
+      //                            device_uuid : mDeviceUuid
+      //                          };
 
-                // $rootScope.$emit('loginSuccess');
-                // window.state.go('tabs.home');
-            }, function(error) {
-                $ionicLoading.hide();
-                console.log('ERROR : '+JSON.stringify(error));
-                $ionicPopup.alert({
-                  title: 'We Change Makers',
-                  template: JSON.stringify(error)
-                });
-            });
-      },  function(error){
-            $ionicLoading.hide();
-            console.log('ERROR : '+JSON.stringify(error));
-            $ionicPopup.alert({
-              title: 'We Change Makers',
-              template: JSON.stringify(error)
-            });
-      });
+      //           $scope.userLogin(formData);
+
+      //           // $rootScope.$emit('loginSuccess');
+      //           // window.state.go('tabs.home');
+      //       }, function(error) {
+      //           $ionicLoading.hide();
+      //           console.log('ERROR : '+JSON.stringify(error));
+      //           $ionicPopup.alert({
+      //             title: 'We Change Makers',
+      //             template: JSON.stringify(error)
+      //           });
+      //       });
+      // },  function(error){
+      //       $ionicLoading.hide();
+      //       console.log('ERROR : '+JSON.stringify(error));
+      //       $ionicPopup.alert({
+      //         title: 'We Change Makers',
+      //         template: JSON.stringify(error)
+      //       });
+      // });
     } else {  //app에서 실행한게 아니면 테스트용도로 넣어줌 
 
-      //url 중에 "&"은 "amp;"로 치환해야 에러가 나지 않는다
-      var userImage =  "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xpf1/v/t1.0-1/c15.0.50.50/p50x50/10354686_10150004552801856_220367501106153455_n.jpg?oh=17835c9c962c70d05cc25d75008438a3&oe=5698842F&__gda__=1452879355_4d8b6c5947a3a8359645aff176f54967".split("&").join("amp;");
       var formData = {
                          user_id: "1826451354247937",
                          username: "Dev Major",
-                         userimage: userImage,
+                         userimage: 'https://graph.facebook.com/1826451354247937/picture',
                          sns: "fb",
                          device_uuid : 'd874c9deb9f6ef80'
                        };
@@ -90,7 +138,7 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
       var user = {
                     username: formData.username,
                     userid: formData.user_id,
-                    userimage: formData.userimage.split("amp;").join("&"),
+                    userimage: formData.userimage,
                     isAuthenticated: true,
                     likes : [],
                     changes : []
@@ -148,7 +196,7 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
             var user = Ionic.User.current();
             var saveUser = function(){
               user.set('name', formData.username);
-              user.set('image', formData.userimage.split("amp;").join("&"));
+              user.set('image', formData.userimage);
               user.save().then(function(success) {
                 console.log("saveUser success: " + JSON.stringify(success));
               }, function(error) {
