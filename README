@@ -29,9 +29,15 @@ ionic config set dev_push false
 
 ******************************Android 20151029******************************
 1. com.portnou.cordova.plugin.preferences
-(Prefrencees.java) 이름(prefrencees.java > Prefrencees.java)과 내용 변경 하기(import안된 부분 있음)(2곳)
-\plugins\com.portnou.cordova.plugin.preferences\src\android
-\platforms\android\src\com\portnou\cordova\plugin\preferences
+\plugins\com.portnou.cordova.plugin.preferences\plugin.xml 에서 
+src/android/preferences.java를 src/android/Preferences.java 대문자로 변경
+
+\plugins\com.portnou.cordova.plugin.preferences\src\android\prefrencees.java
+\platforms\android\src\com\portnou\cordova\plugin\preferences\prefrencees.java
+-파일 이름(prefrencees.java > Prefrencees.java) 변경
+-import안된 것 해주기 
+import org.apache.cordova.CordovaWebView;
+import org.apache.cordova.CordovaInterface;
 
 2. cordova-plugin-crosswalk-webview
 android에만 적용되는 plugin
