@@ -19,6 +19,14 @@ cordova plugin add com.portnou.cordova.plugin.preferences
 cordova plugin add cordova-plugin-facebook4 --save --variable APP_ID="1020667507964480" --variable APP_NAME="We Change Makers"
 cordova plugin add cordova-plugin-crosswalk-webview (Only Android)
 
+******************************common 20151029******************************
+1. phonegap-plugin-push 
+bower와 web-client를 설치 후 세팅 필요
+npm install -g bower
+ionic add ionic-platform-web-client
+ionic io init
+ionic config set dev_push false
+
 ******************************Android 20151029******************************
 1. com.portnou.cordova.plugin.preferences
 (Prefrencees.java) 이름(prefrencees.java > Prefrencees.java)과 내용 변경 하기(import안된 부분 있음)(2곳)
