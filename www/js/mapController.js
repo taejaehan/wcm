@@ -206,13 +206,14 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
             $scope.map = map;   
             $ionicLoading.hide();           
              
-        }, function(err) {
+        }, function(error) {
+            console.log('error : ' + JSON.stringify(error));
             $ionicLoading.hide();
             $ionicPopup.alert({
-              title: 'We Change Makers',
-              template: '위치 정보를 사용할 수 없습니다'
+              title: mAppName,
+              template: '위치 정보를 사용할 수 없습니다',
+              cssClass: 'wcm-error'
              });
-            console.log('CURRENT LOCATION ERROR :  ' + err);
         });
     }
 

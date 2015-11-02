@@ -1,4 +1,4 @@
-<ion-view view-title="wcm">
+<ion-view view-title="WCM">
   <ion-nav-buttons side="right">
     <button type="submit" class="button button-icon" ng-click="openPopover($event)">
       <i class="icon ion-android-list"></i>
@@ -17,6 +17,7 @@
       <!-- ========================== home_page ========================== -->
       <div id="home_page">
 
+        <!-- <ion-item collection-repeat="card in allData.cards" class="posts" item-height="300px"> -->
         <ion-item ng-repeat="card in allData.cards" class="posts">
           <div class="post-body">
             
@@ -38,7 +39,7 @@
               </a>
               <a ng-href="#/tab/home/{{ card.id }}">
                 <div class="img-group">
-                  <img ng-src="{{card.img_path}}" class="post-image">
+                  <img ng-src="{{card.img_path}}" class="post-image" onError="this.src='img/default.png'">
                 </div>
               </a>
             </div>

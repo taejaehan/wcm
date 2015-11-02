@@ -1,4 +1,4 @@
-wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicLoading) {
+wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicLoading, $location) {
   
   var login = function(name, pw) {
 
@@ -55,8 +55,9 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
 
     } else {
       $ionicPopup.alert({
-        title: '로그인 실패',
-        template: '인터넷에 연결 상태를 확인하세요'
+        title: mAppName,
+        template: '로그인에 실패했습니다',
+        cssClass: 'wcm-error'
       });
     }
   };
@@ -66,27 +67,35 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
   */
   var logout = function() {
 
-    $ionicLoading.show({
-      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로그아웃..'
-    });
-
-    facebookConnectPlugin.logout(function (success) {
-      $ionicLoading.hide();
-      console.log("logout success ");
-      console.log("logout : ", success);
+    console.log('logout');
+    if(mIsWebView){
+      $ionicLoading.show({
+        template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로그아웃..'
+      });
+      facebookConnectPlugin.logout(function (success) {
+        $ionicLoading.hide();
+        console.log("logout success ");
+        console.log("logout : ", success);
+        isAuthenticated = false;
+        window.localStorage.removeItem('user');
+        // $state.go('fblogin');
+      },
+      function loginError (error) {
+        $ionicLoading.hide();
+        console.log("logout error ");
+        console.error("logout error : " + JSON.stringify(error));
+        $ionicPopup.alert({
+          title: mAppName,
+          template: JSON.stringify(error),
+          cssClass: 'wcm-error'
+        });
+      });
+    }else{    //web 테스트 용도
+      console.log("web logout");
       isAuthenticated = false;
       window.localStorage.removeItem('user');
-      $state.go('fblogin');
-    },
-    function loginError (error) {
-      $ionicLoading.hide();
-      console.log("logout error ");
-      console.error("logout error : " + JSON.stringify(error));
-      $ionicPopup.alert({
-        title: 'We Change Makers',
-        template: JSON.stringify(error)
-      });
-    });
+      // $state.go('fblogin');
+    }
    
   };
 

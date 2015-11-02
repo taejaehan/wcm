@@ -238,8 +238,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
       /* isOffline */
       $ionicPopup.alert({
-        title: 'We Change Makers',
-        template: '인터넷에 연결 상태를 확인하세요'
+        title: mAppName,
+        template: '인터넷에 연결 상태를 확인하세요',
+        cssClass: 'wcm-error',
       });
 
       //미리 가져온 cardlist 사용
@@ -375,8 +376,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
         /* isOffline */
         $ionicPopup.alert({
-          title: 'We Change Makers',
-          template: '인터넷에 연결 상태를 확인하세요'
+          title: mAppName,
+          template: '인터넷에 연결 상태를 확인하세요',
+          cssClass: 'wcm-error',
         });
 
         //미리 가져온 cardlist 사용
@@ -550,8 +552,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   // Delete Card
   $scope.deleteCard = function(id) {
     var confirmPopup = $ionicPopup.confirm({
-      title: 'We Change Makers',
-      template: 'Are you sure you want to delete?'
+      title: mAppName,
+      template: '정말로 지우시겠습니까?',
+      cssClass: 'wcm-negative',
     });
 
     confirmPopup.then(function(res) {
@@ -675,9 +678,20 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
 
       } else {
-        $ionicPopup.alert({
-          title: 'We Change Makers',
-          template: '로그인 후에 이용 가능합니다'
+        $ionicPopup.show({
+          template: '로그인 후에 이용 가능합니다',
+          title: mAppName,
+          cssClass: 'wcm-positive',
+          buttons: [
+            { text: '나중에하기' },
+            {
+              text: '<b>로그인하기</b>',
+              type: 'button-positive',
+              onTap: function(e) {
+                $state.go("fblogin");
+              }
+            }
+          ]
         });
         
         var i = 0;
@@ -713,8 +727,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       // function (response) { alert(JSON.stringify(response)) }
       function (success) {
         $ionicPopup.alert({
-          title: 'We Change Makers',
-          template: '페이스북에 공유 되었습니다.'
+          title: mAppName,
+          template: '페이스북에 공유 되었습니다',
+          cssClass: 'wcm-positive',
         });
 
         $rootScope.allData.cards[i].share_count ++;
@@ -731,10 +746,12 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             cache: false
         });
       },
-      function (errir) {
+      function (error) {
+        console.log('error : ' + JSON.stringify(error));
         $ionicPopup.alert({
-          title: 'We Change Makers',
-          template: '페이스북 공유에 실패하였습니다.'
+          title: mAppName,
+          template: '페이스북 공유에 실패 하였습니다',
+          cssClass: 'wcm-error',
         });
       }
     );

@@ -52,6 +52,23 @@ span.tab-title {
   color: #a0a0a0;
 }
 
+/*wcm 팝업 색깔 3가지로 구분 (positive, negative, error) by tjhan 151102*/
+.wcm-positive .button-positive, .wcm-positive .button-positive.active, .wcm-positive .button-positive.activated{
+  background-color : #6FBA2C;
+  border-color : #6FBA2C;
+  color : #fff;
+}
+.wcm-negative .button-positive, .wcm-negative .button-positive.active, .wcm-negative .button-positive.activated{
+  background-color : #EFAE28;
+  border-color : #EFAE28;
+  color : #fff;
+}
+.wcm-error .button-positive, .wcm-error .button-positive.active, .wcm-error .button-positive.activated{
+  background-color : #EA5C4F;
+  border-color : #EA5C4F;
+  color : #fff;
+}
+
 @keyframes flipInX {
   0% {
     transform: perspective(400px) rotate3d(1, 0, 0, 90deg);

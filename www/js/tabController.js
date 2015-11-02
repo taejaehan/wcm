@@ -18,8 +18,8 @@ wcm.controller("TabController", function($scope, $state, $ionicPopup) {
       }
       var myPopup = $ionicPopup.show({
         template: message,
-        title: 'We Change Makers',
-      
+        title: mAppName,
+        cssClass: 'wcm-positive',
         buttons: [
           { text: '나중에하기' },
           {

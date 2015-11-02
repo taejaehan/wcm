@@ -146,8 +146,9 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 
 	$scope.cancelChanger = function(change) {
 		var confirmPopup = $ionicPopup.confirm({
-	    title: 'We Change Makers',
-	    template: 'Change Supporters 활동을 취소하시겠습니까?'
+	    title: mAppName,
+	    template: 'Change Supporters 활동을 취소하시겠습니까?',
+	    cssClass: 'wcm-negative',
 	  });
 
 	  confirmPopup.then(function(res) {
@@ -252,9 +253,9 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
     });
 
   	var myPopup = $ionicPopup.show({
-      template: "변경이 완료되었습니다.",
-      title: 'We Change Makers',
-    
+      template: "변경이 완료되었습니다",
+      title: mAppName,
+      cssClass: 'wcm-positive',
       buttons: [
         {
           text: '<b>OK</b>',
@@ -279,6 +280,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 		  template: '<input type="text" ng-model="push.message">',
 		  title: '메세지를 입력하세요',
 		  subTitle: 'wcm사용자에게 push를 보냅니다',
+		  cssClass: 'wcm-positive',
 		  scope: $scope,
 		  buttons: [
 		    { text: 'Cancel' },
@@ -326,7 +328,8 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 	       //psuh 최종 확인 컨펌
 				var confirmPopup = $ionicPopup.confirm({
 				title: receiverNum + ' 명에게 Push 메세지를 보냅니다',
-				template: message
+				template: message,
+				cssClass: 'wcm-negative',
 				});
 				confirmPopup.then(function(res) {
 					if(res) {

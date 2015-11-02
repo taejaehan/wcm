@@ -46,8 +46,9 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
               console.log("api error");
               console.log("api error : " + JSON.stringify(error));
               $ionicPopup.alert({
-                title: 'We Change Makers',
-                template: JSON.stringify(error)
+                title: mAppName,
+                template: JSON.stringify(error),
+                cssClass: 'wcm-negative'
               });
             }
           );
@@ -57,8 +58,9 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
           console.log("login error ");
           console.error("login error : " + JSON.stringify(error));
           $ionicPopup.alert({
-            title: 'We Change Makers',
-            template: JSON.stringify(error)
+            title: mAppName,
+            template: JSON.stringify(error),
+            cssClass: 'wcm-error'
           });
         }
       );
@@ -83,16 +85,18 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
       //           $ionicLoading.hide();
       //           console.log('ERROR : '+JSON.stringify(error));
       //           $ionicPopup.alert({
-      //             title: 'We Change Makers',
-      //             template: JSON.stringify(error)
+      //             title: mAppName,
+      //             template: JSON.stringify(error),
+      //             cssClass: 'wcm-error'
       //           });
       //       });
       // },  function(error){
       //       $ionicLoading.hide();
       //       console.log('ERROR : '+JSON.stringify(error));
       //       $ionicPopup.alert({
-      //         title: 'We Change Makers',
-      //         template: JSON.stringify(error)
+      //         title: mAppName,
+      //         template: JSON.stringify(error),
+      //         cssClass: 'wcm-error'
       //       });
       // });
     } else {  //app에서 실행한게 아니면 테스트용도로 넣어줌 
@@ -232,8 +236,9 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
       $ionicLoading.hide();
       console.log('ERROR : '+JSON.stringify(error));
       $ionicPopup.alert({
-        title: 'We Change Makers',
-        template: JSON.stringify(error)
+        title: mAppName,
+        template: JSON.stringify(error),
+        cssClass: 'wcm-error'
       });
     });
 

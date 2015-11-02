@@ -4,10 +4,11 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   var latlng, progress;
   var imgPath = '';
 
+  $scope.addView = false; //add일때만 취소 버튼을 보이게 하기 위함
   $scope.cardId;
   $scope.cardData = {};
   $scope.cancelClick = false;
-  $scope.uploadTitle = '';
+  $scope.uploadTitle = 'Edit';
   
   $scope.$on('$ionicView.afterEnter', function(){
 
@@ -15,24 +16,31 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       //id가 없다면 add
       if($stateParams.id == null){
         $scope.uploadTitle = 'Add';
-        
-        if ($rootScope.cardLocation == undefined || $rootScope.cardLocation == '') {
+        $scope.addView = true;
+        console.log('$rootScope.cardLocation == "" : ' + ($rootScope.cardLocation == ''));
+        console.log('typeof cardLocation == "undefined" : ' +(typeof $rootScope.cardLocation == 'undefined'));
+        if (typeof $rootScope.cardLocation == 'undefined' || $rootScope.cardLocation == '') {
           $scope.currentLocation();
         };
-        // if(!($ionicHistory.viewHistory().forwardView != null 
-        //   && $ionicHistory.viewHistory().forwardView != null 
-        //   && $ionicHistory.viewHistory().forwardView.stateName == "tabs.location_w")){
-        //   $scope.currentLocation();
-        // }
       }
       //id가 있으면 해당 card edit
       else{
-        $scope.uploadTitle = 'Edit';
         if($scope.cardId == null){
           $scope.cardId = $stateParams.id;
+          /*
+          * edit view일 경우 전의 view가 tabs.location_h가 아닌 경우는
+          * (edit view에서 맵을 설정하고 온 경우가 아니라면)
+          * 다시 card date를 가져온다
+          * 맵을 설정하고 온 경우는 해당 cache를 지워준다 by tjhan 151102
+          */
           if($ionicHistory.forwardView() == null || $ionicHistory.forwardView().stateName != 'tabs.location_h'){
             $scope.getCard();
           }
+          if($ionicHistory.forwardView() == null && $ionicHistory.forwardView().stateName == 'tabs.location_h'){
+            $ionicHistory.clearCache(ionicHistory.forwardView().stateId);
+            console.log('clear history cache tabs.location_h');
+          }
+
         }
       }
     }
@@ -151,10 +159,12 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
         $scope.cardForm.file.$setViewValue(imagePath);
 
       }, function(error){
+        console.log('get piture error : ' + JSON.stringify(error));
         //An error occured
         $ionicPopup.alert({
-           title: 'getPicture error',
-           template: error
+           title: mAppName,
+           template: '사진을 가져오지 못 했습니다',
+           cssClass: 'wcm-positive',
          });
       });
     }else{
@@ -168,13 +178,14 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   */
   $scope.currentLocation = function(){
 
+    
+
     if(document.getElementById("card_location") != null && document.getElementById("card_location").value != '') return;
 
     $ionicLoading.show({
         template: '<ion-spinner icon="bubbles"></ion-spinner><br/>위치를 찾고 있습니다',
         duration : 5000,
     });
-    
     var posOptions = {
         enableHighAccuracy: true,
         timeout: 4000,
@@ -188,19 +199,17 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
         $scope.setLocationName(lat, long);
 
         $ionicLoading.hide();
-    }, function(err) {
-
+    }, function(error) {
+        console.log('error : ' + JSON.stringify(error));
         $ionicLoading.hide();
         $ionicPopup.alert({
-          title: 'We Change Makers',
+          title: mAppName,
           template: '위치 정보를 사용할 수 없습니다'
         });
         //서울 초기값 세팅
         var lat  = 37.574515;
         var long = 126.976930;
         $scope.setLocationName(lat, long);
-        
-        console.log(err);
     });
 
 
@@ -234,18 +243,22 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
           console.log('$scope.cardForm.location.$valid : ' + $scope.cardForm.location.$valid);
 
         } else {
-         $ionicPopup.alert({
-           title: 'google map error',
-           template: 'No results found'
-         });
+          console.log('status : ' + status);
+          console.log('results : ' + results);
+          $ionicPopup.alert({
+            title: mAppName,
+            template: 'google map 결과 값이 없습니다'
+          });
         }
-
         $ionicLoading.hide();
+
       } else {
+        console.log('status : ' + status);
+        console.log('results : ' + results);
         $ionicPopup.alert({
-           title: 'google map error',
-           template: status
-         });
+          title: mAppName,
+          template: 'google map 상태가 좋지 않습니다'
+        });
         $ionicLoading.hide();
       }
     });
@@ -274,47 +287,82 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     //form 밖의 버튼이라서 submit이 처리되지 않으므로 submit처리하여 invalid error를 보여준다
     $scope.cardForm.$setSubmitted();
 
+    var message, btnMessage;
     if(form.$invalid){
       $ionicPopup.alert({
          title: '잠시만요!',
-         template: '모든 내용을 입력해주세요'
+         template: '모든 내용을 입력해주세요',
+         cssClass: 'wcm-negative'
        });
       return;
-    }
+    }else{
+      //cardId가 없으면 add, 있으면 edit
+      if($scope.cardId == null){
+        message = '올리신 글을 바로 공유하시겠습니까?';
+        btnMessage = '공유하기';
+      }else{
+        message = '글을 수정 하시겠습니까?';
+        btnMessage = '수정하기';
+        if(!($scope.cardForm.title.$dirty || $scope.cardForm.description.$dirty ||
+        $scope.cardForm.location.$dirty || $scope.cardForm.file.$dirty)){
 
-    $ionicLoading.show({
-        template: '<ion-spinner icon="bubbles"></ion-spinner><br/>업로드..',
-        duration : 10000,
-    });
-
-    console.log('$scope.imgURI : ' + $scope.imgURI);
-    console.log('file dirty : ' + $scope.cardForm.file.$dirty);
-
-    //찍은 사진이 있다면 
-    if($scope.imgURI != null){ 
-      //$scope.cardId가 null이면 (new add)
-      if($scope.cardId == null){ 
-        $scope.savePicture();
-      }else{ //$scope.cardId가 있을 경우(edit일 경우)
-
-        //file을 변경했을 경우에만 다시 저장
-        if($scope.cardForm.file.$dirty){
-          //이미지 경로 및 이름이 같으면 업로드 하지 않는다
-          if(imgPath != $scope.imgURI){
-            $scope.savePicture();
-            //TODO 예전 사진 삭제 
-          }else{
-            //이미지 경로 및 이름이 같다면 DB만 업로드
-            $scope.uploadDb();
-          }
-        }else{
-          $scope.uploadDb();
+          $ionicPopup.alert({
+            title: mAppName,
+            template: '바뀐 부분이 없습니다',
+            cssClass: 'wcm-negative'
+          });
+          $ionicLoading.hide();
+          return;
         }
       }
-    }else{  //사진을 찍을 수 없는 경우 db만 저장한다(web test용도)
-      $scope.uploadDb();
     }
 
+    $ionicPopup.show({
+      title: mAppName,
+      template: message,
+      cssClass: 'wcm-positive',
+      buttons: [
+        { text: '나중에하기' },
+        {
+          text: '<b>'+btnMessage+'</b>',
+          type: 'button-positive',
+          onTap: function(e) {
+            $ionicLoading.show({
+                template: '<ion-spinner icon="bubbles"></ion-spinner><br/>업로드..',
+                duration : 10000,
+            });
+
+            console.log('$scope.imgURI : ' + $scope.imgURI);
+            console.log('file dirty : ' + $scope.cardForm.file.$dirty);
+
+            //찍은 사진이 있다면 
+            if($scope.imgURI != null){ 
+              //$scope.cardId가 null이면 (new add)
+              if($scope.cardId == null){ 
+                $scope.savePicture();
+              }else{ //$scope.cardId가 있을 경우(edit일 경우)
+
+                //file을 변경했을 경우에만 다시 저장
+                if($scope.cardForm.file.$dirty){
+                  //이미지 경로 및 이름이 같으면 업로드 하지 않는다
+                  if(imgPath != $scope.imgURI){
+                    $scope.savePicture();
+                    //TODO 예전 사진 삭제 
+                  }else{
+                    //이미지 경로 및 이름이 같다면 DB만 업로드
+                    $scope.uploadDb();
+                  }
+                }else{
+                  $scope.uploadDb();
+                }
+              }
+            }else{  //사진을 찍을 수 없는 경우 db만 저장한다(web test용도)
+              $scope.uploadDb();
+            }
+          }
+        }
+      ]
+    });
   }
 
   /*
@@ -404,27 +452,16 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
         imgPath = newFileName;
       }
     }else{  //$scope.cardId가 있으면 (edit)
-      if($scope.cardForm.title.$dirty ||
-        $scope.cardForm.description.$dirty ||
-        $scope.cardForm.location.$dirty ||
-        $scope.cardForm.file.$dirty){
-          url = mServerAPI + "/cardDetail/" + $scope.cardId;
-          title = document.getElementById("card_title").value;
-          description = document.getElementById("card_des").value;
-          location_lat =  document.getElementById("card_location").getAttribute('lat');
-          location_long = document.getElementById("card_location").getAttribute('long');
-          location_name = document.getElementById("card_location").value;
-          if(newFileName != null) {
-            imgPath = newFileName;
-          }else{
-            imgPath = $scope.imgURI.split("/").pop();;
-          }
+      url = mServerAPI + "/cardDetail/" + $scope.cardId;
+      title = document.getElementById("card_title").value;
+      description = document.getElementById("card_des").value;
+      location_lat =  document.getElementById("card_location").getAttribute('lat');
+      location_long = document.getElementById("card_location").getAttribute('long');
+      location_name = document.getElementById("card_location").value;
+      if(newFileName != null) {
+        imgPath = newFileName;
       }else{
-        $ionicPopup.alert({
-          title: 'No Changed'
-        });
-        $ionicLoading.hide();
-        return;
+        imgPath = $scope.imgURI.split("/").pop();;
       }
 
       var i = 0;
@@ -465,8 +502,9 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
         $ionicLoading.hide();
 
         $ionicPopup.alert({
-          title: 'We change Makers',
-          template: '게시물이 성공적으로 등록되었습니다.'
+          title: mAppName,
+          template: '게시물이 성공적으로 등록되었습니다',
+          cssClass: 'wcm-positive'
         });
     });
     request.error(function(error){
@@ -474,8 +512,9 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       $ionicLoading.hide();
 
       $ionicPopup.alert({
-        title: 'We change Makers',
-        template: '잠시 후에 다시 시도해주세요.'
+        title: mAppName,
+        template: JSON.stringify(error),
+        cssClass: 'wcm-error'
       });
     });
   }

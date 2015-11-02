@@ -207,8 +207,9 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
         }, function(err) {
             $ionicLoading.hide();
             $ionicPopup.alert({
-              title: 'We Change Makers',
-              template: '위치 정보를 사용할 수 없습니다'
+              title: mAppName,
+              template: '위치 정보를 사용할 수 없습니다',
+              cssClass: 'wcm-error'
              });
             console.log('CURRENT LOCATION ERROR :  ' + err);
         });
@@ -376,40 +377,52 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
           fileurl = mServerUpload + fileurl;
         }
 
-        var username = '';
+        //img가 load되는 지 검사 후 정보를 보여준다
+        var imageLoader=new Image();
+        imageLoader.onload=imageFound;
+        imageLoader.onerror=imageNotFound;
+        imageLoader.src=fileurl;
+        function imageNotFound() {
+            console.log('That image was not found.');
+            fileurl = 'img/default.png';
+            showInfo();
+        };
+        function imageFound() {
+          showInfo();
+        };
 
-        var infoHtml = 
-          '<div class="info">'+
-             '<div class="info-top">'+
-              '<h3>' + title + '</h3>'+
-              '<img class="info_location_img" src='+location_img+' />' + 
-              '<span class="info_location_text">' + location +'</span>' +
-            '</div>' +
-            '<a href="' + url + '">'+
-              '<div class="info-body">'+
-                  '<img src="' + fileurl + '" class="info-img"/>'+
-                  '<div class="detail_view">' + '자세히 보기 &gt;' + '</div>'
+        function showInfo(){
+          var username = '';
+          var infoHtml = 
+            '<div class="info">'+
+               '<div class="info-top">'+
+                '<h3>' + title + '</h3>'+
+                '<img class="info_location_img" src='+location_img+' />' + 
+                '<span class="info_location_text">' + location +'</span>' +
               '</div>' +
-            '</a>'+
-            // '<a href="http://facebook.com/' + pic.user[0].user_id + '" target="_blank">' + pic.user[0].username +
-            // '</a>'+
-          '</div>';
+              '<a href="' + url + '">'+
+                '<div class="info-body">'+
+                    '<img src="' + fileurl + '" class="info-img" />'+
+                    '<div class="detail_view">' + '자세히 보기 &gt;' + '</div>'
+                '</div>' +
+              '</a>'+
+              // '<a href="http://facebook.com/' + pic.user[0].user_id + '" target="_blank">' + pic.user[0].username +
+              // '</a>'+
+            '</div>';
+          $scope.infoWindow.setContent(infoHtml);
+          $scope.infoWindow.setPosition(latlng);
+          $scope.infoWindow.open($scope.map);
 
-        
-
-        $scope.infoWindow.setContent(infoHtml);
-        $scope.infoWindow.setPosition(latlng);
-        $scope.infoWindow.open($scope.map);
-
-        // $scope.markerTitle = pic.title;
-        // $scope.markerLocation = pic.location_name;
-        // $scope.markerLocationImg = location_img;
-        // $scope.markerImg = fileurl;
-        // console.log('markerTitle : ' + $scope.markerTitle);
-        // console.log('markerLocation : ' + $scope.markerLocation);
-        // console.log('markerLocationImg : ' + $scope.markerLocationImg);
-        // console.log('markerImg : ' + $scope.markerImg);
-        // $scope.modal.show();
+          // $scope.markerTitle = pic.title;
+          // $scope.markerLocation = pic.location_name;
+          // $scope.markerLocationImg = location_img;
+          // $scope.markerImg = fileurl;
+          // console.log('markerTitle : ' + $scope.markerTitle);
+          // console.log('markerLocation : ' + $scope.markerLocation);
+          // console.log('markerLocationImg : ' + $scope.markerLocationImg);
+          // console.log('markerImg : ' + $scope.markerImg);
+          // $scope.modal.show();
+        }
       };
     };
 

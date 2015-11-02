@@ -1,3 +1,4 @@
+var mAppName = "'We Change Makers'";
 var mServerUrl, mServerUpload, mServerAPI = '';
 var mLocalServer = false; //local serve 여부
 
@@ -213,8 +214,9 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
                   console.log('payload : ' + JSON.stringify(payload));
                   // alert('onNotification : ' + notification, payload);
                   $ionicPopup.alert({
-                    title: 'We Change Makers',
-                    template: payload.message
+                    title: mAppName,
+                    template: payload.message,
+                    cssClass: 'wcm-negative'
                   });
                 },
                 //push가 등록되면 해당 push token을 위에 설정한 user에 넣고 db에도 넣는다
@@ -456,10 +458,10 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
         }
       }
     })
-    .state('tabs.edit', {
-      url: "/write/edit/:id/",
+    .state('tabs.edit', {   //home에서 card edit을 눌러서 가는 view(home-tab 사용 edit by tjhan 151102)
+      url: "/home/edit/:id/", 
       views: {
-        'write-tab': {
+        'home-tab': {
           templateUrl: "templates/write.html",
           controller : "WriteController"
         }

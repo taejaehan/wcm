@@ -210,8 +210,8 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       
       var myPopup1 = $ionicPopup.show({
         template: "로그인 후에 이용 가능합니다",
-        title: 'We Change Makers',
-      
+        title: mAppName,
+        cssClass: 'wcm-positive',
         buttons: [
           { text: '나중에하기' },
           {
@@ -245,8 +245,9 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       var comment = document.getElementById("comment").value;
       if ( comment === "" ) {
         $ionicPopup.alert({
-          title: 'We Change Makers',
-          template: '내용을 입력하세요'
+          title: mAppName,
+          template: '내용을 입력하세요',
+          cssClass: 'wcm-negative',
         });
       } else {
         $scope.username = user.username;
@@ -312,8 +313,8 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
     } else {
       var myPopup2 = $ionicPopup.show({
         template: "로그인 후에 이용 가능합니다",
-        title: 'We Change Makers',
-      
+        title: mAppName,
+        cssClass: 'wcm-positive',
         buttons: [
           { text: '나중에하기' },
           {
@@ -351,8 +352,9 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   $scope.deleteComment = function(comment) {
 
     var confirmPopup = $ionicPopup.confirm({
-      title: 'We Change Makers',
-      template: '댓글을 정말로 삭제하겠습니까?'
+      title: mAppName,
+      template: '댓글을 정말로 삭제하겠습니까?',
+      cssClass: 'wcm-negative',
     });
 
     confirmPopup.then(function(res) {
@@ -388,8 +390,9 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   // Change Supporters 추가하기
   var ChangeMakerPost = function() {
     var confirmPopup = $ionicPopup.confirm({
-      title: 'We Change Makers',
-      template: 'ChangeMaker가 되어 해당 이슈를 해결하는데 참여하시겠습니까?'
+      title: mAppName,
+      template: 'ChangeMaker가 되어 해당 이슈를 해결하는데 참여하시겠습니까?',
+      cssClass: 'wcm-positive',
     });
     confirmPopup.then(function(res) {
       if(res) {
@@ -434,8 +437,9 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
       if ($scope.card.status == 100) {
         $ionicPopup.alert({
-          title: 'We Change Makers',
-          template: '프로젝트가 종료되었습니다.'
+          title: mAppName,
+          template: '프로젝트가 종료되었습니다',
+          cssClass: 'wcm-negative'
         });
         
       } else {
@@ -445,8 +449,9 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
         
         } else {
           $ionicPopup.alert({
-            title: 'We Change Makers',
-            template: '이미 참여하셨습니다'
+            title: mAppName,
+            template: '이미 참여하셨습니다',
+            cssClass: 'wcm-negative'
           });
         }
       }
@@ -454,8 +459,8 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
     } else {
       var myPopup3 = $ionicPopup.show({
         template: "로그인 후에 이용 가능합니다",
-        title: 'We Change Makers',
-      
+        title: mAppName,
+        cssClass: 'wcm-positive',
         buttons: [
           { text: '나중에하기' },
           {
@@ -479,6 +484,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
     $ionicPopup.show({
       templateUrl : 'templates/popup.html',
       scope: $scope,
+      cssClass: 'wcm-positive',
       buttons: [
        {
           text: '<b>Ok</b>',
@@ -507,8 +513,9 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       // function (response) { alert(JSON.stringify(response)) }
       function (success) {
         $ionicPopup.alert({
-          title: 'We Change Makers',
-          template: '페이스북에 공유 되었습니다.'
+          title: mAppName,
+          template: '페이스북에 공유 되었습니다',
+          cssClass: 'wcm-positive',
         });
 
         $scope.share_count ++;
@@ -527,9 +534,11 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
         });
       },
       function (error) {
+        console.log(JSON.stringify(error));
         $ionicPopup.alert({
-          title: 'We Change Makers',
-          template: '페이스북 공유에 실패하였습니다.'
+          title: mAppName,
+          template: '페이스북 공유에 실패 하였습니다',
+          cssClass: 'wcm-error',
         });
       }
     );

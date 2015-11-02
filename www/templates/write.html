@@ -1,6 +1,6 @@
 <ion-view view-title="{{uploadTitle}}">
   <ion-nav-buttons side="left">
-    <button type="submit" class="button button-icon" ng-click="cancelCard()">
+    <button type="submit" class="button button-icon" ng-if="addView"  ng-click="cancelCard()">
         취소
     </button>
   </ion-nav-buttons>
@@ -73,7 +73,7 @@
       <label class="item item-input"  
          ng-class="{ 'has-errors-img' : cardForm.file.$invalid && cardForm.$submitted, 'no-errors-img' : cardForm.file.$valid  && cardForm.$submitted}">
       <div id="picture_list">
-        <img id="card_img" ng-show="imgURI !== undefined" ng-src="{{imgURI}}">
+        <img id="card_img" ng-show="imgURI !== undefined" ng-src="{{imgURI}}" onError="this.src='img/default.png'">
         <a class="change-link"><i class="ion-ios-reverse-camera img-change" ng-show="imgURI !== undefined"></i></a>
         <!-- <img ng-show="imgURI === undefined" ng-src="http://placehold.it/100x100"> -->
         <button id="change_pic" class="button button-icon" ng-click="showPictureSheet()">
