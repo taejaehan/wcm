@@ -1,4 +1,4 @@
-wcm.controller("PostController", function($scope, $rootScope, $http, $stateParams, $state, $ionicPopup, $ionicModal) {
+wcm.controller("PostController", function($scope, $rootScope, $http, $stateParams, $state, $ionicPopup, $ionicModal, CardService) {
 
   var latlng, progress;
   var user = JSON.parse(window.localStorage['user'] || '{}');
@@ -118,123 +118,14 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   });
 
 
-  // toggle like_count
-  $scope.toggleLike = function(watch) {
-    if (user.isAuthenticated === true) {
-      
-      if (watch === true) {
-        if (user.likes.indexOf($scope.postId) === -1) {
-          $scope.like_count ++;
-          $scope.card.watch = true;
-          user.likes.push($scope.postId);
-          window.localStorage['user'] = JSON.stringify(user);
-          var userId = parseInt(user.userid);
-          var postId = parseInt($scope.postId);
-          var formData1 = { user_id: userId,
-                            post_id: postId
-                          };
-          var postData1 = 'likeData='+JSON.stringify(formData1);
-
-          var request1 = $http({
-              method: "post",
-              url: mServerAPI + "/like",
-              crossDomain : true,
-              data: postData1,
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-              cache: false
-          });
-        }
-
-        var i = 0;
-      
-        while( i < $rootScope.allData.cards.length) {
-          if ($rootScope.allData.cards[i].id === $stateParams.postId) {
-            $rootScope.allData.cards[i].like_count ++;
-            $rootScope.allData.cards[i].watch = true;
-            break;
-          }
-          i ++;
-        }
-
-      } else {
-        if (user.likes.indexOf($scope.postId) != -1) {
-          $scope.like_count --;
-          $scope.card.watch = false;
-          var index = user.likes.indexOf($scope.postId);
-          user.likes.splice(index, 1);
-          window.localStorage['user'] = JSON.stringify(user);
-          var userId = parseInt(user.userid);
-          var postId = parseInt($scope.postId);
-          var formData1 = { user_id: userId,
-                            post_id: postId
-                          };
-          var postData1 = 'likeData='+JSON.stringify(formData1);
-
-          var request1 = $http({
-              method: "post",
-              url: mServerAPI + "/like/delete/" + userId + "/" + postId,
-              crossDomain : true,
-              data: postData1,
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-              cache: false
-          });
-        }
-
-        var i = 0;
-      
-        while( i < $rootScope.allData.cards.length) {
-          if ($rootScope.allData.cards[i].id === $stateParams.postId) {
-            $rootScope.allData.cards[i].like_count --;
-            $rootScope.allData.cards[i].watch = false;
-            break;
-          }
-          i ++;
-        }
-      }
-
-      var like_count = parseInt($scope.like_count);
-      var formData = { like_count: like_count };
-      var postData = 'likeData='+JSON.stringify(formData);
-
-      var request = $http({
-          method: "post",
-          url: mServerAPI + "/cardDetail/" + $scope.postId + "/like",
-          crossDomain : true,
-          data: postData,
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-          cache: false
-      });
-
-
-    } else {
-      
-      var myPopup1 = $ionicPopup.show({
-        template: "로그인 후에 이용 가능합니다",
-        title: mAppName,
-        cssClass: 'wcm-positive',
-        buttons: [
-          { text: '나중에하기' },
-          {
-            text: '<b>로그인하기</b>',
-            type: 'button-positive',
-            onTap: function(e) {
-              $state.go("fblogin");
-            }
-          }
-        ]
-      });
-
-      $scope.card.watch = false;
-
-      var i = 0;
-      while( i < $rootScope.allData.cards.length) {
-        if ($rootScope.allData.cards[i].id === $stateParams.postId) {
-          $rootScope.allData.cards[i].watch = false;
-          break;
-        }
-        i ++;
-      }
-      
+  // toggle watch_count
+  $scope.toggleWatchPost = function(watch) {
+    var result = CardService.toggleWatch(watch,$scope.postId,user);
+    $scope.card.watch = result;
+    if(result){
+      $scope.like_count ++;
+    }else{
+      $scope.like_count --;
     }
   }
   
@@ -500,7 +391,11 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   }
 
   $scope.showDialog = function (card) { 
-    facebookConnectPlugin.showDialog( {
+    var result = CardService.share('facebook', card);
+    console.log('showDialog result : ' + result);
+    if(result) $scope.share_count ++;
+
+    /*facebookConnectPlugin.showDialog( {
       method: "feed" ,
       picture: card.img_path,
       name: card.title,
@@ -519,7 +414,6 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
         });
 
         $scope.share_count ++;
-        
         var share_count = $scope.share_count;
         var formData = { share_count: share_count };
         var postData = 'shareData='+JSON.stringify(formData);
@@ -541,7 +435,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
           cssClass: 'wcm-error',
         });
       }
-    );
+    );*/
   }
 
 });

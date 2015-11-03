@@ -1,4 +1,4 @@
-<ion-view view-title="Profile">
+<ion-view view-title="프로필">
 	<ion-nav-buttons side="right">
     <button type="submit" ng-if="adminUser" class="button button-icon" ng-click="sendPushNotification()">
       <i class="icon ion-cube"></i>
@@ -15,19 +15,34 @@
 			  </div>
 
 		  	<div class="row">
-			    <a ng-click="showChanges()" class="left-tab" ng-class="{'menu-tab active' : watch, 'menu-tab non-active' : !watch}">나의 Change 리스트</a>
-			    <a ng-click="showActivities()" class="right-tab" ng-class="{'menu-tab active' : !watch, 'menu-tab non-active' : watch}">내가 제보한 위험</a>
+				<a ng-click="showReportList()" class="left-tab" ng-class="{'menu-tab active' : reportTab, 'menu-tab non-active' : !reportTab}">내가 제보한 위험</a>
+				<a ng-click="showChangeList()" class="center-tab" ng-class="{'menu-tab active' : changeTab, 'menu-tab non-active' : !changeTab}">내가 해결한 위험</a>
+				<a ng-click="showWatchList()" class="right-tab" ng-class="{'menu-tab active' : watchTab, 'menu-tab non-active' : !watchTab}">위험해요! 리스트</a>
 		    </div>
 
 			  <div class="form-group login">
-
-
-			    <div ng-class="{'info-1 active' : watch, 'info-1 non-active' : !watch}">
-			    	{{ message1 }}
-
-				    <ion-item ng-repeat="change in changes | reverse" class="my-change-list">
+			  	 <!--내가 제보한 위험 리스트-->
+			    <div ng-class="{'card-info active' : reportTab, 'card-info non-active' : !reportTab}">
+			    	{{ reportEmptyMessage }}
+			    	<ion-item ng-repeat="card in reportList  | reverse" class="my-card-list">
+				    	<a href="#/tab/home/{{ card.id }}" class="title"><p>{{ card.title }}</p></a>
+				    	<div class="progress">
+		            <div class="progress-bar progress-bar-danger progress-bar-striped progress-{{card.status}}" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: {{card.status}}%">
+		            </div>
+		          </div>
+		          <p class="progressText progress-{{card.status}}"><i class="icon {{card.statusIcon}}"></i> {{ card.statusDescription }}</p>
+		          <div class="progress-button">
+			      		<a ng-click="idea(card)"><i class="ion-alert-circled"></i> 시작</a>
+			      		<a ng-click="doing(card)"><i class="ion-gear-b"></i> 진행</a>
+			      		<a ng-click="done(card)"><i class="ion-happy-outline"></i> 완료</a>
+			      	</div>
+			      </ion-item>
+			    </div>
+				 <!--내가 해결한 위험 리스트-->
+			    <div ng-class="{'change-info active' : changeTab, 'change-info non-active' : !changeTab}">
+			    	{{ changeEmptyMessage }}
+				    <ion-item ng-repeat="change in changeList | reverse" class="my-change-list">
 				    	<p class="title">{{ change.title }}</p>
-
 				    	<div class="progress">
 		            <div class="progress-bar progress-bar-danger progress-bar-striped progress-{{change.status}}" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: {{change.status}}%">
 		            </div>
@@ -40,39 +55,27 @@
 			        </div>
 				    </ion-item>
 			    </div>
-
-
-			    <div ng-class="{'info-2 active' : !watch, 'info-2 non-active' : watch}">
-			    	{{ message2 }}
-			    	<ion-item ng-repeat="card in cards | reverse" class="my-card-list">
-				    	<a href="#/tab/home/{{ card.id }}" class="title"><p>{{ card.title }}</p></a>
-
+				  <!--위험해요! 리스트-->
+			    <div ng-class="{'watch-info active' : watchTab, 'watch-info non-active' : !watchTab}">
+			    	{{ watchEmptyMessage }}
+				    <ion-item ng-repeat="watch in watchList | reverse" class="my-change-list">
+				    	<p class="title">{{ watch.title }}</p>
 				    	<div class="progress">
-		            <div class="progress-bar progress-bar-danger progress-bar-striped progress-{{card.status}}" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: {{card.status}}%">
+		            <div class="progress-bar progress-bar-danger progress-bar-striped progress-{{watch.status}}" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: {{watch.status}}%">
 		            </div>
 		          </div>
-		          <p class="progressText progress-{{card.status}}"><i class="icon {{card.statusIcon}}"></i> {{ card.statusDescription }}</p>
-
-		          <div class="progress-button">
-			      		<a ng-click="idea(card)"><i class="ion-alert-circled"></i> 시작</a>
-			      		<a ng-click="doing(card)"><i class="ion-gear-b"></i> 진행</a>
-			      		<a ng-click="done(card)"><i class="ion-happy-outline"></i> 완료</a>
-			      	</div>
-			      </ion-item>
+		          <p class="progressText progress-{{watch.status}}"><i class="icon {{watch.statusIcon}}"></i> {{ watch.statusDescription }}</p>
+		          <div class="watch-list-button">
+			         	<a class="btn btn-default btn-sm watch-list left" href="#/tab/profile/{{ watch.id }}">자세히 보기</a>
+			         	<a class="btn btn-default btn-sm watch-list right" ng-click="toggleWatchProfile(watch.watch = !watch.watch, watch.id)" ng-class="{'active' : watch.watch, 'non-active' : !watch.watch}" id="like">
+	                <i class="ion-ios-eye"></i>  위험해요 {{ card.like_count }}
+	              </a>
+			        </div>
+						</ion-item>
 			    </div>
 
 
 			  </div>
 	    </form>
-	    
-		  <!-- profile클릭시 팝업창 뜨게 변경하여 userCheck하는 부분 주석처리 bytjhan 151016-->
-	    <!-- <div ng-class="{'user active' : !userCheck, 'user non-active' : userCheck}">
-	    	<div class="form-group jumbotron non-login">
-	    		<img src="img/app_icon.png">
-	    		<p>로그인이 필요한 서비스 입니다.</p>
-	    		<button class="btn btn-default" ng-click="goLogin()">페이스북으로 로그인하기</button>
-	    	</div>
-	    </div> -->
-	  </div>
   </ion-content>
 </ion-view>

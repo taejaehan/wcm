@@ -1,4 +1,4 @@
-wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth, $ionicSlideBoxDelegate, $cordovaPreferences, $ionicLoading, $ionicHistory) {
+wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth, $ionicSlideBoxDelegate, $cordovaPreferences, $ionicLoading, $ionicHistory, CardService) {
 
   navigator.geolocation.watchPosition(showPosition);
 
@@ -580,130 +580,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   };
 
 
-  // Toggle Like-Count
-  $scope.toggleLike = function(e, id) {
-
-    if(user != null){
-      if (user.isAuthenticated === true) {
-
-        if (e === true) {
-
-          if (user.likes.indexOf(id) === -1) {
-            user.likes.push(id);
-            window.localStorage['user'] = JSON.stringify(user);
-            
-            var userId = parseInt(user.userid);
-            var postId = parseInt(id);
-            var formData1 = { user_id: userId,
-                              post_id: postId
-                            };
-            var postData1 = 'likeData='+JSON.stringify(formData1);
-
-            var request1 = $http({
-                method: "post",
-                url: mServerAPI + "/like",
-                crossDomain : true,
-                data: postData1,
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-                cache: false
-            });
-
-          }
-
-          var i = 0;
-
-          while( i < $rootScope.allData.cards.length) {
-
-            if ($rootScope.allData.cards[i].id === id) {
-              $rootScope.allData.cards[i].like_count ++;
-              $rootScope.allData.cards[i].watch = true;
-              $scope.selectedCard = $rootScope.allData.cards[i];
-              break;
-            }
-            i ++;
-          }
-
-
-        } else {
-          
-          if (user.likes.indexOf(id) != -1) {
-            var index = user.likes.indexOf(id);
-            user.likes.splice(index, 1);
-            window.localStorage['user'] = JSON.stringify(user);
-            
-            var userId = parseInt(user.userid);
-            var postId = parseInt(id);
-            var formData1 = { user_id: userId,
-                              post_id: postId
-                            };
-            var postData1 = 'likeData='+JSON.stringify(formData1);
-
-            var request1 = $http({
-                method: "post",
-                url: mServerAPI + "/like/delete/" + userId + "/" + postId,
-                crossDomain : true,
-                data: postData1,
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-                cache: false
-            });
-
-          }
-
-          var i = 0;
-
-          while( i < $rootScope.allData.cards.length) {
-
-            if ($rootScope.allData.cards[i].id === id) {
-              $rootScope.allData.cards[i].like_count --;
-              $rootScope.allData.cards[i].watch = false;
-              $scope.selectedCard = $rootScope.allData.cards[i];
-              break;
-            }
-            i ++;
-          }
-        }
-
-        var like_count = parseInt($scope.selectedCard.like_count);
-        var formData = { like_count: like_count };
-        var postData = 'likeData='+JSON.stringify(formData);
-
-        var request = $http({
-            method: "post",
-            url: mServerAPI + "/cardDetail/" + id + "/like",
-            crossDomain : true,
-            data: postData,
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-            cache: false
-        });
-
-
-      } else {
-        $ionicPopup.show({
-          template: '로그인 후에 이용 가능합니다',
-          title: mAppName,
-          cssClass: 'wcm-positive',
-          buttons: [
-            { text: '나중에하기' },
-            {
-              text: '<b>로그인하기</b>',
-              type: 'button-positive',
-              onTap: function(e) {
-                $state.go("fblogin");
-              }
-            }
-          ]
-        });
-        
-        var i = 0;
-        while( i < $rootScope.allData.cards.length) {
-          if ($rootScope.allData.cards[i].id === id) {
-            $rootScope.allData.cards[i].watch = false;
-            break;
-          }
-          i ++;
-        }
-      }
-    }
+  // Toggle watch-Count
+  $scope.toggleWatchHome = function(e, id) {
+    CardService.toggleWatch(e,id,user);
   }
 
   $scope.overlayClose = function() {
@@ -714,7 +593,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   }
 
   $scope.showDialog = function (card) { 
-    facebookConnectPlugin.showDialog( {
+    CardService.share('facebook', card);
+
+    /*facebookConnectPlugin.showDialog( {
       method: "feed" ,
       picture: card.img_path,
       name: card.title,
@@ -732,19 +613,30 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           cssClass: 'wcm-positive',
         });
 
-        $rootScope.allData.cards[i].share_count ++;
-        var share_count = $rootScope.allData.cards[i].share_count ++;
-        var formData = { share_count: share_count };
-        var postData = 'shareData='+JSON.stringify(formData);
+        while( i < $rootScope.allData.cards.length) {
+          if ($rootScope.allData.cards[i].id === card.id) {
+            var share_count = $rootScope.allData.cards[i].share_count ++;
+            var formData = { share_count: share_count };
+            var postData = 'shareData='+JSON.stringify(formData);
 
-        var request = $http({
-            method: "post",
-            url: mServerAPI + "/cardDetail/" + $scope.postId + "/share",
-            crossDomain : true,
-            data: postData,
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-            cache: false
-        });
+            var request = $http({
+                method: "post",
+                url: mServerAPI + "/cardDetail/" + card.id + "/share",
+                crossDomain : true,
+                data: postData,
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+                cache: false
+            });
+            request.success(function(data) {
+              console.log('shareCountPost success : ' + JSON.stringify(data));
+            });
+            request.error(function(error){
+              console.log('shareCountPost error : ' + JSON.stringify(error));
+            });
+            break;
+          }
+          i ++;
+        }
       },
       function (error) {
         console.log('error : ' + JSON.stringify(error));
@@ -754,7 +646,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           cssClass: 'wcm-error',
         });
       }
-    );
+    );*/
   }
 
 });

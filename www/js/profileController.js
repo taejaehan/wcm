@@ -1,4 +1,4 @@
-wcm.controller("ProfileController", function($scope, $state, $http, AuthService, $window, $ionicPopup, $ionicHistory,$ionicLoading, $timeout) {
+wcm.controller("ProfileController", function($scope, $state, $http, AuthService, $window, $ionicPopup, $ionicHistory,$ionicLoading, $timeout, CardService) {
 
 	var user = JSON.parse(window.localStorage['user'] || '{}');
 
@@ -9,50 +9,105 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 		$scope.userCheck = true;
 		$scope.user = user;
 
-		$scope.cards = [];
-		$scope.changes = [];
-		$scope.watch = true;
-		$scope.message1 = '';
-		$scope.message2 = '';
+		$scope.reportList = [];
+		$scope.changeList = [];
+		$scope.watchList = [];
+
+		$scope.reportTab = true;
+		$scope.changeTab = false;
+		$scope.watchTab = false;
+
+		$scope.reportEmptyMessage = '';
+		$scope.changeEmptyMessage = '';
+		$scope.watchEmptyMessage = '';
+
 		//dmjor 페이스북으로 로그인한 경우는 adminUser true
 		$scope.adminUser = user.userid == "1826451354247937";
 
-		// User가 Change Supporters로 참여중인 Change List 가져오기
+		$ionicLoading.show({
+			template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
+		});
+
+		var request = $http({
+			method: "get",
+			url: mServerAPI + "/userActivities/" + user.userid,
+			crossDomain : true,
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+			cache: false
+		});
+		request.error(function(error){
+			console.log('error : ' + JSON.stringify(error));
+			$ionicLoading.hide();
+			$ionicPopup.alert({
+	        title: mAppName,
+	        template: '사용자 활동 리스트를 가져오지 못 했습니다',
+	        cssClass: 'wcm-error',
+	      });
+		});
+		request.success(function(data) {
+			$ionicLoading.hide();
+			/*내가 제보한 위험 리스트 넣어주기*/
+			if(data.reportList.length === 0) {
+				$scope.reportEmptyMessage = "작성한 글이 없습니다"
+			}else{
+				for (var i = 0; i < data.reportList.length; i++) {
+					if (data.reportList[i].status === PROGRESS_START) {
+						data.reportList[i].statusDescription = PROGRESS_START_TEXT;
+						data.reportList[i].statusIcon = "ion-alert-circled";
+					} else if (data.reportList[i].status === PROGRESS_ONGOING) {
+						data.reportList[i].statusDescription = PROGRESS_ONGOING_TEXT;
+						data.reportList[i].statusIcon = "ion-gear-b";
+					} else {
+						data.reportList[i].statusDescription = PROGRESS_COMPLETED_TEXT;
+						data.reportList[i].statusIcon = "ion-happy-outline";
+					}
+					$scope.reportList.push(data.reportList[i]);	
+				}
+			}
+			/*내가 해결한 위험 리스트 넣어주기*/
+			if(data.changeList.length === 0) {
+				$scope.reportEmptyMessage = "Change Supporters로 참여중인 프로젝트가 없습니다"
+			}else{
+				for (var i = 0; i < data.changeList.length; i++) {
+					if (data.changeList[i].post[0].status === PROGRESS_START) {
+		          data.changeList[i].post[0].statusDescription = PROGRESS_START_TEXT;
+		          data.changeList[i].post[0].statusIcon = "ion-alert-circled";
+		        } else if (data.changeList[i].post[0].status === PROGRESS_ONGOING) {
+		          data.changeList[i].post[0].statusDescription = PROGRESS_ONGOING_TEXT;
+		          data.changeList[i].post[0].statusIcon = "ion-gear-b";
+		        } else {
+		          data.changeList[i].post[0].statusDescription = PROGRESS_COMPLETED_TEXT;
+		          data.changeList[i].post[0].statusIcon = "ion-happy-outline";
+		        }
+			  		$scope.changeList.push(data.changeList[i].post[0]);
+				}
+			}
+			/*내가 위험해요 누른 위험 리스트 넣어주기*/
+			if(data.watchList.length === 0) {
+				$scope.reportEmptyMessage = "위험해요를 누른 프로젝트가 없습니다"
+			}else{
+				for (var i = 0; i < data.watchList.length; i++) {
+					if (data.watchList[i].post[0].status === PROGRESS_START) {
+		          data.watchList[i].post[0].statusDescription = PROGRESS_START_TEXT;
+		          data.watchList[i].post[0].statusIcon = "ion-alert-circled";
+		        } else if (data.watchList[i].post[0].status === PROGRESS_ONGOING) {
+		          data.watchList[i].post[0].statusDescription = PROGRESS_ONGOING_TEXT;
+		          data.watchList[i].post[0].statusIcon = "ion-gear-b";
+		        } else {
+		          data.watchList[i].post[0].statusDescription = PROGRESS_COMPLETED_TEXT;
+		          data.watchList[i].post[0].statusIcon = "ion-happy-outline";
+		        }
+		        //위험해요 누른 프로젝트를 가져왔으므로 watch는 true
+		        data.watchList[i].post[0].watch = true;
+
+			  		$scope.watchList.push(data.watchList[i].post[0]);
+				}
+			}
+
+		});
+
+		/*// User가 작성한 Card List 가져오기
 		var request1 = $http({
-	    method: "get",
-	    url: mServerAPI + "/change/" + user.userid,
-	    crossDomain : true,
-	    headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
-	    cache: false
-	  });
-
-	  request1.success(function(data) {
-	  	for (var i = 0; i < data.changes.length; i++) {
-	  		if(data.changes[i].post.length > 0 ){	//add by tjhan 151007
-		  		if (data.changes[i].post[0].status === PROGRESS_START) {
-	          data.changes[i].post[0].statusDescription = PROGRESS_START_TEXT;
-	          data.changes[i].post[0].statusIcon = "ion-alert-circled";
-	        } else if (data.changes[i].post[0].status === PROGRESS_ONGOING) {
-	          data.changes[i].post[0].statusDescription = PROGRESS_ONGOING_TEXT;
-	          data.changes[i].post[0].statusIcon = "ion-gear-b";
-	        } else {
-	          data.changes[i].post[0].statusDescription = PROGRESS_COMPLETED_TEXT;
-	          data.changes[i].post[0].statusIcon = "ion-happy-outline";
-	        }
-
-		  		var change = data.changes[i].post[0];
-		  		$scope.changes.push(change);
-		  	}
-	  	}
-
-	  	if(data.changes.length === 0) {
-	  		$scope.message1 = "Change Supporters로 참여중인 프로젝트가 없습니다."
-	  	}
-	  });
-
-
-	  // User가 작성한 Card List 가져오기
-		var request2 = $http({
 	    method: "get",
 	    url: mServerAPI + "/cards/" + user.userid,
 	    crossDomain : true,
@@ -60,7 +115,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 	    cache: false
 	  });
 
-	  request2.success(function(data) {
+	  request1.success(function(data) {
 
 	  	for (var i = 0; i < data.cards.length; i++) {
 	  		if (data.cards[i].status === PROGRESS_START) {
@@ -75,74 +130,107 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
         }
 
 	  		var card = data.cards[i];
-	  		$scope.cards.push(card);	
+	  		$scope.reportList.push(card);	
 	  	}
 	  	
 	  	if(data.cards.length === 0) {
-	  		$scope.message2 = "작성한 글이 없습니다."
+	  		$scope.reportEmptyMessage = "작성한 글이 없습니다"
 	  	}
 	  });
 
+		// User가 Change Supporters로 참여중인 Change List 가져오기
+		var request2 = $http({
+	    method: "get",
+	    url: mServerAPI + "/change/" + user.userid,
+	    crossDomain : true,
+	    headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+	    cache: false
+	  });
 
-	  var statusPost = function(card) {
-	  	var status = card.status;
+	  request2.success(function(data) {
+	  	for (var i = 0; i < data.changes.length; i++) {
+	  		if(data.changes[i].post.length > 0 ){	//add by tjhan 151007
+		  		if (data.changes[i].post[0].status === PROGRESS_START) {
+	          data.changes[i].post[0].statusDescription = PROGRESS_START_TEXT;
+	          data.changes[i].post[0].statusIcon = "ion-alert-circled";
+	        } else if (data.changes[i].post[0].status === PROGRESS_ONGOING) {
+	          data.changes[i].post[0].statusDescription = PROGRESS_ONGOING_TEXT;
+	          data.changes[i].post[0].statusIcon = "ion-gear-b";
+	        } else {
+	          data.changes[i].post[0].statusDescription = PROGRESS_COMPLETED_TEXT;
+	          data.changes[i].post[0].statusIcon = "ion-happy-outline";
+	        }
 
-      var formData = { status: status };
-      var postData = 'statusData='+JSON.stringify(formData);
+		  		var change = data.changes[i].post[0];
+		  		$scope.changeList.push(change);
+		  	}
+	  	}
 
-      var request = $http({
-          method: "post",
-          url: mServerAPI + "/cardDetail/" + card.id + "/status",
-          crossDomain : true,
-          data: postData,
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-          cache: false
-      });
+	  	if(data.changes.length === 0) {
+	  		$scope.changeEmptyMessage = "Change Supporters로 참여중인 프로젝트가 없습니다"
+	  	}
+	  });*/
 
-      request.success(function(data) {
-
-        var i = 0;
-        while( i < $scope.cards.length) {
-
-          if ($scope.cards[i].id === card.id) {
-            
-            if (card.status === PROGRESS_START) {
-		          $scope.cards[i].statusDescription = PROGRESS_START_TEXT;
-		          $scope.cards[i].statusIcon = "ion-alert-circled";
-		        } else if (card.status === PROGRESS_ONGOING) {
-		          $scope.cards[i].statusDescription = PROGRESS_ONGOING_TEXT;
-		          $scope.cards[i].statusIcon = "ion-gear-b";
-		        } else {
-		          $scope.cards[i].statusDescription = PROGRESS_COMPLETED_TEXT;
-		          $scope.cards[i].statusIcon = "ion-happy-outline";
-		        }
-            break;
-          } 
-          i ++;
-        }
-      });
-	  };
-
-	  $scope.idea = function(card) {
-	  	card.status = PROGRESS_START;
-	  	statusPost(card);
-	  }
-
-	  $scope.doing = function(card) {
-	  	card.status = PROGRESS_ONGOING;
-	  	statusPost(card);
-	  }
-
-	  $scope.done =function(card) {
-	  	card.status = PROGRESS_COMPLETED;
-	  	statusPost(card);
-	  }
 
 	} else {
 		$scope.userCheck = false;
 	}
 
+	$scope.toggleWatchProfile = function(e,id){
+		CardService.toggleWatch(e,id,user);
+	};
+	$scope.statusPost = function(card) {
+	  	var status = card.status;
+		var formData = { status: status };
+		var postData = 'statusData='+JSON.stringify(formData);
 
+		var request = $http({
+		    method: "post",
+		    url: mServerAPI + "/cardDetail/" + card.id + "/status",
+		    crossDomain : true,
+		    data: postData,
+		    headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+		    cache: false
+		});
+
+		request.success(function(data) {
+
+		  var i = 0;
+		  while( i < $scope.reportList.length) {
+
+		    if ($scope.reportList[i].id === card.id) {
+		      
+		      if (card.status === PROGRESS_START) {
+			      $scope.reportList[i].statusDescription = PROGRESS_START_TEXT;
+			      $scope.reportList[i].statusIcon = "ion-alert-circled";
+			    } else if (card.status === PROGRESS_ONGOING) {
+			      $scope.reportList[i].statusDescription = PROGRESS_ONGOING_TEXT;
+			      $scope.reportList[i].statusIcon = "ion-gear-b";
+			    } else {
+			      $scope.reportList[i].statusDescription = PROGRESS_COMPLETED_TEXT;
+			      $scope.reportList[i].statusIcon = "ion-happy-outline";
+			    }
+			    break;
+		    } 
+			  i ++;
+		  }
+		});
+  };
+
+	$scope.idea = function(card) {
+	  	card.status = PROGRESS_START;
+	  	$scope.statusPost(card);
+  }
+
+  $scope.doing = function(card) {
+	  	card.status = PROGRESS_ONGOING;
+	  	$scope.statusPost(card);
+  }
+
+  $scope.done =function(card) {
+	  	card.status = PROGRESS_COMPLETED;
+	  	$scope.statusPost(card);
+  }
 
 	$scope.cancelChanger = function(change) {
 		var confirmPopup = $ionicPopup.confirm({
@@ -171,8 +259,8 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 
 	      request.success(function() {
 	      	// Change List에서 Card 삭제
-	      	var changeIndex = $scope.changes.indexOf(change);
-          $scope.changes.splice(changeIndex, 1); 
+	      	var changeIndex = $scope.changeList.indexOf(change);
+          $scope.changeList.splice(changeIndex, 1); 
 
           console.log(user.changes);
           // User가 local storage에서 가지고 있는 change card id 삭제
@@ -184,6 +272,45 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 	  });
 	}
 
+	$scope.cancelWatch = function(watch) {
+		var confirmPopup = $ionicPopup.confirm({
+	    title: mAppName,
+	    template: '위험해요를 취소 하시겠습니까?',
+	    cssClass: 'wcm-negative',
+	  });
+
+	  confirmPopup.then(function(res) {
+	    if(res) {
+	      var userId = parseInt(user.userid);
+	      var postId = change.id;
+	      var formData = { user_id: userId,
+	                        post_id: postId
+	                      };
+	      var postData = 'changeData='+JSON.stringify(formData);
+
+	      var request = $http({
+	          method: "post",
+	          url: mServerAPI + "/change/delete/" + userId + "/" + postId,
+	          crossDomain : true,
+	          data: postData,
+	          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+	          cache: false
+	      });
+
+	      request.success(function() {
+	      	// Change List에서 Card 삭제
+	      	var changeIndex = $scope.changeList.indexOf(change);
+          $scope.changeList.splice(changeIndex, 1); 
+
+          console.log(user.changes);
+          // User가 local storage에서 가지고 있는 change card id 삭제
+          var postIndex = user.changes.indexOf(change.id);
+          user.changes.splice(postIndex, 1);
+          console.log(user.changes);
+	      });
+	    }
+	  });
+	}
 
 	$scope.goLogin = function() {
 		$state.go('fblogin');
@@ -204,12 +331,22 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 		$state.go("tabs.editProfile");
 	}
 	
-	$scope.showChanges = function() {
-		$scope.watch = true;
+	$scope.showReportList = function() {
+		$scope.reportTab = true;
+		$scope.changeTab = false;
+		$scope.watchTab = false;
 	}
 
-	$scope.showActivities = function() {
-		$scope.watch = false;
+	$scope.showChangeList = function() {
+		$scope.reportTab = false;
+		$scope.changeTab = true;
+		$scope.watchTab = false;
+	}
+
+	$scope.showWatchList = function() {
+		$scope.reportTab = false;
+		$scope.changeTab= false;
+		$scope.watchTab = true;
 	}
 
 	$scope.config = function() {
@@ -230,6 +367,10 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 
   $scope.inquire = function() {
     $state.go("tabs.inquire");
+  }
+
+  $scope.AboutUs = function(){
+  		$state.go('tabs.about_us');
   }
   
   $scope.editDone = function() {
@@ -404,5 +545,13 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 		 });
     }
   };
- 
+});
+
+//profile.html에 ng-repeat에서 reverse에서 호출됨 (items을 반대로 재배열)
+wcm.filter('reverse', function() {
+  return function(items) {
+    if(items != null){
+      return items.slice().reverse();
+    };
+  };
 });

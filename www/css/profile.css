@@ -74,6 +74,34 @@
 	border-left: 1px solid #e0e0e0;
 }
 
+#profile_page .my-change-list a.watch-list {
+	width: 50%;
+	height: 35px;
+	color: #828282;
+	margin: 0px;
+	font-size: 13px;
+	padding: 8px 0px 0px 0px;
+	border: none;
+}
+
+#profile_page .watch-list-button {
+	width: 100%;
+	border: 1px solid #e0e0e0;
+	border-left: none;
+	border-bottom: none;
+}
+
+#profile_page .watch-list-button a.watch-list.right {
+	border-left: 1px solid #e0e0e0;
+}
+#profile_page .watch-list-button a.watch-list.active {
+	color: #e85d54;
+	font-weight: bolder;
+	background: none;
+	box-shadow: none;
+}
+
+
 #profile_page .my-change-list, .my-card-list {
 	border-radius: 5px;
 	margin-top: 10px;
@@ -142,10 +170,13 @@ button.logout {
 #profile_page .left-tab {
 	border-top-right-radius: 5px;
 }
-
+#profile_page .center-tab {
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	margin: 0 1%;
+}
 #profile_page .right-tab {
 	border-top-left-radius: 5px;
-	margin-left: 2%;
 }
 
 #profile_page .login {
@@ -164,7 +195,7 @@ button.logout {
 	display: block;
 }
 
-#profile_page .info-1.non-active, .info-2.non-active{
+#profile_page .card-info.non-active, .change-info.non-active, .watch-info.non-active{
 	display: none;
 }
 
@@ -223,4 +254,36 @@ i.ion-chevron-right {
 
 .edit-name p {
 	padding: 15px 15px 5px 15px;
+}
+
+.about-us .about-us-top-img{
+	width: 100%;
+	background-color: #F0F0EE;
+}
+.about-us .about-us-top-img img{
+	width: 60%;
+	margin: 10% 20%;
+}
+
+.about-us .about-us-text{
+	margin: 20px 10px;
+}
+.about-us .about-us-text p{
+	margin : 0 0 3px 0;
+}
+.about-us .about-us-text .part_end{
+	margin-bottom:15px;
+}
+.about-us .about-us-link{
+	margin: 30px 10px;
+}
+.about-us-link .home-link i{
+	color: #EFAE28;
+	font-size: 20px;
+	margin: 0 3px 0 0;
+}
+.about-us-link .fb-link i{
+	color: #3B5998;
+	font-size: 20px;
+	margin: 0 8px 0 4px;
 }

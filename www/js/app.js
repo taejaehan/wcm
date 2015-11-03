@@ -54,15 +54,6 @@ wcm.factory('Scopes', function($rootScope) {
     };
 })
 
-/*filter가 뭔지 모르겠으나 items가 없을 경우 에러나서 예외처리함 by tjhan 151016*/
-wcm.filter('reverse', function() {
-  return function(items) {
-    if(items !=null){
-      return items.slice().reverse();
-    };
-  };
-});
-
 wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup) {
 
   console.log('wcm RUN');
@@ -107,6 +98,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
         request.success(function(data) {
           $ionicLoading.hide();
           console.log('************5.Login Success************');
+          console.log('success data : ' + JSON.stringify(data));
           var user = {
             username: data.users[0].username,
             userid: data.users[0].user_id,
@@ -320,27 +312,36 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
           });
 
           //facebook 연결 상태 확인 테스트 중 by tjhan 151030
-          // facebookConnectPlugin.api(
-          //   "/me", 
-          //   ["public_profile", 'email', 'user_friends'], 
-          //   function (UserInfo) {
-          //     console.log("fbapi success");
-          //     console.log("fbapi success : " + JSON.stringify(UserInfo));
-          //   }, 
-          //   function loginError (error) {
-          //     console.log("fbapi error");
-          //     console.log("fbapi error : " + JSON.stringify(error));
-          //   }
-          // );
-          // facebookConnectPlugin.getLoginStatus(function (userInfo) {
-          //   console.log("LoginStatus success ");
-          //   console.log("LoginStatus : ", userInfo);
-          //   console.log("LoginStatus : ", JSON.stringify(userInfo));
-          // },
-          // function loginError (error) {
-          //   console.log("login error ");
-          //   console.error("login error : " + JSON.stringify(error));
-          // });
+          facebookConnectPlugin.getLoginStatus(
+            function (userInfo) {
+              console.log("LoginStatus success ");
+              console.log("LoginStatus : " + userInfo);
+              console.log("LoginStatus : " + JSON.stringify(userInfo));
+                if(userInfo.status != null && userInfo.status == "unknown"){
+                  facebookConnectPlugin.login(["public_profile", 'email', 'user_friends'], 
+                    function (userData) {
+                      console.log("login success ");
+                      console.log("UserInfo : " + userData);
+                      console.log("UserInfo : " + JSON.stringify(userData));
+                    },
+                    function loginError (error) {
+                      $ionicLoading.hide();
+                      console.log("login error ");
+                      console.error("login error : " + JSON.stringify(error));
+                      $ionicPopup.alert({
+                        title: mAppName,
+                        template: JSON.stringify(error),
+                        cssClass: 'wcm-error'
+                      });
+                    }
+                )
+              }
+            },
+            function loginError (error) {
+              console.log("login error ");
+              console.error("login error : " + JSON.stringify(error));
+            }
+          );
 
         }else{
 
@@ -544,6 +545,15 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
       views: {
         'profile-tab': {
           templateUrl: "templates/privacy.html",
+          controller: 'ProfileController'
+        }
+      }
+    })
+    .state('tabs.about_us', {
+      url: "/profile/config/about_us",
+      views: {
+        'profile-tab': {
+          templateUrl: "templates/aboutUs.html",
           controller: 'ProfileController'
         }
       }
