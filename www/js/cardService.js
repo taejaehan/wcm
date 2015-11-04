@@ -1,12 +1,15 @@
-wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicLoading, $location, $rootScope) {
+wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicLoading, $location, $rootScope, $timeout) {
 
   var toggleWatch = function(e, id, user) {
-
+    console.log('toggleWatch : ' + e);
     if(user != null){
       if (user.isAuthenticated === true) {
-        $ionicLoading.show({
+        var loading = $ionicLoading.show({
           template: '<ion-spinner icon="bubbles"></ion-spinner>'
         });
+        $timeout(function(){
+          loading.hide();
+        }, 5000);
         if (e === true) {
           if (user.likes.indexOf(id) === -1) {
             user.likes.push(id);
@@ -101,6 +104,7 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
     }
   };
   var postWatch = function(selectedCard, id){
+    console.log('postWatch');
     var like_count = parseInt(selectedCard.like_count);
     var formData = { like_count: like_count };
     var postData = 'likeData='+JSON.stringify(formData);
@@ -114,9 +118,11 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
         cache: false
     });
     request.success(function(data) {
+      console.log('SUCCESS : ' + data);
       $ionicLoading.hide();
     });
     request.error(function(error){
+      console.log('ERROR : ' + error);
       $ionicLoading.hide();
     });
   }

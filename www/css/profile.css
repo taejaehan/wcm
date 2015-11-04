@@ -36,8 +36,15 @@
 	display: block;
 }
 
-#profile_page .profile-form .username i {
-	color: white;
+#profile_page .profile-form .profile-setting-icon{
+	width: 20px;
+	height: 20px;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+	display: -webkit-inline-box;
+	vertical-align : sub;
+	background-image: url('../img/setting.png');
 }
 
 #profile_page .my-change-list {
@@ -125,9 +132,9 @@
 	color: #a0a0a0;
 	text-decoration: none;
 	text-align: center;
-	width: 33.2%;
+	width: 32%;
 	display: inline-block;
-	padding-top: 8px;
+	padding-top: 5px;
 }
 
 #profile_page p.progressText {
@@ -185,7 +192,7 @@ button.logout {
   position: absolute;
   margin-bottom: 0;
   margin-left: 0px;
-	padding: 0px 10px 20px 10px;
+	padding: 0px 2% 20px 2%;
 	background-color: #f0f0ee;
 }
 
@@ -286,4 +293,9 @@ i.ion-chevron-right {
 	color: #3B5998;
 	font-size: 20px;
 	margin: 0 8px 0 4px;
+}
+
+.empty-text{
+	text-align: center;
+	padding-top : 10px;
 }

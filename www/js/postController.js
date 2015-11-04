@@ -40,13 +40,13 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
       if (data.cards[0].status === PROGRESS_START) {
         $scope.card.statusDescription = PROGRESS_START_TEXT;
-        $scope.statusIcon = "ion-alert-circled";
+        $scope.statusIcon = "project-start";
       } else if (data.cards[0].status ===PROGRESS_ONGOING) {
         $scope.card.statusDescription = PROGRESS_ONGOING_TEXT;
-        $scope.statusIcon = "ion-gear-b";
+        $scope.statusIcon = "project-ongoing";
       } else if (data.cards[0].status ===PROGRESS_COMPLETED) {
         $scope.card.statusDescription = PROGRESS_COMPLETED_TEXT;
-        $scope.statusIcon = "ion-happy-outline";
+        $scope.statusIcon = "project-complete";
       }
 
       // 카드에 해당하는 change supporters 체크

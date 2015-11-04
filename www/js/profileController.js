@@ -53,49 +53,49 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 				for (var i = 0; i < data.reportList.length; i++) {
 					if (data.reportList[i].status === PROGRESS_START) {
 						data.reportList[i].statusDescription = PROGRESS_START_TEXT;
-						data.reportList[i].statusIcon = "ion-alert-circled";
+						data.reportList[i].statusIcon = "project-start";
 					} else if (data.reportList[i].status === PROGRESS_ONGOING) {
 						data.reportList[i].statusDescription = PROGRESS_ONGOING_TEXT;
-						data.reportList[i].statusIcon = "ion-gear-b";
+						data.reportList[i].statusIcon = "project-ongoing";
 					} else {
 						data.reportList[i].statusDescription = PROGRESS_COMPLETED_TEXT;
-						data.reportList[i].statusIcon = "ion-happy-outline";
+						data.reportList[i].statusIcon = "project-complete";
 					}
 					$scope.reportList.push(data.reportList[i]);	
 				}
 			}
 			/*내가 해결한 위험 리스트 넣어주기*/
 			if(data.changeList.length === 0) {
-				$scope.reportEmptyMessage = "Change Supporters로 참여중인 프로젝트가 없습니다"
+				$scope.changeEmptyMessage = "Change Supporters로 참여중인 프로젝트가 없습니다"
 			}else{
 				for (var i = 0; i < data.changeList.length; i++) {
 					if (data.changeList[i].post[0].status === PROGRESS_START) {
 		          data.changeList[i].post[0].statusDescription = PROGRESS_START_TEXT;
-		          data.changeList[i].post[0].statusIcon = "ion-alert-circled";
+		          data.changeList[i].post[0].statusIcon = "project-start";
 		        } else if (data.changeList[i].post[0].status === PROGRESS_ONGOING) {
 		          data.changeList[i].post[0].statusDescription = PROGRESS_ONGOING_TEXT;
-		          data.changeList[i].post[0].statusIcon = "ion-gear-b";
+		          data.changeList[i].post[0].statusIcon = "project-ongoing";
 		        } else {
 		          data.changeList[i].post[0].statusDescription = PROGRESS_COMPLETED_TEXT;
-		          data.changeList[i].post[0].statusIcon = "ion-happy-outline";
+		          data.changeList[i].post[0].statusIcon = "project-complete";
 		        }
 			  		$scope.changeList.push(data.changeList[i].post[0]);
 				}
 			}
 			/*내가 위험해요 누른 위험 리스트 넣어주기*/
 			if(data.watchList.length === 0) {
-				$scope.reportEmptyMessage = "위험해요를 누른 프로젝트가 없습니다"
+				$scope.watchEmptyMessage = "위험해요를 누른 프로젝트가 없습니다"
 			}else{
 				for (var i = 0; i < data.watchList.length; i++) {
 					if (data.watchList[i].post[0].status === PROGRESS_START) {
 		          data.watchList[i].post[0].statusDescription = PROGRESS_START_TEXT;
-		          data.watchList[i].post[0].statusIcon = "ion-alert-circled";
+		          data.watchList[i].post[0].statusIcon = "project-start";
 		        } else if (data.watchList[i].post[0].status === PROGRESS_ONGOING) {
 		          data.watchList[i].post[0].statusDescription = PROGRESS_ONGOING_TEXT;
-		          data.watchList[i].post[0].statusIcon = "ion-gear-b";
+		          data.watchList[i].post[0].statusIcon = "project-ongoing";
 		        } else {
 		          data.watchList[i].post[0].statusDescription = PROGRESS_COMPLETED_TEXT;
-		          data.watchList[i].post[0].statusIcon = "ion-happy-outline";
+		          data.watchList[i].post[0].statusIcon = "project-complete";
 		        }
 		        //위험해요 누른 프로젝트를 가져왔으므로 watch는 true
 		        data.watchList[i].post[0].watch = true;
@@ -120,13 +120,13 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 	  	for (var i = 0; i < data.cards.length; i++) {
 	  		if (data.cards[i].status === PROGRESS_START) {
           data.cards[i].statusDescription = PROGRESS_START_TEXT;
-          data.cards[i].statusIcon = "ion-alert-circled";
+          data.cards[i].statusIcon = "project-start";
         } else if (data.cards[i].status === PROGRESS_ONGOING) {
           data.cards[i].statusDescription = PROGRESS_ONGOING_TEXT;
-          data.cards[i].statusIcon = "ion-gear-b";
+          data.cards[i].statusIcon = "project-ongoing";
         } else {
           data.cards[i].statusDescription = PROGRESS_COMPLETED_TEXT;
-          data.cards[i].statusIcon = "ion-happy-outline";
+          data.cards[i].statusIcon = "project-complete";
         }
 
 	  		var card = data.cards[i];
@@ -152,13 +152,13 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 	  		if(data.changes[i].post.length > 0 ){	//add by tjhan 151007
 		  		if (data.changes[i].post[0].status === PROGRESS_START) {
 	          data.changes[i].post[0].statusDescription = PROGRESS_START_TEXT;
-	          data.changes[i].post[0].statusIcon = "ion-alert-circled";
+	          data.changes[i].post[0].statusIcon = "project-start";
 	        } else if (data.changes[i].post[0].status === PROGRESS_ONGOING) {
 	          data.changes[i].post[0].statusDescription = PROGRESS_ONGOING_TEXT;
-	          data.changes[i].post[0].statusIcon = "ion-gear-b";
+	          data.changes[i].post[0].statusIcon = "project-ongoing";
 	        } else {
 	          data.changes[i].post[0].statusDescription = PROGRESS_COMPLETED_TEXT;
-	          data.changes[i].post[0].statusIcon = "ion-happy-outline";
+	          data.changes[i].post[0].statusIcon = "project-complete";
 	        }
 
 		  		var change = data.changes[i].post[0];
@@ -202,13 +202,13 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 		      
 		      if (card.status === PROGRESS_START) {
 			      $scope.reportList[i].statusDescription = PROGRESS_START_TEXT;
-			      $scope.reportList[i].statusIcon = "ion-alert-circled";
+			      $scope.reportList[i].statusIcon = "project-start";
 			    } else if (card.status === PROGRESS_ONGOING) {
 			      $scope.reportList[i].statusDescription = PROGRESS_ONGOING_TEXT;
-			      $scope.reportList[i].statusIcon = "ion-gear-b";
+			      $scope.reportList[i].statusIcon = "project-ongoing";
 			    } else {
 			      $scope.reportList[i].statusDescription = PROGRESS_COMPLETED_TEXT;
-			      $scope.reportList[i].statusIcon = "ion-happy-outline";
+			      $scope.reportList[i].statusIcon = "project-complete";
 			    }
 			    break;
 		    } 

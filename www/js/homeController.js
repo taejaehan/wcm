@@ -324,16 +324,16 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           for (var i = 0; i < data.cards.length; i++) {
             
             $scope.noMoreItemsAvailable = false;
-
+            
             if (data.cards[i].status === PROGRESS_START) {
               data.cards[i].statusDescription = PROGRESS_START_TEXT;
-              data.cards[i].statusIcon = "ion-alert-circled";
+              data.cards[i].statusIcon = "project-start";
             } else if (data.cards[i].status === PROGRESS_ONGOING) {
               data.cards[i].statusDescription = PROGRESS_ONGOING_TEXT;
-              data.cards[i].statusIcon = "ion-gear-b";
+              data.cards[i].statusIcon = "project-ongoing";
             } else {
               data.cards[i].statusDescription = PROGRESS_COMPLETED_TEXT;
-              data.cards[i].statusIcon = "ion-happy-outline";
+              data.cards[i].statusIcon = "project-complete";
             }
 
             if (data.cards[i].img_path == '') {

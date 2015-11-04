@@ -21,7 +21,7 @@
         <div class="progress-bar progress-bar-danger progress-bar-striped progress-{{ card.status }}" role="progressbar" aria-valuenow="{{ card.status }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ card.status }}%">
         </div>
       </div>
-      <p class="progressText"><i class="icon {{statusIcon}}"></i> {{ card.statusDescription }}</p>
+      <p class="progressText"><i class="project-icon {{statusIcon}}"></i> {{ card.statusDescription }}</p>
 
       <div ng-class="{'change-member' : !changerImage, 'change-member active' : changerImage}">
         <div ng-repeat="changer in changers" ng-class="{'member-list ng-hide' : !changerImage, 'member-list ng-show' : changerImage}">

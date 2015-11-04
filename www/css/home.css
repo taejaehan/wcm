@@ -23,8 +23,13 @@
 }
 /*active 탭에 대한 icon과 글자 색*/
 .tab-item-active .icon, .tab-item-active .tab-title{
-	color : #fff;	
+	color : #EFAE28;	
 }
+.tabs-striped.tabs-dark .tab-item.tab-item-active, .tabs-striped.tabs-dark .tab-item.active, 
+.tabs-striped.tabs-dark .tab-item.activated{
+	border : none;	/*tab상단에 border를 없애준다 by tjhan 151104*/
+}
+
 #home_page hr {
 	margin: 0px;
 }
@@ -167,7 +172,7 @@ button.more {
 }
 
 .dark-overlay {
-  opacity: 0.9;
+  opacity: 1; /*overlay의 투명도 없앰 by tjhan 151104*/
 }
 
 /*.dark-item {
@@ -293,3 +298,31 @@ span.slider-pager-page{
 	color: #fff !important;
 }
 
+
+.project-icon{
+	width: 20px;
+	height: 15px;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+	display: -webkit-inline-box;
+	vertical-align : middle;
+}
+.project-start{
+	background-image: url('../img/start_act.png');
+}
+.project-ongoing{
+	background-image: url('../img/ongoing_act.png');
+}
+.project-complete{
+	background-image: url('../img/complete_act.png');
+}
+.project-start-dis{
+	background-image: url('../img/start_dis.png');
+}
+.project-ongoing-dis{
+	background-image: url('../img/ongoing_dis.png');
+}
+.project-complete-dis{
+	background-image: url('../img/complete_dis.png');
+}
