@@ -8,7 +8,6 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   $scope.changers = [];
   $scope.duplicatedArray = [];
   $scope.comments_count = 0;
-  $scope.watch = false;
 
   $scope.$on('$ionicView.afterEnter', function(){
     $scope.changerImage = false;
@@ -58,11 +57,9 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
             $scope.changers.push(data.cards[0].changer[j]);
           }
         } 
-
       } else {
         $scope.changerImage = false;
       }
-
 
       // user가 카드에 watch를 눌렀는지 체크
       if (user.isAuthenticated === true) {
