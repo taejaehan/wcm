@@ -374,7 +374,7 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
         if(fileurl == '' || fileurl == mNoImage){
           fileurl = mNoImage;
         }else{
-          fileurl = mServerUpload + fileurl;
+          fileurl = mServerUploadThumb + fileurl;
         }
 
         //img가 load되는 지 검사 후 정보를 보여준다
@@ -384,7 +384,7 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
         imageLoader.src=fileurl;
         function imageNotFound() {
             console.log('That image was not found.');
-            fileurl = 'img/default.png';
+            fileurl =mNoImageThumb;
             showInfo();
         };
         function imageFound() {

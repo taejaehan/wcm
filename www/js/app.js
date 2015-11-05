@@ -5,10 +5,12 @@ var mLocalServer = false; //local serve 여부
 if (mLocalServer) {
   mServerUrl = 'http://192.168.20.8:3000';
   mServerUpload = mServerUrl + '/uploads/';
+  mServerUploadThumb = mServerUrl + '/uploads/thumb/';
   mServerAPI = mServerUrl + '/index.php';
 } else {
   mServerUrl = 'https://wcm.major-apps-1.com';
   mServerUpload = mServerUrl + '/uploads/';
+  mServerUploadThumb = mServerUrl + '/uploads/thumb/';
   mServerAPI = mServerUrl + '/index.php';
 }
 
@@ -21,6 +23,7 @@ var mIsWebView, mIsIOS,  mIsAndroid, mDeviceUuid;
 
 //사진이 없을 경우 보여주는 이미지 링크
 var mNoImage = 'img/default.png';
+var mNoImageThumb = 'img/default_thumb.png';
 
 /*map의 marker type*/
 var DISCOVERED  = 0;

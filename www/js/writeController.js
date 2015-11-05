@@ -495,15 +495,6 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
             location_name: location_name,
             img_path: imgPath
     };
-    Object.toparams = function ObjecttoParams(obj) 
-    {
-      var p = [];
-      for (var key in obj) 
-      {
-        p.push(key + '=' + encodeURIComponent(obj[key]));
-      }
-      return p.join('&');
-    };
     // var postData = JSON.stringify(formData);
     var request = $http({
         method: "post",

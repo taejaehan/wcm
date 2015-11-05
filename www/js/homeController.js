@@ -146,7 +146,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         // if(i > 3) return;
         var fileName = cardList.cards[i].img_path;
         if(fileName != ''){
-          var filePath = mServerUpload + fileName;
+          var filePath = mServerUploadThumb + fileName;
           var targetPath = cordova.file.dataDirectory+ 'cardImage/' + fileName;
           var options = {};
           var trustHosts = true;
@@ -339,7 +339,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             if (data.cards[i].img_path == '') {
               data.cards[i].img_path = mNoImage;
             } else {
-              data.cards[i].img_path = mServerUpload + data.cards[i].img_path;
+              data.cards[i].img_path = mServerUploadThumb + data.cards[i].img_path;
             }
 
             data.cards[i].address = data.cards[i].location_name;
@@ -478,7 +478,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         if (data.cards[i].img_path == '') {
           data.cards[i].img_path = mNoImage;
         } else {
-          data.cards[i].img_path = mServerUpload + data.cards[i].img_path;
+          data.cards[i].img_path = mServerUploadThumb + data.cards[i].img_path;
         }
 
         if(data.cards[i].user[0].userimage != null){
