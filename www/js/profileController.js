@@ -374,39 +374,39 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
   }
   
   $scope.editDone = function() {
-  	var edit_name = document.getElementById("edit-name").value;
-  	var formData = { username: edit_name };
-    var postData = 'userData='+JSON.stringify(formData);
+	var edit_name = document.getElementById("edit-name").value;
+	var formData = { username: edit_name };
+	// var postData = 'userData='+JSON.stringify(formData);
 
-    var request = $http({
-        method: "post",
-        url: mServerAPI + "/profile/" + user.userid,
-        crossDomain : true,
-        data: postData,
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-        cache: false
-    });
+	var request = $http({
+	    method: "post",
+	    url: mServerAPI + "/profile/" + user.userid,
+	    crossDomain : true,
+	    data: Object.toparams(formData),
+	    headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+	    cache: false
+	});
 
-    request.success(function() {
-    	user.username = edit_name;
-    	window.localStorage['user'] = JSON.stringify(user);
-    	console.log(user);
-    });
+	request.success(function() {
+		user.username = edit_name;
+		window.localStorage['user'] = JSON.stringify(user);
+		console.log(user);
+	});
 
-  	var myPopup = $ionicPopup.show({
-      template: "변경이 완료되었습니다",
-      title: mAppName,
-      cssClass: 'wcm-positive',
-      buttons: [
-        {
-          text: '<b>OK</b>',
-          type: 'button-positive',
-          onTap: function(e) {
-            $ionicHistory.goBack();
-          }
-        }
-      ]
-    });
+	var myPopup = $ionicPopup.show({
+	  template: "변경이 완료되었습니다",
+	  title: mAppName,
+	  cssClass: 'wcm-positive',
+	  buttons: [
+	    {
+	      text: '<b>OK</b>',
+	      type: 'button-positive',
+	      onTap: function(e) {
+	        $ionicHistory.goBack();
+	      }
+	    }
+	  ]
+	});
   }
 
   /*

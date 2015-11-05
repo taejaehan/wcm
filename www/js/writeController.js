@@ -477,6 +477,15 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       }
 
     }
+    // var formData = {
+    //         user_app_id: user_app_id,
+    //         title: escapeHtml(title),
+    //         description: escapeHtml(description),
+    //         location_lat: location_lat,
+    //         location_long: location_long,
+    //         location_name: location_name,
+    //         img_path: imgPath
+    // };
     var formData = {
             user_app_id: user_app_id,
             title: title,
@@ -486,12 +495,21 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
             location_name: location_name,
             img_path: imgPath
     };
-    var postData = 'cardData='+JSON.stringify(formData);
+    Object.toparams = function ObjecttoParams(obj) 
+    {
+      var p = [];
+      for (var key in obj) 
+      {
+        p.push(key + '=' + encodeURIComponent(obj[key]));
+      }
+      return p.join('&');
+    };
+    // var postData = JSON.stringify(formData);
     var request = $http({
         method: "post",
         url: url,
         crossDomain : true,
-        data: postData,
+        data: Object.toparams(formData),
         headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
         cache: false
     });

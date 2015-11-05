@@ -565,3 +565,29 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 });
 
 
+function escapeHtml(text) {
+  // var map = {
+  //   '&': '&amp;',
+  //   '<': '&lt;',
+  //   '>': '&gt;',
+  //   '"': '&quot;',
+  //   "'": '&#039;'
+  // };
+  // return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+  return text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+}
+
+Object.toparams = function ObjecttoParams(obj) 
+{
+  var p = [];
+  for (var key in obj) 
+  {
+    p.push(key + '=' + encodeURIComponent(obj[key]));
+  }
+  return p.join('&');
+};
