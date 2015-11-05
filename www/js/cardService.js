@@ -11,6 +11,17 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
           loading.hide();
         }, 5000);
         if (e === true) {
+          var i = 0;
+          while( i < $rootScope.allData.cards.length) {
+            if ($rootScope.allData.cards[i].id === id) {
+              $rootScope.allData.cards[i].like_count ++;
+              $rootScope.allData.cards[i].watch = true;
+              postWatch($rootScope.allData.cards[i], id);
+              break;
+            }
+            i ++;
+          }
+
           if (user.likes.indexOf(id) === -1) {
             user.likes.push(id);
             window.localStorage['user'] = JSON.stringify(user);
@@ -29,20 +40,21 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
                 cache: false
             });
+            return true;
           }
+          
+        } else {
           var i = 0;
           while( i < $rootScope.allData.cards.length) {
             if ($rootScope.allData.cards[i].id === id) {
-              $rootScope.allData.cards[i].like_count ++;
-              $rootScope.allData.cards[i].watch = true;
+              $rootScope.allData.cards[i].like_count --;
+              $rootScope.allData.cards[i].watch = false;
               postWatch($rootScope.allData.cards[i], id);
               break;
             }
             i ++;
           }
 
-          return true;
-        } else {
           if (user.likes.indexOf(id) != -1) {
             var index = user.likes.indexOf(id);
             user.likes.splice(index, 1);
@@ -61,19 +73,8 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
                 cache: false
             });
+            return false;
           }
-          var i = 0;
-          while( i < $rootScope.allData.cards.length) {
-            if ($rootScope.allData.cards[i].id === id) {
-              $rootScope.allData.cards[i].like_count --;
-              $rootScope.allData.cards[i].watch = false;
-              postWatch($rootScope.allData.cards[i], id);
-              break;
-            }
-            i ++;
-          }
-
-          return false;
         }
 
       } else {
