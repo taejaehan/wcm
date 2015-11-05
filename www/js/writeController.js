@@ -475,17 +475,8 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
         }
         i ++;
       }
-
     }
-    // var formData = {
-    //         user_app_id: user_app_id,
-    //         title: escapeHtml(title),
-    //         description: escapeHtml(description),
-    //         location_lat: location_lat,
-    //         location_long: location_long,
-    //         location_name: location_name,
-    //         img_path: imgPath
-    // };
+
     var formData = {
             user_app_id: user_app_id,
             title: title,
@@ -495,7 +486,6 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
             location_name: location_name,
             img_path: imgPath
     };
-    // var postData = JSON.stringify(formData);
     var request = $http({
         method: "post",
         url: url,

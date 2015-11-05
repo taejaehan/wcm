@@ -105,73 +105,6 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 			}
 
 		});
-
-		/*// User가 작성한 Card List 가져오기
-		var request1 = $http({
-	    method: "get",
-	    url: mServerAPI + "/cards/" + user.userid,
-	    crossDomain : true,
-	    headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
-	    cache: false
-	  });
-
-	  request1.success(function(data) {
-
-	  	for (var i = 0; i < data.cards.length; i++) {
-	  		if (data.cards[i].status === PROGRESS_START) {
-          data.cards[i].statusDescription = PROGRESS_START_TEXT;
-          data.cards[i].statusIcon = "project-start";
-        } else if (data.cards[i].status === PROGRESS_ONGOING) {
-          data.cards[i].statusDescription = PROGRESS_ONGOING_TEXT;
-          data.cards[i].statusIcon = "project-ongoing";
-        } else {
-          data.cards[i].statusDescription = PROGRESS_COMPLETED_TEXT;
-          data.cards[i].statusIcon = "project-complete";
-        }
-
-	  		var card = data.cards[i];
-	  		$scope.reportList.push(card);	
-	  	}
-	  	
-	  	if(data.cards.length === 0) {
-	  		$scope.reportEmptyMessage = "작성한 글이 없습니다"
-	  	}
-	  });
-
-		// User가 Change Supporters로 참여중인 Change List 가져오기
-		var request2 = $http({
-	    method: "get",
-	    url: mServerAPI + "/change/" + user.userid,
-	    crossDomain : true,
-	    headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
-	    cache: false
-	  });
-
-	  request2.success(function(data) {
-	  	for (var i = 0; i < data.changes.length; i++) {
-	  		if(data.changes[i].post.length > 0 ){	//add by tjhan 151007
-		  		if (data.changes[i].post[0].status === PROGRESS_START) {
-	          data.changes[i].post[0].statusDescription = PROGRESS_START_TEXT;
-	          data.changes[i].post[0].statusIcon = "project-start";
-	        } else if (data.changes[i].post[0].status === PROGRESS_ONGOING) {
-	          data.changes[i].post[0].statusDescription = PROGRESS_ONGOING_TEXT;
-	          data.changes[i].post[0].statusIcon = "project-ongoing";
-	        } else {
-	          data.changes[i].post[0].statusDescription = PROGRESS_COMPLETED_TEXT;
-	          data.changes[i].post[0].statusIcon = "project-complete";
-	        }
-
-		  		var change = data.changes[i].post[0];
-		  		$scope.changeList.push(change);
-		  	}
-	  	}
-
-	  	if(data.changes.length === 0) {
-	  		$scope.changeEmptyMessage = "Change Supporters로 참여중인 프로젝트가 없습니다"
-	  	}
-	  });*/
-
-
 	} else {
 		$scope.userCheck = false;
 	}
@@ -376,7 +309,6 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
   $scope.editDone = function() {
 	var edit_name = document.getElementById("edit-name").value;
 	var formData = { username: edit_name };
-	// var postData = 'userData='+JSON.stringify(formData);
 
 	var request = $http({
 	    method: "post",
