@@ -225,6 +225,20 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
     */
     $scope.showMarkers = function(type) {
 
+      switch(type){
+        case DISCOVERED :
+          $scope.warningTitle = DISCOVERED_TEXT;
+          break;
+        case ONGOING :
+          $scope.warningTitle = ONGOING_TEXT;
+          break;
+        case COMPLETED :
+          $scope.warningTitle = COMPLETED_TEXT;
+          break;
+        default : 
+          $scope.warningTitle = ONGOING_TEXT;
+      };
+      
       if($scope.popover != null && $scope.popover._isShown){
         $scope.popover.hide();
       }
@@ -250,7 +264,6 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
             clusterUrl = 'img/cluster_r.png';
             clusterBigUrl = 'img/cluster_r_big.png';
             clusterTextColor = '#9c3625';
-            $scope.warningTitle = DISCOVERED_TEXT;
             break;
           case ONGOING :
             if($scope.cards[i].status != PROGRESS_ONGOING) continue;
@@ -258,7 +271,6 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
             clusterUrl = 'img/cluster_y.png';
             clusterBigUrl = 'img/cluster_y_big.png';
             clusterTextColor = '#e38b0d';
-            $scope.warningTitle = ONGOING_TEXT;
             break;
           case COMPLETED :
             if($scope.cards[i].status != PROGRESS_COMPLETED) continue;
@@ -266,14 +278,12 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
             clusterUrl = 'img/cluster_g.png';
             clusterBigUrl = 'img/cluster_g_big.png';
             clusterTextColor = '#264804';
-            $scope.warningTitle = COMPLETED_TEXT;
             break;
           default : 
             markerUrl = 'img/location_y.png';
             clusterUrl = 'img/cluster_y.png';
             clusterBigUrl = 'img/cluster_y_big.png';
             clusterTextColor = '#e38b0d';
-            $scope.warningTitle = ONGOING_TEXT;
         }
 
         var titleText = $scope.cards[i].title;

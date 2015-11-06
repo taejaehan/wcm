@@ -179,13 +179,14 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
       return false;
     }
     console.log('share type : ' + type);
+    console.log('share card : ' + JSON.stringify(card));
     if(type =='facebook'){
       facebookConnectPlugin.showDialog({
           method: "feed" ,
           picture: card.img_path,
-          name: card.title,
           message:'First photo post',    
-          caption: 'via We Change Makers',
+          caption: card.title,
+          name: card.description,
           description: card.description,
           link: 'http://wechangemakers.org/'
         }, fbSuccess,fbError

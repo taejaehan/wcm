@@ -1,4 +1,4 @@
-wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaCamera, $cordovaFile, $cordovaFileTransfer, $timeout, $cordovaGeolocation, $ionicLoading, $http, $stateParams, $ionicPopup, $ionicActionSheet, $ionicHistory) {
+wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaCamera, $cordovaFile, $cordovaFileTransfer, $timeout, $cordovaGeolocation, $ionicLoading, $http, $stateParams, $ionicPopup, $ionicActionSheet, $ionicHistory, CardService) {
 
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var latlng, progress;
@@ -36,7 +36,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
           if($ionicHistory.forwardView() == null || $ionicHistory.forwardView().stateName != 'tabs.location_h'){
             $scope.getCard();
           }
-          if($ionicHistory.forwardView() == null && $ionicHistory.forwardView().stateName == 'tabs.location_h'){
+          if($ionicHistory.forwardView() != null && $ionicHistory.forwardView().stateName == 'tabs.location_h'){
             $ionicHistory.clearCache(ionicHistory.forwardView().stateId);
             console.log('clear history cache tabs.location_h');
           }
@@ -297,12 +297,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       return;
     }else{
       //cardId가 없으면 add, 있으면 edit
-      if($scope.cardId == null){
-        message = '올리신 글을 바로 공유하시겠습니까?';
-        btnMessage = '공유하기';
-      }else{
-        message = '글을 수정 하시겠습니까?';
-        btnMessage = '수정하기';
+      if(!($scope.cardId == null)){
         if(!($scope.cardForm.title.$dirty || $scope.cardForm.description.$dirty ||
         $scope.cardForm.location.$dirty || $scope.cardForm.file.$dirty)){
 
@@ -317,52 +312,38 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       }
     }
 
-    $ionicPopup.show({
-      title: mAppName,
-      template: message,
-      cssClass: 'wcm-positive',
-      buttons: [
-        { text: '나중에하기' },
-        {
-          text: '<b>'+btnMessage+'</b>',
-          type: 'button-positive',
-          onTap: function(e) {
-            $ionicLoading.show({
-                template: '<ion-spinner icon="bubbles"></ion-spinner><br/>업로드..',
-                duration : 10000,
-            });
-
-            console.log('$scope.imgURI : ' + $scope.imgURI);
-            console.log('file dirty : ' + $scope.cardForm.file.$dirty);
-
-            //찍은 사진이 있다면 
-            if($scope.imgURI != null){ 
-              //$scope.cardId가 null이면 (new add)
-              if($scope.cardId == null){ 
-                $scope.savePicture();
-              }else{ //$scope.cardId가 있을 경우(edit일 경우)
-
-                //file을 변경했을 경우에만 다시 저장
-                if($scope.cardForm.file.$dirty){
-                  //이미지 경로 및 이름이 같으면 업로드 하지 않는다
-                  if(imgPath != $scope.imgURI){
-                    $scope.savePicture();
-                    //TODO 예전 사진 삭제 
-                  }else{
-                    //이미지 경로 및 이름이 같다면 DB만 업로드
-                    $scope.uploadDb();
-                  }
-                }else{
-                  $scope.uploadDb();
-                }
-              }
-            }else{  //사진을 찍을 수 없는 경우 db만 저장한다(web test용도)
-              $scope.uploadDb();
-            }
-          }
-        }
-      ]
+    $ionicLoading.show({
+        template: '<ion-spinner icon="bubbles"></ion-spinner><br/>업로드..',
+        duration : 10000,
     });
+
+    console.log('$scope.imgURI : ' + $scope.imgURI);
+    console.log('file dirty : ' + $scope.cardForm.file.$dirty);
+
+    //찍은 사진이 있다면 
+    if($scope.imgURI != null){ 
+      //$scope.cardId가 null이면 (new add)
+      if($scope.cardId == null){ 
+        $scope.savePicture();
+      }else{ //$scope.cardId가 있을 경우(edit일 경우)
+
+        //file을 변경했을 경우에만 다시 저장
+        if($scope.cardForm.file.$dirty){
+          //이미지 경로 및 이름이 같으면 업로드 하지 않는다
+          if(imgPath != $scope.imgURI){
+            $scope.savePicture();
+            //TODO 예전 사진 삭제 
+          }else{
+            //이미지 경로 및 이름이 같다면 DB만 업로드
+            $scope.uploadDb();
+          }
+        }else{
+          $scope.uploadDb();
+        }
+      }
+    }else{  //사진을 찍을 수 없는 경우 db만 저장한다(web test용도)
+      $scope.uploadDb();
+    }
   }
 
   /*
@@ -439,9 +420,10 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
 
     var user_app_id = $scope.userid;
 
-    var url, title, description, location_lat, location_long, location_name= '';
+    var url, title, description, location_lat, location_long, location_name, message= '';
     //$scope.cardId가 null이면 (new add)
     if($scope.cardId == null){
+      message ='게시물이 등록되었습니다<br>올리신 글을 바로 공유하시겠습니까?';
       url = mServerAPI + "/card";
       title = document.getElementById("card_title").value;
       description = document.getElementById("card_des").value;
@@ -452,6 +434,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
         imgPath = newFileName;
       }
     }else{  //$scope.cardId가 있으면 (edit)
+      message ='게시물이 수정되었습니다<br>수정된 글을 바로 공유하시겠습니까?';
       url = mServerAPI + "/cardDetail/" + $scope.cardId;
       title = document.getElementById("card_title").value;
       description = document.getElementById("card_des").value;
@@ -494,17 +477,29 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
         headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
         cache: false
     });
-    request.success(function(data) {
+    request.success(function(card) {
 
-        $scope.cancelCard();
+      $scope.cancelCard();
         
-        $ionicLoading.hide();
+      $ionicLoading.hide();
 
-        $ionicPopup.alert({
-          title: mAppName,
-          template: '게시물이 성공적으로 등록되었습니다',
-          cssClass: 'wcm-positive'
-        });
+      $ionicPopup.show({
+        title: mAppName,
+        template: message,
+        cssClass: 'wcm-positive',
+        buttons: [
+          { text: '나중에하기' },
+          {
+            text: '<b>공유하기</b>',
+            type: 'button-positive',
+            onTap: function(e) {
+              console.log('do share');
+              card.img_path = mServerUpload + card.img_path;
+              CardService.share('facebook', card);
+            }
+          }
+        ]
+      });
     });
     request.error(function(error){
       console.log('error : ' + JSON.stringify(error));
@@ -562,9 +557,15 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   /*
   * cancel버튼을 누르거나 upload완료시에 발생
   */
-  $scope.cancelCard = function() {
-
+  $scope.cancelCard = function(uploadedCardId) {
     console.log('writeController cancelCard');
+    
+    if($scope.cardId == null){
+      $state.go('tabs.home');
+    }else{
+      $ionicHistory.goBack();
+    }
+    
     $scope.cancelClick = true;
     //history를 없애서 write afterenter시에 forwardView를 판단하는 부분을 reset
     $ionicHistory.clearHistory();
@@ -576,7 +577,6 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     delete $rootScope.cardLocationLat;
     delete $rootScope.cardLocationLng;
 
-    $state.go('tabs.home');
     
   }
 

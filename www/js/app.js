@@ -320,25 +320,25 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
               console.log("LoginStatus success ");
               console.log("LoginStatus : " + userInfo);
               console.log("LoginStatus : " + JSON.stringify(userInfo));
-                if(userInfo.status != null && userInfo.status == "unknown"){
-                  facebookConnectPlugin.login(["public_profile", 'email', 'user_friends'], 
-                    function (userData) {
-                      console.log("login success ");
-                      console.log("UserInfo : " + userData);
-                      console.log("UserInfo : " + JSON.stringify(userData));
-                    },
-                    function loginError (error) {
-                      $ionicLoading.hide();
-                      console.log("login error ");
-                      console.error("login error : " + JSON.stringify(error));
-                      $ionicPopup.alert({
-                        title: mAppName,
-                        template: JSON.stringify(error),
-                        cssClass: 'wcm-error'
-                      });
-                    }
-                )
-              }
+              //   if(userInfo.status != null && userInfo.status == "unknown"){
+              //     facebookConnectPlugin.login(["public_profile", 'email', 'user_friends'], 
+              //       function (userData) {
+              //         console.log("login success ");
+              //         console.log("UserInfo : " + userData);
+              //         console.log("UserInfo : " + JSON.stringify(userData));
+              //       },
+              //       function loginError (error) {
+              //         $ionicLoading.hide();
+              //         console.log("login error ");
+              //         console.error("login error : " + JSON.stringify(error));
+              //         $ionicPopup.alert({
+              //           title: mAppName,
+              //           template: JSON.stringify(error),
+              //           cssClass: 'wcm-error'
+              //         });
+              //       }
+              //   )
+              // }
             },
             function loginError (error) {
               console.log("login error ");
@@ -413,6 +413,8 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
   $ionicConfigProvider.tabs.position('bottom');
   $ionicConfigProvider.navBar.alignTitle('center');
   $ionicConfigProvider.views.maxCache(0);
+  //toggle버튼 통일
+  $ionicConfigProvider.form.toggle('large').checkbox('circle'); 
   
   $stateProvider
   .state("fblogin", {

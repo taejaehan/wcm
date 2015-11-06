@@ -1,4 +1,4 @@
-wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $stateParams, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth, $ionicSlideBoxDelegate, $cordovaPreferences, $ionicLoading, $ionicHistory, CardService) {
+wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth, $ionicSlideBoxDelegate, $cordovaPreferences, $ionicLoading, $ionicHistory, CardService) {
 
   navigator.geolocation.watchPosition(showPosition);
 
