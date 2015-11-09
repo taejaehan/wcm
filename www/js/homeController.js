@@ -28,6 +28,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   $scope.$on('$ionicView.unloaded', function(){
     $rootScope.isHomeView =false;
   });
+
   $scope.$on('$ionicView.beforeEnter', function(){
 
     $rootScope.isHomeView =true;

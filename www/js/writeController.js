@@ -37,7 +37,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
             $scope.getCard();
           }
           if($ionicHistory.forwardView() != null && $ionicHistory.forwardView().stateName == 'tabs.location_h'){
-            $ionicHistory.clearCache(ionicHistory.forwardView().stateId);
+            $ionicHistory.clearCache($ionicHistory.forwardView().stateId);
             console.log('clear history cache tabs.location_h');
           }
 
@@ -559,7 +559,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   */
   $scope.cancelCard = function(uploadedCardId) {
     console.log('writeController cancelCard');
-    
+
     if($scope.cardId == null){
       $state.go('tabs.home');
     }else{
@@ -569,6 +569,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     $scope.cancelClick = true;
     //history를 없애서 write afterenter시에 forwardView를 판단하는 부분을 reset
     $ionicHistory.clearHistory();
+    // $ionicHistory.clearCache();
     //reset inputs datas
     delete $rootScope.cardTitle;
     delete $rootScope.cardDescription;
