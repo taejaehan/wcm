@@ -37,8 +37,9 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
             $scope.getCard();
           }
           if($ionicHistory.forwardView() != null && $ionicHistory.forwardView().stateName == 'tabs.location_h'){
-            $ionicHistory.clearCache($ionicHistory.forwardView().stateId);
-            console.log('clear history cache tabs.location_h');
+            // $ionicHistory.clearCache($ionicHistory.forwardView().stateId);
+            $ionicHistory.forwardView().stateName = null
+            console.log('forwardView().stateName = null');
           }
 
         }
@@ -266,7 +267,9 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
 
   /*맵 보여주기*/
   $scope.showMap = function() {
-    
+    if( latlng == null){
+      latlng = new google.maps.LatLng($rootScope.cardLocationLat, $rootScope.cardLocationLng);
+    }
     console.log('showMap latlng : ' + latlng);
     if($scope.cardId == null){
       $state.go('tabs.location_w', { 'latlng': latlng});
@@ -565,11 +568,15 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     }else{
       $ionicHistory.goBack();
     }
-    
+
     $scope.cancelClick = true;
     //history를 없애서 write afterenter시에 forwardView를 판단하는 부분을 reset
-    $ionicHistory.clearHistory();
-    // $ionicHistory.clearCache();
+    // $ionicHistory.clearHistory();
+    if($ionicHistory.forwardView() != null && $ionicHistory.forwardView().stateName == 'tabs.location_h'){
+      // $ionicHistory.clearCache($ionicHistory.forwardView().stateId);
+      $ionicHistory.forwardView().stateName = null
+      console.log('forwardView().stateName = null');
+    }
     //reset inputs datas
     delete $rootScope.cardTitle;
     delete $rootScope.cardDescription;
