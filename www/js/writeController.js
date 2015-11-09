@@ -154,6 +154,8 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
         options['sourceType'] = Camera.PictureSourceType.PHOTOLIBRARY
       }
 
+      console.log('options : ' + JSON.stringify(options));
+
       $cordovaCamera.getPicture(options).then(function(imagePath){
         $scope.imgURI = imagePath;
         $scope.cardForm.file.$setTouched();
@@ -165,7 +167,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
         $ionicPopup.alert({
            title: mAppName,
            template: '사진을 가져오지 못 했습니다',
-           cssClass: 'wcm-positive',
+           cssClass: 'wcm-negative',
          });
       });
     }else{
@@ -205,7 +207,8 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
         $ionicLoading.hide();
         $ionicPopup.alert({
           title: mAppName,
-          template: '위치 정보를 사용할 수 없습니다'
+          template: '위치 정보를 사용할 수 없습니다',
+          cssClass: 'wcm-error',
         });
         //서울 초기값 세팅
         var lat  = 37.574515;
@@ -248,7 +251,8 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
           console.log('results : ' + results);
           $ionicPopup.alert({
             title: mAppName,
-            template: 'google map 결과 값이 없습니다'
+            template: 'google map 결과 값이 없습니다',
+            cssClass: 'wcm-error',
           });
         }
         $ionicLoading.hide();
@@ -258,7 +262,8 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
         console.log('results : ' + results);
         $ionicPopup.alert({
           title: mAppName,
-          template: 'google map 상태가 좋지 않습니다'
+          template: 'google map 상태가 좋지 않습니다',
+          cssClass: 'wcm-negative',
         });
         $ionicLoading.hide();
       }
@@ -420,6 +425,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     }
 
     console.log("userId : "  + $scope.userid);
+    console.log("newFileName : "  + newFileName);
 
     var user_app_id = $scope.userid;
 
@@ -482,6 +488,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     });
     request.success(function(card) {
 
+      console.log('upload success : ' + JSON.stringify(card));
       $scope.cancelCard();
         
       $ionicLoading.hide();

@@ -90,6 +90,25 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
     //로그인 한 상태라면 prefresnces에 저장된 user id로 서버에서 유저 정보를 가져와 localStorage에 저장
     var saveLocalUser = function(loginId) {
       if(loginId != null){
+
+        // facebookConnectPlugin.login(["public_profile", 'email', 'user_friends'], 
+        //     function (userData) {
+        //       console.log("login success ");
+        //       console.log("UserInfo : " + userData);
+        //       console.log("UserInfo : " + JSON.stringify(userData));
+        //     },
+        //     function loginError (error) {
+        //       $ionicLoading.hide();
+        //       console.log("login error ");
+        //       console.error("login error : " + JSON.stringify(error));
+        //       $ionicPopup.alert({
+        //         title: mAppName,
+        //         template: JSON.stringify(error),
+        //         cssClass: 'wcm-error'
+        //       });
+        //     }
+        // )
+
         var request = $http({
            method: "get",
            url: mServerAPI + "/user/" + loginId,
@@ -315,36 +334,36 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
           });
 
           //facebook 연결 상태 확인 테스트 중 by tjhan 151030
-          facebookConnectPlugin.getLoginStatus(
+          /*facebookConnectPlugin.getLoginStatus(
             function (userInfo) {
               console.log("LoginStatus success ");
               console.log("LoginStatus : " + userInfo);
               console.log("LoginStatus : " + JSON.stringify(userInfo));
-              //   if(userInfo.status != null && userInfo.status == "unknown"){
-              //     facebookConnectPlugin.login(["public_profile", 'email', 'user_friends'], 
-              //       function (userData) {
-              //         console.log("login success ");
-              //         console.log("UserInfo : " + userData);
-              //         console.log("UserInfo : " + JSON.stringify(userData));
-              //       },
-              //       function loginError (error) {
-              //         $ionicLoading.hide();
-              //         console.log("login error ");
-              //         console.error("login error : " + JSON.stringify(error));
-              //         $ionicPopup.alert({
-              //           title: mAppName,
-              //           template: JSON.stringify(error),
-              //           cssClass: 'wcm-error'
-              //         });
-              //       }
-              //   )
-              // }
+                if(userInfo.status != null && userInfo.status == "unknown"){
+                  facebookConnectPlugin.login(["public_profile", 'email', 'user_friends'], 
+                    function (userData) {
+                      console.log("login success ");
+                      console.log("UserInfo : " + userData);
+                      console.log("UserInfo : " + JSON.stringify(userData));
+                    },
+                    function loginError (error) {
+                      $ionicLoading.hide();
+                      console.log("login error ");
+                      console.error("login error : " + JSON.stringify(error));
+                      $ionicPopup.alert({
+                        title: mAppName,
+                        template: JSON.stringify(error),
+                        cssClass: 'wcm-error'
+                      });
+                    }
+                )
+              }
             },
             function loginError (error) {
               console.log("login error ");
               console.error("login error : " + JSON.stringify(error));
             }
-          );
+          );*/
 
         }else{
 

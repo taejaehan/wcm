@@ -29,9 +29,8 @@ ionic config set dev_push false
 
 ******************************Android 20151029******************************
 
-C:\wamp\www\wcm\platforms\android\CordovaLib\src\org\apache\cordova\CordovaWebViewImpl.java 에서 LoadUrlTimeoutValue value 변경 (100000) 
-
-1. com.portnou.cordova.plugin.preferences
+C:\wamp\www\wcm\platforms\android\CordovaLib\src\org\apache\cordova\CordovaWebViewImpl.java 
+47LoadUrlTimeoutValue value 변경 (100000) \1. com.portnou.cordova.plugin.preferences
 \plugins\com.portnou.cordova.plugin.preferences\plugin.xml 에서 
 src/android/preferences.java를 src/android/Preferences.java 대문자로 변경
 
@@ -52,8 +51,13 @@ android에만 적용되는 plugin
 3. cordova-plugin-facebook4
 페이스북 공유시 content가 없이 나오므로 param값 수정해야한다
 buildContent funtion에 있는 href를 link로 바꾼다(2곳)
-\plugins\cordova-plugin-facebook4\src\android
-\platforms\android\src\org\apache\cordova\facebook
+\plugins\cordova-plugin-facebook4\src\android\ConnectPlugin.java
+\platforms\android\src\org\apache\cordova\facebook\ConnectPlugin.java
+
+share이후 callback이 null이 되므로 다시 pluginInitialize 해준다 by tjhan 151109
+shareDialog.show(content); 밑에 pluginInitialize(); 추가	(2곳)
+\plugins\cordova-plugin-facebook4\src\android\ConnectPlugin.java
+\platforms\android\src\org\apache\cordova\facebook\ConnectPlugin.java
 
 ************Android 실행 방법************
 ionic platform add android

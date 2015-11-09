@@ -4,11 +4,12 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
     console.log('toggleWatch : ' + e);
     if(user != null){
       if (user.isAuthenticated === true) {
-        var loading = $ionicLoading.show({
+        $ionicLoading.show({
           template: '<ion-spinner icon="bubbles"></ion-spinner>'
         });
+        //5초 뒤에 $ionicLoading.hide()
         $timeout(function(){
-          loading.hide();
+          $ionicLoading.hide();
         }, 5000);
         if (e === true) {
           var i = 0;
@@ -133,64 +134,87 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
   };
   var share = function(type, card) {
 
-    var fbSuccess = function (success) {
-      console.log('share success');
-      var i = 0;
-      while( i < $rootScope.allData.cards.length) {
-        if ($rootScope.allData.cards[i].id === card.id) {
-          var share_count = $rootScope.allData.cards[i].share_count ++;
-          var formData = { share_count: share_count };
-          var postData = 'shareData='+JSON.stringify(formData);
-
-          var request = $http({
-              method: "post",
-              url: mServerAPI + "/cardDetail/" + card.id + "/share",
-              crossDomain : true,
-              data: postData,
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-              cache: false
-          });
-          request.success(function(data) {
-            console.log('shareCountPost success : ' + JSON.stringify(data));
-          });
-          request.error(function(error){
-            console.log('shareCountPost error : ' + JSON.stringify(error));
-          });
-          break;
-        }
-        i ++;
-      }
-
-      $ionicPopup.alert({
-        title: mAppName,
-        template: '페이스북에 공유 되었습니다',
-        cssClass: 'wcm-positive',
-      });
-
-      return true;          
-    };
-    var fbError = function (error) {
-      console.log('error : ' + JSON.stringify(error));
-      $ionicPopup.alert({
-        title: mAppName,
-        template: '페이스북 공유에 실패 하였습니다',
-        cssClass: 'wcm-error',
-      });
-      return false;
-    }
     console.log('share type : ' + type);
     console.log('share card : ' + JSON.stringify(card));
     if(type =='facebook'){
-      facebookConnectPlugin.showDialog({
-          method: "feed" ,
-          picture: card.img_path,
-          message:'First photo post',    
-          caption: card.title,
-          name: card.description,
-          description: card.description,
-          link: 'http://wechangemakers.org/'
-        }, fbSuccess,fbError
-      );
+
+      var fileurl = card.img_path;
+      if(fileurl == '' || fileurl == mNoImage || fileurl == mNoImageThumb){
+        console.log('That image was not found.');
+        $ionicPopup.alert({
+          title: mAppName,
+          template: '이미지가 없어서 공유할 수 없습니다',
+          cssClass: 'wcm-error',
+        });
+        return;
+      }else{
+        console.log('That image was found.');
+      }
+
+      var fbShare = facebookConnectPlugin.showDialog({
+        method: "feed" ,
+        picture: card.img_path,
+        message:'First photo post',    
+        caption: card.title,
+        name: card.description,
+        description: card.description,
+        link: 'http://wechangemakers.org/'
+      }, 
+      function (success) {
+        console.log('share success');
+        var i = 0;
+        while( i < $rootScope.allData.cards.length) {
+          if ($rootScope.allData.cards[i].id === card.id) {
+            console.log('share $rootScope.allData.cards[i].share_count : ' + $rootScope.allData.cards[i].share_count);
+            var share_count = parseInt($rootScope.allData.cards[i].share_count) + 1;
+            console.log('share card.id : ' + card.id);
+            console.log('share share_count : ' + share_count);
+
+            var formData = { share_count: share_count };
+            var postData = 'shareData='+JSON.stringify(formData);
+
+            
+
+            var request = $http({
+                method: "post",
+                url: mServerAPI + "/cardDetail/" + card.id + "/share",
+                crossDomain : true,
+                data: postData,
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+                cache: false
+            });
+            request.success(function(data) {
+              console.log('shareCountPost success : ' + JSON.stringify(data));
+            });
+            request.error(function(error){
+              console.log('shareCountPost error : ' + JSON.stringify(error));
+            });
+            break;
+          }
+          i ++;
+        }
+
+        $ionicPopup.alert({
+          title: mAppName,
+          template: '페이스북에 공유 되었습니다',
+          cssClass: 'wcm-positive',
+        });
+
+
+        return true;          
+      },
+      function (error) {
+        console.log('share error : ' + JSON.stringify(error));
+        $ionicPopup.alert({
+          title: mAppName,
+          template: '페이스북 공유에 실패 하였습니다',
+          cssClass: 'wcm-error',
+        });
+        return false;
+      }
+    );
+
+      
     } //if(type =='facebook') 끝
   };
 

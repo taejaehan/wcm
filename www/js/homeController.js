@@ -225,7 +225,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           temp.push(JSON.parse(localStorage.getItem('cardList')));
           for (var i = 0; i < data.cards.length; i++) {
             temp[0].cards.unshift(data.cards[i]);
-            if(data.cards[i].img_path == '') data.cards[i].img_path = mNoImage;
+            if(data.cards[i].img_path == '') data.cards[i].img_path = mNoImageThumb;
             $rootScope.allData.cards.unshift(data.cards[i]);
           }
           localStorage.setItem('cardList', JSON.stringify(temp[0]));
@@ -338,7 +338,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             }
 
             if (data.cards[i].img_path == '') {
-              data.cards[i].img_path = mNoImage;
+              data.cards[i].img_path = mNoImageThumb;
             } else {
               data.cards[i].img_path = mServerUploadThumb + data.cards[i].img_path;
             }
@@ -410,7 +410,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         console.log('offline fullpath : ' + cordova.file.dataDirectory+ 'cardImage/' + fileName);
         cardList.cards[i].img_path = cordova.file.dataDirectory+ 'cardImage/' + fileName;
       }else{
-        cardList.cards[i].img_path = mNoImage;
+        cardList.cards[i].img_path = mNoImageThumb;
       }
       $rootScope.allData.cards.push(cardList.cards[i]);
     }
@@ -477,7 +477,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         }
 
         if (data.cards[i].img_path == '') {
-          data.cards[i].img_path = mNoImage;
+          data.cards[i].img_path = mNoImageThumb;
         } else {
           data.cards[i].img_path = mServerUploadThumb + data.cards[i].img_path;
         }
