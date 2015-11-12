@@ -238,14 +238,6 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
             $rootScope.cardLocation = results[1].formatted_address;
             $rootScope.cardLocationLat = latlng.lat;
             $rootScope.cardLocationLng = latlng.lng;
-
-            // if(document.getElementById("card_location") != null){
-
-            //   document.getElementById("card_location").value = results[1].formatted_address;
-            //   document.getElementById("card_location").setAttribute('lat' , latlng.lat);
-            //   document.getElementById("card_location").setAttribute('long' , latlng.lng);
-            //   document.getElementById("card_location").validity.valid = true;
-            // }
             
           } else {
             window.alert('No results found');

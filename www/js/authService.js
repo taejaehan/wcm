@@ -21,8 +21,8 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
         facebookConnectPlugin.login(["public_profile", 'email', 'user_friends'], 
           function (userData) {
             console.log("login success ");
-            console.log("UserInfo : ", userData);
-            console.log("UserInfo : ", JSON.stringify(userData));
+            console.log("UserInfo : "+ userData);
+            console.log("UserInfo : "+ JSON.stringify(userData));
 
             facebookConnectPlugin.api(
               "/me", 

@@ -425,16 +425,6 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
           $scope.infoWindow.setContent(infoHtml);
           $scope.infoWindow.setPosition(latlng);
           $scope.infoWindow.open($scope.map);
-
-          // $scope.markerTitle = pic.title;
-          // $scope.markerLocation = pic.location_name;
-          // $scope.markerLocationImg = location_img;
-          // $scope.markerImg = fileurl;
-          // console.log('markerTitle : ' + $scope.markerTitle);
-          // console.log('markerLocation : ' + $scope.markerLocation);
-          // console.log('markerLocationImg : ' + $scope.markerLocationImg);
-          // console.log('markerImg : ' + $scope.markerImg);
-          // $scope.modal.show();
         }
       };
     };
