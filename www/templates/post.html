@@ -46,15 +46,15 @@
 
       <!-- ========================== comment section ========================== -->
       <div id="comment_section">
-        <div ng-repeat="comment in comments track by $index" class="comment-list">
-          <img ng-src="{{ ::comment.user[0].userimage }}" class="profile-image">
+        <div bindonce ng-repeat="comment in comments track by $index" class="comment-list">
+          <img bo-src="comment.user[0].userimage" class="profile-image">
           <div class="description">
-            <strong ng-bind="comment.user[0].username"></strong>
-            <a class="comment-delete" ng-click="deleteComment(comment)" ng-style="userChecked(comment)">
+            <strong bo-bind="comment.user[0].username"></strong>
+            <a class="comment-delete" ng-click="deleteComment(comment)" bo-style="userChecked(comment)">
               <i class="ion-trash-b"></i>
             </a>
-            <p ng-bind="comment.content"></p>
-            <small ng-bind="comment.updated_at | date:'yyyy-MM-dd HH:mm:ss'"></small>
+            <p bo-bind="comment.content"></p>
+            <small bo-bind="comment.updated_at | date:'yyyy-MM-dd HH:mm:ss'"></small>
           </div>
         </div>
 

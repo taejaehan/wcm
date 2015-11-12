@@ -42,7 +42,7 @@ var PROGRESS_START_TEXT = "위험요소가 등록되었습니다";
 var PROGRESS_ONGOING_TEXT = "위험요소가 해결되고 있습니다";
 var PROGRESS_COMPLETED_TEXT = "위험요소가 해결되었습니다";
 
-var wcm = angular.module('wcm', ['ionic','ngCordova', 'ng'])
+var wcm = angular.module('wcm', ['ionic', 'ngCordova', 'ng', 'pasvaz.bindonce'])
 
 //controller간 데이터를 전달하기 위해 사용한다
 wcm.factory('Scopes', function($rootScope) {
@@ -61,7 +61,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
 
   console.log('wcm RUN');
   //$ionicPlatform이 ready되면 연결된 device에 대한 정보를 저장 (boolean)
-  mIsWebView = ionic.Platform.isWebView(); 
+  mIsWebView = ionic.Platform.isWebView();
   mIsIOS = ionic.Platform.isIOS();
   mIsAndroid = ionic.Platform.isAndroid();
 
@@ -108,22 +108,22 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
             isAuthenticated: true,
             watchs : [],
             changes : [],
-          }; 
+          };
 
           //user watch list저장
           if (data.users[0].watchs.length > 0) {
             for(var i = 0; i < data.users[0].watchs.length; i++ ) {
-              user.watchs.push(data.users[0].watchs[i].post_id); 
+              user.watchs.push(data.users[0].watchs[i].post_id);
             }
           }
 
           //user changer list저장
           if (data.users[0].changes.length > 0) {
             for(var i = 0; i < data.users[0].changes.length; i++ ) {
-              user.changes.push(data.users[0].changes[i].post_id); 
+              user.changes.push(data.users[0].changes[i].post_id);
             }
           }
-      
+
           window.localStorage['user'] = JSON.stringify(user);
         });
       }
@@ -132,10 +132,10 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
     if(mIsWebView){
       /******************************************************************************
       * IONIC PUSH를 위한 SETTING by tjhan 151023
-      * prefrences에 deviceUuid가 있다면 해당 device는 ionic user와 wcm db에 
+      * prefrences에 deviceUuid가 있다면 해당 device는 ionic user와 wcm db에
       * (device uuid와 해당 device의 token이) 등록되어 있고 push가 가능한 상태이다
       * prefrences에 없다면 새롭게 user와 device를 등록하는데
-      * ionic user에 해당 device uuid가 이미 있다면(깔았다가 지웠다면) 
+      * ionic user에 해당 device uuid가 이미 있다면(깔았다가 지웠다면)
       * 새롭게 등록하지 않고 해당 ionic user와 wcm db의 token을 수정한다
       ******************************************************************************/
 
@@ -145,7 +145,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
       */
       window.plugins.uniqueDeviceID.get(success, fail);
       function success(uuid)
-      {   
+      {
           console.log('ionic.Platform.device().uuid : ' + ionic.Platform.device().uuid);
           console.error('uniqueDeviceID success uuid : ' + uuid);
           mDeviceUuid = uuid;
@@ -154,13 +154,13 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
       {
           console.error('uuid fail');
       };
-      
+
       // //웹 앱에서 facebookConnectPlugin를 사용하기 위해 facebook app id를 init한다
       // facebookConnectPlugin.browserInit('1020667507964480');
 
       var tryNum = 0;
       var tryRegisterAndLogin = function(){
-        
+
         console.log('tryRegisterAndLogin Preferences OK');
 
         if(typeof Preferences != 'undefined'){
@@ -179,7 +179,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
               *****************************************************************************/
               console.log('ionic.Platform.device() : ' + ionic.Platform.device());
               console.log('ionic.Platform.device().uuid : ' + ionic.Platform.device().uuid);
-              
+
               if(Ionic != null){
                 console.log('Ionic OK');
                 Ionic.io();
@@ -217,14 +217,14 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
                 //push가 등록되면 해당 push token을 위에 설정한 user에 넣고 db에도 넣는다
                 "onRegister": function(data) {
                   console.log('************2.onRegister token************ : ' + data.token);
-                  
+
                   //해당 push token을 ionic user에 등록하고 저장
                   push.addTokenToUser(user);
                   user.save().then(function(response) {
                     console.log('************2.user addTokenToUser was saved************');
 
                     /*wcm DB에 저장*/
-                    var formData = { 
+                    var formData = {
                           device_uuid: mDeviceUuid,
                           device_token: data.token
                         };
@@ -269,7 +269,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
 
                 push.register();
               }, function(error) {
-                 //유저가 없다면(등록되어 있지 않다면) 
+                 //유저가 없다면(등록되어 있지 않다면)
                 console.log('************1.loadedUser No registered User************ : ' + JSON.stringify(error));
 
 
@@ -313,7 +313,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
           }, function(error){
             console.log('error: : ' +  error);
           });
-   
+
         }else{
 
           console.log('tryRegisterAndLogin Preferences NO : ' + tryNum);
@@ -328,7 +328,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
       } // tryRegisterAndLogin function 끝
 
       tryRegisterAndLogin();
-    }else{  
+    }else{
       $ionicLoading.hide();
     } // if(mIsWebView) 끝
   }); //$ionicPlatform.ready 끝
@@ -382,8 +382,8 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
   $ionicConfigProvider.navBar.alignTitle('center');
   $ionicConfigProvider.views.maxCache(0);
   //toggle버튼 통일
-  $ionicConfigProvider.form.toggle('large').checkbox('circle'); 
-  
+  $ionicConfigProvider.form.toggle('large').checkbox('circle');
+
   $stateProvider
   .state("fblogin", {
       url: "/fblogin",
@@ -433,7 +433,7 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
       }
     })
     .state('tabs.edit', {   //home에서 card edit을 눌러서 가는 view(home-tab 사용 edit by tjhan 151102)
-      url: "/home/edit/:id/", 
+      url: "/home/edit/:id/",
       views: {
         'home-tab': {
           templateUrl: "templates/write.html",
@@ -538,10 +538,10 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 });
 
 /*post를 Object로 보낼 때 사용*/
-Object.toparams = function ObjecttoParams(obj) 
+Object.toparams = function ObjecttoParams(obj)
 {
   var p = [];
-  for (var key in obj) 
+  for (var key in obj)
   {
     p.push(key + '=' + encodeURIComponent(obj[key]));
   }
