@@ -283,7 +283,6 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       //맵을 보여준 후 dirty설정
       $scope.cardForm.location.$setDirty();
     };
-    // $scope.cardForm.location.$setViewValue('done');
   }
 
   /*
@@ -577,7 +576,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     }
 
     $scope.cancelClick = true;
-    //history를 없애서 write afterenter시에 forwardView를 판단하는 부분을 reset
+    // history를 없애서 write afterenter시에 forwardView를 판단하는 부분을 reset
     // $ionicHistory.clearHistory();
     if($ionicHistory.forwardView() != null && $ionicHistory.forwardView().stateName == 'tabs.location_h'){
       // $ionicHistory.clearCache($ionicHistory.forwardView().stateId);

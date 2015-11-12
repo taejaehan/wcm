@@ -42,7 +42,7 @@ var PROGRESS_START_TEXT = "위험요소가 등록되었습니다";
 var PROGRESS_ONGOING_TEXT = "위험요소가 해결되고 있습니다";
 var PROGRESS_COMPLETED_TEXT = "위험요소가 해결되었습니다";
 
-var wcm = angular.module('wcm', ['ionic','ionic.service.core','ngCordova', 'ng'])
+var wcm = angular.module('wcm', ['ionic','ngCordova', 'ng'])
 
 //controller간 데이터를 전달하기 위해 사용한다
 wcm.factory('Scopes', function($rootScope) {
@@ -90,25 +90,6 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
     //로그인 한 상태라면 prefresnces에 저장된 user id로 서버에서 유저 정보를 가져와 localStorage에 저장
     var saveLocalUser = function(loginId) {
       if(loginId != null){
-
-        // facebookConnectPlugin.login(["public_profile", 'email', 'user_friends'], 
-        //     function (userData) {
-        //       console.log("login success ");
-        //       console.log("UserInfo : " + userData);
-        //       console.log("UserInfo : " + JSON.stringify(userData));
-        //     },
-        //     function loginError (error) {
-        //       $ionicLoading.hide();
-        //       console.log("login error ");
-        //       console.error("login error : " + JSON.stringify(error));
-        //       $ionicPopup.alert({
-        //         title: mAppName,
-        //         template: JSON.stringify(error),
-        //         cssClass: 'wcm-error'
-        //       });
-        //     }
-        // )
-
         var request = $http({
            method: "get",
            url: mServerAPI + "/user/" + loginId,
@@ -126,14 +107,14 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
             userid: data.users[0].user_id,
             userimage: data.users[0].userimage.split("amp;").join("&"),
             isAuthenticated: true,
-            likes : [],
+            watchs : [],
             changes : [],
           }; 
 
           //user watch list저장
-          if (data.users[0].likes.length > 0) {
-            for(var i = 0; i < data.users[0].likes.length; i++ ) {
-              user.likes.push(data.users[0].likes[i].post_id); 
+          if (data.users[0].watchs.length > 0) {
+            for(var i = 0; i < data.users[0].watchs.length; i++ ) {
+              user.watchs.push(data.users[0].watchs[i].post_id); 
             }
           }
 
@@ -159,7 +140,8 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
       * 새롭게 등록하지 않고 해당 ionic user와 wcm db의 token을 수정한다
       ******************************************************************************/
 
-      /*ionic.Platform.device().uuid가 android에서는 유지되나 ios에서 매번 변경되어
+      /*
+      * ionic.Platform.device().uuid가 android에서는 유지되나 ios에서 매번 변경되어
       * window.plugins.uniqueDeviceID 플러그인으로 교체
       */
       window.plugins.uniqueDeviceID.get(success, fail);
@@ -332,39 +314,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
           }, function(error){
             console.log('error: : ' +  error);
           });
-
-          //facebook 연결 상태 확인 테스트 중 by tjhan 151030
-          /*facebookConnectPlugin.getLoginStatus(
-            function (userInfo) {
-              console.log("LoginStatus success ");
-              console.log("LoginStatus : " + userInfo);
-              console.log("LoginStatus : " + JSON.stringify(userInfo));
-                if(userInfo.status != null && userInfo.status == "unknown"){
-                  facebookConnectPlugin.login(["public_profile", 'email', 'user_friends'], 
-                    function (userData) {
-                      console.log("login success ");
-                      console.log("UserInfo : " + userData);
-                      console.log("UserInfo : " + JSON.stringify(userData));
-                    },
-                    function loginError (error) {
-                      $ionicLoading.hide();
-                      console.log("login error ");
-                      console.error("login error : " + JSON.stringify(error));
-                      $ionicPopup.alert({
-                        title: mAppName,
-                        template: JSON.stringify(error),
-                        cssClass: 'wcm-error'
-                      });
-                    }
-                )
-              }
-            },
-            function loginError (error) {
-              console.log("login error ");
-              console.error("login error : " + JSON.stringify(error));
-            }
-          );*/
-
+   
         }else{
 
           console.log('tryRegisterAndLogin Preferences NO : ' + tryNum);
@@ -588,24 +538,7 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
 });
 
-
-function escapeHtml(text) {
-  // var map = {
-  //   '&': '&amp;',
-  //   '<': '&lt;',
-  //   '>': '&gt;',
-  //   '"': '&quot;',
-  //   "'": '&#039;'
-  // };
-  // return text.replace(/[&<>"']/g, function(m) { return map[m]; });
-  return text
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-}
-
+/*post를 Object로 보낼 때 사용*/
 Object.toparams = function ObjecttoParams(obj) 
 {
   var p = [];

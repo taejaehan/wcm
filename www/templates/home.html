@@ -53,8 +53,8 @@
             <hr>
 
             <div class="sns-link">
-              <a ng-click="toggleWatchHome(card.watch = !card.watch, card.id)" ng-class="{'active' : card.watch, 'non-active' : !card.watch}" id="like">
-                <i class="ion-ios-eye"></i>  위험해요 {{ card.like_count }}
+              <a ng-click="toggleWatchHome(card.watch = !card.watch, card.id)" ng-class="{'active' : card.watch, 'non-active' : !card.watch}" id="watch">
+                <i class="ion-ios-eye"></i>  위험해요 {{ card.watch_count }}
               </a>
               <a ng-href="#/tab/home/{{::card.id}}#comment"><i class="ion-chatbubble-working"></i> 댓글달기 {{ card.comments_count }}
               </a>

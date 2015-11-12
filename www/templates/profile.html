@@ -67,8 +67,8 @@
 		          <p class="progressText progress-{{watch.status}}"><i class="project-icon {{watch.statusIcon}}"></i> {{ watch.statusDescription }}</p>
 		          <div class="watch-list-button">
 			         	<a class="btn btn-default btn-sm watch-list left" href="#/tab/profile/{{ watch.id }}">자세히 보기</a>
-			         	<a class="btn btn-default btn-sm watch-list right" ng-click="toggleWatchProfile(watch.watch = !watch.watch, watch.id)" ng-class="{'active' : watch.watch, 'non-active' : !watch.watch}" id="like">
-	                <i class="ion-ios-eye"></i>  위험해요 {{ card.like_count }}
+			         	<a class="btn btn-default btn-sm watch-list right" ng-click="toggleWatchProfile(watch.watch = !watch.watch, watch.id)" ng-class="{'active' : watch.watch, 'non-active' : !watch.watch}" id="watch">
+	                <i class="ion-ios-eye"></i>  위험해요 {{ card.watch_count }}
 	              </a>
 			        </div>
 						</ion-item>

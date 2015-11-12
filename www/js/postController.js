@@ -1,4 +1,4 @@
-wcm.controller("PostController", function($scope, $rootScope, $http, $stateParams, $state, $ionicPopup, $ionicModal, CardService) {
+wcm.controller("PostController", function($scope, $rootScope, $http, $stateParams, $state, $ionicPopup, $ionicModal, CardService, $interval) {
 
   var latlng, progress;
   var user = JSON.parse(window.localStorage['user'] || '{}');
@@ -27,8 +27,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       }else {
         $scope.card.img_path = mServerUpload + data.cards[0].img_path;
       }
-      // $scope.card.img_path = mServerUpload + $scope.card.img_path;
-      $scope.like_count = data.cards[0].like_count;
+      $scope.watch_count = data.cards[0].watch_count;
       $scope.share_count = data.cards[0].share_count;
 
       $scope.createTime = moment(data.cards[0].create_time, "YYYY-MM-DD h:mm:ss").fromNow();
@@ -63,11 +62,11 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
       // user가 카드에 watch를 눌렀는지 체크
       if (user.isAuthenticated === true) {
-        if( user.likes.length != 0) {
+        if( user.watchs.length != 0) {
           var k = 0;
 
-          while( k < user.likes.length) {
-            if(user.likes.indexOf($scope.card.id) != -1) {
+          while( k < user.watchs.length) {
+            if(user.watchs.indexOf($scope.card.id) != -1) {
               $scope.card.watch = true;
               break;
             }
@@ -117,13 +116,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
   // toggle watch_count
   $scope.toggleWatchPost = function(watch) {
-    var result = CardService.toggleWatch(watch,$scope.postId,user);
-    $scope.card.watch = result;
-    if(result){
-      $scope.like_count ++;
-    }else{
-      $scope.like_count --;
-    }
+    var result = CardService.toggleWatch(watch,$scope.postId,user, $scope);
   }
   
   // 코멘트 db에 저장하기
@@ -178,15 +171,17 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
                               updated_at: new Date()
                             }
 
-        $scope.comments.push(formDataLocal);
+        
 
         request.success(function(data) {  
-          
+          //등록했던 댓글 의 id를 받아 set해주고 comments에 push한다 by tjhan 151112
+          formDataLocal.id = data;
+          $scope.comments.push(formDataLocal);
+
           document.getElementById("comment").value = "";
           $scope.comments_count ++;
           
           var i = 0;
-          
           while( i < $rootScope.allData.cards.length) {
             if ($rootScope.allData.cards[i].id === $stateParams.postId) {
               $rootScope.allData.cards[i].comments_count ++;
@@ -247,10 +242,15 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
     confirmPopup.then(function(res) {
       if(res) {
+        var formData = {
+                          post_id: comment.post_id,
+                        };
+        var postData = 'commentData='+JSON.stringify(formData);
         var request = $http({
-            method: "get",
+            method: "post",
             url: mServerAPI + "/comment/" + comment.id + "/delete",
             crossDomain : true,
+            data: postData,
             headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
         });
 
@@ -388,51 +388,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   }
 
   $scope.showDialog = function (card) { 
-    var result = CardService.share('facebook', card);
-    console.log('showDialog result : ' + result);
-    if(result) $scope.share_count ++;
-
-    /*facebookConnectPlugin.showDialog( {
-      method: "feed" ,
-      picture: card.img_path,
-      name: card.title,
-      message:'First photo post',    
-      caption: 'via We Change Makers',
-      description: card.description,
-      link: 'http://wechangemakers.org/'
-    }, 
-      // function (response) { alert(JSON.stringify(response)) },
-      // function (response) { alert(JSON.stringify(response)) }
-      function (success) {
-        $ionicPopup.alert({
-          title: mAppName,
-          template: '페이스북에 공유 되었습니다',
-          cssClass: 'wcm-positive',
-        });
-
-        $scope.share_count ++;
-        var share_count = $scope.share_count;
-        var formData = { share_count: share_count };
-        var postData = 'shareData='+JSON.stringify(formData);
-
-        var request = $http({
-            method: "post",
-            url: mServerAPI + "/cardDetail/" + $scope.postId + "/share",
-            crossDomain : true,
-            data: postData,
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-            cache: false
-        });
-      },
-      function (error) {
-        console.log(JSON.stringify(error));
-        $ionicPopup.alert({
-          title: mAppName,
-          template: '페이스북 공유에 실패 하였습니다',
-          cssClass: 'wcm-error',
-        });
-      }
-    );*/
+    var  result = CardService.share('facebook', card, $scope);
   }
 
 });

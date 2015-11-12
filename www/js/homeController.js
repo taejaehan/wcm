@@ -261,8 +261,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     $scope.noMoreItemsAvailable = true;
 
     $timeout( function() { 
-      // console.log('doRefresh (!(mIsWebView) : ' + !mIsWebView);
-      // console.log('doRefresh $cordovaNetwork.isOnline() : ' + $cordovaNetwork.isOnline());
       //app에서 띄운 webview가 아니거나 online일 경우만
       if (!(mIsWebView) || $cordovaNetwork.isOnline()) {
         /* isOnline */  
@@ -356,7 +354,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
               if (user.isAuthenticated === true) {
                 for(var j = 0; j < $rootScope.allData.cards.length; j ++) {
                   
-                  if(user.likes.indexOf($rootScope.allData.cards[j].id) != -1) {
+                  if(user.watchs.indexOf($rootScope.allData.cards[j].id) != -1) {
                     $rootScope.allData.cards[j].watch = true;
                   } else {
                     $rootScope.allData.cards[j].watch = false;
@@ -382,7 +380,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           cssClass: 'wcm-error',
         });
 
-        //미리 가져온 cardlist 사용
+        // 미리 가져온 cardlist 사용
         // $scope.offlineCard();
         
         //Stop the ion-refresher from spinning
@@ -495,7 +493,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           if (user.isAuthenticated === true) {
             for(var j = 0; j < $rootScope.allData.cards.length; j ++) {
               
-              if(user.likes.indexOf($rootScope.allData.cards[j].id) != -1) {
+              if(user.watchs.indexOf($rootScope.allData.cards[j].id) != -1) {
                 $rootScope.allData.cards[j].watch = true;
               } else {
                 $rootScope.allData.cards[j].watch = false;
@@ -595,59 +593,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   $scope.showDialog = function (card) { 
     CardService.share('facebook', card);
-
-    /*facebookConnectPlugin.showDialog( {
-      method: "feed" ,
-      picture: card.img_path,
-      name: card.title,
-      message:'First photo post',    
-      caption: 'via We Change Makers',
-      description: card.description,
-      link: 'http://wechangemakers.org/'
-    }, 
-      // function (response) { alert(JSON.stringify(response)) },
-      // function (response) { alert(JSON.stringify(response)) }
-      function (success) {
-        $ionicPopup.alert({
-          title: mAppName,
-          template: '페이스북에 공유 되었습니다',
-          cssClass: 'wcm-positive',
-        });
-
-        while( i < $rootScope.allData.cards.length) {
-          if ($rootScope.allData.cards[i].id === card.id) {
-            var share_count = $rootScope.allData.cards[i].share_count ++;
-            var formData = { share_count: share_count };
-            var postData = 'shareData='+JSON.stringify(formData);
-
-            var request = $http({
-                method: "post",
-                url: mServerAPI + "/cardDetail/" + card.id + "/share",
-                crossDomain : true,
-                data: postData,
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-                cache: false
-            });
-            request.success(function(data) {
-              console.log('shareCountPost success : ' + JSON.stringify(data));
-            });
-            request.error(function(error){
-              console.log('shareCountPost error : ' + JSON.stringify(error));
-            });
-            break;
-          }
-          i ++;
-        }
-      },
-      function (error) {
-        console.log('error : ' + JSON.stringify(error));
-        $ionicPopup.alert({
-          title: mAppName,
-          template: '페이스북 공유에 실패 하였습니다',
-          cssClass: 'wcm-error',
-        });
-      }
-    );*/
   }
 
 });
