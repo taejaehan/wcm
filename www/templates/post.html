@@ -6,7 +6,7 @@
 
       <span class="timeago" ng-bind="createTime"></span>
       <div class="additional-function">
-        <i class="ion-ios-eye"></i> {{ like_count }}
+        <i class="ion-ios-eye"></i> {{ watch_count }}
         <i class="ion-chatbubble-working"></i> {{ comments_count }}
         <i class="ion-forward"></i> {{ share_count }}
       </div>
@@ -35,7 +35,7 @@
       <hr>
 
       <div class="sns-link">
-        <a ng-click="toggleWatchPost(card.watch = !card.watch)" ng-class="{'active' : card.watch, 'non-active' : !card.watch}" id="like">
+        <a ng-click="toggleWatchPost(card.watch = !card.watch)" ng-class="{'active' : card.watch, 'non-active' : !card.watch}" id="watch">
           <i class="ion-ios-eye"></i> 위험해요
         </a>
         <a><i class="ion-chatbubble-working"></i> 댓글달기</a> 

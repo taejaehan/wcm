@@ -1,6 +1,12 @@
 wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicLoading, $location, $rootScope, $timeout) {
 
-  var toggleWatch = function(e, id, user) {
+  /*
+  * watch 버튼을 toggle합니다 by tjhan 151111
+  * @param e : (bool) 버튼 toggle true/false
+  * @param id : watch 할 card id
+  * @param user : watch할 user 정보
+  */
+  var toggleWatch = function(e, id, user, scope) {
     console.log('toggleWatch : ' + e);
     if(user != null){
       if (user.isAuthenticated === true) {
@@ -11,70 +17,74 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
         $timeout(function(){
           $ionicLoading.hide();
         }, 5000);
+
         if (e === true) {
           var i = 0;
           while( i < $rootScope.allData.cards.length) {
             if ($rootScope.allData.cards[i].id === id) {
-              $rootScope.allData.cards[i].like_count ++;
+              $rootScope.allData.cards[i].watch_count ++;
               $rootScope.allData.cards[i].watch = true;
-              postWatch($rootScope.allData.cards[i], id);
+              postWatch(id, true);
               break;
             }
             i ++;
           }
-
-          if (user.likes.indexOf(id) === -1) {
-            user.likes.push(id);
+          //watch 테이블에 추가
+          if (user.watchs.indexOf(id) === -1) {
+            user.watchs.push(id);
             window.localStorage['user'] = JSON.stringify(user);
             var userId = parseInt(user.userid);
             var postId = parseInt(id);
             var formData1 = { user_id: userId,
                               post_id: postId
                             };
-            var postData1 = 'likeData='+JSON.stringify(formData1);
-
+            var postData1 = 'watchData='+JSON.stringify(formData1);
             var request1 = $http({
                 method: "post",
-                url: mServerAPI + "/like",
+                url: mServerAPI + "/watch",
                 crossDomain : true,
                 data: postData1,
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
                 cache: false
             });
-            return true;
+            if(scope != null){
+              scope.watch_count ++;
+            }
           }
           
         } else {
           var i = 0;
           while( i < $rootScope.allData.cards.length) {
             if ($rootScope.allData.cards[i].id === id) {
-              $rootScope.allData.cards[i].like_count --;
+              $rootScope.allData.cards[i].watch_count --;
               $rootScope.allData.cards[i].watch = false;
-              postWatch($rootScope.allData.cards[i], id);
+              postWatch(id, false);
               break;
             }
             i ++;
           }
-
-          if (user.likes.indexOf(id) != -1) {
-            var index = user.likes.indexOf(id);
-            user.likes.splice(index, 1);
+          //watch 테이블에서 삭제
+          if (user.watchs.indexOf(id) != -1) {
+            var index = user.watchs.indexOf(id);
+            user.watchs.splice(index, 1);
             window.localStorage['user'] = JSON.stringify(user);
             var userId = parseInt(user.userid);
             var postId = parseInt(id);
             var formData1 = { user_id: userId,
                               post_id: postId
                             };
-            var postData1 = 'likeData='+JSON.stringify(formData1);
+            var postData1 = 'watchData='+JSON.stringify(formData1);
             var request1 = $http({
                 method: "post",
-                url: mServerAPI + "/like/delete/" + userId + "/" + postId,
+                url: mServerAPI + "/watch/delete/" + userId + "/" + postId,
                 crossDomain : true,
                 data: postData1,
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
                 cache: false
             });
-            return false;
+            if(scope != null){
+              scope.watch_count --;
+            }
           }
         }
 
@@ -105,15 +115,23 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
       }
     }
   };
-  var postWatch = function(selectedCard, id){
+  /*
+  * 카드 테이블에 watch count를 변경합니다 by tjhan 151111
+  * @param id - watch한 카드 id
+  * @param watch (boolean) - watch true/false
+  */
+  var postWatch = function(id, watch){
     console.log('postWatch');
-    var like_count = parseInt(selectedCard.like_count);
-    var formData = { like_count: like_count };
-    var postData = 'likeData='+JSON.stringify(formData);
+    // var watch_count = parseInt(selectedCard.watch_count);
+    // var formData = { watch_count: watch_count };
+    // var postData = 'watchData='+JSON.stringify(formData);
+    // var id = selectedCard.id;
+    var formData = { watch: watch };
+    var postData = 'watch='+JSON.stringify(formData);
 
     var request = $http({
         method: "post",
-        url: mServerAPI + "/cardDetail/" + id + "/like",
+        url: mServerAPI + "/cardDetail/" + id + "/watch",
         crossDomain : true,
         data: postData,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
@@ -132,7 +150,13 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
   var weChange = function() {
     
   };
-  var share = function(type, card) {
+  /*
+  * sns로 공유합니다. (현재 facebook만 있음) by tjhan 151111
+  * @param type (String) - sns type (ex : 'facebook')
+  * @param card : 공유 할 card 정보 (ex :  {"id":"5","user_id":"2","title":"위험해요",,,,,,,,,})
+  * @param scope : postController의 $scope (해당 scope의 share_count를 증가시키기 위함)
+  */
+  var share = function(type, card, scope) {
 
     console.log('share type : ' + type);
     console.log('share card : ' + JSON.stringify(card));
@@ -151,7 +175,7 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
         console.log('That image was found.');
       }
 
-      var fbShare = facebookConnectPlugin.showDialog({
+      return facebookConnectPlugin.showDialog({
         method: "feed" ,
         picture: card.img_path,
         message:'First photo post',    
@@ -166,20 +190,19 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
         while( i < $rootScope.allData.cards.length) {
           if ($rootScope.allData.cards[i].id === card.id) {
             console.log('share $rootScope.allData.cards[i].share_count : ' + $rootScope.allData.cards[i].share_count);
-            var share_count = parseInt($rootScope.allData.cards[i].share_count) + 1;
+            var share_count = ++($rootScope.allData.cards[i].share_count);
             console.log('share card.id : ' + card.id);
             console.log('share share_count : ' + share_count);
 
-            var formData = { share_count: share_count };
-            var postData = 'shareData='+JSON.stringify(formData);
+            // var formData = { share_count: share_count };
+            // var postData = 'shareData='+JSON.stringify(formData);
 
-            
-
+            //share는 무조건 숫자가 증가 되기 때문에 postData를 보내지 않는다 by tjhan 151111
             var request = $http({
                 method: "post",
                 url: mServerAPI + "/cardDetail/" + card.id + "/share",
                 crossDomain : true,
-                data: postData,
+                // data: postData,
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
                 cache: false
             });
@@ -199,9 +222,10 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
           template: '페이스북에 공유 되었습니다',
           cssClass: 'wcm-positive',
         });
-
-
-        return true;          
+        //postController에서 넘어온 scope이 있을 경우 해당 scope의 share_count를 증가
+        if(scope != null){
+          scope.share_count ++;
+        }
       },
       function (error) {
         console.log('share error : ' + JSON.stringify(error));
@@ -210,11 +234,7 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
           template: '페이스북 공유에 실패 하였습니다',
           cssClass: 'wcm-error',
         });
-        return false;
-      }
-    );
-
-      
+      });
     } //if(type =='facebook') 끝
   };
 

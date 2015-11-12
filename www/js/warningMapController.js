@@ -1,4 +1,4 @@
-wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGeolocation, $ionicLoading, $ionicActionSheet, $ionicPopup, $ionicPopover, $window, $ionicModal) {
+wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGeolocation, $ionicLoading, $ionicActionSheet, $ionicPopup, $ionicPopover, $window, $ionicModal, $timeout) {
     
     $scope.cards = null;
     $scope.map = null;
@@ -126,11 +126,14 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
         iwCloseBtn.children[0].style.height = '100%';
         //실제로 버튼이 눌리는 곳
         var iwCloseBtnTransparent = iwCloseBtn.nextSibling;
-        while(iwCloseBtnTransparent && iwCloseBtnTransparent.nodeType != 1) {
-          iwCloseBtnTransparent = iwCloseBtnTransparent.nextSibling;
-        };
-        iwCloseBtnTransparent.style.right = '30px';  // button repositioning
-        iwCloseBtnTransparent.style.top = '20px';  // button repositioning
+        if(iwCloseBtnTransparent != null){
+          while(iwCloseBtnTransparent && iwCloseBtnTransparent.nodeType != 1) {
+            iwCloseBtnTransparent = iwCloseBtnTransparent.nextSibling;
+          };
+          iwCloseBtnTransparent.style.right = '30px';  // button repositioning
+          iwCloseBtnTransparent.style.top = '20px';  // button repositioning
+        }
+        
         /*CLOSE 버튼 끝*/
       });
 
