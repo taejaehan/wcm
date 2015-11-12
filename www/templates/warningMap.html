@@ -1,4 +1,4 @@
-<ion-view view-title="{{warningTitle}}">
+<ion-view view-title="{{::warningTitle}}">
   <ion-nav-buttons side="right">
     <!-- marker양 선택하는 부분 주석처리함-->
     <!-- <ion-checkbox class="checkbox_custrom" ng-model="usegmm.checked" ng-change="change()">
@@ -26,12 +26,13 @@
   <script id="templates/markerSelectPopover.html" type="text/ng-template">
     <ion-popover-view class="custom_popover">
       <ion-content>
-        <ion-radio ng-repeat="item in markerTypeList"
+        <ion-radio ng-repeat="item in markerTypeList track by $index"
             ng-value="item.value"
             ng-model="data.markerType"
+            ng-model-options="{ debounce: 250 }"
             ng-change="showMarkers(item.value)"
-            icon="{{item.radio_calss}}">
-          {{ item.text }}
+            icon="{{::item.radio_calss}}">
+          {{ ::item.text }}
         </ion-radio>
       </ion-content>
     </ion-popover-view>
@@ -42,16 +43,16 @@
         <ion-content>
           <div class="header">
             <div>
-              <h1 class="title">{{ markerTitle }}</h1>
+              <h1 class="title">{{ ::markerTitle }}</h1>
               <button class="button button-clear ion-close-round button-primary" ng-click="modal.hide()"></button>
             </div>
             <div>
-              <img class="location-icon" src="{{markerLocationImg}}"/>
-              <span class="location-text">{{markerLocation}}</span>
+              <img class="location-icon" src="{{::markerLocationImg}}"/>
+              <span class="location-text">{{::markerLocation}}</span>
             </div>
           </div>
           <div class="content">
-            <div class="center-cropped post-image" style="background-image: url('{{markerImg}}');">
+            <div class="center-cropped post-image" style="background-image: url('{{::markerImg}}');">
             </div>
             <div class="card-view">자세히 보기 &gt;</div>
           </div>
