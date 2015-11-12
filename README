@@ -63,8 +63,88 @@ shareDialog.show(content); 밑에 pluginInitialize(); 추가	(2곳)
 ionic platform add android
 ionic run android
 
-******************************IOS 20151029****************************** 
 
-테스트 해보지 않았지만 페이스북 공유시 content가 없이 나온다면 
-\plugins\cordova-plugin-facebook4\src\ios\FacebookConnectPlugin.m
-에서 href를 link로 바꿔줘야 될 듯 하다
+**************************************************************************************
+How to solve IOS warning 
+**************************************************************************************
+
+**************************************************************************************
+warning 1. <AppDelegate+notification.m> Method definition for 'application:didReceiveRemoteNotification:' not found
+**************************************************************************************
+
+AppDelegate+notification.h 파일에서
+--------------------------------------------------------------------------------------
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo;
+--------------------------------------------------------------------------------------
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler;
+
+
+**************************************************************************************
+warning 2. <YoikScreenorientation.m>, <CDVInAppBrowser.m> Conflicting return type in implementation of 'supportedInterfaceorientations': ...
+**************************************************************************************
+- (NSUInteger) supportedInterfaceOrientations
+--------------------------------------------------------------------------------------
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 90000
+- (NSUInteger) supportedInterfaceOrientations
+#else
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
+#endif
+
+
+**************************************************************************************
+warning 3. Facebook ios SDK - ios9 
+**************************************************************************************
+https://developers.facebook.com/docs/ios/ios9 링크 참조
+
+
+**************************************************************************************
+warning 4. <CDVInAppBrowser.m> Null passed to a callee that requires a non-null argument 
+**************************************************************************************
+[self.webView loadHTMLString:nil baseURL:nil];
+--------------------------------------------------------------------------------------
+NSString* htmlContent = @"<html><head><title></title></head><body><img src='../img/image.jpg' /></body></html>";
+[self.webView loadHTMLString:htmlContent baseURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] bundlePath]]];
+
+
+**************************************************************************************
+warning 5. <CDVConnection.m> 
+Address of 'UIApplicationWillEnterForegroundNotification' will always evaluate to 'true'
+Address of 'UIApplicationDidEnterBackgroundNotification' will always evaluate to 'true'
+**************************************************************************************
+if (&UIApplicationDidEnterBackgroundNotification && &UIApplicationWillEnterForegroundNotification) {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onPause) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onResume) name:UIApplicationWillEnterForegroundNotification object:nil];
+}
+--------------------------------------------------------------------------------------
+if문 제외 
+
+
+**************************************************************************************
+warning 6. <FacebookConnectPlugin.m> 'showWithContent:delegate:' is deprecated
+**************************************************************************************
+[FBSDKAppInviteDialog showWithContent:content
+                             delegate:self];
+--------------------------------------------------------------------------------------
+[FBSDKAppInviteDialog showFromViewController:nil
+																 withContent:content
+																		delegate:nil];
+
+
+**************************************************************************************
+warning 7. 'loginWithPublishPermission:handler' is deprecated 
+**************************************************************************************
+fromViewController:nil 추가
+--------------------------------------------------------------------------------------
+
+
+**************************************************************************************
+warning 8. <CDVPluginResult.m> 'cdv_base64EncodedString' is deprecated
+**************************************************************************************
+[data cdv_base64EncodedString]
+--------------------------------------------------------------------------------------
+[data base64EncodedStringWithOptions:0]
+
+
+
+
+
