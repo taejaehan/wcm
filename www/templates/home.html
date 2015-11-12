@@ -18,14 +18,14 @@
       <div id="home_page">
 
         <!-- <ion-item collection-repeat="card in allData.cards" class="posts" item-height="300px"> -->
-        <ion-item ng-repeat="card in allData.cards" class="posts">
+        <ion-item ng-repeat="card in allData.cards track by $index" class="posts">
           <div class="post-body">
-            
+
             <div class="profile">
-              <img ng-src="{{ card.user[0].userimage }}">
-              <p class="username">{{card.user[0].username}}</p>
-              <p class="date">{{ card.create_time }}</p>
-    
+              <img ng-src="{{::card.user[0].userimage}}">
+              <p class="username">{{::card.user[0].username}}</p>
+              <p class="date">{{::card.create_time}}</p>
+
               <i class="ion-trash-a delete" ng-style="userChecked(card)" ng-click="deleteCard(card.id)"></i>
               <i class="ion-compose edit" ng-style="userChecked(card)" ng-click="editCard(card.id)"></i>
             </div>
@@ -37,7 +37,7 @@
               <a ng-click="showMap(card.location_lat, card.location_long)">
                 <p class="address"><i class="fa fa-map-marker"></i> {{card.location_name}}</p>
               </a>
-              <a ng-href="#/tab/home/{{ card.id }}">
+              <a ng-href="#/tab/home/{{::card.id}}">
                 <div class="img-group">
                   <img ng-src="{{card.img_path}}" class="post-image" onError="this.src='img/default_thumb.png'">
                 </div>
@@ -51,14 +51,14 @@
             <p class="progressText"><i class="project-icon {{card.statusIcon}}"></i> {{ card.statusDescription }}</p>
 
             <hr>
-            
+
             <div class="sns-link">
               <a ng-click="toggleWatchHome(card.watch = !card.watch, card.id)" ng-class="{'active' : card.watch, 'non-active' : !card.watch}" id="like">
                 <i class="ion-ios-eye"></i>  위험해요 {{ card.like_count }}
               </a>
-              <a ng-href="#/tab/home/{{ card.id }}#comment"><i class="ion-chatbubble-working"></i> 댓글달기 {{ card.comments_count }}
+              <a ng-href="#/tab/home/{{::card.id}}#comment"><i class="ion-chatbubble-working"></i> 댓글달기 {{ card.comments_count }}
               </a>
-              <a ng-click="showDialog(card)"><i class="ion-forward"></i> 공유하기 {{ card.share_count }}</a> 
+              <a ng-click="showDialog(card)"><i class="ion-forward"></i> 공유하기 {{ card.share_count }}</a>
 
             </div>
 
@@ -76,11 +76,11 @@
   <script id="templates/popover.html" type="text/ng-template">
     <ion-popover-view class="home_popover">
       <ion-content>
-        <ion-radio ng-repeat="item in sortingTypeList"
+        <ion-radio ng-repeat="item in sortingTypeList track by $index"
             ng-value="item.value"
             ng-model="data.sortingType"
             ng-change="sortingTypeChange(item)">
-          {{ item.text }}
+          {{::item.text }}
         </ion-radio>
       </ion-content>
     </ion-popover-view>
@@ -127,7 +127,7 @@
           <a class="welcome-slide slide-prev" ng-click="sliderPrev()" ></a>
         </figure>
         <figure class="fb" ng-click="facebookLogin()">
-        </figure> 
+        </figure>
           <!-- <button class="button button-block btn-default" ng-click="skipLogin()"><i class="fa fa-check"></i> Skip Login</button>  -->
       </ion-slide>
 
