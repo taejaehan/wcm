@@ -567,7 +567,8 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         });
 
         request.success(function() {
-          location.reload();
+          // location.reload();
+          $scope.doRefresh('init');
         });
       }
     });
