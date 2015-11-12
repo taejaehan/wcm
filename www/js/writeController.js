@@ -2,14 +2,14 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
 
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var latlng, progress;
-  var imgPath = '';
+  
 
   $scope.addView = false; //add일때만 취소 버튼을 보이게 하기 위함
   $scope.cardId;
   $scope.cardData = {};
   $scope.cancelClick = false;
   $scope.uploadTitle = 'Edit';
-  
+
   $scope.$on('$ionicView.afterEnter', function(){
 
     if (user != null && user.isAuthenticated === true) {
@@ -337,7 +337,10 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
         //file을 변경했을 경우에만 다시 저장
         if($scope.cardForm.file.$dirty){
           //이미지 경로 및 이름이 같으면 업로드 하지 않는다
-          if(imgPath != $scope.imgURI){
+          console.log('$rootScope.originURI : ' + $rootScope.originURI);
+          console.log('$scope.imgURI : ' + $scope.imgURI);
+          console.log('$rootScope.originURI != $scope.imgURI : ' + $rootScope.originURI != $scope.imgURI);
+          if($rootScope.originURI != $scope.imgURI){
             $scope.savePicture();
             //TODO 예전 사진 삭제 
           }else{
@@ -427,6 +430,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     console.log("newFileName : "  + newFileName);
 
     var user_app_id = $scope.userid;
+    var imgPath = '';
 
     var url, title, description, location_lat, location_long, location_name, message= '';
     //$scope.cardId가 null이면 (new add)
@@ -547,6 +551,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       }else{
         imgUrl = mServerUpload + imgUrl;
       }
+      $rootScope.originURI = imgUrl; //사진을 변경했는지 알기 위함 by tjhan 151112
       $scope.imgURI = imgUrl;
       $scope.cardForm.file.$setTouched();
       $scope.cardForm.file.$setViewValue(imgUrl);
@@ -590,8 +595,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     delete $rootScope.cardLocation;
     delete $rootScope.cardLocationLat;
     delete $rootScope.cardLocationLng;
-
-    
+    delete $rootScope.originURI;
   }
 
 });
