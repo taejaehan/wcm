@@ -6,22 +6,22 @@
 
       <span class="timeago" ng-bind="createTime"></span>
       <div class="additional-function">
-        <i class="ion-ios-eye"></i> {{ watch_count }}
-        <i class="ion-chatbubble-working"></i> {{ comments_count }}
-        <i class="ion-forward"></i> {{ share_count }}
+        <i class="ion-ios-eye"></i> <span ng-bind="watch_count"></span>
+        <i class="ion-chatbubble-working"></i> <span ng-bind="comments_count"></span>
+        <i class="ion-forward"></i> <span ng-bind="share_count"></span>
       </div>
       <hr>
 
       <a ng-click="showMap()" >
-        <p id="post_location_name"><i class="fa fa-map-marker"></i> {{ ::card.location_name }}</p>
+        <p id="post_location_name"><i class="fa fa-map-marker"></i> <span ng-bind="card.location_name"></span></p>
       </a>
 
-      <p class="description">{{ ::card.description }}</p>
+      <p class="description" ng-bind="card.description"></p>
       <div class="progress">
         <div class="progress-bar progress-bar-danger progress-bar-striped progress-{{ ::card.status }}" role="progressbar" aria-valuenow="{{ card.status }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ card.status }}%">
         </div>
       </div>
-      <p class="progressText"><i class="project-icon {{statusIcon}}"></i> {{ ::card.statusDescription }}</p>
+      <p class="progressText"><i class="project-icon {{statusIcon}}"></i> <span ng-bind="card.statusDescription"></span></p>
 
       <div ng-class="{'change-member' : !changerImage, 'change-member active' : changerImage}">
         <div ng-repeat="changer in changers" ng-class="{'member-list ng-hide' : !changerImage, 'member-list ng-show' : changerImage}">
@@ -49,12 +49,12 @@
         <div ng-repeat="comment in comments track by $index" class="comment-list">
           <img ng-src="{{ ::comment.user[0].userimage }}" class="profile-image">
           <div class="description">
-            <strong>{{ ::comment.user[0].username }}</strong>
+            <strong ng-bind="comment.user[0].username"></strong>
             <a class="comment-delete" ng-click="deleteComment(comment)" ng-style="userChecked(comment)">
               <i class="ion-trash-b"></i>
             </a>
-            <p>{{ ::comment.content }}</p>
-            <small>{{ comment.updated_at | date:'yyyy-MM-dd HH:mm:ss' }}</small>
+            <p ng-bind="comment.content"></p>
+            <small ng-bind="comment.updated_at | date:'yyyy-MM-dd HH:mm:ss'"></small>
           </div>
         </div>
 

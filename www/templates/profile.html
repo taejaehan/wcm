@@ -11,7 +11,7 @@
 		    <img ng-src="{{ ::user.userimage }}">
 
 			  <div class="form-group username">
-			    <a ng-click="config()"><label>{{ user.username }} <i class="profile-setting-icon"></i></label></a>
+			    <a ng-click="config()"><label ng-bind="user.username"> <i class="profile-setting-icon"></i></label></a>
 			  </div>
 
 		  	<div class="row">
@@ -23,14 +23,14 @@
 			  <div class="form-group login">
 			  	 <!--내가 제보한 위험 리스트-->
 			    <div ng-class="{'card-info active' : reportTab, 'card-info non-active' : !reportTab}">
-			    	<div class="empty-text"> {{ ::reportEmptyMessage }} </div>
+			    	<div class="empty-text"><span ng-bind="reportEmptyMessage"></span></div>
 			    	<ion-item ng-repeat="card in reportList | reverse track by $index" class="my-card-list">
-				    	<a href="#/tab/home/{{ ::card.id }}" class="title"><p>{{ ::card.title }}</p></a>
+				    	<a href="#/tab/home/{{ ::card.id }}" class="title"><p ng-bind="card.title"></p></a>
 				    	<div class="progress">
 		            <div class="progress-bar progress-bar-danger progress-bar-striped progress-{{card.status}}" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: {{card.status}}%">
 		            </div>
 		          </div>
-		          <p class="progressText progress-{{card.status}}"><i class="project-icon {{card.statusIcon}}"></i> {{ card.statusDescription }}</p>
+		          <p class="progressText progress-{{card.status}}"><i class="project-icon {{card.statusIcon}}"></i> <span ng-bind="card.statusDescription"></span></p>
 		          <div class="progress-button">
 			      		<a ng-click="idea(card)"><i class="project-icon project-start-dis"></i> 시작</a>
 			      		<a ng-click="doing(card)"><i class="project-icon project-ongoing-dis"></i> 진행</a>
@@ -40,14 +40,14 @@
 			    </div>
 				 <!--내가 해결한 위험 리스트-->
 			    <div ng-class="{'change-info active' : changeTab, 'change-info non-active' : !changeTab}">
-			    	<div class="empty-text"> {{ ::changeEmptyMessage }} </div>
+			    	<div class="empty-text"><span ng-bind="changeEmptyMessage"></span></div>
 				    <ion-item ng-repeat="change in changeList | reverse track by $index" class="my-change-list">
-				    	<p class="title">{{ ::change.title }}</p>
+				    	<p class="title" ng-bind="change.title"></p>
 				    	<div class="progress">
 		            <div class="progress-bar progress-bar-danger progress-bar-striped progress-{{change.status}}" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: {{change.status}}%">
 		            </div>
 		          </div>
-		          <p class="progressText progress-{{change.status}}"><i class="project-icon {{change.statusIcon}}"></i> {{ change.statusDescription }}</p>
+		          <p class="progressText progress-{{change.status}}"><i class="project-icon {{change.statusIcon}}"></i> <span ng-bind="change.statusDescription"></span></p>
 
 		          <div class="change-list-button">
 			         	<a class="btn btn-default btn-sm change-list left" href="#/tab/profile/{{ ::change.id }}">자세히 보기</a>
@@ -57,18 +57,18 @@
 			    </div>
 				  <!--위험해요! 리스트-->
 			    <div ng-class="{'watch-info active' : watchTab, 'watch-info non-active' : !watchTab}">
-			    	<div class="empty-text"> {{ ::watchEmptyMessage }} </div>
+			    	<div class="empty-text"><span ng-bind="watchEmptyMessage"></span></div>
 				    <ion-item ng-repeat="watch in watchList | reverse track by $index" class="my-change-list">
-				    	<p class="title">{{ ::watch.title }}</p>
+				    	<p class="title" ng-bind="watch.title"></p>
 				    	<div class="progress">
 		            <div class="progress-bar progress-bar-danger progress-bar-striped progress-{{watch.status}}" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: {{watch.status}}%">
 		            </div>
 		          </div>
-		          <p class="progressText progress-{{watch.status}}"><i class="project-icon {{watch.statusIcon}}"></i> {{ watch.statusDescription }}</p>
+		          <p class="progressText progress-{{watch.status}}"><i class="project-icon {{watch.statusIcon}}"></i> <span ng-bind="watch.statusDescription"></span></p>
 		          <div class="watch-list-button">
 			         	<a class="btn btn-default btn-sm watch-list left" href="#/tab/profile/{{ ::watch.id }}">자세히 보기</a>
 			         	<a class="btn btn-default btn-sm watch-list right" ng-click="toggleWatchProfile(watch.watch = !watch.watch, watch.id)" ng-class="{'active' : watch.watch, 'non-active' : !watch.watch}" id="watch">
-	                <i class="ion-ios-eye"></i>  위험해요 {{ card.watch_count }}
+	                <i class="ion-ios-eye"></i>  위험해요
 	              </a>
 			        </div>
 						</ion-item>

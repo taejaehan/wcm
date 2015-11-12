@@ -39,12 +39,12 @@
         <ion-content>
           <div class="header">
             <div>
-              <h1 class="title">{{ ::markerTitle }}</h1>
+              <h1 class="title" ng-bind="markerTitle"></h1>
               <button class="button button-clear ion-close-round button-primary" ng-click="modal.hide()"></button>
             </div>
             <div>
               <img class="location-icon" src="{{::markerLocationImg}}"/>
-              <span class="location-text">{{::markerLocation}}</span>
+              <span class="location-text" ng-bind="markerLocation"></span>
             </div>
           </div>
           <div class="content">
