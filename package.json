@@ -26,7 +26,6 @@
     "cordova-plugin-file-transfer"
   ],
   "cordovaPlatforms": [
-    "android",
-    "ios"
+    "android"
   ]
 }

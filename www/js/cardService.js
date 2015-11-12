@@ -122,10 +122,7 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
   */
   var postWatch = function(id, watch){
     console.log('postWatch');
-    // var watch_count = parseInt(selectedCard.watch_count);
-    // var formData = { watch_count: watch_count };
-    // var postData = 'watchData='+JSON.stringify(formData);
-    // var id = selectedCard.id;
+
     var formData = { watch: watch };
     var postData = 'watch='+JSON.stringify(formData);
 
@@ -194,10 +191,7 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
             console.log('share card.id : ' + card.id);
             console.log('share share_count : ' + share_count);
 
-            // var formData = { share_count: share_count };
-            // var postData = 'shareData='+JSON.stringify(formData);
-
-            //share는 무조건 숫자가 증가 되기 때문에 postData를 보내지 않는다 by tjhan 151111
+            //share는 무조건 숫자가 증가 되기 때문에 postData를 보내지 않고 서버에서 처리 by tjhan 151111
             var request = $http({
                 method: "post",
                 url: mServerAPI + "/cardDetail/" + card.id + "/share",

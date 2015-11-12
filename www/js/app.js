@@ -74,7 +74,6 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
     });
 
     window.localStorage.clear();
-    // window.localStorage['user'] = null;
 
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -208,12 +207,12 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
                   var payload = notification.payload;
                   console.log('notification : ' + notification);
                   console.log('payload : ' + JSON.stringify(payload));
-                  // alert('onNotification : ' + notification, payload);
-                  $ionicPopup.alert({
-                    title: mAppName,
-                    template: payload.message,
-                    cssClass: 'wcm-negative'
-                  });
+                  // notification왔을 때 alert 주석처리 by tjhan 151112
+                  // $ionicPopup.alert({
+                  //   title: mAppName,
+                  //   template: payload.message,
+                  //   cssClass: 'wcm-negative'
+                  // });
                 },
                 //push가 등록되면 해당 push token을 위에 설정한 user에 넣고 db에도 넣는다
                 "onRegister": function(data) {
