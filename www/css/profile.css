@@ -45,6 +45,7 @@
 	display: -webkit-inline-box;
 	vertical-align : sub;
 	background-image: url('../img/setting.png');
+	margin-left: 10px;
 }
 
 #profile_page .my-change-list {

@@ -204,9 +204,9 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
                 },
                 //push가 오면
                 "onNotification": function(notification) {
-                  var payload = notification.payload;
-                  console.log('notification : ' + notification);
-                  console.log('payload : ' + JSON.stringify(payload));
+                  // var payload = notification.payload;
+                  // console.log('notification : ' + notification);
+                  // console.log('payload : ' + JSON.stringify(payload));
                   // notification왔을 때 alert 주석처리 by tjhan 151112
                   // $ionicPopup.alert({
                   //   title: mAppName,
