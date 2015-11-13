@@ -21,7 +21,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   $scope.downloaded = false;
   $scope.page = 0;
-  $rootScope.allData = { 
+  $rootScope.allData = {
                           cards: []
                        };
 
@@ -36,7 +36,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     console.log('$ionicHistory forwardView : ' + $ionicHistory.forwardView());
     console.log('$ionicHistory currentHistoryId : ' + $ionicHistory.currentHistoryId());
     console.log('$ionicHistory backView() : ' + $ionicHistory.backView());
-    
+
     // 앱에서 열였다면
     if(mIsWebView){
         var tryNum = 0;
@@ -48,7 +48,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             //다시 보지 않기
             Preferences.get('notShowPref', function(notShowPref) {
               if(document.getElementById('welcomeOverlay') != null){
-                 //다시 보지 않기가 true라면 
+                 //다시 보지 않기가 true라면
                 if(notShowPref == 'true'){
                   document.getElementById('welcomeOverlay').setAttribute('style','display:none');
                 }else{
@@ -72,7 +72,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
         tryNotShowOvelray();
 
-    } else {    //web에서는 overlay를 보여주지 않는다 
+    } else {    //web에서는 overlay를 보여주지 않는다
       if(document.getElementById('welcomeOverlay') != null){
         document.getElementById('welcomeOverlay').setAttribute('style','display:none');
       }
@@ -136,7 +136,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     });*/
 
   });
-  
+
   /*
   *   서버에서 이미지 가져와서 app file system안에 저장
   */
@@ -204,7 +204,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     //app에서 띄운 webview가 아니거나 online일 경우만
     if (!(mIsWebView) || $cordovaNetwork.isOnline()) {
 
-      /* isOnline */  
+      /* isOnline */
       $timeout( function() {
 
         //localStorage cardList 갱신
@@ -232,9 +232,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         });
 
         //Stop the ion-refresher from spinning
-        $scope.$broadcast('scroll.refreshComplete');  
+        $scope.$broadcast('scroll.refreshComplete');
       }, 1000);
-  
+
     } else {
 
       /* isOffline */
@@ -260,10 +260,10 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
     $scope.noMoreItemsAvailable = true;
 
-    $timeout( function() { 
+    $timeout( function() {
       //app에서 띄운 webview가 아니거나 online일 경우만
       if (!(mIsWebView) || $cordovaNetwork.isOnline()) {
-        /* isOnline */  
+        /* isOnline */
         // init이면 처음 페이지 데이터를 다시 가져옴
         if(init == 'init'){
 
@@ -271,7 +271,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
           });
           $scope.page = 0;
-          $rootScope.allData = { 
+          $rootScope.allData = {
                           cards: []
                        };
           var request = $http({
@@ -297,7 +297,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           $scope.currentLat = 37.574515;
           $scope.currentLon = 126.976930;
         }
-        var formData = { 
+        var formData = {
                         lat: $scope.currentLat,
                         lon: $scope.currentLon
                       };
@@ -321,9 +321,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         request.success(function(data) {
 
           for (var i = 0; i < data.cards.length; i++) {
-            
+
             $scope.noMoreItemsAvailable = false;
-            
+
             if (data.cards[i].status === PROGRESS_START) {
               data.cards[i].statusDescription = PROGRESS_START_TEXT;
               data.cards[i].statusIcon = "project-start";
@@ -353,7 +353,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             if(user != null){
               if (user.isAuthenticated === true) {
                 for(var j = 0; j < $rootScope.allData.cards.length; j ++) {
-                  
+
                   if(user.watchs.indexOf($rootScope.allData.cards[j].id) != -1) {
                     $rootScope.allData.cards[j].watch = true;
                   } else {
@@ -365,12 +365,12 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           };
 
           $scope.page++;
-          $scope.$broadcast('scroll.infiniteScrollComplete');  
+          $scope.$broadcast('scroll.infiniteScrollComplete');
 
         });
 
         //Stop the ion-refresher from spinning
-        $scope.$broadcast('scroll.refreshComplete');  
+        $scope.$broadcast('scroll.refreshComplete');
       } else {
 
         /* isOffline */
@@ -382,7 +382,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
         // 미리 가져온 cardlist 사용
         // $scope.offlineCard();
-        
+
         //Stop the ion-refresher from spinning
         $scope.$broadcast('scroll.refreshComplete');
       }
@@ -394,8 +394,8 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   */
   $scope.offlineCard = function(){
 
-    //data 비우고 push 
-    $rootScope.allData = { 
+    //data 비우고 push
+    $rootScope.allData = {
                     cards: []
                  };
     //cardList 갱신
@@ -429,7 +429,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   };
 
 
-  function showPosition(position) { 
+  function showPosition(position) {
     $scope.currentLat = position.coords.latitude;
     $scope.currentLon = position.coords.longitude;
   }
@@ -439,7 +439,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     $scope.popover.hide();
     $scope.page = 0;
 
-      var formData = { 
+      var formData = {
                         lat: $scope.currentLat,
                         lon: $scope.currentLon
                       };
@@ -453,19 +453,19 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
           data: postData,
           cache: false
-      });  
+      });
 
     request.error(function(error){
       $ionicLoading.hide();
       console.log('sort error : ' + JSON.stringify(error))
     });
-    request.success(function(data) { 
+    request.success(function(data) {
       console.log("sort success data : " + JSON.stringify(data));
 
       $rootScope.allData.cards = [];
 
       for (var i = 0; i < data.cards.length; i++) {
-        
+
         if (data.cards[i].status === PROGRESS_REGISTER || data.cards[i].status === PROGRESS_START) {
           data.cards[i].statusDescription = PROGRESS_START_TEXT;
         } else if (data.cards[i].status === PROGRESS_ONGOING) {
@@ -492,7 +492,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         if(user != null){
           if (user.isAuthenticated === true) {
             for(var j = 0; j < $rootScope.allData.cards.length; j ++) {
-              
+
               if(user.watchs.indexOf($rootScope.allData.cards[j].id) != -1) {
                 $rootScope.allData.cards[j].watch = true;
               } else {
@@ -501,11 +501,11 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             }
           }
         }
-      
+
       }
       $scope.page++;
 
-      $scope.$broadcast('scroll.infiniteScrollComplete');  
+      $scope.$broadcast('scroll.infiniteScrollComplete');
     });
 
   }
@@ -567,13 +567,14 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         });
 
         request.success(function() {
-          location.reload();
+          // location.reload();
+          $scope.doRefresh('init');
         });
       }
     });
   }
-  
-  // Edit Card  
+
+  // Edit Card
   $scope.editCard = function(id) {
     $state.go('tabs.edit', { 'id': id});
   };
@@ -588,10 +589,10 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     document.getElementById('welcomeOverlay').setAttribute('style','display:none');
     console.log('overlayClose Preferences != undefined : ' + (typeof Preferences != 'undefined'));
     //닫고나 면 무조건 다시보지 않기
-    Preferences.put('notShowPref', true); 
+    Preferences.put('notShowPref', true);
   }
 
-  $scope.showDialog = function (card) { 
+  $scope.showDialog = function (card) {
     CardService.share('facebook', card);
   }
 

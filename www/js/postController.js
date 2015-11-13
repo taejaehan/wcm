@@ -9,9 +9,9 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   $scope.duplicatedArray = [];
   $scope.comments_count = 0;
 
-  $scope.$on('$ionicView.afterEnter', function(){
+  $scope.$on('$ionicView.beforeEnter', function(){
     $scope.changerImage = false;
-    
+
     var request = $http({
       method: "get",
       url: mServerAPI + "/cardDetail/" + $scope.postId,
@@ -35,7 +35,6 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       latlng = new google.maps.LatLng($scope.card.location_lat, $scope.card.location_long);
       progress = data.cards[0].status;
 
-
       if (data.cards[0].status === PROGRESS_START) {
         $scope.card.statusDescription = PROGRESS_START_TEXT;
         $scope.statusIcon = "project-start";
@@ -50,12 +49,12 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       // 카드에 해당하는 change supporters 체크
       if (data.cards[0].changer.length != 0) {
         $scope.changerImage = true;
-        
+
         if ($scope.changers.length === 0) {
           for(var j = 0; j < data.cards[0].changer.length; j++) {
             $scope.changers.push(data.cards[0].changer[j]);
           }
-        } 
+        }
       } else {
         $scope.changerImage = false;
       }
@@ -81,7 +80,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       }
 
     });
-    
+
 
     // 카드 코멘트 가져오기
     var request2 = $http({
@@ -95,7 +94,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
     request2.success(function(data) {
       for (var i = 0; i <  data.comments.length; i++) {
         var object =  data.comments[i];
-        
+
         if (object.post_id === $stateParams.postId) {
 
           if (object.username === null || object.userimage === null) {
@@ -107,7 +106,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
             $scope.comments.push(object);
             $scope.comments_count ++;
           }
-        }    
+        }
       }
     });
 
@@ -118,10 +117,10 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   $scope.toggleWatchPost = function(watch) {
     var result = CardService.toggleWatch(watch,$scope.postId,user, $scope);
   }
-  
+
   // 코멘트 db에 저장하기
   $scope.addComment =function() {
-    
+
     if (user.isAuthenticated === true) {
       var comment = document.getElementById("comment").value;
       if ( comment === "" ) {
@@ -163,7 +162,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
                               post_id: post_id,
                               user_app_id: user_app_id,
                               content: comment,
-                              user: [{    
+                              user: [{
                                           user_id: $scope.userid,
                                           username: $scope.username,
                                           userimage: $scope.userimage
@@ -171,16 +170,16 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
                               updated_at: new Date()
                             }
 
-        
 
-        request.success(function(data) {  
+
+        request.success(function(data) {
           //등록했던 댓글 의 id를 받아 set해주고 comments에 push한다 by tjhan 151112
           formDataLocal.id = data;
           $scope.comments.push(formDataLocal);
 
           document.getElementById("comment").value = "";
           $scope.comments_count ++;
-          
+
           var i = 0;
           while( i < $rootScope.allData.cards.length) {
             if ($rootScope.allData.cards[i].id === $stateParams.postId) {
@@ -213,11 +212,11 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       document.getElementById("comment").value = "";
     }
   }
-  
+
 
   // 현재 로그인중인 user와 코멘트를 작성한 user 체크
-  $scope.userChecked = function(comment) {  
-    
+  $scope.userChecked = function(comment) {
+
     if (user.isAuthenticated === true) {
       if ( parseInt(comment.user[0].user_id) == user.userid ) {
         return { 'display' : 'inline-block' };
@@ -228,7 +227,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       return { 'display' : 'none' };
     }
 
-  }  
+  }
 
 
   // 코멘트 삭제하기
@@ -257,11 +256,11 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
         request.success(function() {
 
           var index = $scope.comments.indexOf(comment);
-          $scope.comments.splice(index, 1); 
+          $scope.comments.splice(index, 1);
           $scope.comments_count --;
 
           var i = 0;
-          
+
           while( i < $rootScope.allData.cards.length) {
             if ($rootScope.allData.cards[i].id === $stateParams.postId) {
               $rootScope.allData.cards[i].comments_count --;
@@ -274,7 +273,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
     });
   }
 
-  
+
   // Change Supporters 추가하기
   var ChangeMakerPost = function() {
     var confirmPopup = $ionicPopup.confirm({
@@ -284,7 +283,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
     });
     confirmPopup.then(function(res) {
       if(res) {
-        
+
         var userId = parseInt(user.userid);
         var postId = parseInt($stateParams.postId);
         var formData =  { user_id: userId,
@@ -318,7 +317,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
                       };
 
 
-  // Change Supporters 버튼 눌렀을때                      
+  // Change Supporters 버튼 눌렀을때
   $scope.weChange = function() {
 
     if (user.isAuthenticated === true) {
@@ -329,12 +328,12 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
           template: '프로젝트가 종료되었습니다',
           cssClass: 'wcm-negative'
         });
-        
+
       } else {
 
         if ((user.changes.length === 0) || (user.changes.indexOf($stateParams.postId) === -1)) {
           ChangeMakerPost();
-        
+
         } else {
           $ionicPopup.alert({
             title: mAppName,
@@ -387,11 +386,8 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
     $state.go('tabs.location_h', { 'latlng': latlng, 'progress' : progress});
   }
 
-  $scope.showDialog = function (card) { 
+  $scope.showDialog = function (card) {
     var  result = CardService.share('facebook', card, $scope);
   }
 
 });
-
-
-
