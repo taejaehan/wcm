@@ -1,4 +1,4 @@
-wcm.controller("PostController", function($scope, $rootScope, $http, $stateParams, $state, $ionicPopup, $ionicModal, CardService, $interval) {
+wcm.controller("PostController", function($scope, $rootScope, $http, $stateParams, $state, $ionicPopup, $ionicModal, CardService, $interval, $ionicLoading) {
 
   var latlng, progress;
   var user = JSON.parse(window.localStorage['user'] || '{}');
@@ -9,9 +9,12 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   $scope.duplicatedArray = [];
   $scope.comments_count = 0;
 
-  $scope.$on('$ionicView.afterEnter', function(){
+  $scope.$on('$ionicView.beforeEnter', function(){
     $scope.changerImage = false;
     
+    $ionicLoading.show({
+      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
+    });
     var request = $http({
       method: "get",
       url: mServerAPI + "/cardDetail/" + $scope.postId,
@@ -19,8 +22,12 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
       cache: false
     });
-
+    request.error(function(error){
+      console.log('error : ' + JSON.stringify(error));
+      $ionicLoading.hide();
+    });
     request.success(function(data) {
+      $ionicLoading.hide();
       $scope.card = data.cards[0];
       if (data.cards[0].img_path == '') {
         $scope.card.img_path = mNoImage;
@@ -131,6 +138,9 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
           cssClass: 'wcm-negative',
         });
       } else {
+        $ionicLoading.show({
+          template: '<ion-spinner icon="bubbles"></ion-spinner><br/>'
+        });
         $scope.username = user.username;
         $scope.userimage = user.userimage;
         $scope.userid = String(user.userid);
@@ -169,11 +179,15 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
                                           userimage: $scope.userimage
                                        }],
                               updated_at: new Date()
-                            }
+                            };
 
         
-
+        request.error(function(error){
+          console.log('error : ' + JSON.stringify(error));
+          $ionicLoading.hide();
+        });
         request.success(function(data) {  
+          $ionicLoading.hide();
           //등록했던 댓글 의 id를 받아 set해주고 comments에 push한다 by tjhan 151112
           formDataLocal.id = data;
           $scope.comments.push(formDataLocal);
@@ -242,6 +256,9 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
     confirmPopup.then(function(res) {
       if(res) {
+        $ionicLoading.show({
+          template: '<ion-spinner icon="bubbles"></ion-spinner><br/>'
+        });
         var formData = {
                           post_id: comment.post_id,
                         };
@@ -253,9 +270,12 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
             data: postData,
             headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
         });
-
+        request.error(function(error){
+          console.log('error : ' + JSON.stringify(error));
+          $ionicLoading.hide();
+        });
         request.success(function() {
-
+          $ionicLoading.hide();
           var index = $scope.comments.indexOf(comment);
           $scope.comments.splice(index, 1); 
           $scope.comments_count --;

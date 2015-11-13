@@ -21,6 +21,8 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 		$scope.changeEmptyMessage = '';
 		$scope.watchEmptyMessage = '';
 
+		$scope.pushNotification = { checked: true };
+
 		//dmjor 페이스북으로 로그인한 경우는 adminUser true
 		$scope.adminUser = user.userid == "1826451354247937";
 
@@ -103,8 +105,33 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 			  		$scope.watchList.push(data.watchList[i].post[0]);
 				}
 			}
-
 		});
+		//해당 device의 push정보를 set해준다 by tjhan 151113
+		if(!mIsWebView){
+			mDeviceUuid	 = 'd874c9de-b9f6-ef80-3542-570596882578';
+		}
+		var request = $http({
+			method: "get",
+			url: mServerAPI + "/userPush/" + mDeviceUuid,
+			crossDomain : true,
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+			cache: false
+		});
+		request.error(function(error){
+			console.log('error : ' + JSON.stringify(error));
+			$ionicLoading.hide();
+		});
+		request.success(function(push) {
+			console.log('push : ' + push);
+			$ionicLoading.hide();
+			if(push == 1){
+				$scope.pushNotification.checked = true;
+			}else{
+				$scope.pushNotification.checked = false;
+			}
+			
+		});
+
 	} else {
 		$scope.userCheck = false;
 	}
@@ -454,11 +481,11 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
   * 현재 device uuid와 on/off를 보내서 device 테이블의 push를 수정합니다
   * 초기값은 true로 푸시를 받습니다
   */
-  $scope.pushNotification = { checked: true };
+  
 	$scope.pushNotificationChange = function() {
     console.log('Push Notification Change', $scope.pushNotification.checked);
     if(mIsWebView){
-		var pushStatus ;
+		var pushStatus;
 		if($scope.pushNotification.checked) pushStatus = 1;
 		else pushStatus = 0;
 
