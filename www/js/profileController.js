@@ -71,17 +71,19 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 				$scope.changeEmptyMessage = "Change Supporters로 참여중인 프로젝트가 없습니다"
 			}else{
 				for (var i = 0; i < data.changeList.length; i++) {
-					if (data.changeList[i].post[0].status === PROGRESS_START) {
-		          data.changeList[i].post[0].statusDescription = PROGRESS_START_TEXT;
-		          data.changeList[i].post[0].statusIcon = "project-start";
-		        } else if (data.changeList[i].post[0].status === PROGRESS_ONGOING) {
-		          data.changeList[i].post[0].statusDescription = PROGRESS_ONGOING_TEXT;
-		          data.changeList[i].post[0].statusIcon = "project-ongoing";
-		        } else {
-		          data.changeList[i].post[0].statusDescription = PROGRESS_COMPLETED_TEXT;
-		          data.changeList[i].post[0].statusIcon = "project-complete";
-		        }
-			  		$scope.changeList.push(data.changeList[i].post[0]);
+					if(data.changeList[i].post.length > 0){
+						if (data.changeList[i].post[0].status === PROGRESS_START) {
+			          data.changeList[i].post[0].statusDescription = PROGRESS_START_TEXT;
+			          data.changeList[i].post[0].statusIcon = "project-start";
+			        } else if (data.changeList[i].post[0].status === PROGRESS_ONGOING) {
+			          data.changeList[i].post[0].statusDescription = PROGRESS_ONGOING_TEXT;
+			          data.changeList[i].post[0].statusIcon = "project-ongoing";
+			        } else {
+			          data.changeList[i].post[0].statusDescription = PROGRESS_COMPLETED_TEXT;
+			          data.changeList[i].post[0].statusIcon = "project-complete";
+			        }
+				  		$scope.changeList.push(data.changeList[i].post[0]);
+				  	}
 				}
 			}
 			/*내가 위험해요 누른 위험 리스트 넣어주기*/
@@ -89,20 +91,22 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 				$scope.watchEmptyMessage = "위험해요를 누른 프로젝트가 없습니다"
 			}else{
 				for (var i = 0; i < data.watchList.length; i++) {
-					if (data.watchList[i].post[0].status === PROGRESS_START) {
-		          data.watchList[i].post[0].statusDescription = PROGRESS_START_TEXT;
-		          data.watchList[i].post[0].statusIcon = "project-start";
-		        } else if (data.watchList[i].post[0].status === PROGRESS_ONGOING) {
-		          data.watchList[i].post[0].statusDescription = PROGRESS_ONGOING_TEXT;
-		          data.watchList[i].post[0].statusIcon = "project-ongoing";
-		        } else {
-		          data.watchList[i].post[0].statusDescription = PROGRESS_COMPLETED_TEXT;
-		          data.watchList[i].post[0].statusIcon = "project-complete";
-		        }
-		        //위험해요 누른 프로젝트를 가져왔으므로 watch는 true
-		        data.watchList[i].post[0].watch = true;
+					if(data.watchList[i].post.length > 0){
+						if (data.watchList[i].post[0].status === PROGRESS_START) {
+			          data.watchList[i].post[0].statusDescription = PROGRESS_START_TEXT;
+			          data.watchList[i].post[0].statusIcon = "project-start";
+			        } else if (data.watchList[i].post[0].status === PROGRESS_ONGOING) {
+			          data.watchList[i].post[0].statusDescription = PROGRESS_ONGOING_TEXT;
+			          data.watchList[i].post[0].statusIcon = "project-ongoing";
+			        } else {
+			          data.watchList[i].post[0].statusDescription = PROGRESS_COMPLETED_TEXT;
+			          data.watchList[i].post[0].statusIcon = "project-complete";
+			        }
+			        //위험해요 누른 프로젝트를 가져왔으므로 watch는 true
+			        data.watchList[i].post[0].watch = true;
 
-			  		$scope.watchList.push(data.watchList[i].post[0]);
+				  		$scope.watchList.push(data.watchList[i].post[0]);
+				  	}
 				}
 			}
 		});

@@ -52,7 +52,7 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
 
     //sort type default value
     $scope.data = {
-      markerType: ONGOING
+      markerType: DISCOVERED
     };
 
     /*
@@ -137,7 +137,7 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
         /*CLOSE 버튼 끝*/
       });
 
-      $scope.showMarkers(ONGOING);
+      $scope.showMarkers(DISCOVERED);
 
       // find me 넣기
       var findMe = document.getElementById('find-me-warn');
