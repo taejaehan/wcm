@@ -87,7 +87,7 @@
   </script>
 </ion-view>
 
-<ion-pane id="welcomeOverlay" ng-controller="WelcomeController" class="dark-overlay">
+<ion-pane id="welcomeOverlay" ng-if="welcome" ng-controller="WelcomeController" class="dark-overlay">
   <ion-content class="content-flush has-header" scroll="false">
     <div class="overlay-spacer"></div>
     <!-- <ion-checkbox ng-model="notShowChecked.checked" class="checkbox_custrom">다시 보지않기</ion-checkbox> -->
