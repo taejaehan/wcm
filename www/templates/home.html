@@ -18,28 +18,28 @@
       <div id="home_page">
 
         <!-- <ion-item collection-repeat="card in allData.cards" class="posts" item-height="300px"> -->
-        <ion-item bindonce ng-repeat="card in allData.cards track by $index" class="posts">
+        <ion-item ng-repeat="card in allData.cards track by $index" class="posts">
           <div class="post-body">
 
             <div class="profile">
-              <img bo-src="card.user[0].userimage">
-              <p class="username" bo-text="card.user[0].username"></p>
-              <p class="date" bo-text="card.create_time"></p>
+              <img ng-src="{{card.user[0].userimage}}">
+              <p class="username" ng-bind="card.user[0].username"></p>
+              <p class="date" ng-bind="card.create_time"></p>
 
-              <i class="ion-trash-a delete" bo-style="userChecked(card)" ng-click="deleteCard(card.id)"></i>
-              <i class="ion-compose edit" bo-style="userChecked(card)" ng-click="editCard(card.id)"></i>
+              <i class="ion-trash-a delete" ng-style="userChecked(card)" ng-click="deleteCard(card.id)"></i>
+              <i class="ion-compose edit" ng-style="userChecked(card)" ng-click="editCard(card.id)"></i>
             </div>
             <hr>
 
             <div class="content">
-              <h2 class="title"><strong bo-bind="card.title"></strong></h2>
+              <h2 class="title"><strong ng-bind="card.title"></strong></h2>
 
               <a ng-click="showMap(card.location_lat, card.location_long)">
-                <p class="address"><i class="fa fa-map-marker"></i><span bo-bind="card.location_name"></span></p>
+                <p class="address"><i class="fa fa-map-marker"></i><span ng-bind="card.location_name"></span></p>
               </a>
-              <a bo-href="'#/tab/home/' + card.id">
+              <a ng-href="#/tab/home/{{card.id}}">
                 <div class="img-group">
-                  <img bo-src="card.img_path" class="post-image" onError="this.src='img/default_thumb.png'">
+                  <img ng-src="{{card.img_path}}" class="post-image" onError="this.src='img/default_thumb.png'">
                 </div>
               </a>
             </div>
@@ -48,7 +48,7 @@
               <div class="progress-bar progress-bar-danger progress-bar-striped progress-{{card.status}}" role="progressbar" aria-valuenow="{{card.status}}" aria-valuemin="0" aria-valuemax="100" style="width: {{card.status}}%">
               </div>
             </div>
-            <p class="progressText"><i class="project-icon {{card.statusIcon}}"></i> <span bo-bind="card.statusDescription"></span></p>
+            <p class="progressText"><i class="project-icon {{card.statusIcon}}"></i> <span ng-bind="card.statusDescription"></span></p>
 
             <hr>
 
@@ -56,7 +56,7 @@
               <a ng-click="toggleWatchHome(card.watch = !card.watch, card.id)" ng-class="{'active' : card.watch, 'non-active' : !card.watch}" id="watch">
                 <i class="ion-ios-eye"></i> 위험해요 <span ng-bind="card.watch_count"></span>
               </a>
-              <a bo-href="'#/tab/home/' + card.id + '#comment'"><i class="ion-chatbubble-working"></i> 댓글달기 <span ng-bind="card.comments_count"></span>
+              <a ng-href="#/tab/home/{{::card.id}}#comment"><i class="ion-chatbubble-working"></i> 댓글달기 <span ng-bind="card.comments_count"></span>
               </a>
               <a ng-click="showDialog(card)"><i class="ion-forward"></i> 공유하기 <span ng-bind="card.share_count"></span></a>
 
@@ -87,7 +87,7 @@
   </script>
 </ion-view>
 
-<ion-pane id="welcomeOverlay" ng-controller="WelcomeController" class="dark-overlay">
+<ion-pane id="welcomeOverlay" ng-if="welcome" ng-controller="WelcomeController" class="dark-overlay">
   <ion-content class="content-flush has-header" scroll="false">
     <div class="overlay-spacer"></div>
     <!-- <ion-checkbox ng-model="notShowChecked.checked" class="checkbox_custrom">다시 보지않기</ion-checkbox> -->

@@ -4,7 +4,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
-
+  $scope.welcome = true;
   $scope.noMoreItemsAvailable = false;
   //sort type
   $scope.sortingTypeList = [
@@ -50,9 +50,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
               if(document.getElementById('welcomeOverlay') != null){
                  //다시 보지 않기가 true라면
                 if(notShowPref == 'true'){
-                  document.getElementById('welcomeOverlay').setAttribute('style','display:none');
+                  $scope.welcome = false;
                 }else{
-                  document.getElementById('welcomeOverlay').setAttribute('style','display:block');
+                  $scope.welcome = true;
                 }
               }
             }, function(error){
@@ -74,7 +74,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
     } else {    //web에서는 overlay를 보여주지 않는다
       if(document.getElementById('welcomeOverlay') != null){
-        document.getElementById('welcomeOverlay').setAttribute('style','display:none');
+        $scope.welcome = false;
       }
     }
 
@@ -586,7 +586,8 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   }
 
   $scope.overlayClose = function() {
-    document.getElementById('welcomeOverlay').setAttribute('style','display:none');
+    // document.getElementById('welcomeOverlay').setAttribute('style','display:none');
+    $scope.welcome = false;
     console.log('overlayClose Preferences != undefined : ' + (typeof Preferences != 'undefined'));
     //닫고나 면 무조건 다시보지 않기
     Preferences.put('notShowPref', true);
