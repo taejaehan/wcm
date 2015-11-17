@@ -10,6 +10,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   $scope.comments_count = 0;
 
   $scope.$on('$ionicView.beforeEnter', function(){
+
     $scope.changerImage = false;
 
     $ionicLoading.show({
@@ -124,6 +125,9 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   // toggle watch_count
   $scope.toggleWatchPost = function(watch) {
     var result = CardService.toggleWatch(watch,$scope.postId,user, $scope);
+    if (result === false) {
+      $scope.card.watch = false;
+    }
   }
 
   // 코멘트 db에 저장하기
@@ -181,12 +185,12 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
                               updated_at: new Date()
                             };
 
-        
+
         request.error(function(error){
           console.log('error : ' + JSON.stringify(error));
           $ionicLoading.hide();
         });
-        request.success(function(data) {  
+        request.success(function(data) {
           $ionicLoading.hide();
           //등록했던 댓글 의 id를 받아 set해주고 comments에 push한다 by tjhan 151112
           formDataLocal.id = data;
@@ -309,7 +313,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
         });
         var userId = parseInt(user.userid);
         var postId = parseInt($stateParams.postId);
-        var formData =  { 
+        var formData =  {
                           user_id: userId,
                           post_id: postId,
                           change : true

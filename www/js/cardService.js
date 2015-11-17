@@ -21,7 +21,7 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
         /********************watch 테이블에 추가 시작*******************/
         var userId = parseInt(user.userid);
         var postId = parseInt(id);
-        var formData = { 
+        var formData = {
               user_id: userId,
               post_id: postId,
               watch: e
@@ -54,7 +54,7 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
             i ++;
           };
 
-          //toggle 값에 따라 local데이터를 변경 
+          //toggle 값에 따라 local데이터를 변경
           if (e === true) {
             //user의 watch에 추가
             if (user.watchs.indexOf(id) === -1) {
@@ -111,6 +111,7 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
           }
           i ++;
         }
+        return false;
       }
     }
   };
@@ -144,7 +145,7 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
   }
 
   var weChange = function() {
-    
+
   };
   /*
   * sns로 공유합니다. (현재 facebook만 있음) by tjhan 151111
@@ -174,12 +175,12 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
       return facebookConnectPlugin.showDialog({
         method: "feed" ,
         picture: card.img_path,
-        message:'First photo post',    
+        message:'First photo post',
         caption: card.title,
         name: card.description,
         description: card.description,
         link: 'http://wechangemakers.org/'
-      }, 
+      },
       function (success) {
         console.log('share success');
         var i = 0;
