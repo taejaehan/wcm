@@ -113,6 +113,8 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
       //로그인 했었던 유저라면(db에 user_id가 있다면) watch와 change를 push
       if(data.users != null){
         console.log('Existent User : ' + data.users[0].username);
+        //로그인 했던 유저라면 db에 있는 이름을 넣어준다
+        user.username = data.users[0].username;
         if (data.users[0].watchs.length != 0) {
           for(var i = 0; i < data.users[0].watchs.length; i++ ) {
             user.watchs.push(data.users[0].watchs[i].post_id); 

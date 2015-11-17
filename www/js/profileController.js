@@ -1,4 +1,4 @@
-wcm.controller("ProfileController", function($scope, $state, $http, AuthService, $window, $ionicPopup, $ionicHistory,$ionicLoading, $timeout, CardService) {
+wcm.controller("ProfileController", function($scope, $state, $http, AuthService, $window, $ionicPopup, $ionicHistory, $ionicLoading, $timeout, CardService) {
 
 	var user = JSON.parse(window.localStorage['user'] || '{}');
 
@@ -91,7 +91,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 				$scope.watchEmptyMessage = "위험해요를 누른 프로젝트가 없습니다"
 			}else{
 				for (var i = 0; i < data.watchList.length; i++) {
-					if(data.watchList[i].post.length > 0){
+					if(data.watchList[i].post != null && data.watchList[i].post.length > 0){
 						if (data.watchList[i].post[0].status === PROGRESS_START) {
 			          data.watchList[i].post[0].statusDescription = PROGRESS_START_TEXT;
 			          data.watchList[i].post[0].statusIcon = "project-start";
@@ -309,9 +309,11 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
   }
   
   $scope.editDone = function() {
+  	$ionicLoading.show({
+		template: '<ion-spinner icon="bubbles"></ion-spinner><br/>'
+	});
 	var edit_name = document.getElementById("edit-name").value;
 	var formData = { username: edit_name };
-
 	var request = $http({
 	    method: "post",
 	    url: mServerAPI + "/profile/" + user.userid,
@@ -320,8 +322,12 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 	    headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
 	    cache: false
 	});
-
+	request.error(function() {
+		$ionicLoading.hide();
+		console.log(error);
+	});
 	request.success(function() {
+		$ionicLoading.hide();
 		user.username = edit_name;
 		window.localStorage['user'] = JSON.stringify(user);
 		console.log(user);
