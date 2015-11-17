@@ -18,77 +18,76 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
           $ionicLoading.hide();
         }, 5000);
 
-        if (e === true) {
+        /********************watch 테이블에 추가 시작*******************/
+        var userId = parseInt(user.userid);
+        var postId = parseInt(id);
+        var formData = { 
+              user_id: userId,
+              post_id: postId,
+              watch: e
+        };
+        var postData = 'watchData='+JSON.stringify(formData);
+        var request = $http({
+            method: "post",
+            url: mServerAPI + "/toggleWatch",
+            crossDomain : true,
+            data: postData,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+            cache: false
+        });
+        request.error(function(error){
+          console.log('add watch ERROR : ' + error);
+          $ionicLoading.hide();
+        });
+        request.success(function(data) {
+          console.log('add watch SUCCESS : ' + data);
+          $ionicLoading.hide();
+
+          //현재 card의 index를 찾음
           var i = 0;
+          var cardIndex;
           while( i < $rootScope.allData.cards.length) {
             if ($rootScope.allData.cards[i].id === id) {
-              $rootScope.allData.cards[i].watch_count ++;
-              $rootScope.allData.cards[i].watch = true;
-              postWatch(id, true);
+              cardIndex = i;
               break;
             }
             i ++;
-          }
-          //watch 테이블에 추가
-          if (user.watchs.indexOf(id) === -1) {
-            user.watchs.push(id);
-            window.localStorage['user'] = JSON.stringify(user);
-            var userId = parseInt(user.userid);
-            var postId = parseInt(id);
-            var formData1 = { user_id: userId,
-                              post_id: postId
-                            };
-            var postData1 = 'watchData='+JSON.stringify(formData1);
-            var request1 = $http({
-                method: "post",
-                url: mServerAPI + "/watch",
-                crossDomain : true,
-                data: postData1,
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-                cache: false
-            });
+          };
+
+          //toggle 값에 따라 local데이터를 변경 
+          if (e === true) {
+            //user의 watch에 추가
+            if (user.watchs.indexOf(id) === -1) {
+              user.watchs.push(id);
+              window.localStorage['user'] = JSON.stringify(user);
+            };
+            //postController에서 들어올 경우 해당 view의 watch_count++
             if(scope != null){
               scope.watch_count ++;
-            }
-          }
-          
-        } else {
-          var i = 0;
-          while( i < $rootScope.allData.cards.length) {
-            if ($rootScope.allData.cards[i].id === id) {
-              $rootScope.allData.cards[i].watch_count --;
-              $rootScope.allData.cards[i].watch = false;
-              postWatch(id, false);
-              break;
-            }
-            i ++;
-          }
-          //watch 테이블에서 삭제
-          if (user.watchs.indexOf(id) != -1) {
-            var index = user.watchs.indexOf(id);
-            user.watchs.splice(index, 1);
-            window.localStorage['user'] = JSON.stringify(user);
-            var userId = parseInt(user.userid);
-            var postId = parseInt(id);
-            var formData1 = { user_id: userId,
-                              post_id: postId
-                            };
-            var postData1 = 'watchData='+JSON.stringify(formData1);
-            var request1 = $http({
-                method: "post",
-                url: mServerAPI + "/watch/delete/" + userId + "/" + postId,
-                crossDomain : true,
-                data: postData1,
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-                cache: false
-            });
+            };
+            $rootScope.allData.cards[cardIndex].watch_count ++;
+            $rootScope.allData.cards[cardIndex].watch = true;
+            postWatch(id, true);
+
+          } else{
+            //user의 watch에서 삭제
+            if (user.watchs.indexOf(id) != -1) {
+              var index = user.watchs.indexOf(id);
+              user.watchs.splice(index, 1);
+              window.localStorage['user'] = JSON.stringify(user);
+            };
+            //postController에서 들어올 경우 해당 view의 watch_count--
             if(scope != null){
               scope.watch_count --;
-            }
+            };
+            $rootScope.allData.cards[cardIndex].watch_count --;
+            $rootScope.allData.cards[cardIndex].watch = false;
+            postWatch(id, false);
           }
-        }
+        });
+        /********************watch 테이블에 추가 끝*******************/
 
-      } else {
+      } else {  //user.isAuthenticated === true 가 아니라면
         $ionicPopup.show({
           template: '로그인 후에 이용 가능합니다',
           title: mAppName,
@@ -135,11 +134,11 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
         cache: false
     });
     request.success(function(data) {
-      console.log('SUCCESS : ' + data);
+      console.log('watch count SUCCESS : ' + data);
       $ionicLoading.hide();
     });
     request.error(function(error){
-      console.log('ERROR : ' + error);
+      console.log('watch count ERROR : ' + error);
       $ionicLoading.hide();
     });
   }

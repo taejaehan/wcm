@@ -304,27 +304,38 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
     });
     confirmPopup.then(function(res) {
       if(res) {
-
+        $ionicLoading.show({
+          template: '<ion-spinner icon="bubbles"></ion-spinner>'
+        });
         var userId = parseInt(user.userid);
         var postId = parseInt($stateParams.postId);
-        var formData =  { user_id: userId,
-                          post_id: $stateParams.postId
+        var formData =  { 
+                          user_id: userId,
+                          post_id: postId,
+                          change : true
                         };
         var postData = 'changeData='+JSON.stringify(formData);
 
         var request = $http({
             method: "post",
-            url: mServerAPI + "/changes",
+            url: mServerAPI + "/toggleChange",
             crossDomain : true,
             data: postData,
             headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
             cache: false
         });
-
-        user.changes.push($stateParams.postId);
-        window.localStorage['user'] = JSON.stringify(user);
-        $scope.changers.push(changerObject);
-        $scope.changerImage = true;
+        request.error(function(error){
+          console.log('add change ERROR : ' + error);
+          $ionicLoading.hide();
+        });
+        request.success(function(data) {
+          console.log('add change SUCCESS : ' + data);
+          $ionicLoading.hide();
+          user.changes.push($stateParams.postId);
+          window.localStorage['user'] = JSON.stringify(user);
+          $scope.changers.push(changerObject);
+          $scope.changerImage = true;
+        });
       }
     });
   }

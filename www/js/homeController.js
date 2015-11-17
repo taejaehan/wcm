@@ -47,13 +47,11 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             console.log('Preferences OK');
             //다시 보지 않기
             Preferences.get('notShowPref', function(notShowPref) {
-              if(document.getElementById('welcomeOverlay') != null){
-                 //다시 보지 않기가 true라면
-                if(notShowPref == 'true'){
-                  $scope.welcome = false;
-                }else{
-                  $scope.welcome = true;
-                }
+               //다시 보지 않기가 true라면
+              if(notShowPref == 'true'){
+                $scope.welcome = false;
+              }else{
+                $scope.welcome = true;
               }
             }, function(error){
               console.log('error: : ' +  error);
@@ -73,9 +71,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         tryNotShowOvelray();
 
     } else {    //web에서는 overlay를 보여주지 않는다
-      if(document.getElementById('welcomeOverlay') != null){
-        $scope.welcome = false;
-      }
+      $scope.welcome = false;
     }
 
     /*인터넷 연결 상태 listeners*/
@@ -586,11 +582,12 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   }
 
   $scope.overlayClose = function() {
-    // document.getElementById('welcomeOverlay').setAttribute('style','display:none');
     $scope.welcome = false;
-    console.log('overlayClose Preferences != undefined : ' + (typeof Preferences != 'undefined'));
-    //닫고나 면 무조건 다시보지 않기
-    Preferences.put('notShowPref', true);
+    if(mIsWebView){
+      console.log('overlayClose Preferences != undefined : ' + (typeof Preferences != 'undefined'));
+      //닫고나면 무조건 다시보지 않기
+      Preferences.put('notShowPref', true);
+    }
   }
 
   $scope.showDialog = function (card) {

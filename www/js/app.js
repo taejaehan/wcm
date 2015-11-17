@@ -204,10 +204,10 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
                 },
                 //push가 오면
                 "onNotification": function(notification) {
+                  // notification왔을 때 alert 주석처리 by tjhan 151112
                   // var payload = notification.payload;
                   // console.log('notification : ' + notification);
                   // console.log('payload : ' + JSON.stringify(payload));
-                  // notification왔을 때 alert 주석처리 by tjhan 151112
                   // $ionicPopup.alert({
                   //   title: mAppName,
                   //   template: payload.message,
@@ -329,6 +329,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
 
       tryRegisterAndLogin();
     }else{
+      saveLocalUser(1826451354247937);
       $ionicLoading.hide();
     } // if(mIsWebView) 끝
   }); //$ionicPlatform.ready 끝
@@ -383,6 +384,8 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
   $ionicConfigProvider.views.maxCache(0);
   //toggle버튼 통일
   $ionicConfigProvider.form.toggle('large').checkbox('circle');
+  //ios에서 swipe하여 back 하는 기능 false
+  $ionicConfigProvider.views.swipeBackEnabled(false);
 
   $stateProvider
   .state("fblogin", {
