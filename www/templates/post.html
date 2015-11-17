@@ -24,8 +24,15 @@
       <p class="progressText"><i class="project-icon {{statusIcon}}"></i> <span ng-bind="card.statusDescription"></span></p>
 
       <div ng-class="{'change-member' : !changerImage, 'change-member active' : changerImage}">
-        <div ng-repeat="changer in changers" ng-class="{'member-list ng-hide' : !changerImage, 'member-list ng-show' : changerImage}">
+        <!-- <div ng-repeat="changer in changers" ng-class="{'member-list ng-hide' : !changerImage, 'member-list ng-show' : changerImage}">
           <img ng-src="{{::changer.changeUser[0].userimage}}" ng-click="openProfile(changer.changeUser[0])" ng-if="changerImage" class="status-{{ ::card.status }}">
+        </div> -->
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide" ng-repeat="changer in changers" ng-class="{'member-list ng-hide' : !changerImage, 'member-list ng-show' : changerImage}">
+              <img ng-src="{{::changer.changeUser[0].userimage}}" ng-click="openProfile(changer.changeUser[0])" ng-if="changerImage" class="status-{{ ::card.status }}">
+            </div>
+          </div>
         </div>
 
         <div class="change-description">

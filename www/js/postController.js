@@ -2,7 +2,13 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
   var latlng, progress;
   var user = JSON.parse(window.localStorage['user'] || '{}');
-
+  var swiper = new Swiper('.swiper-container', {
+                  pagination: '.swiper-pagination',
+                  slidesPerView: 6,
+                  paginationClickable: true,
+                  spaceBetween: 10,
+                  freeMode: true
+              });
   $scope.postId = $stateParams.postId;
   $scope.comments = [];
   $scope.changers = [];

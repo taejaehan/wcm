@@ -23,6 +23,10 @@ img.posting-image {
 	font-size: 15px;
 }
 
+#detail_page a {
+	text-decoration: none;
+}
+
 #detail_page span.timeago {
 	text-align: left;
 	display: inline-block;
@@ -112,7 +116,19 @@ img.posting-image {
 
 #detail_page .change-member .member-list {
 	width: 100%;
-	display: block;
+	width: 62px;
+	/*display: block;*/
+}
+
+.swiper-container {
+  width: 100%;
+}
+.swiper-slide {
+	width: 62.5px !important;
+
+  /* Center slide text vertically */
+  display: -webkit-flex;
+  -webkit-justify-content: center;
 }
 
 #detail_page .change-member .change-description {
@@ -126,7 +142,7 @@ img.posting-image {
 	border-radius: 50px;
 	border: 2px solid #FF4719;
 	display: inline-block !important;
-	margin-left: 10px;
+	/*margin-left: 10px;*/
 	margin-bottom: 10px;
 	float: left;
 }
@@ -253,6 +269,3 @@ img.posting-image {
 #popup_page .name {
 	font-size: 20px;
 }
-
-
-
