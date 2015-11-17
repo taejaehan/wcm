@@ -1,13 +1,13 @@
-wcm.controller("PostController", function($scope, $rootScope, $http, $stateParams, $state, $ionicPopup, $ionicModal, CardService, $interval, $ionicLoading) {
+wcm.controller("PostController", function($scope, $rootScope, $http, $stateParams, $state, $ionicPopup, $ionicModal, CardService, $interval, $ionicLoading, $window) {
 
   var latlng, progress;
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var swiper = new Swiper('.swiper-container', {
                   mode: 'horizontal',
                   pagination: '.swiper-pagination',
-                  slidesPerView: 6,
+                  slidesPerView: ($window.innerWidth / 60).toFixed(1),
                   paginationClickable: true,
-                  spaceBetween: 10,
+                  spaceBetween: 0,
                   freeMode: true,
                   observer : true
               });

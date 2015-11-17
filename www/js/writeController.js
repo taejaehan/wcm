@@ -472,6 +472,9 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       }
     }
 
+    $ionicLoading.show({
+      template: '<ion-spinner icon="bubbles"></ion-spinner>'
+    });
     var formData = {
             user_app_id: user_app_id,
             title: title,
@@ -490,7 +493,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
         cache: false
     });
     request.success(function(card) {
-
+      $ionicLoading.hide();
       console.log('upload success : ' + JSON.stringify(card));
       $scope.cancelCard();
         
@@ -539,8 +542,15 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
       cache: false
     });
-
+    $ionicLoading.show({
+      template: '<ion-spinner icon="bubbles"></ion-spinner>'
+    });
+    request.error(function(error){
+      console.log('error : ' + JSON.stringify(error));
+      $ionicLoading.hide();
+    });
     request.success(function(data) {
+      $ionicLoading.hide();
       $scope.cardData.title = data.cards[0].title;
       $scope.cardData.description = data.cards[0].description;
 

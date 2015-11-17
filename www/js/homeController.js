@@ -258,9 +258,10 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     $timeout( function() {
       //app에서 띄운 webview가 아니거나 online일 경우만
       if (!(mIsWebView) || $cordovaNetwork.isOnline()) {
-        /* isOnline */
+
+        /* isOnline 일때를 대비하여 가져오던 cardlist 주석처리 by tjhan 151117 */
         // init이면 처음 페이지 데이터를 다시 가져옴
-        if(init == 'init'){
+        /*if(init == 'init'){
 
           $ionicLoading.show({
             template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
@@ -286,7 +287,11 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             $ionicLoading.hide();
             console.log('error : ' + JSON.stringify(error))
           })
-        }
+        }*/
+
+        $ionicLoading.show({
+          template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
+        });
 
         if($scope.currentLat == null){
           $scope.currentLat = 37.574515;
@@ -299,7 +304,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
 
         console.log('lat : ' + $scope.currentLat + ' lon : ' + $scope.currentLon);
-
         var postData = 'locationData='+JSON.stringify(formData);
 
         var request = $http({
@@ -311,10 +315,11 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             cache: false
         });
         request.error(function(error){
+          $ionicLoading.hide();
           console.log('error : ' + JSON.stringify(error))
         })
         request.success(function(data) {
-
+          $ionicLoading.hide();
           for (var i = 0; i < data.cards.length; i++) {
 
             $scope.noMoreItemsAvailable = false;
@@ -431,30 +436,36 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   $scope.sortBy = function(sortType) {
     console.log("sortBy sortType : " + sortType);
+
     $scope.popover.hide();
     $scope.page = 0;
 
-      var formData = {
-                        lat: $scope.currentLat,
-                        lon: $scope.currentLon
-                      };
+    var formData = {
+                      lat: $scope.currentLat,
+                      lon: $scope.currentLon
+                    };
 
-      var postData = 'locationData='+JSON.stringify(formData);
+    var postData = 'locationData='+JSON.stringify(formData);
 
-      var request = $http({
-          method: "post",
-          url: mServerAPI + "/card/" + $scope.page + '/' + sortType,
-          crossDomain : true,
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-          data: postData,
-          cache: false
-      });
+    var request = $http({
+        method: "post",
+        url: mServerAPI + "/card/" + $scope.page + '/' + sortType,
+        crossDomain : true,
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+        data: postData,
+        cache: false
+    });
+
+    $ionicLoading.show({
+      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
+    });
 
     request.error(function(error){
       $ionicLoading.hide();
       console.log('sort error : ' + JSON.stringify(error))
     });
     request.success(function(data) {
+      $ionicLoading.hide();
       console.log("sort success data : " + JSON.stringify(data));
 
       $rootScope.allData.cards = [];
@@ -554,15 +565,21 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     confirmPopup.then(function(res) {
 
       if(res) {
+        $ionicLoading.show({
+          template: '<ion-spinner icon="bubbles"></ion-spinner>'
+        });
         var request = $http({
             method: "get",
             url: mServerAPI + "/cardDetail/" + id + "/delete",
             crossDomain : true,
             headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
         });
-
+        request.error(function(error){
+          $ionicLoading.hide();
+          console.log('error : ' + JSON.stringify(error))
+        });
         request.success(function() {
-          // location.reload();
+          $ionicLoading.hide();
           $scope.doRefresh('init');
         });
       }

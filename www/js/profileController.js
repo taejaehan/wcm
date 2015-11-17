@@ -148,6 +148,10 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 		var formData = { status: status };
 		var postData = 'statusData='+JSON.stringify(formData);
 
+		$ionicLoading.show({
+			template: '<ion-spinner icon="bubbles"></ion-spinner>'
+		});
+
 		var request = $http({
 		    method: "post",
 		    url: mServerAPI + "/cardDetail/" + card.id + "/status",
@@ -156,9 +160,12 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 		    headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
 		    cache: false
 		});
-
+		request.error(function(error){
+			console.log('add change ERROR : ' + error);
+			$ionicLoading.hide();
+		});
 		request.success(function(data) {
-
+			$ionicLoading.hide();
 		  var i = 0;
 		  while( i < $scope.reportList.length) {
 
@@ -386,6 +393,9 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 
 			if(message == null ) return;
 
+			$ionicLoading.show({
+				template: '<ion-spinner icon="bubbles"></ion-spinner>'
+			});
 			// Define relevant info
 			var tokens = [];
 			var receiverNum = 0;
@@ -434,11 +444,16 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 						    }
 						  }
 						};
+						$ionicLoading.show({
+							template: '<ion-spinner icon="bubbles"></ion-spinner>'
+						});
 						// Make the API call
 						$http(req).success(function(resp){
+							$ionicLoading.hide();
 						  // Handle success
 						  console.log("Ionic Push: Push success!");
 						}).error(function(error){
+							$ionicLoading.hide();
 						  // Handle error 
 						  console.log("Ionic Push: Push error...");
 						});
@@ -477,10 +492,15 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 		  crossDomain : true,
 		  headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
 		});
+		$ionicLoading.show({
+			template: '<ion-spinner icon="bubbles"></ion-spinner>'
+		});
 		request.error(function(error){
+			$ionicLoading.hide();
 		   console.log('error : ' + JSON.stringify(error));
 		 })
 		 request.success(function(data) {
+		 	$ionicLoading.hide();
 		   console.log('success : ' + JSON.stringify(data));
 		 });
     }

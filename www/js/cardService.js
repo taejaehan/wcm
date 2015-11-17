@@ -157,6 +157,9 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
 
     console.log('share type : ' + type);
     console.log('share card : ' + JSON.stringify(card));
+    $ionicLoading.show({
+      template: '<ion-spinner icon="bubbles"></ion-spinner>'
+    });
     if(type =='facebook'){
 
       var fileurl = card.img_path;
@@ -210,6 +213,7 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
           }
           i ++;
         }
+        $ionicLoading.hide();
 
         $ionicPopup.alert({
           title: mAppName,
@@ -223,6 +227,7 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
       },
       function (error) {
         console.log('share error : ' + JSON.stringify(error));
+        $ionicLoading.hide();
         $ionicPopup.alert({
           title: mAppName,
           template: '페이스북 공유에 실패 하였습니다',
