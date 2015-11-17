@@ -3,6 +3,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   var latlng, progress;
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var swiper = new Swiper('.swiper-container', {
+                  mode: 'horizontal',
                   pagination: '.swiper-pagination',
                   slidesPerView: 6,
                   paginationClickable: true,
@@ -10,6 +11,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
                   freeMode: true,
                   observer : true
               });
+              
   $scope.postId = $stateParams.postId;
   $scope.comments = [];
   $scope.changers = [];
@@ -71,12 +73,6 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
             $scope.changers.push(data.cards[0].changer[j]);
           }
         }
-
-        // swiper.updateSlidesSize();
-        // swiper.updateContainerSize();
-        // swiper.updateProgress();
-        // swiper.updatePagination();
-        // swiper.updateClasses();
       } else {
         $scope.changerImage = false;
       }
