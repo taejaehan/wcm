@@ -256,72 +256,73 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
       //marker 숫자 제한하는 것 주석처리 함
       // var numMarkers = document.getElementById('nummarkers').value;
       // if(numMarkers > $scope.cards.length) numMarkers = $scope.cards.length;
+      if($scope.cards != null){
+        for (var i = 0; i < $scope.cards.length; i++) {
 
-      for (var i = 0; i < $scope.cards.length; i++) {
+          //card type에 따라 이미지/색을 변경 한다 index 0 - discoverd , 1 - ongoing,  2-completed
+          switch(type){
+            case DISCOVERED :
+              if($scope.cards[i].status != PROGRESS_REGISTER && $scope.cards[i].status != PROGRESS_START) continue;
+              markerUrl = 'img/location_r.png';
+              clusterUrl = 'img/cluster_r.png';
+              clusterBigUrl = 'img/cluster_r_big.png';
+              clusterTextColor = '#9c3625';
+              break;
+            case ONGOING :
+              if($scope.cards[i].status != PROGRESS_ONGOING) continue;
+              markerUrl = 'img/location_y.png';
+              clusterUrl = 'img/cluster_y.png';
+              clusterBigUrl = 'img/cluster_y_big.png';
+              clusterTextColor = '#e38b0d';
+              break;
+            case COMPLETED :
+              if($scope.cards[i].status != PROGRESS_COMPLETED) continue;
+              markerUrl = 'img/location_g.png';
+              clusterUrl = 'img/cluster_g.png';
+              clusterBigUrl = 'img/cluster_g_big.png';
+              clusterTextColor = '#264804';
+              break;
+            default : 
+              markerUrl = 'img/location_y.png';
+              clusterUrl = 'img/cluster_y.png';
+              clusterBigUrl = 'img/cluster_y_big.png';
+              clusterTextColor = '#e38b0d';
+          }
 
-        //card type에 따라 이미지/색을 변경 한다 index 0 - discoverd , 1 - ongoing,  2-completed
-        switch(type){
-          case DISCOVERED :
-            if($scope.cards[i].status != PROGRESS_REGISTER && $scope.cards[i].status != PROGRESS_START) continue;
-            markerUrl = 'img/location_r.png';
-            clusterUrl = 'img/cluster_r.png';
-            clusterBigUrl = 'img/cluster_r_big.png';
-            clusterTextColor = '#9c3625';
-            break;
-          case ONGOING :
-            if($scope.cards[i].status != PROGRESS_ONGOING) continue;
-            markerUrl = 'img/location_y.png';
-            clusterUrl = 'img/cluster_y.png';
-            clusterBigUrl = 'img/cluster_y_big.png';
-            clusterTextColor = '#e38b0d';
-            break;
-          case COMPLETED :
-            if($scope.cards[i].status != PROGRESS_COMPLETED) continue;
-            markerUrl = 'img/location_g.png';
-            clusterUrl = 'img/cluster_g.png';
-            clusterBigUrl = 'img/cluster_g_big.png';
-            clusterTextColor = '#264804';
-            break;
-          default : 
-            markerUrl = 'img/location_y.png';
-            clusterUrl = 'img/cluster_y.png';
-            clusterBigUrl = 'img/cluster_y_big.png';
-            clusterTextColor = '#e38b0d';
+          var titleText = $scope.cards[i].title;
+          if (titleText === '') {
+            titleText = 'No title';
+          }
+
+          var item = document.createElement('DIV');
+          var title = document.createElement('A');
+          title.href = '#';
+          title.className = 'title';
+          title.innerHTML = titleText;
+
+          item.appendChild(title);
+
+          var latLng = new google.maps.LatLng($scope.cards[i].location_lat,
+              $scope.cards[i].location_long);
+
+          var markerImage = new google.maps.MarkerImage(markerUrl,
+              new google.maps.Size(50, 50),
+              new google.maps.Point(0, 0),
+              new google.maps.Point(15, 25),
+              new google.maps.Size(30, 30));
+
+
+          var marker = new google.maps.Marker({
+            'position': latLng,
+            'icon': markerImage
+          });
+
+          var fn = $scope.markerClickFunction($scope.cards[i], latLng);
+          google.maps.event.addListener(marker, 'click', fn);
+          google.maps.event.addDomListener(title, 'click', fn);
+
+          $scope.markers.push(marker);
         }
-
-        var titleText = $scope.cards[i].title;
-        if (titleText === '') {
-          titleText = 'No title';
-        }
-
-        var item = document.createElement('DIV');
-        var title = document.createElement('A');
-        title.href = '#';
-        title.className = 'title';
-        title.innerHTML = titleText;
-
-        item.appendChild(title);
-
-        var latLng = new google.maps.LatLng($scope.cards[i].location_lat,
-            $scope.cards[i].location_long);
-
-        var markerImage = new google.maps.MarkerImage(markerUrl,
-            new google.maps.Size(50, 50),
-            new google.maps.Point(0, 0),
-            new google.maps.Point(15, 25),
-            new google.maps.Size(30, 30));
-
-
-        var marker = new google.maps.Marker({
-          'position': latLng,
-          'icon': markerImage
-        });
-
-        var fn = $scope.markerClickFunction($scope.cards[i], latLng);
-        google.maps.event.addListener(marker, 'click', fn);
-        google.maps.event.addDomListener(title, 'click', fn);
-
-        $scope.markers.push(marker);
       }
 
       // window.setTimeout($scope.time, 0);

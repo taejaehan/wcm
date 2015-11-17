@@ -7,7 +7,8 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
                   slidesPerView: 6,
                   paginationClickable: true,
                   spaceBetween: 10,
-                  freeMode: true
+                  freeMode: true,
+                  observer : true
               });
   $scope.postId = $stateParams.postId;
   $scope.comments = [];
@@ -70,6 +71,12 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
             $scope.changers.push(data.cards[0].changer[j]);
           }
         }
+
+        // swiper.updateSlidesSize();
+        // swiper.updateContainerSize();
+        // swiper.updateProgress();
+        // swiper.updatePagination();
+        // swiper.updateClasses();
       } else {
         $scope.changerImage = false;
       }

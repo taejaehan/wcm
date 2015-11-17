@@ -253,7 +253,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   * @param : init(String) 'init'이면 처음 페이지 데이터를 다시 가져옴
   */
   $scope.doRefresh = function(init) {
-
     $scope.noMoreItemsAvailable = true;
 
     $timeout( function() {
