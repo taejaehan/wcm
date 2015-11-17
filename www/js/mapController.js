@@ -240,10 +240,22 @@ wcm.controller('MapController', function($scope, $stateParams, $cordovaGeolocati
             $rootScope.cardLocationLng = latlng.lng;
             
           } else {
-            window.alert('No results found');
+            $ionicPopup.alert({
+              title: mAppName,
+              template: '결과가 없습니다',
+              cssClass: 'wcm-negative'
+             });
           }
-        } else {
-          window.alert('Geocoder failed due to: ' + status);
+        }else if(status == "OVER_QUERY_LIMIT"){   
+            //너무 빠르게 시도하여 난 에러이므로 다시 시도 by tjhan 151117
+            Thread.Sleep(200);
+            $scope.setLocationName(latlng);
+        }else if(status != "OK" && status != "ZERO_RESULTS"){ 
+          $ionicPopup.alert({
+            title: mAppName,
+            template: 'Geocoder 실패 : ' + status,
+            cssClass: 'wcm-error'
+           });
         }
       });
     }
