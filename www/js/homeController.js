@@ -261,7 +261,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
         /* isOnline 일때를 대비하여 가져오던 cardlist 주석처리 by tjhan 151117 */
         // init이면 처음 페이지 데이터를 다시 가져옴
-        /*if(init == 'init'){
+        if(init == 'init'){
 
           $ionicLoading.show({
             template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
@@ -287,7 +287,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             $ionicLoading.hide();
             console.log('error : ' + JSON.stringify(error))
           })
-        }*/
+        }
 
         $ionicLoading.show({
           template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
@@ -563,7 +563,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     });
 
     confirmPopup.then(function(res) {
-
       if(res) {
         $ionicLoading.show({
           template: '<ion-spinner icon="bubbles"></ion-spinner>'
