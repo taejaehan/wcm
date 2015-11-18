@@ -1,6 +1,6 @@
 plugin 설치 (17개)
 
-************Plugins************ 
+************Plugins************
 cordova plugin add com.ionic.keyboard
 cordova plugin add cordova-plugin-device
 cordova plugin add cordova-plugin-geolocation
@@ -17,7 +17,7 @@ cordova plugin add phonegap-plugin-push
 cordova plugin add com.portnou.cordova.plugin.preferences
 cordova plugin add cordova-plugin-facebook4 --save --variable APP_ID="1020667507964480" --variable APP_NAME="We Change Makers"
 cordova plugin add cordova-plugin-crosswalk-webview (Only Android)
-
+cordova plugin add cordova-plugin-appavailability
 cordova plugin add cordova-plugin-console (for debug)
 
 ******************************common 20151029******************************
@@ -30,15 +30,15 @@ ionic config set dev_push false
 
 ******************************Android 20151029******************************
 
-C:\wamp\www\wcm\platforms\android\CordovaLib\src\org\apache\cordova\CordovaWebViewImpl.java 
+C:\wamp\www\wcm\platforms\android\CordovaLib\src\org\apache\cordova\CordovaWebViewImpl.java
 47LoadUrlTimeoutValue value 변경 (100000) \1. com.portnou.cordova.plugin.preferences
-\plugins\com.portnou.cordova.plugin.preferences\plugin.xml 에서 
+\plugins\com.portnou.cordova.plugin.preferences\plugin.xml 에서
 src/android/preferences.java를 src/android/Preferences.java 대문자로 변경
 
 \plugins\com.portnou.cordova.plugin.preferences\src\android\prefrencees.java
 \platforms\android\src\com\portnou\cordova\plugin\preferences\prefrencees.java
 -파일 이름(prefrencees.java > Prefrencees.java) 변경
--import안된 것 해주기 
+-import안된 것 해주기
 import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.CordovaInterface;
 
@@ -66,7 +66,7 @@ ionic run android
 
 
 **************************************************************************************
-How to solve IOS warning 
+How to solve IOS warning
 **************************************************************************************
 
 **************************************************************************************
@@ -93,13 +93,13 @@ warning 2. <YoikScreenorientation.m>, <CDVInAppBrowser.m> Conflicting return typ
 
 
 **************************************************************************************
-warning 3. Facebook ios SDK - ios9 
+warning 3. Facebook ios SDK - ios9
 **************************************************************************************
 https://developers.facebook.com/docs/ios/ios9 링크 참조
 
 
 **************************************************************************************
-warning 4. <CDVInAppBrowser.m> Null passed to a callee that requires a non-null argument 
+warning 4. <CDVInAppBrowser.m> Null passed to a callee that requires a non-null argument
 **************************************************************************************
 [self.webView loadHTMLString:nil baseURL:nil];
 --------------------------------------------------------------------------------------
@@ -108,7 +108,7 @@ NSString* htmlContent = @"<html><head><title></title></head><body><img src='../i
 
 
 **************************************************************************************
-warning 5. <CDVConnection.m> 
+warning 5. <CDVConnection.m>
 Address of 'UIApplicationWillEnterForegroundNotification' will always evaluate to 'true'
 Address of 'UIApplicationDidEnterBackgroundNotification' will always evaluate to 'true'
 **************************************************************************************
@@ -117,7 +117,7 @@ if (&UIApplicationDidEnterBackgroundNotification && &UIApplicationWillEnterForeg
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onResume) name:UIApplicationWillEnterForegroundNotification object:nil];
 }
 --------------------------------------------------------------------------------------
-if문 제외 
+if문 제외
 
 
 **************************************************************************************
@@ -132,7 +132,7 @@ warning 6. <FacebookConnectPlugin.m> 'showWithContent:delegate:' is deprecated
 
 
 **************************************************************************************
-warning 7. 'loginWithPublishPermission:handler' is deprecated 
+warning 7. 'loginWithPublishPermission:handler' is deprecated
 **************************************************************************************
 fromViewController:nil 추가
 --------------------------------------------------------------------------------------
@@ -144,8 +144,3 @@ warning 8. <CDVPluginResult.m> 'cdv_base64EncodedString' is deprecated
 [data cdv_base64EncodedString]
 --------------------------------------------------------------------------------------
 [data base64EncodedStringWithOptions:0]
-
-
-
-
-
