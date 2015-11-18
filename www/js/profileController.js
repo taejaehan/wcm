@@ -441,7 +441,9 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 						    "tokens": tokens,
 						    "notification": {
 						      "alert": message
-						    }
+						    },
+						    // "scheduled" : 1447834020,
+						    "production": true
 						  }
 						};
 						$ionicLoading.show({
@@ -452,10 +454,12 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 							$ionicLoading.hide();
 						  // Handle success
 						  console.log("Ionic Push: Push success!");
+						  console.log('resp : ' + JSON.stringify(resp));
 						}).error(function(error){
 							$ionicLoading.hide();
 						  // Handle error 
 						  console.log("Ionic Push: Push error...");
+						  console.log('error : ' + JSON.stringify(error));
 						});
 					} else {
 						console.log('CANCEL SEND PUSH MESSAGE');
