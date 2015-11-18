@@ -130,7 +130,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         // error
       });
     });*/
-
   });
 
   /*

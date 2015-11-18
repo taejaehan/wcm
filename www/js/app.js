@@ -204,10 +204,12 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
                 },
                 //push가 오면
                 "onNotification": function(notification) {
-                  // notification왔을 때 alert 주석처리 by tjhan 151112
                   // var payload = notification.payload;
-                  // console.log('notification : ' + notification);
-                  // console.log('payload : ' + JSON.stringify(payload));
+                  console.log('notification : ' + notification);
+                  console.log('payload : ' + notification.payload);
+                  console.log('title : ' + notification.title);
+                  console.log('message : ' + notification.message);
+                  // notification왔을 때 alert 주석처리 by tjhan 151112
                   // $ionicPopup.alert({
                   //   title: mAppName,
                   //   template: payload.message,
