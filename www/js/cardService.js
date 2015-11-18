@@ -155,87 +155,111 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
   */
   var share = function(type, card, scope) {
 
-    console.log('share type : ' + type);
+    if(device.platform === 'iOS') {
+      var scheme = 'fb://';
+    }
+    else if(device.platform === 'Android') {
+      var scheme = 'com.facebook.katana';
+    }
+
     console.log('share card : ' + JSON.stringify(card));
+
     $ionicLoading.show({
       template: '<ion-spinner icon="bubbles"></ion-spinner>'
     });
-    if(type =='facebook'){
 
-      var fileurl = card.img_path;
-      if(fileurl == '' || fileurl == mNoImage || fileurl == mNoImageThumb){
-        console.log('That image was not found.');
+    appAvailability.check(
+      scheme,       // URI Scheme or Package Name
+      function() {  // Success callback
+        console.log(scheme + ' is available :)');
+        if(type =='facebook'){
+
+          var fileurl = card.img_path;
+          if(fileurl == '' || fileurl == mNoImage || fileurl == mNoImageThumb){
+            console.log('That image was not found.');
+            $ionicPopup.alert({
+              title: mAppName,
+              template: '이미지가 없어서 공유할 수 없습니다',
+              cssClass: 'wcm-error',
+            });
+            return;
+          }else{
+            console.log('That image was found.');
+          }
+
+          return facebookConnectPlugin.showDialog({
+            method: "feed" ,
+            picture: card.img_path,
+            message:'First photo post',
+            caption: card.title,
+            name: card.description,
+            description: card.description,
+            link: 'http://wechangemakers.org/'
+          },
+          function (success) {
+            console.log('share success');
+            var i = 0;
+            while( i < $rootScope.allData.cards.length) {
+              if ($rootScope.allData.cards[i].id === card.id) {
+                console.log('share $rootScope.allData.cards[i].share_count : ' + $rootScope.allData.cards[i].share_count);
+                var share_count = ++($rootScope.allData.cards[i].share_count);
+                console.log('share card.id : ' + card.id);
+                console.log('share share_count : ' + share_count);
+
+                //share는 무조건 숫자가 증가 되기 때문에 postData를 보내지 않고 서버에서 처리 by tjhan 151111
+                var request = $http({
+                    method: "post",
+                    url: mServerAPI + "/cardDetail/" + card.id + "/share",
+                    crossDomain : true,
+                    // data: postData,
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+                    cache: false
+                });
+                request.success(function(data) {
+                  console.log('shareCountPost success : ' + JSON.stringify(data));
+                });
+                request.error(function(error){
+                  console.log('shareCountPost error : ' + JSON.stringify(error));
+                });
+                break;
+              }
+              i ++;
+            }
+            $ionicLoading.hide();
+
+            $ionicPopup.alert({
+              title: mAppName,
+              template: '페이스북에 공유 되었습니다',
+              cssClass: 'wcm-positive',
+            });
+            //postController에서 넘어온 scope이 있을 경우 해당 scope의 share_count를 증가
+            if(scope != null){
+              scope.share_count ++;
+            }
+          },
+          function (error) {
+            console.log('share error : ' + JSON.stringify(error));
+            $ionicLoading.hide();
+            $ionicPopup.alert({
+              title: mAppName,
+              template: '페이스북 공유에 실패 하였습니다',
+              cssClass: 'wcm-error',
+            });
+          });
+        } //if(type =='facebook') 끝
+      },
+      function() {  // Error callback
+        console.log(scheme + ' is not available :(');
+        $ionicLoading.hide();
         $ionicPopup.alert({
           title: mAppName,
-          template: '이미지가 없어서 공유할 수 없습니다',
+          template: '위험 공유를 하려면 페이스북 앱을 설치하세요',
           cssClass: 'wcm-error',
         });
         return;
-      }else{
-        console.log('That image was found.');
       }
-
-      return facebookConnectPlugin.showDialog({
-        method: "feed" ,
-        picture: card.img_path,
-        message:'First photo post',
-        caption: card.title,
-        name: card.description,
-        description: card.description,
-        link: 'http://wechangemakers.org/'
-      },
-      function (success) {
-        console.log('share success');
-        var i = 0;
-        while( i < $rootScope.allData.cards.length) {
-          if ($rootScope.allData.cards[i].id === card.id) {
-            console.log('share $rootScope.allData.cards[i].share_count : ' + $rootScope.allData.cards[i].share_count);
-            var share_count = ++($rootScope.allData.cards[i].share_count);
-            console.log('share card.id : ' + card.id);
-            console.log('share share_count : ' + share_count);
-
-            //share는 무조건 숫자가 증가 되기 때문에 postData를 보내지 않고 서버에서 처리 by tjhan 151111
-            var request = $http({
-                method: "post",
-                url: mServerAPI + "/cardDetail/" + card.id + "/share",
-                crossDomain : true,
-                // data: postData,
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-                cache: false
-            });
-            request.success(function(data) {
-              console.log('shareCountPost success : ' + JSON.stringify(data));
-            });
-            request.error(function(error){
-              console.log('shareCountPost error : ' + JSON.stringify(error));
-            });
-            break;
-          }
-          i ++;
-        }
-        $ionicLoading.hide();
-
-        $ionicPopup.alert({
-          title: mAppName,
-          template: '페이스북에 공유 되었습니다',
-          cssClass: 'wcm-positive',
-        });
-        //postController에서 넘어온 scope이 있을 경우 해당 scope의 share_count를 증가
-        if(scope != null){
-          scope.share_count ++;
-        }
-      },
-      function (error) {
-        console.log('share error : ' + JSON.stringify(error));
-        $ionicLoading.hide();
-        $ionicPopup.alert({
-          title: mAppName,
-          template: '페이스북 공유에 실패 하였습니다',
-          cssClass: 'wcm-error',
-        });
-      });
-    } //if(type =='facebook') 끝
-  };
+    ); // appAvailability.check 끝
+  }; // share 끝
 
   return {
     toggleWatch: toggleWatch,
