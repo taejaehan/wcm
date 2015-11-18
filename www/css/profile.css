@@ -1,6 +1,10 @@
-#profile_page {
+.profile.pane {
 	background-color: #eead39;
-	padding-top:20px;
+}
+
+#profile_page {
+	background-color: #f0f0ee;
+	height: 100%;
 }
 
 #profile_page .user.active {
@@ -10,6 +14,11 @@
 #profile_page .user.non-active {
 	left: 200%;
 	position: absolute;
+}
+
+#profile_page .profile-form {
+	background-color: #eead39;
+	padding-top: 20px;
 }
 
 #profile_page .profile-form a {
@@ -249,7 +258,7 @@ i.ion-chevron-right {
 
 .terms h4, .gps h4, .privacy h4 {
 	margin-left: 20px;
-} 
+}
 
 .privacy h5 {
 	margin-left: 40px;
@@ -298,5 +307,5 @@ i.ion-chevron-right {
 
 .empty-text{
 	text-align: center;
-	padding-top : 10px;
+	padding-top : 25px;
 }
