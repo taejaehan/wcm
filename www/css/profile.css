@@ -212,10 +212,6 @@ button.logout {
 	display: block;
 }
 
-#profile_page .card-info.non-active, .change-info.non-active, .watch-info.non-active{
-	display: none;
-}
-
 #profile_page .non-login {
 	border: none;
 	border-radius: 10px;

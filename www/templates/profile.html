@@ -15,14 +15,14 @@
 			  </div>
 
 		  	<div class="row">
-				<a ng-click="showReportList()" class="left-tab" ng-class="{'menu-tab active' : reportTab, 'menu-tab non-active' : !reportTab}">내가 제보한 위험</a>
-				<a ng-click="showChangeList()" class="center-tab" ng-class="{'menu-tab active' : changeTab, 'menu-tab non-active' : !changeTab}">내가 해결한 위험</a>
-				<a ng-click="showWatchList()" class="right-tab" ng-class="{'menu-tab active' : watchTab, 'menu-tab non-active' : !watchTab}">위험해요! 리스트</a>
-		    </div>
+					<a ng-click="showReportList()" class="left-tab" ng-class="{'menu-tab active' : reportTab, 'menu-tab non-active' : !reportTab}">내가 제보한 위험</a>
+					<a ng-click="showChangeList()" class="center-tab" ng-class="{'menu-tab active' : changeTab, 'menu-tab non-active' : !changeTab}">내가 해결한 위험</a>
+					<a ng-click="showWatchList()" class="right-tab" ng-class="{'menu-tab active' : watchTab, 'menu-tab non-active' : !watchTab}">위험해요! 리스트</a>
+				</div>
 
 			  <div class="form-group login">
 			  	 <!--내가 제보한 위험 리스트-->
-			    <div ng-class="{'card-info active' : reportTab, 'card-info non-active' : !reportTab}">
+					<div ng-if="reportTab">
 			    	<div class="empty-text"><span ng-bind="reportEmptyMessage"></span></div>
 			    	<ion-item ng-repeat="card in reportList | reverse track by $index" class="my-card-list">
 				    	<a ng-href="#/tab/home/{{card.id}}" class="title"><p ng-bind="card.title"></p></a>
@@ -39,7 +39,7 @@
 			      </ion-item>
 			    </div>
 				 <!--내가 해결한 위험 리스트-->
-			    <div ng-class="{'change-info active' : changeTab, 'change-info non-active' : !changeTab}">
+					<div ng-if="changeTab">
 			    	<div class="empty-text"><span ng-bind="changeEmptyMessage"></span></div>
 				    <ion-item ng-repeat="change in changeList | reverse track by $index" class="my-change-list">
 				    	<p class="title" ng-bind="change.title"></p>
@@ -56,7 +56,7 @@
 				    </ion-item>
 			    </div>
 				  <!--위험해요! 리스트-->
-			    <div ng-class="{'watch-info active' : watchTab, 'watch-info non-active' : !watchTab}">
+					<div ng-if="watchTab">
 			    	<div class="empty-text"><span ng-bind="watchEmptyMessage"></span></div>
 				    <ion-item ng-repeat="watch in watchList | reverse track by $index" class="my-change-list">
 				    	<p class="title" ng-bind="watch.title"></p>
