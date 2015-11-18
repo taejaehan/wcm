@@ -1,4 +1,4 @@
-<ion-view view-title="프로필">
+<ion-view view-title="프로필" class="profile">
 	<ion-nav-buttons side="right">
     <button type="submit" ng-if="adminUser" class="button button-icon" ng-click="sendPushNotification()">
       <i class="icon ion-cube"></i>
@@ -15,22 +15,22 @@
 			  </div>
 
 		  	<div class="row">
-				<a ng-click="showReportList()" class="left-tab" ng-class="{'menu-tab active' : reportTab, 'menu-tab non-active' : !reportTab}">내가 제보한 위험</a>
-				<a ng-click="showChangeList()" class="center-tab" ng-class="{'menu-tab active' : changeTab, 'menu-tab non-active' : !changeTab}">내가 해결한 위험</a>
-				<a ng-click="showWatchList()" class="right-tab" ng-class="{'menu-tab active' : watchTab, 'menu-tab non-active' : !watchTab}">위험해요! 리스트</a>
-		    </div>
+					<a ng-click="showReportList()" class="left-tab" ng-class="{'menu-tab active' : reportTab, 'menu-tab non-active' : !reportTab}">내가 제보한 위험</a>
+					<a ng-click="showChangeList()" class="center-tab" ng-class="{'menu-tab active' : changeTab, 'menu-tab non-active' : !changeTab}">내가 해결한 위험</a>
+					<a ng-click="showWatchList()" class="right-tab" ng-class="{'menu-tab active' : watchTab, 'menu-tab non-active' : !watchTab}">위험해요! 리스트</a>
+				</div>
 
 			  <div class="form-group login">
 			  	 <!--내가 제보한 위험 리스트-->
-			    <div ng-class="{'card-info active' : reportTab, 'card-info non-active' : !reportTab}">
+					<div ng-if="reportTab">
 			    	<div class="empty-text"><span ng-bind="reportEmptyMessage"></span></div>
-			    	<ion-item bindonce ng-repeat="card in reportList | reverse track by $index" class="my-card-list">
-				    	<a bo-href="'#/tab/home/' + card.id" class="title"><p bo-bind="card.title"></p></a>
+			    	<ion-item ng-repeat="card in reportList | reverse track by $index" class="my-card-list">
+				    	<a ng-href="#/tab/home/{{card.id}}" class="title"><p ng-bind="card.title"></p></a>
 				    	<div class="progress">
 		            <div class="progress-bar progress-bar-danger progress-bar-striped progress-{{card.status}}" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: {{card.status}}%">
 		            </div>
 		          </div>
-		          <p class="progressText progress-{{card.status}}"><i class="project-icon {{card.statusIcon}}"></i> <span bo-bind="card.statusDescription"></span></p>
+		          <p class="progressText progress-{{card.status}}"><i class="project-icon {{card.statusIcon}}"></i> <span ng-bind="card.statusDescription"></span></p>
 		          <div class="progress-button">
 			      		<a ng-click="idea(card)"><i class="project-icon project-start-dis"></i> 시작</a>
 			      		<a ng-click="doing(card)"><i class="project-icon project-ongoing-dis"></i> 진행</a>
@@ -39,42 +39,40 @@
 			      </ion-item>
 			    </div>
 				 <!--내가 해결한 위험 리스트-->
-			    <div ng-class="{'change-info active' : changeTab, 'change-info non-active' : !changeTab}">
+					<div ng-if="changeTab">
 			    	<div class="empty-text"><span ng-bind="changeEmptyMessage"></span></div>
-				    <ion-item bindonce ng-repeat="change in changeList | reverse track by $index" class="my-change-list">
-				    	<p class="title" bo-bind="change.title"></p>
+				    <ion-item ng-repeat="change in changeList | reverse track by $index" class="my-change-list">
+				    	<p class="title" ng-bind="change.title"></p>
 				    	<div class="progress">
 		            <div class="progress-bar progress-bar-danger progress-bar-striped progress-{{change.status}}" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: {{change.status}}%">
 		            </div>
 		          </div>
-		          <p class="progressText progress-{{change.status}}"><i class="project-icon {{change.statusIcon}}"></i> <span bo-bind="change.statusDescription"></span></p>
+		          <p class="progressText progress-{{change.status}}"><i class="project-icon {{change.statusIcon}}"></i> <span ng-bind="change.statusDescription"></span></p>
 
 		          <div class="change-list-button">
-			         	<a class="btn btn-default btn-sm change-list left" bo-href="'#/tab/profile/' + change.id">자세히 보기</a>
+			         	<a class="btn btn-default btn-sm change-list left" ng-href="#/tab/profile/{{change.id}}">자세히 보기</a>
 			         	<a class="btn btn-default btn-sm change-list right" ng-click="cancelChanger(change)">취소하기</a>
 			        </div>
 				    </ion-item>
 			    </div>
 				  <!--위험해요! 리스트-->
-			    <div ng-class="{'watch-info active' : watchTab, 'watch-info non-active' : !watchTab}">
+					<div ng-if="watchTab">
 			    	<div class="empty-text"><span ng-bind="watchEmptyMessage"></span></div>
-				    <ion-item bindonce ng-repeat="watch in watchList | reverse track by $index" class="my-change-list">
-				    	<p class="title" bo-bind="watch.title"></p>
+				    <ion-item ng-repeat="watch in watchList | reverse track by $index" class="my-change-list">
+				    	<p class="title" ng-bind="watch.title"></p>
 				    	<div class="progress">
 		            <div class="progress-bar progress-bar-danger progress-bar-striped progress-{{watch.status}}" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: {{watch.status}}%">
 		            </div>
 		          </div>
-		          <p class="progressText progress-{{watch.status}}"><i class="project-icon {{watch.statusIcon}}"></i> <span bo-bind="watch.statusDescription"></span></p>
+		          <p class="progressText progress-{{watch.status}}"><i class="project-icon {{watch.statusIcon}}"></i> <span ng-bind="watch.statusDescription"></span></p>
 		          <div class="watch-list-button">
-			         	<a class="btn btn-default btn-sm watch-list left" bo-href="'#/tab/profile/' + watch.id">자세히 보기</a>
+			         	<a class="btn btn-default btn-sm watch-list left" ng-href="#/tab/profile/{{watch.id}}">자세히 보기</a>
 			         	<a class="btn btn-default btn-sm watch-list right" ng-click="toggleWatchProfile(watch.watch = !watch.watch, watch.id)" ng-class="{'active' : watch.watch, 'non-active' : !watch.watch}" id="watch">
 	                <i class="ion-ios-eye"></i>  위험해요
 	              </a>
 			        </div>
 						</ion-item>
 			    </div>
-
-
 			  </div>
 	    </form>
   </ion-content>
