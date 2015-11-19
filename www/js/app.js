@@ -202,18 +202,18 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
                      "iconColor": "#343434"
                    }
                 },
-                //push가 오면
-                "onNotification": function(notification) {
-                  // notification왔을 때 alert 주석처리 by tjhan 151112
-                  // var payload = notification.payload;
-                  // console.log('notification : ' + notification);
-                  // console.log('payload : ' + JSON.stringify(payload));
-                  // $ionicPopup.alert({
-                  //   title: mAppName,
-                  //   template: payload.message,
-                  //   cssClass: 'wcm-negative'
-                  // });
-                },
+                // notification왔을 때 alert 주석처리 by tjhan 151112
+                /*"onNotification": function(notification) {
+                  var payload = notification.payload;
+                  console.log('notification : ' + notification);
+                  console.log('payload : ' + notification.payload);
+                  console.log('title : ' + notification.title);
+                  $ionicPopup.alert({
+                    title: mAppName,
+                    template: payload.message,
+                    cssClass: 'wcm-negative'
+                  });
+                },*/
                 //push가 등록되면 해당 push token을 위에 설정한 user에 넣고 db에도 넣는다
                 "onRegister": function(data) {
                   console.log('************2.onRegister token************ : ' + data.token);
