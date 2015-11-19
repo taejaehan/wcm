@@ -4,7 +4,7 @@
       <i class="icon ion-cube"></i>
     </button>
   </ion-nav-buttons>
-  <ion-content>
+  <ion-content overflow-scroll="true">
     <div id="profile_page">
 
 	    <form class="form-horizontal profile-form" ng-class="{'user active' : userCheck, 'user non-active' : !userCheck}">
@@ -20,7 +20,7 @@
 					<a ng-click="showWatchList()" class="right-tab" ng-class="{'menu-tab active' : watchTab, 'menu-tab non-active' : !watchTab}">위험해요! 리스트</a>
 				</div>
 
-			  <div class="form-group login">
+			  <div class="form-group login" id="dynamic_tab">
 			  	 <!--내가 제보한 위험 리스트-->
 					<div ng-if="reportTab">
 			    	<div class="empty-text"><span ng-bind="reportEmptyMessage"></span></div>
