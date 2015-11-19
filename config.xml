@@ -80,4 +80,5 @@
         <variable name="APP_ID" value="1020667507964480" />
         <variable name="APP_NAME" value="We Change Makers" />
     </plugin>
+    <plugin name="LaunchMyApp" value="nl.xservices.plugins.LaunchMyApp"/>
 </widget>

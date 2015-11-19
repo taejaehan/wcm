@@ -57,7 +57,7 @@ wcm.factory('Scopes', function($rootScope) {
     };
 })
 
-wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup) {
+wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup, $rootScope) {
 
   console.log('wcm RUN');
   //$ionicPlatform이 ready되면 연결된 device에 대한 정보를 저장 (boolean)
@@ -540,7 +540,9 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
 });
 
-/*post를 Object로 보낼 때 사용*/
+/*
+* post를 Object로 보낼 때 사용
+*/
 Object.toparams = function ObjecttoParams(obj)
 {
   var p = [];
@@ -550,3 +552,17 @@ Object.toparams = function ObjecttoParams(obj)
   }
   return p.join('&');
 };
+
+/*
+* facebook에서 link를 눌러 들어왔을 때 호출됩니다 
+*/
+function handleOpenURL(url) {
+  console.log('appjs handleOpenURL url : ' + url);
+  setTimeout(function() {
+    // alert("received url: " + url);
+    var postId = url.split("post=")[1];
+    console.log('postId : ' + postId);
+    window.location.href = '#/tab/home/' + postId;
+  }, 10);
+}
+

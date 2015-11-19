@@ -58,7 +58,7 @@
 				  <!--위험해요! 리스트-->
 					<div ng-if="watchTab">
 			    	<div class="empty-text"><span ng-bind="watchEmptyMessage"></span></div>
-				    <ion-item ng-repeat="watch in watchList | reverse track by $index" class="my-change-list">
+				    <ion-item ng-repeat="watch in watchList" class="my-change-list">
 				    	<p class="title" ng-bind="watch.title"></p>
 				    	<div class="progress">
 		            <div class="progress-bar progress-bar-danger progress-bar-striped progress-{{watch.status}}" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: {{watch.status}}%">

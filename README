@@ -1,4 +1,4 @@
-plugin 설치 (17개)
+plugin 설치 (17개 + 2개)
 
 ************Plugins************
 cordova plugin add com.ionic.keyboard
@@ -16,8 +16,10 @@ cordova plugin add https://github.com/Paldom/UniqueDeviceID
 cordova plugin add phonegap-plugin-push
 cordova plugin add com.portnou.cordova.plugin.preferences
 cordova plugin add cordova-plugin-facebook4 --save --variable APP_ID="1020667507964480" --variable APP_NAME="We Change Makers"
-cordova plugin add cordova-plugin-crosswalk-webview (Only Android)
 cordova plugin add cordova-plugin-appavailability
+cordova plugin add cordova-plugin-customurlscheme --variable URL_SCHEME=wcm
+
+cordova plugin add cordova-plugin-crosswalk-webview (Only Android)
 cordova plugin add cordova-plugin-console (for debug)
 
 ******************************common 20151029******************************
