@@ -85,15 +85,6 @@ img.posting-image {
 	height: 33px;
 }
 
-#detail_page .sns-link .active {
-	color: #e85d54;
-	font-weight: bolder;
-}
-
-#detail_page .sns-link .non-active {
-	color: #a0a0a0;
-}
-
 #detail_page .sns-link a {
 	width: 32%;
 	display: inline-block;
@@ -102,6 +93,15 @@ img.posting-image {
 	text-decoration: none;
 	color: #a0a0a0;
 	font-size: 14px;
+}
+
+#detail_page .sns-link .non-active {
+	color: #a0a0a0;
+}
+
+#detail_page .sns-link .active {
+	color: #e85d54;
+	font-weight: bolder;
 }
 
 #detail_page .change-member {
