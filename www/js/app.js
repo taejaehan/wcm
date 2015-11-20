@@ -554,15 +554,17 @@ Object.toparams = function ObjecttoParams(obj)
 };
 
 /*
-* facebook에서 link를 눌러 들어왔을 때 호출됩니다 
+* facebook에서 link를 눌러 들어왔을 때 호출됩니다
 */
 function handleOpenURL(url) {
   console.log('appjs handleOpenURL url : ' + url);
+
   setTimeout(function() {
     // alert("received url: " + url);
-    var postId = url.split("post=")[1];
+    var postId = url.split("post")[1];
+    if(postId != null) {
+      window.location.href = '#/tab/home/' + postId;
+    }
     console.log('postId : ' + postId);
-    window.location.href = '#/tab/home/' + postId;
   }, 10);
-}
-
+};
