@@ -554,7 +554,7 @@ Object.toparams = function ObjecttoParams(obj)
 };
 
 /*
-* facebook에서 link를 눌러 들어왔을 때 호출됩니다 
+* facebook에서 link를 눌러 앱에 들어왔을 때 호출됩니다 
 */
 function handleOpenURL(url) {
   console.log('appjs handleOpenURL url : ' + url);

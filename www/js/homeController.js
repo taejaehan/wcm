@@ -528,8 +528,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   // warnings map show
   $scope.findWarning = function() {
-    // $state.go("tabs.map");
-    window.location.href = '#/tab/profile/config/about_us';
+    $state.go("tabs.map");
   }
 
   // 각 card의 location map show

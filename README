@@ -19,8 +19,8 @@ cordova plugin add cordova-plugin-facebook4 --save --variable APP_ID="1020667507
 cordova plugin add cordova-plugin-appavailability
 cordova plugin add cordova-plugin-customurlscheme --variable URL_SCHEME=wcm
 
-cordova plugin add cordova-plugin-crosswalk-webview (Only Android)
 cordova plugin add cordova-plugin-console (for debug)
+cordova plugin add cordova-plugin-crosswalk-webview (Only Android)
 
 ******************************common 20151029******************************
 1. phonegap-plugin-push 

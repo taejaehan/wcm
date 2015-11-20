@@ -410,7 +410,7 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
           var infoHtml = 
             '<div class="info">'+
                '<div class="info-top">'+
-                '<h3>' + title + '</h3>'+
+                '<h3 class="info_title">' + title + '</h3>'+
                 '<img class="info_location_img" src='+location_img+' />' + 
                 '<span class="info_location_text">' + location +'</span>' +
               '</div>' +

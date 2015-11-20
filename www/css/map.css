@@ -102,6 +102,9 @@
 .info-top{
   padding : 10px 10px 5px 10px;
 }
+.info_title{
+  margin-right:20px;
+}
 .info-img{
   width: 100%;
   display: block;
