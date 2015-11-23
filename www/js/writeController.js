@@ -2,7 +2,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
 
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var latlng, progress;
-
+  
 
   $scope.addView = false; //add일때만 취소 버튼을 보이게 하기 위함
   $scope.cardId;
@@ -74,11 +74,11 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     }
   });
 
-  //DOM에서 view가 사라질때 (현재 버젼에서는 tab을 이동하거나 같은 tab에서 다른 view로 이동시 발생함)
+  //DOM에서 view가 사라질때 (현재 버젼에서는 tab을 이동하거나 같은 tab에서 다른 view로 이동시 발생함) 
   $scope.$on('$ionicView.unloaded', function(){
     console.log('writeController unloaded - cancelClick : ' + $scope.cancelClick);
     //$scope.cardId가 null이고(새로 글쓰는 상태에서) cancel를 클릭하여 다른 view나 tab으로 간것이 아니라면)
-    if(($scope.cardId == null && !$scope.cancelClick)
+    if(($scope.cardId == null && !$scope.cancelClick) 
       || $ionicHistory.currentView().stateName == 'tabs.location_h'){
       $rootScope.cardTitle = $scope.cardData.title;
       $rootScope.cardDescription = $scope.cardData.description;
@@ -129,16 +129,16 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   */
   $scope.getPicture = function(index){
     if(mIsWebView){
-      var options = {
-          quality : 100,
-          destinationType : Camera.DestinationType.FILE_URI,
-          sourceType : Camera.PictureSourceType.CAMERA,
+      var options = { 
+          quality : 100, 
+          destinationType : Camera.DestinationType.FILE_URI, 
+          sourceType : Camera.PictureSourceType.CAMERA, 
           // allowEdit : true,  //사진 찍은 후 edit 여부
           encodingType: Camera.EncodingType.JPEG,
           cameraDirection: 0, //back : 0 , front : 1
           targetWidth: 550,
           targetHeight: 550,
-          popoverOptions: CameraPopoverOptions,   //ios only
+          popoverOptions: CameraPopoverOptions,   //ios only 
           correctOrientation : true,
           // sourceType: Camera.PictureSourceType.CAMERA
           // sourceType: Camera.PictureSourceType.PHOTOLIBRARY
@@ -181,7 +181,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   */
   $scope.currentLocation = function(){
 
-
+    
 
     if(document.getElementById("card_location") != null && document.getElementById("card_location").value != '') return;
 
@@ -220,8 +220,8 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   }
 
   /*
-  * 위치 이름을 가져옵니다
-  * @param : latlng - {위도, 경도}
+  * 위치 이름을 가져옵니다 
+  * @param : latlng - {위도, 경도} 
   */
   $scope.setLocationName = function(lat, long){
     latlng = new google.maps.LatLng(lat, long);
@@ -327,10 +327,10 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     console.log('$scope.imgURI : ' + $scope.imgURI);
     console.log('file dirty : ' + $scope.cardForm.file.$dirty);
 
-    //찍은 사진이 있다면
-    if($scope.imgURI != null){
+    //찍은 사진이 있다면 
+    if($scope.imgURI != null){ 
       //$scope.cardId가 null이면 (new add)
-      if($scope.cardId == null){
+      if($scope.cardId == null){ 
         $scope.savePicture();
       }else{ //$scope.cardId가 있을 경우(edit일 경우)
 
@@ -342,7 +342,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
           console.log('$rootScope.originURI != $scope.imgURI : ' + $rootScope.originURI != $scope.imgURI);
           if($rootScope.originURI != $scope.imgURI){
             $scope.savePicture();
-            //TODO 예전 사진 삭제
+            //TODO 예전 사진 삭제 
           }else{
             //이미지 경로 및 이름이 같다면 DB만 업로드
             $scope.uploadDb();
@@ -363,7 +363,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     //서버에 파일 저장하기
     var newFileName;
     var imagePath = $scope.imgURI;
-
+    
     console.log('$scope.imgURI : ' + $scope.imgURI)
     //날짜로 이름 생성
     var d = new Date();
@@ -418,7 +418,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     //user관련 부분이 없으면 테스트 용도로 facebook 정보를 넣어준다
     if (window.localStorage['user'] != null) {
       var user = JSON.parse(window.localStorage['user'] || '{}');
-      $scope.userid = user.userid;
+      $scope.userid = user.userid;  
     }else{
       $scope.userid = 1826451354247937;
     }
@@ -496,7 +496,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
       $ionicLoading.hide();
       console.log('upload success : ' + JSON.stringify(card));
       $scope.cancelCard();
-
+        
       $ionicLoading.hide();
 
       $ionicPopup.show({
@@ -529,8 +529,8 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
     });
   }
 
-  /*
-  * Get card info
+  /* 
+  * Get card info 
   */
   $scope.getCard = function() {
 
@@ -609,3 +609,4 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   }
 
 });
+

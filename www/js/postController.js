@@ -38,13 +38,27 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       $ionicLoading.hide();
     });
     request.success(function(data) {
-      $ionicLoading.hide();
+      // $ionicLoading.hide();
       $scope.card = data.cards[0];
       if (data.cards[0].img_path == '') {
         $scope.card.img_path = mNoImage;
       }else {
         $scope.card.img_path = mServerUpload + data.cards[0].img_path;
+      };
+
+      //image height값 세팅 후 loading되면 $ionicLoading.hide() by tjhan 151123
+      console.log('data.cards[0].img_height : ' + data.cards[0].img_height);
+      if(data.cards[0].img_height != null){
+        document.getElementById("post_img").style.height = data.cards[0].img_height +'px';
+        var img = new Image();
+        img.src = $scope.card.img_path;
+        img.addEventListener("load", function(){
+            $ionicLoading.hide();
+        });
+      }else{
+        $ionicLoading.hide();
       }
+
       $scope.watch_count = data.cards[0].watch_count;
       $scope.share_count = data.cards[0].share_count;
 
