@@ -228,6 +228,7 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
     */
     $scope.showMarkers = function(type) {
 
+      console.log('showMarkers');
       switch(type){
         case DISCOVERED :
           $scope.warningTitle = DISCOVERED_TEXT;
