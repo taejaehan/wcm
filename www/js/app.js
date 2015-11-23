@@ -1,4 +1,4 @@
-var mAppName = "'We Change Makers'";
+var mAppName = "'WeChangeMakers'";
 var mServerUrl, mServerUpload, mServerAPI = '';
 var mLocalServer = false; //local serve 여부
 
