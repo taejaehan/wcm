@@ -1,4 +1,4 @@
-wcm.controller("PostController", function($scope, $rootScope, $http, $stateParams, $state, $ionicPopup, $ionicModal, CardService, $interval, $ionicLoading, $window, CardDetail) {
+wcm.controller("PostController", function($scope, $rootScope, $http, $stateParams, $state, $ionicPopup, $ionicModal, CardService, $interval, $ionicLoading, $window, CardDetail, $timeout) {
 
   var latlng, progress;
   var user = JSON.parse(window.localStorage['user'] || '{}');
@@ -17,6 +17,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
   $scope.changers = [];
   $scope.duplicatedArray = [];
   $scope.comments_count = 0;
+  $scope.cardTitle = ' ';
 
   $scope.$on('$ionicView.beforeEnter', function(){
 
@@ -28,6 +29,11 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
     CardDetail.card($stateParams.postId, function(card) {
       $scope.card = card;
+
+      $timeout( function() {
+        $scope.cardTitle = card.title;
+      }, 600);
+
       if (card.img_path == '') {
         $scope.card.img_path = mNoImage;
       }else {
@@ -46,6 +52,8 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       }else{
         $ionicLoading.hide();
       }
+
+      
 
       $scope.watch_count = card.watch_count;
       $scope.share_count = card.share_count;

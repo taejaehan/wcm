@@ -4,7 +4,7 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
 
   $scope.facebookLogin = function(){
     console.log('facebookLogin');
-    AuthService.login('facebook');
+    AuthService.login('kakao');
   }
 
   $scope.skipLogin =function() {

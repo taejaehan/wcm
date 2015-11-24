@@ -605,7 +605,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   }
 
   $scope.showDialog = function (card) {
-    CardService.share('facebook', card);
+    CardService.share('kakao', card);
   }
 
 });
