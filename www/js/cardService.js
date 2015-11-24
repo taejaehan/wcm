@@ -196,7 +196,7 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
               // message:'First photo post',
               // name: card.description,
               // link: 'http://wechangemakers.org/'
-              link : 'https://fb.me/1063872636977300/?post=' + card.id
+              link : 'https://fb.me/1063872636977300/?post' + card.id
             },
             function (success) {
               console.log('share success');
