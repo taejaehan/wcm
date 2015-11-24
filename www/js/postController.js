@@ -1,4 +1,4 @@
-wcm.controller("PostController", function($scope, $rootScope, $http, $stateParams, $state, $ionicPopup, $ionicModal, CardService, $interval, $ionicLoading, $window, CardDetail, $timeout) {
+wcm.controller("PostController", function($scope, $rootScope, $stateParams, $state, $ionicPopup, $ionicModal, CardService, $interval, $ionicLoading, $window, CardDetailFactory, $timeout) {
 
   var latlng, progress;
   var user = JSON.parse(window.localStorage['user'] || '{}');
@@ -27,7 +27,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
       template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
     });
 
-    CardDetail.card($stateParams.postId, function(card) {
+    CardDetailFactory.getCard($stateParams.postId, function(card) {
       $scope.card = card;
 
       $timeout( function() {
@@ -103,7 +103,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
     });
 
     // 카드 코멘트 가져오기
-    CardDetail.getComment(function(comments) {
+    CardDetailFactory.getComment(function(comments) {
       for (var i = 0; i <  comments.length; i++) {
         var object =  comments[i];
 
@@ -120,7 +120,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
         }
       }
     });
-  });
+  }); // $ionicView.beforeEnter 끝
 
 
   // toggle watch_count
@@ -133,6 +133,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
 
   // 코멘트 db에 저장하기
   $scope.addComment = function() {
+
     if (user.isAuthenticated === true) {
       var comment = document.getElementById("comment").value;
       if ( comment === "" ) {
@@ -175,7 +176,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
                               updated_at: new Date()
                             };
 
-        CardDetail.addComment(postData, function(data){
+        CardDetailFactory.addComment(postData, function(data){
           formDataLocal.id = data;
           $scope.comments.push(formDataLocal);
           document.getElementById("comment").value = "";
@@ -240,7 +241,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
           template: '<ion-spinner icon="bubbles"></ion-spinner><br/>'
         });
 
-        CardDetail.deleteComment(comment, function() {
+        CardDetailFactory.deleteComment(comment, function() {
           var index = $scope.comments.indexOf(comment);
           $scope.comments.splice(index, 1);
           $scope.comments_count --;
@@ -271,8 +272,19 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
         $ionicLoading.show({
           template: '<ion-spinner icon="bubbles"></ion-spinner>'
         });
+        var userId = parseInt(user.userid);
+        var postId = parseInt($stateParams.postId);
+        var formData =  {
+                          user_id: userId,
+                          post_id: postId,
+                          change : true
+                        };
+        var postData = 'changeData='+JSON.stringify(formData);
 
-        CardDetail.changeMakers(user, $stateParams.postId, function(changerObject) {
+        CardDetailFactory.changeMakers(postData, function(data) {
+          console.log('add change SUCCESS : ' + data);
+          user.changes.push($stateParams.postId);
+          window.localStorage['user'] = JSON.stringify(user);
           $scope.changers.push(changerObject);
           $scope.changerImage = true;
         });
@@ -280,6 +292,13 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
     });
   }
 
+  var changerObject = {
+                        user_id: String(user.userid),
+                        changeUser: [{
+                                      userimage: user.userimage,
+                                      username: user.username
+                                    }]
+                      };
 
   // Change Supporters 버튼 눌렀을때
   $scope.weChange = function() {
@@ -326,6 +345,7 @@ wcm.controller("PostController", function($scope, $rootScope, $http, $stateParam
     }
 
   }
+
 
   // Change Supporters 프로필 팝업
   $scope.openProfile = function(e) {

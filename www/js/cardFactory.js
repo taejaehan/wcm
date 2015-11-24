@@ -1,4 +1,7 @@
-wcm.factory('CardDetail', function($http, $ionicLoading) {
+//==============================================================================
+// * Card Detail Factory *
+//==============================================================================
+wcm.factory('CardDetailFactory', function($http, $ionicLoading) {
 
   function getCard(cardId, callback) {
     var request = $http({
@@ -81,16 +84,7 @@ wcm.factory('CardDetail', function($http, $ionicLoading) {
   }
 
 
-  function changeMakers(user, postId, callback) {
-    var userId = parseInt(user.userid);
-    var postId = parseInt(postId);
-    var formData =  {
-                      user_id: userId,
-                      post_id: postId,
-                      change : true
-                    };
-    var postData = 'changeData='+JSON.stringify(formData);
-
+  function changeMakers(postData, callback) {
     var request = $http({
         method: "post",
         url: mServerAPI + "/toggleChange",
@@ -102,15 +96,7 @@ wcm.factory('CardDetail', function($http, $ionicLoading) {
 
     request.success(function(data) {
       $ionicLoading.hide();
-      user.changes.push(postId);
-      window.localStorage['user'] = JSON.stringify(user);
-      var changerObject = {
-                            user_id: String(user.userid),
-                            changeUser: [{ userimage: user.userimage,
-                                           username: user.username
-                                        }]
-                          };
-      callback(changerObject);
+      callback(data);
     });
     request.error(function(error){
       console.log('add change ERROR : ' + error);
@@ -118,12 +104,42 @@ wcm.factory('CardDetail', function($http, $ionicLoading) {
     });
   }
 
+
   return {
-    card: getCard,
+    getCard: getCard,
     getComment: getComment,
     addComment: addComment,
     deleteComment: deleteComment,
     changeMakers: changeMakers
   };
+});
 
+
+//==============================================================================
+// * Card List Factory *
+//==============================================================================
+wcm.factory('CardsFactory', function($http, $ionicLoading) {
+
+  function getCards(cardId, callback) {
+    var request = $http({
+        method: "get",
+        url: mServerAPI + "/cards",
+        crossDomain : true,
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+        cache: false
+    });
+
+    request.success(function(data) {
+      $ionicLoading.hide();
+      window.localStorage['cardList'] = JSON.stringify(data);
+    });
+    request.error(function(error){
+      $ionicLoading.hide();
+      console.log('error : ' + JSON.stringify(error))
+    });
+  }
+
+  return {
+    cards: getCards
+  };
 });
