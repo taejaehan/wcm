@@ -1,4 +1,4 @@
-wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth, $ionicSlideBoxDelegate, $cordovaPreferences, $ionicLoading, $ionicHistory, CardService) {
+wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth, $ionicSlideBoxDelegate, $cordovaPreferences, $ionicLoading, $ionicHistory, CardService, CardsFactory, $ionicScrollDelegate) {
 
   navigator.geolocation.watchPosition(showPosition);
 
@@ -31,11 +31,11 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   $scope.$on('$ionicView.beforeEnter', function(){
 
-    $rootScope.isHomeView =true;
+    $rootScope.isHomeView = true;
 
-    console.log('$ionicHistory forwardView : ' + $ionicHistory.forwardView());
-    console.log('$ionicHistory currentHistoryId : ' + $ionicHistory.currentHistoryId());
-    console.log('$ionicHistory backView() : ' + $ionicHistory.backView());
+    //console.log($ionicHistory.forwardView().historyId);
+    //console.log('$ionicHistory currentHistoryId : ' + $ionicHistory.currentHistoryId());
+    //console.log('$ionicHistory backView() : ' + $ionicHistory.backView());
 
     // 앱에서 열였다면
     if(mIsWebView){
@@ -67,7 +67,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             }
           }
         }
-
         tryNotShowOvelray();
 
     } else {    //web에서는 overlay를 보여주지 않는다
@@ -90,22 +89,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     $ionicLoading.show({
       template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
     });
-    var request = $http({
-        method: "get",
-        url: mServerAPI + "/cards",
-        crossDomain : true,
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-        cache: false
-    });
 
-    request.success(function(data) {
-      $ionicLoading.hide();
-      window.localStorage['cardList'] = JSON.stringify(data);
-    });
-    request.error(function(error){
-      $ionicLoading.hide();
-      console.log('error : ' + JSON.stringify(error))
-    });
+    CardsFactory.cards();
+
 
     // card이미지를  file system에 저장하는 부분 넣으면 너무 느려서 임시로 주석처리 by tjhan 20151002
     /*app file system안에 폴더만들고 이미지 저장*/
@@ -247,11 +233,13 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     }
   }
 
+
   /*
   * card를 새로 가져옴
   * @param : init(String) 'init'이면 처음 페이지 데이터를 다시 가져옴
   */
   $scope.doRefresh = function(init) {
+
     $scope.noMoreItemsAvailable = true;
 
     $timeout( function() {
@@ -266,112 +254,118 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
           });
           $scope.page = 0;
-          $rootScope.allData = {
-                          cards: []
-                       };
+          $rootScope.allData = { cards: [] };
+
+          CardsFactory.cards();
+        }
+
+        if($ionicHistory.forwardView() == null || $ionicHistory.forwardView().historyId !== 'ion2') {
+
+          $ionicLoading.show({
+            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
+          });
+
+          if($scope.currentLat == null){
+            $scope.currentLat = 37.574515;
+            $scope.currentLon = 126.976930;
+          }
+          var formData = {
+                          lat: $scope.currentLat,
+                          lon: $scope.currentLon
+                        };
+
+          var postData = 'locationData='+JSON.stringify(formData);
+
           var request = $http({
-              method: "get",
-              url: mServerAPI + "/cards",
+              method: "post",
+              url: mServerAPI + "/card/" + $scope.page + '/' + $scope.data.sortingType,
               crossDomain : true,
               headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+              data: postData,
               cache: false
           });
-
-          request.success(function(data) {
-            $ionicLoading.hide();
-            window.localStorage['cardList'] = JSON.stringify(data);
-          });
-
           request.error(function(error){
             $ionicLoading.hide();
             console.log('error : ' + JSON.stringify(error))
           })
-        }
+          request.success(function(data) {
+            $ionicLoading.hide();
+            for (var i = 0; i < data.cards.length; i++) {
 
-        $ionicLoading.show({
-          template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
-        });
+              $scope.noMoreItemsAvailable = false;
 
-        if($scope.currentLat == null){
-          $scope.currentLat = 37.574515;
-          $scope.currentLon = 126.976930;
-        }
-        var formData = {
-                        lat: $scope.currentLat,
-                        lon: $scope.currentLon
-                      };
+              if (data.cards[i].status === PROGRESS_START) {
+                data.cards[i].statusDescription = PROGRESS_START_TEXT;
+                data.cards[i].statusIcon = "project-start";
+              } else if (data.cards[i].status === PROGRESS_ONGOING) {
+                data.cards[i].statusDescription = PROGRESS_ONGOING_TEXT;
+                data.cards[i].statusIcon = "project-ongoing";
+              } else {
+                data.cards[i].statusDescription = PROGRESS_COMPLETED_TEXT;
+                data.cards[i].statusIcon = "project-complete";
+              }
 
+              if (data.cards[i].img_path == '') {
+                data.cards[i].img_path = mNoImageThumb;
+              } else {
+                data.cards[i].img_path = mServerUploadThumb + data.cards[i].img_path;
+              }
 
-        console.log('lat : ' + $scope.currentLat + ' lon : ' + $scope.currentLon);
-        var postData = 'locationData='+JSON.stringify(formData);
+              data.cards[i].address = data.cards[i].location_name;
+              if(data.cards[i].user[0].userimage != null){
+                data.cards[i].user[0].userimage = data.cards[i].user[0].userimage;
+              }
 
-        var request = $http({
-            method: "post",
-            url: mServerAPI + "/card/" + $scope.page + '/' + $scope.data.sortingType,
-            crossDomain : true,
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-            data: postData,
-            cache: false
-        });
-        request.error(function(error){
-          $ionicLoading.hide();
-          console.log('error : ' + JSON.stringify(error))
-        })
-        request.success(function(data) {
-          $ionicLoading.hide();
-          for (var i = 0; i < data.cards.length; i++) {
+              data.cards[i].userId = data.cards[i].user[0].user_id;
 
-            $scope.noMoreItemsAvailable = false;
+              var object =  data.cards[i];
+              $rootScope.allData.cards.push(object);
 
-            if (data.cards[i].status === PROGRESS_START) {
-              data.cards[i].statusDescription = PROGRESS_START_TEXT;
-              data.cards[i].statusIcon = "project-start";
-            } else if (data.cards[i].status === PROGRESS_ONGOING) {
-              data.cards[i].statusDescription = PROGRESS_ONGOING_TEXT;
-              data.cards[i].statusIcon = "project-ongoing";
-            } else {
-              data.cards[i].statusDescription = PROGRESS_COMPLETED_TEXT;
-              data.cards[i].statusIcon = "project-complete";
-            }
+              if(user != null){
+                if (user.isAuthenticated === true) {
+                  for(var j = 0; j < $rootScope.allData.cards.length; j ++) {
 
-            if (data.cards[i].img_path == '') {
-              data.cards[i].img_path = mNoImageThumb;
-            } else {
-              data.cards[i].img_path = mServerUploadThumb + data.cards[i].img_path;
-            }
-
-            data.cards[i].address = data.cards[i].location_name;
-            if(data.cards[i].user[0].userimage != null){
-              data.cards[i].user[0].userimage = data.cards[i].user[0].userimage;
-            }
-
-            data.cards[i].userId = data.cards[i].user[0].user_id;
-
-            var object =  data.cards[i];
-            $rootScope.allData.cards.push(object);
-            if(user != null){
-              if (user.isAuthenticated === true) {
-                for(var j = 0; j < $rootScope.allData.cards.length; j ++) {
-
-                  if(user.watchs.indexOf($rootScope.allData.cards[j].id) != -1) {
-                    $rootScope.allData.cards[j].watch = true;
-                  } else {
-                    $rootScope.allData.cards[j].watch = false;
+                    if(user.watchs.indexOf($rootScope.allData.cards[j].id) != -1) {
+                      $rootScope.allData.cards[j].watch = true;
+                    } else {
+                      $rootScope.allData.cards[j].watch = false;
+                    }
                   }
                 }
               }
-            }
-          };
+            };
+            $scope.page++;
+            $scope.$broadcast('scroll.infiniteScrollComplete');
 
-          $scope.page++;
-          $scope.$broadcast('scroll.infiniteScrollComplete');
-
-        });
+          });
+        } else {
+           // back from detail page
+           cardList = JSON.parse(window.localStorage['cardList']);
+           for (var i = 0; i < cardList.cards.length; i++) {
+             if (cardList.cards[i].img_path == '') {
+               cardList.cards[i].img_path = mNoImageThumb;
+             } else {
+               cardList.cards[i].img_path = mServerUploadThumb + cardList.cards[i].img_path;
+             }
+           }
+           $rootScope.allData.cards = cardList.cards;
+           if(user != null){
+             if (user.isAuthenticated === true) {
+               for(var j = 0; j < $rootScope.allData.cards.length; j ++) {
+                 if(user.watchs.indexOf($rootScope.allData.cards[j].id) != -1) {
+                   $rootScope.allData.cards[j].watch = true;
+                 } else {
+                   $rootScope.allData.cards[j].watch = false;
+                 }
+               }
+             }
+           }
+        }
 
         //Stop the ion-refresher from spinning
         $scope.$broadcast('scroll.refreshComplete');
-      } else {
 
+      } else {
         /* isOffline */
         $ionicPopup.alert({
           title: mAppName,
@@ -566,6 +560,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         $ionicLoading.show({
           template: '<ion-spinner icon="bubbles"></ion-spinner>'
         });
+
         var request = $http({
             method: "get",
             url: mServerAPI + "/cardDetail/" + id + "/delete",
@@ -606,6 +601,11 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   $scope.showDialog = function (card) {
     CardService.share('facebook', card);
+  }
+
+  $scope.getPosition = function() {
+    $scope.scrollPosition = $ionicScrollDelegate.getScrollPosition();
+    console.log($scope.scrollPosition);
   }
 
 });
