@@ -1,6 +1,6 @@
 wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth, $ionicSlideBoxDelegate, $cordovaPreferences, $ionicLoading, $ionicHistory, CardService, CardsFactory, $ionicScrollDelegate) {
 
-  navigator.geolocation.watchPosition(showPosition);
+  navigator.geolocation.watchPosition(showPosition, showPositionError);
 
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
@@ -425,8 +425,53 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
 
   function showPosition(position) {
+    console.log('showPosition ');
+    console.log('position.coords.latitude : ' + position.coords.latitude);
+    console.log('position.coords.longitude : ' + position.coords.longitude);
     $scope.currentLat = position.coords.latitude;
     $scope.currentLon = position.coords.longitude;
+
+    /** PUSH 메세지를 발송 **/
+   /* var tokens = ['APA91bHXSc8F6ld-11B1NvXa_LNId8jgDe6voQdcQwB_fBNSxDous59iQDkkF4OdbwSe4bHMUa7RZ2dlqeV7Qe1YNNRDeg2WnGup5CzWfVNlCL4ow3yWKPI'];
+    // Encode your key
+    var auth = btoa(mPrivateKey + ':');
+    // Build the request object
+    var req = {
+      method: 'POST',
+      url: 'https://push.ionic.io/api/v1/push',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Ionic-Application-Id': mAppId,
+        'Authorization': 'basic ' + auth
+      },
+      data: {
+        "tokens": tokens,
+        "notification": {
+          "alert": '$scope.currentLat : ' + $scope.currentLat + ', $scope.currentLon : ' + $scope.currentLon
+        },
+        // "scheduled" : 1447834020,
+        "production": true
+      }
+    };
+    $ionicLoading.show({
+      template: '<ion-spinner icon="bubbles"></ion-spinner>'
+    });
+    // Make the API call
+    $http(req).success(function(resp){
+      $ionicLoading.hide();
+      // Handle success
+      console.log("Ionic Push: Push success!");
+      console.log('resp : ' + JSON.stringify(resp));
+    }).error(function(error){
+      $ionicLoading.hide();
+      // Handle error 
+      console.log("Ionic Push: Push error...");
+      console.log('error : ' + JSON.stringify(error));
+    });*/
+  }
+
+  function showPositionError() {
+    console.log('showPositionError : (' + error.code + '): ' + error.message);
   }
 
   $scope.sortBy = function(sortType) {
