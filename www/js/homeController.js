@@ -14,28 +14,18 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   ];
   //sort type default value
   $scope.data = {
-    sortingType: 'registration'
+    // sortingType: 'registration'
+    sortingType: CardService.sortType
   };
+
+  console.log($scope.data.sortingType);
   //처음 view에서 다시보지 않기의 초기값
   $scope.notShowChecked = { checked: false };
-
   $scope.downloaded = false;
   $scope.page = 0;
-  $rootScope.allData = {
-                          cards: []
-                       };
-
-  $scope.$on('$ionicView.unloaded', function(){
-    $rootScope.isHomeView =false;
-  });
+  $rootScope.allData = { cards: [] };
 
   $scope.$on('$ionicView.beforeEnter', function(){
-
-    $rootScope.isHomeView = true;
-
-    //console.log($ionicHistory.forwardView().historyId);
-    //console.log('$ionicHistory currentHistoryId : ' + $ionicHistory.currentHistoryId());
-    //console.log('$ionicHistory backView() : ' + $ionicHistory.backView());
 
     // 앱에서 열였다면
     if(mIsWebView){
@@ -239,7 +229,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   * @param : init(String) 'init'이면 처음 페이지 데이터를 다시 가져옴
   */
   $scope.doRefresh = function(init) {
-
     $scope.noMoreItemsAvailable = true;
 
     $timeout( function() {
@@ -249,14 +238,14 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         /* isOnline 일때를 대비하여 가져오던 cardlist 주석처리 by tjhan 151117 */
         // init이면 처음 페이지 데이터를 다시 가져옴
         if(init == 'init'){
-
+          console.log("처음 init할 때만 실행");
           $ionicLoading.show({
             template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
           });
           $scope.page = 0;
           $rootScope.allData = { cards: [] };
 
-          CardsFactory.cards();
+          // CardsFactory.cards();
         }
 
         if($ionicHistory.forwardView() == null || $ionicHistory.forwardView().historyId !== 'ion2') {
@@ -284,16 +273,18 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
               data: postData,
               cache: false
           });
+
           request.error(function(error){
             $ionicLoading.hide();
             console.log('error : ' + JSON.stringify(error))
           })
           request.success(function(data) {
+
             $ionicLoading.hide();
             for (var i = 0; i < data.cards.length; i++) {
 
               $scope.noMoreItemsAvailable = false;
-
+/*
               if (data.cards[i].status === PROGRESS_START) {
                 data.cards[i].statusDescription = PROGRESS_START_TEXT;
                 data.cards[i].statusIcon = "project-start";
@@ -304,6 +295,8 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
                 data.cards[i].statusDescription = PROGRESS_COMPLETED_TEXT;
                 data.cards[i].statusIcon = "project-complete";
               }
+*/
+              CardService.status(data.cards, i);
 
               if (data.cards[i].img_path == '') {
                 data.cards[i].img_path = mNoImageThumb;
@@ -336,11 +329,29 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             $scope.page++;
             $scope.$broadcast('scroll.infiniteScrollComplete');
 
+            window.localStorage['cardList'] = JSON.stringify(data);
+
           });
         } else {
            // back from detail page
+
            cardList = JSON.parse(window.localStorage['cardList']);
+
            for (var i = 0; i < cardList.cards.length; i++) {
+/*
+             if (cardList.cards[i].status === PROGRESS_START) {
+               cardList.cards[i].statusDescription = PROGRESS_START_TEXT;
+               cardList.cards[i].statusIcon = "project-start";
+             } else if (cardList.cards[i].status === PROGRESS_ONGOING) {
+               cardList.cards[i].statusDescription = PROGRESS_ONGOING_TEXT;
+               cardList.cards[i].statusIcon = "project-ongoing";
+             } else {
+               cardList.cards[i].statusDescription = PROGRESS_COMPLETED_TEXT;
+               cardList.cards[i].statusIcon = "project-complete";
+             }
+*/
+             CardService.status(cardList.cards, i);
+
              if (cardList.cards[i].img_path == '') {
                cardList.cards[i].img_path = mNoImageThumb;
              } else {
@@ -360,7 +371,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
              }
            }
 
-           // $ionicScrollDelegate.scrollBy(0, 1562);
            $ionicScrollDelegate.scrollTo(0,CardService.scrollPosition.top,false);
         }
 
@@ -477,6 +487,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   $scope.sortBy = function(sortType) {
     console.log("sortBy sortType : " + sortType);
 
+    $scope.noMoreItemsAvailable =
     $scope.popover.hide();
     $scope.page = 0;
 
@@ -557,13 +568,8 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   // popover창에서 sort type을 변경 했을 때 호출됨
   $scope.sortingTypeChange = function(item) {
-    if (item.value == 'registration') {
-      $scope.sortBy(item.value);
-    } else if (item.value == 'warning') {
-      $scope.sortBy(item.value);
-    } else if (item.value == 'location') {
-      $scope.sortBy(item.value);
-    }
+    CardService.sortType = item.value;
+    $scope.sortBy(item.value);
   };
 
   // warnings map show
@@ -653,8 +659,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     CardService.scrollPosition = $ionicScrollDelegate.getScrollPosition();
     var params = { postId: cardId }
     $state.go("tabs.post_h", params);
-    console.log(CardService.scrollPosition);
-    console.log(CardService.scrollPosition.top);
   }
 
 });
