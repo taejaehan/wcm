@@ -311,11 +311,11 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
                 data.cards[i].img_path = mServerUploadThumb + data.cards[i].img_path;
               }
 
-              data.cards[i].address = data.cards[i].location_name;
               if(data.cards[i].user[0].userimage != null){
                 data.cards[i].user[0].userimage = data.cards[i].user[0].userimage;
               }
 
+              data.cards[i].address = data.cards[i].location_name;
               data.cards[i].userId = data.cards[i].user[0].user_id;
 
               var object =  data.cards[i];
@@ -324,7 +324,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
               if(user != null){
                 if (user.isAuthenticated === true) {
                   for(var j = 0; j < $rootScope.allData.cards.length; j ++) {
-
                     if(user.watchs.indexOf($rootScope.allData.cards[j].id) != -1) {
                       $rootScope.allData.cards[j].watch = true;
                     } else {
@@ -360,6 +359,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
                }
              }
            }
+
+           // $ionicScrollDelegate.scrollBy(0, 1562);
+           $ionicScrollDelegate.scrollTo(0,CardService.scrollPosition.top,false);
         }
 
         //Stop the ion-refresher from spinning
@@ -465,6 +467,8 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
       for (var i = 0; i < data.cards.length; i++) {
 
+        $scope.noMoreItemsAvailable = false;
+
         if (data.cards[i].status === PROGRESS_REGISTER || data.cards[i].status === PROGRESS_START) {
           data.cards[i].statusDescription = PROGRESS_START_TEXT;
         } else if (data.cards[i].status === PROGRESS_ONGOING) {
@@ -482,6 +486,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         if(data.cards[i].user[0].userimage != null){
           data.cards[i].user[0].userimage = data.cards[i].user[0].userimage;
         }
+
         data.cards[i].address = data.cards[i].location_name;
         data.cards[i].userId = data.cards[i].user[0].user_id;
 
@@ -491,7 +496,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         if(user != null){
           if (user.isAuthenticated === true) {
             for(var j = 0; j < $rootScope.allData.cards.length; j ++) {
-
               if(user.watchs.indexOf($rootScope.allData.cards[j].id) != -1) {
                 $rootScope.allData.cards[j].watch = true;
               } else {
@@ -503,7 +507,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
       }
       $scope.page++;
-
       $scope.$broadcast('scroll.infiniteScrollComplete');
     });
 
@@ -603,9 +606,12 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     CardService.share('facebook', card);
   }
 
-  $scope.getPosition = function() {
-    $scope.scrollPosition = $ionicScrollDelegate.getScrollPosition();
-    console.log($scope.scrollPosition);
+  $scope.getPosition = function(cardId) {
+    CardService.scrollPosition = $ionicScrollDelegate.getScrollPosition();
+    var params = { postId: cardId }
+    $state.go("tabs.post_h", params);
+    console.log(CardService.scrollPosition);
+    console.log(CardService.scrollPosition.top);
   }
 
 });

@@ -19,7 +19,7 @@
 
         <!-- <ion-item collection-repeat="card in allData.cards" class="posts" item-height="300px"> -->
         <ion-item ng-repeat="card in allData.cards track by $index" class="posts">
-          <div class="post-body">
+          <div class="post-body" name="home{{card.id}}">
 
             <div class="profile">
               <img ng-src="{{card.user[0].userimage}}">
@@ -37,7 +37,7 @@
               <a ng-click="showMap(card.location_lat, card.location_long)">
                 <p class="address"><i class="fa fa-map-marker"></i><span ng-bind="card.location_name"></span></p>
               </a>
-              <a ng-href="#/tab/home/{{card.id}}">
+              <a ng-click="getPosition(card.id)">
                 <div class="img-group">
                   <img ng-src="{{card.img_path}}" class="post-image" onError="this.src='img/default_thumb.png'">
                 </div>
