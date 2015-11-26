@@ -464,7 +464,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       console.log('resp : ' + JSON.stringify(resp));
     }).error(function(error){
       $ionicLoading.hide();
-      // Handle error 
+      // Handle error
       console.log("Ionic Push: Push error...");
       console.log('error : ' + JSON.stringify(error));
     });*/
@@ -500,16 +500,14 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
     });
 
+    $rootScope.allData.cards = [];
+
     request.error(function(error){
       $ionicLoading.hide();
       console.log('sort error : ' + JSON.stringify(error))
     });
     request.success(function(data) {
       $ionicLoading.hide();
-      console.log("sort success data : " + JSON.stringify(data));
-
-      $rootScope.allData.cards = [];
-
       for (var i = 0; i < data.cards.length; i++) {
 
         $scope.noMoreItemsAvailable = false;
