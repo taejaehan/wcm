@@ -53,18 +53,6 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 				$scope.reportEmptyMessage = "작성한 글이 없습니다"
 			}else{
 				for (var i = 0; i < data.reportList.length; i++) {
-/*
-					if (data.reportList[i].status === PROGRESS_START) {
-						data.reportList[i].statusDescription = PROGRESS_START_TEXT;
-						data.reportList[i].statusIcon = "project-start";
-					} else if (data.reportList[i].status === PROGRESS_ONGOING) {
-						data.reportList[i].statusDescription = PROGRESS_ONGOING_TEXT;
-						data.reportList[i].statusIcon = "project-ongoing";
-					} else {
-						data.reportList[i].statusDescription = PROGRESS_COMPLETED_TEXT;
-						data.reportList[i].statusIcon = "project-complete";
-					}
-*/
 					CardService.status(data.reportList, i);
 					$scope.reportList.push(data.reportList[i]);
 				}
@@ -75,7 +63,6 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 			}else{
 				for (var i = 0; i < data.changeList.length; i++) {
 					if(data.changeList[i].post.length > 0){
-/*
 						if (data.changeList[i].post[0].status === PROGRESS_START) {
 			          data.changeList[i].post[0].statusDescription = PROGRESS_START_TEXT;
 			          data.changeList[i].post[0].statusIcon = "project-start";
@@ -86,8 +73,6 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 			          data.changeList[i].post[0].statusDescription = PROGRESS_COMPLETED_TEXT;
 			          data.changeList[i].post[0].statusIcon = "project-complete";
 			        }
-*/
-							CardService.status(data.changeList, i);
 				  		$scope.changeList.push(data.changeList[i].post[0]);
 				  	}
 				}
@@ -98,7 +83,6 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 			}else{
 				for (var i = 0; i < data.watchList.length; i++) {
 					if(data.watchList[i].post != null && data.watchList[i].post.length > 0){
-/*
 						if (data.watchList[i].post[0].status === PROGRESS_START) {
 			          data.watchList[i].post[0].statusDescription = PROGRESS_START_TEXT;
 			          data.watchList[i].post[0].statusIcon = "project-start";
@@ -109,8 +93,6 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 			          data.watchList[i].post[0].statusDescription = PROGRESS_COMPLETED_TEXT;
 			          data.watchList[i].post[0].statusIcon = "project-complete";
 			        }
-*/
-							CardService.status(data.watchList, i);
 			        //위험해요 누른 프로젝트를 가져왔으므로 watch는 true
 			        data.watchList[i].post[0].watch = true;
 
