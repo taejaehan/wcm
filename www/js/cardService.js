@@ -8,6 +8,7 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
   */
   this.scrollPosition;
   this.sortType = 'registration';
+  this.temporaryPost;
 
   var toggleWatch = function(e, id, user, scope) {
     console.log('toggleWatch : ' + e);
@@ -269,14 +270,14 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
   }; // share 끝
 
   var status = function(params, num) {
-    if (params[num].status === PROGRESS_START) {
-      params[num].statusDescription = PROGRESS_START_TEXT;
+    if (params[num].status === "33") {
+      params[num].statusDescription = "위험요소가 등록되었습니다";
       params[num].statusIcon = "project-start";
-    } else if (params[num].status === PROGRESS_ONGOING) {
-      params[num].statusDescription = PROGRESS_ONGOING_TEXT;
+    } else if (params[num].status === "66") {
+      params[num].statusDescription = "위험요소가 해결되고 있습니다";
       params[num].statusIcon = "project-ongoing";
     } else {
-      params[num].statusDescription = PROGRESS_COMPLETED_TEXT;
+      params[num].statusDescription = "위험요소가 해결되었습니다";
       params[num].statusIcon = "project-complete";
     }
   };
@@ -287,6 +288,7 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
     share: share,
     scrollPosition: this.scrollPosition,
     sortType: this.sortType,
-    status: status
+    status: status,
+    temporaryPost: this.temporaryPost
   };
 })

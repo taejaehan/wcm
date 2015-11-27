@@ -1,7 +1,6 @@
-wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth, $ionicSlideBoxDelegate, $cordovaPreferences, $ionicLoading, $ionicHistory, CardService, CardsFactory, $ionicScrollDelegate) {
+wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth, $ionicSlideBoxDelegate, $cordovaPreferences, $ionicLoading, $ionicHistory, CardService, CardsFactory, CardBlockFactory, $ionicScrollDelegate) {
 
   navigator.geolocation.watchPosition(showPosition, showPositionError);
-
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
   $scope.welcome = true;
@@ -80,7 +79,12 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
     });
 
-    CardsFactory.cards();
+
+    if(user.isAuthenticated) {
+      CardsFactory.cards(user.userid);
+    } else {
+      CardsFactory.cards();
+    }
 
 
     // card이미지를  file system에 저장하는 부분 넣으면 너무 느려서 임시로 주석처리 by tjhan 20151002
@@ -207,7 +211,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       }, 1000);
 
     } else {
-
       /* isOffline */
       $ionicPopup.alert({
         title: mAppName,
@@ -284,18 +287,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             for (var i = 0; i < data.cards.length; i++) {
 
               $scope.noMoreItemsAvailable = false;
-/*
-              if (data.cards[i].status === PROGRESS_START) {
-                data.cards[i].statusDescription = PROGRESS_START_TEXT;
-                data.cards[i].statusIcon = "project-start";
-              } else if (data.cards[i].status === PROGRESS_ONGOING) {
-                data.cards[i].statusDescription = PROGRESS_ONGOING_TEXT;
-                data.cards[i].statusIcon = "project-ongoing";
-              } else {
-                data.cards[i].statusDescription = PROGRESS_COMPLETED_TEXT;
-                data.cards[i].statusIcon = "project-complete";
-              }
-*/
               CardService.status(data.cards, i);
 
               if (data.cards[i].img_path == '') {
@@ -328,9 +319,8 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             };
             $scope.page++;
             $scope.$broadcast('scroll.infiniteScrollComplete');
-
             window.localStorage['cardList'] = JSON.stringify(data);
-
+            cardList = JSON.parse(window.localStorage['cardList']);
           });
         } else {
            // back from detail page
@@ -338,18 +328,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
            cardList = JSON.parse(window.localStorage['cardList']);
 
            for (var i = 0; i < cardList.cards.length; i++) {
-/*
-             if (cardList.cards[i].status === PROGRESS_START) {
-               cardList.cards[i].statusDescription = PROGRESS_START_TEXT;
-               cardList.cards[i].statusIcon = "project-start";
-             } else if (cardList.cards[i].status === PROGRESS_ONGOING) {
-               cardList.cards[i].statusDescription = PROGRESS_ONGOING_TEXT;
-               cardList.cards[i].statusIcon = "project-ongoing";
-             } else {
-               cardList.cards[i].statusDescription = PROGRESS_COMPLETED_TEXT;
-               cardList.cards[i].statusIcon = "project-complete";
-             }
-*/
              CardService.status(cardList.cards, i);
 
              if (cardList.cards[i].img_path == '') {
@@ -419,10 +397,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     }
   }
 
-  /*
-  * sort버튼을 눌렀을 때 popover show
-  * $event 클릭된 event
-  */
+
   $scope.openPopover = function ($event) {
     // console.log('openPopover');
     $ionicPopover.fromTemplateUrl('templates/popover.html', {
@@ -430,6 +405,17 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     }).then(function(popover) {
       $scope.popover = popover;
       $scope.popover.show($event);
+    });
+  };
+
+
+  $scope.postReport = function ($event, card) {
+    CardService.temporaryPost = card;
+    $ionicPopover.fromTemplateUrl('templates/report.html', {
+      scope: $scope
+    }).then(function(reportPopover) {
+      $scope.reportPopover = reportPopover;
+      $scope.reportPopover.show($event);
     });
   };
 
@@ -473,7 +459,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       console.log('resp : ' + JSON.stringify(resp));
     }).error(function(error){
       $ionicLoading.hide();
-      // Handle error 
+      // Handle error
       console.log("Ionic Push: Push error...");
       console.log('error : ' + JSON.stringify(error));
     });*/
@@ -599,7 +585,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   }
   /*
   * 해당 유저의 fb profile로 연결합니다
-  * @param : user_id 
+  * @param : user_id
   */
   $scope.showUser = function(user_id){
     window.open(
@@ -667,6 +653,26 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     CardService.scrollPosition = $ionicScrollDelegate.getScrollPosition();
     var params = { postId: cardId }
     $state.go("tabs.post_h", params);
+  }
+
+  $scope.hidePost = function() {
+    // 서버 db에 block 정보 저장
+    CardBlockFactory.postHide(user.userid, CardService.temporaryPost.id);
+
+    // local data에 block 정보 저장
+    var hidePost = $rootScope.allData.cards.indexOf(CardService.temporaryPost);
+    $rootScope.allData.cards.splice(hidePost, 1);
+    $scope.reportPopover.hide();
+  }
+
+  $scope.blockUser = function() {
+    CardBlockFactory.userBlock(user.userid, CardService.temporaryPost.user_id);
+    $scope.reportPopover.hide();
+  }
+
+  $scope.blockPost = function() {
+    CardBlockFactory.postBlock(user.userid, CardService.temporaryPost.id);
+    $scope.reportPopover.hide();
   }
 
 });
