@@ -23,11 +23,44 @@
 }
 /*active 탭에 대한 icon과 글자 색*/
 .tab-item-active .icon, .tab-item-active .tab-title{
-	color : #EFAE28;	
+	color : #EFAE28;
 }
-.tabs-striped.tabs-dark .tab-item.tab-item-active, .tabs-striped.tabs-dark .tab-item.active, 
+.tabs-striped.tabs-dark .tab-item.tab-item-active, .tabs-striped.tabs-dark .tab-item.active,
 .tabs-striped.tabs-dark .tab-item.activated{
 	border : none;	/*tab상단에 border를 없애준다 by tjhan 151104*/
+}
+
+.report-popover {
+	width: 100%;
+	height: 135px;
+	border-radius: 10px;
+}
+
+.platform-ios .popover .scroll-content {
+	margin: 0;
+}
+
+.report-popover li {
+	width: 96%;
+	margin: 0 auto;
+	padding: 10px 15px 10px 15px;
+	border-left: none;
+	border-right: none;
+	border-bottom: none;
+}
+
+.report-popover a {
+	text-decoration: none;
+	color: #282828;
+}
+
+.report-popover i {
+	margin-right: 15px;
+	color: #606060;
+}
+
+.report-popover span {
+	font-size: 13px;
 }
 
 #home_page hr {
@@ -84,6 +117,16 @@
 
 #home_page .profile i.delete {
 	right: 25px;
+}
+
+#home_page #dropdown-btn {
+	float: right;
+	margin-right: 25px;
+}
+
+#home_page i.ion-chevron-down {
+	font-size: 20px;
+	margin-top: 10px;
 }
 
 #home_page .content .title {
@@ -289,7 +332,7 @@ a.overlay-close {
   color: #fff;
 }
 .checkbox_custrom input:checked:before, .checkbox_custrom input:checked + .checkbox-icon:before{
-  
+
   background: #E0624D;
   border-color: #E0624D;
 }
