@@ -30,7 +30,7 @@
         <div class="swiper-container">
           <div class="swiper-wrapper">
             <div class="swiper-slide" ng-repeat="changer in changers" ng-class="{'member-list ng-hide' : !changerImage, 'member-list ng-show' : changerImage}">
-              <img ng-src="{{::changer.changeUser[0].userimage}}" ng-click="openProfile(changer.changeUser[0])" ng-if="changerImage" class="status-{{ ::card.status }}">
+              <img ng-src="{{::changer.changeUser[0].userimage}}" ng-click="openProfile(changer.user_id, changer.changeUser[0])" ng-if="changerImage" class="status-{{ ::card.status }}">
             </div>
           </div>
         </div>
@@ -54,7 +54,7 @@
       <!-- ========================== comment section ========================== -->
       <div id="comment_section">
         <div bindonce ng-repeat="comment in comments track by $index" class="comment-list">
-          <img bo-src="comment.user[0].userimage" class="profile-image">
+          <img bo-src="comment.user[0].userimage" class="profile-image" ng-click="showUser(comment.user[0].user_id)">
           <div class="description">
             <strong bo-bind="comment.user[0].username"></strong>
             <a class="comment-delete" ng-click="deleteComment(comment)" bo-style="userChecked(comment)">

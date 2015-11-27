@@ -211,7 +211,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       }, 1000);
 
     } else {
-
       /* isOffline */
       $ionicPopup.alert({
         title: mAppName,
@@ -400,7 +399,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
 
   $scope.openPopover = function ($event) {
-    console.log('openPopover');
+    // console.log('openPopover');
     $ionicPopover.fromTemplateUrl('templates/popover.html', {
       scope: $scope
     }).then(function(popover) {
@@ -421,9 +420,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   };
 
   function showPosition(position) {
-    console.log('showPosition ');
-    console.log('position.coords.latitude : ' + position.coords.latitude);
-    console.log('position.coords.longitude : ' + position.coords.longitude);
+    // console.log('showPosition ');
+    // console.log('position.coords.latitude : ' + position.coords.latitude);
+    // console.log('position.coords.longitude : ' + position.coords.longitude);
     $scope.currentLat = position.coords.latitude;
     $scope.currentLon = position.coords.longitude;
 
@@ -584,7 +583,16 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       }
     }
   }
-
+  /*
+  * 해당 유저의 fb profile로 연결합니다
+  * @param : user_id
+  */
+  $scope.showUser = function(user_id){
+    window.open(
+      'https://www.facebook.com/app_scoped_user_id/' + user_id,
+      '_blank' // <- This is what makes it open in a new window.
+    );
+  };
   // Delete Card
   $scope.deleteCard = function(id) {
     var confirmPopup = $ionicPopup.confirm({

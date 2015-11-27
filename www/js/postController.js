@@ -203,7 +203,7 @@ wcm.controller("PostController", function($scope, $rootScope, $stateParams, $sta
             text: '<b>로그인하기</b>',
             type: 'button-positive',
             onTap: function(e) {
-              $state.go("fblogin");
+              $state.go("tabs.fblogin");
             }
           }
         ]
@@ -337,7 +337,7 @@ wcm.controller("PostController", function($scope, $rootScope, $stateParams, $sta
             text: '<b>로그인하기</b>',
             type: 'button-positive',
             onTap: function(e) {
-              $state.go("fblogin");
+              $state.go("tabs.fblogin");
             }
           }
         ]
@@ -348,9 +348,10 @@ wcm.controller("PostController", function($scope, $rootScope, $stateParams, $sta
 
 
   // Change Supporters 프로필 팝업
-  $scope.openProfile = function(e) {
-    $scope.changeMakerName = e.username;
-    $scope.changeMakerImage = e.userimage;
+  $scope.openProfile = function(userId, changeUser) {
+    $scope.changeMakerUserId = userId;
+    $scope.changeMakerName = changeUser.username;
+    $scope.changeMakerImage = changeUser.userimage;
 
     $ionicPopup.show({
       templateUrl : 'templates/popup.html',
@@ -373,5 +374,16 @@ wcm.controller("PostController", function($scope, $rootScope, $stateParams, $sta
   $scope.showDialog = function (card) {
     var  result = CardService.share('facebook', card, $scope);
   }
+
+  /*
+  * 해당 유저의 fb profile로 연결합니다
+  * @param : user_id 
+  */
+  $scope.showUser = function(user_id){
+    window.open(
+      'https://www.facebook.com/app_scoped_user_id/' + user_id,
+      '_blank' // <- This is what makes it open in a new window.
+    );
+  };
 
 });

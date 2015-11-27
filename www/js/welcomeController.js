@@ -10,4 +10,16 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
   $scope.skipLogin =function() {
     AuthService.skipLogin();
   }
+  
+  $scope.terms = function() {
+    $state.go("tabs.terms");
+  }
+
+  $scope.termsGps = function() {
+    $state.go("tabs.terms_gps");
+  }
+
+  $scope.privacy = function() {
+    $state.go("tabs.privacy");
+  }
 });

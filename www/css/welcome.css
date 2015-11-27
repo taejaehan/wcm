@@ -18,7 +18,7 @@
 	width: 70%;
 	height: 8%;
 	position: absolute;
-	top: 60%;
+	top: 64%;
 	left: 15%;
 }
 
@@ -28,8 +28,34 @@
 	width: 70%;
 	height: 8%;
 	position: absolute;
-	top: 69%;
+	top: 55%;
 	left: 15%;
+}
+.welcome_page .terms{
+	width: 90%;
+	height: 8%;
+	position: absolute;
+	top: 73%;
+	left: 5%;
+	text-align: center;
+}
+.welcome_page .terms a{
+	color : #222;
+	padding : 0 10px;
+}
+.welcome_page .terms-info{
+	width: 90%;
+	height: 8%;
+	position: absolute;
+	top: 78%;
+	left: 5%;
+	text-align: center;
+	font-size : 80%;
+}
+
+.welcome_page .terms-middle{
+	border-right: 1px solid #888;
+	border-left: 1px solid #888;
 }
 
 @media only screen  and (min-width : 768px) {

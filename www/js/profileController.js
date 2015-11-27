@@ -465,7 +465,44 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 
 		});
 	}
+<<<<<<< HEAD
+  /*
+  *	fb 친구를 초대합니다
+  */
+  $scope.inviteFriends = function(){
+  		if(mIsWebView){
+			// facebookConnectPlugin.appInvite(Object options, Function success, Function failure);
+			facebookConnectPlugin.appInvite(    
+			    {
+			        url: mFacebookUrl,
+			        picture: mServerUrl + '/images/invite.png'
+			    }, 
+			    function(obj){
+			    		console.log('inviteFriends ok :  ' + JSON.stringify(obj));
+			        if(obj) {
+			            if(obj.completionGesture == "cancel") {
+			            		console.log('inviteFriends cancel ');
+			                // user canceled, bad guy
+			            } else {
+			            		console.log('inviteFriends invite someone ');
+			                // user really invited someone :)
+			            }
+			        } else {
+			        		console.log('inviteFriends NO invite someone ');
+			            // user just pressed done, bad guy
+			        }
+			    }, 
+			    function(obj){
+			    		console.log('inviteFriends error : ' + obj);
+			        // error
+			        console.log(obj);
+			    }
+			);
+		}
+  }
+=======
 
+>>>>>>> d83691de0ab239bbe52d29faf45bbe4700ac4805
 
   /*
   *	push를 받을지 안받을지 toggle합니다.

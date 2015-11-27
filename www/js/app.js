@@ -18,6 +18,9 @@ if (mLocalServer) {
 var mAppId = "e02f6eed";
 var mPrivateKey = 'dd9f336bb59a9b792d398d719e464b264020bb07c61f8b7b';
 
+//facebook share및 invite에서 사용하는 정보
+var mFacebookUrl = 'https://fb.me/1063872636977300/';
+
 //연결된 device에 대한 정보 (boolean)
 var mIsWebView, mIsIOS,  mIsAndroid, mDeviceUuid;
 
@@ -85,6 +88,75 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
+
+    /************************************background location 시작 ************************************************/
+
+    // Your app must execute AT LEAST ONE call for the current position via standard Cordova geolocation,
+    //  in order to prompt the user for Location permission.
+    // window.navigator.geolocation.getCurrentPosition(function(location) {
+    //     console.log('Location from Phonegap');
+    // });
+    // var bgGeo = window.plugins.backgroundGeoLocation;
+ 
+    // /**
+    // * This would be your own callback for Ajax-requests after POSTing background geolocation to your server.
+    // */
+    // var yourAjaxCallback = function(response) {
+    //     ////
+    //     // IMPORTANT:  You must execute the #finish method here to inform the native plugin that you're finished,
+    //     //  and the background-task may be completed.  You must do this regardless if your HTTP request is successful or not.
+    //     // IF YOU DON'T, ios will CRASH YOUR APP for spending too much time in the background.
+    //     //
+    //     //
+    //     bgGeo.finish();
+    // };
+ 
+    // /**
+    // * This callback will be executed every time a geolocation is recorded in the background.
+    // */
+    // var callbackFn = function(location) {
+    //     console.log('[js] BackgroundGeoLocation callback:  ' + location.latitude + ',' + location.longitude);
+    //     // Do your HTTP request here to POST location to your server.
+    //     //
+    //     //
+    //     yourAjaxCallback.call(this);
+    // };
+ 
+    // var failureFn = function(error) {
+    //     console.log('BackgroundGeoLocation error');
+    // }
+ 
+    // // BackgroundGeoLocation is highly configurable.
+    // bgGeo.configure(callbackFn, failureFn, {
+    //     // url: 'http://only.for.android.com/update_location.json', // <-- Android ONLY:  your server url to send locations to
+    //     url: mServerAPI + '/update_location',
+    //     params: {
+    //         // auth_token: 'user_secret_auth_token',    //  <-- Android ONLY:  HTTP POST params sent to your server when persisting locations.
+    //         auth_token : 'APA91bEIyVng8OXg6jOV_71RIzoB96FISaXEHazagcUPcw9x_jBHFZbtjXEL5mjt6vJ37WvBlrV9uXk4ATacTb8ftOMxDtISb9inYHk9KBI3p9jHPjLz6Nw',
+    //         foo: 'bar'                              //  <-- Android ONLY:  HTTP POST params sent to your server when persisting locations.
+    //     },
+    //     headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+    //     /*headers: {                                   // <-- Android ONLY:  Optional HTTP headers sent to your configured #url when persisting locations
+    //         "X-Foo": "BAR"
+    //     },*/
+    //     desiredAccuracy: 10,
+    //     stationaryRadius: 20,
+    //     distanceFilter: 30,
+    //     notificationTitle: 'Background tracking', // <-- android only, customize the title of the notification
+    //     notificationText: 'ENABLED', // <-- android only, customize the text of the notification
+    //     activityType: 'AutomotiveNavigation',
+    //     debug: true, // <-- enable this hear sounds for background-geolocation life-cycle.
+    //     stopOnTerminate: false // <-- enable this to clear background location settings when the app terminates
+    // });
+ 
+    // // Turn ON the background-geolocation system.  The user will be tracked whenever they suspend the app.
+    // bgGeo.start();
+ 
+    // If you wish to turn OFF background-tracking, call the #stop method.
+    // bgGeo.stop()
+    /************************************background location 끝 ************************************************/
+
+
 
     //로그인 한 상태라면 prefresnces에 저장된 user id로 서버에서 유저 정보를 가져와 localStorage에 저장
     var saveLocalUser = function(loginId) {
@@ -329,7 +401,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
 
       tryRegisterAndLogin();
     }else{
-      saveLocalUser(1826451354247937);
+      // saveLocalUser(1826451354247937);
       $ionicLoading.hide();
     } // if(mIsWebView) 끝
   }); //$ionicPlatform.ready 끝
@@ -388,10 +460,14 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
   $ionicConfigProvider.views.swipeBackEnabled(false);
 
   $stateProvider
-  .state("fblogin", {
-      url: "/fblogin",
+  .state("tabs.fblogin", {
+      url: "/profile/fblogin",
+      views: {
+        'profile-tab': {
         templateUrl: "templates/welcome.html",
         controller: "WelcomeController"
+        }
+      }
     })
     .state('tabs', {
       url: "/tab",
