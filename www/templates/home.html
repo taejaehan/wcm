@@ -22,17 +22,13 @@
           <div class="post-body" name="home{{card.id}}">
 
             <div class="profile">
-              <div ng-click="showUser(card.user[0].user_id)">
-              <!-- <a ng-href="https://www.facebook.com/app_scoped_user_id/{card.user[0].user_id}/"> -->
-                <img ng-src="{{card.user[0].userimage}}">
-                <p class="username" ng-bind="card.user[0].username"></p>
-                <p class="date" ng-bind="card.create_time"></p>
-              </div>
+              <img ng-src="{{card.user[0].userimage}}" ng-click="showUser(card.user[0].user_id)">
+              <p class="username" ng-bind="card.user[0].username"></p>
+              <p class="date" ng-bind="card.create_time"></p>
 
               <div id="dropdown-btn" ng-click="postReport($event, card)">
                 <i class="ion-chevron-down"></i>
               </div>
-
               <i class="ion-trash-a delete" ng-style="userChecked(card)" ng-click="deleteCard(card.id)"></i>
               <i class="ion-compose edit" ng-style="userChecked(card)" ng-click="editCard(card.id)"></i>
             </div>
