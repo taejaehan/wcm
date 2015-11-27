@@ -246,7 +246,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 	}
 
 	$scope.goLogin = function() {
-		$state.go('fblogin');
+		$state.go('tabs.fblogin');
 	}
 
 	$scope.logOut = function() {
@@ -257,7 +257,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 			Preferences.put('loginId', null);
 		}
 
-		$state.go('fblogin');
+		$state.go('tabs.fblogin');
 	}
 
 	$scope.editProfile = function() {
@@ -465,7 +465,6 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 
 		});
 	}
-<<<<<<< HEAD
   /*
   *	fb 친구를 초대합니다
   */
@@ -500,9 +499,6 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 			);
 		}
   }
-=======
-
->>>>>>> d83691de0ab239bbe52d29faf45bbe4700ac4805
 
   /*
   *	push를 받을지 안받을지 toggle합니다.

@@ -13,6 +13,7 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
       });
 
       if(snsType == 'facebook'){
+
         /*
         * cordova-plugin-facebook4 플러그인을 이용하여 native앱으로 wcm앱을 인증받아 로그인한다 
         * 원래 로그인 성공시 userInfo가 와야하는데 오지 않아서 api를 호출하여 유저 정보를 가져온다
@@ -32,6 +33,19 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
                 console.log("api success : " + JSON.stringify(UserInfo));
                 console.log("user id : " + UserInfo.id);
                 console.log("user name : " + UserInfo.name);
+
+                if(parseInt(UserInfo.id) > BAD_REPORT_LOGIN_LIMIT){
+                  $ionicLoading.hide();
+                  //prefrences 초기화
+                  Preferences.put('loginId', '');
+                  //경고alert
+                  $ionicPopup.alert({
+                    title: mAppName,
+                    template: '당신의 게시물이 신고되어 현재 아이디로 로그인 하지 못합니다. 이의가 있을 시 wechangemakers@gamil.com으로 메일을 보내주세요',
+                    cssClass: 'wcm-error',
+                  });  
+                  return;
+                } 
 
                 var formData = {
                                  user_id: String(UserInfo.id),
@@ -76,6 +90,7 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
                          sns: "fb",
                          device_uuid : 'd874c9de-b9f6-ef80-3542-570596882578'
                        };
+
       userLogin(formData);
     }
   };

@@ -45,6 +45,9 @@ var PROGRESS_START_TEXT = "위험요소가 등록되었습니다";
 var PROGRESS_ONGOING_TEXT = "위험요소가 해결되고 있습니다";
 var PROGRESS_COMPLETED_TEXT = "위험요소가 해결되었습니다";
 
+//부적절한 글로 신고된 갯수로 로그인을 금지 할 때 사용
+var BAD_REPORT_LOGIN_LIMIT = 3;
+
 var wcm = angular.module('wcm', ['ionic', 'ngCordova', 'ng', 'pasvaz.bindonce', 'ngTouch'])
 
 //controller간 데이터를 전달하기 위해 사용한다
@@ -173,6 +176,20 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
           $ionicLoading.hide();
           console.log('************5.Login Success************');
           console.log('success data : ' + JSON.stringify(data));
+
+          if(parseInt(data.users[0].bad_report) > BAD_REPORT_LOGIN_LIMIT){
+            if(mIsWebView){
+              //prefrences 초기화
+              Preferences.put('loginId', '');
+            }
+            //경고alert
+            $ionicPopup.alert({
+              title: mAppName,
+              template: '당신의 게시물이 신고되어 현재 아이디로 로그인 하지 못합니다. 이의가 있을 시 wechangemakers@gamil.com으로 메일을 보내주세요',
+              cssClass: 'wcm-error',
+            });  
+            return;
+          } 
           var user = {
             username: data.users[0].username,
             userid: data.users[0].user_id,
@@ -401,7 +418,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
 
       tryRegisterAndLogin();
     }else{
-      // saveLocalUser(1826451354247937);
+      saveLocalUser(1826451354247937);
       $ionicLoading.hide();
     } // if(mIsWebView) 끝
   }); //$ionicPlatform.ready 끝
