@@ -53,7 +53,7 @@ wcm.controller("PostController", function($scope, $rootScope, $stateParams, $sta
         $ionicLoading.hide();
       }
 
-      
+
 
       $scope.watch_count = card.watch_count;
       $scope.share_count = card.share_count;

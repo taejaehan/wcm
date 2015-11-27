@@ -4,7 +4,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 
 	console.log('ProfileController user ' + user);
 	console.log('ProfileController user.isAuthenticated ' + user.isAuthenticated);
-	
+
 	if (user.isAuthenticated === true) {
 		$scope.userCheck = true;
 		$scope.user = user;
@@ -53,17 +53,8 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 				$scope.reportEmptyMessage = "작성한 글이 없습니다"
 			}else{
 				for (var i = 0; i < data.reportList.length; i++) {
-					if (data.reportList[i].status === PROGRESS_START) {
-						data.reportList[i].statusDescription = PROGRESS_START_TEXT;
-						data.reportList[i].statusIcon = "project-start";
-					} else if (data.reportList[i].status === PROGRESS_ONGOING) {
-						data.reportList[i].statusDescription = PROGRESS_ONGOING_TEXT;
-						data.reportList[i].statusIcon = "project-ongoing";
-					} else {
-						data.reportList[i].statusDescription = PROGRESS_COMPLETED_TEXT;
-						data.reportList[i].statusIcon = "project-complete";
-					}
-					$scope.reportList.push(data.reportList[i]);	
+					CardService.status(data.reportList, i);
+					$scope.reportList.push(data.reportList[i]);
 				}
 			}
 			/*내가 해결한 위험 리스트 넣어주기*/
@@ -133,7 +124,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 			}else{
 				$scope.pushNotification.checked = false;
 			}
-			
+
 		});
 
 	} else {
@@ -170,7 +161,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 		  while( i < $scope.reportList.length) {
 
 		    if ($scope.reportList[i].id === card.id) {
-		      
+
 		      if (card.status === PROGRESS_START) {
 			      $scope.reportList[i].statusDescription = PROGRESS_START_TEXT;
 			      $scope.reportList[i].statusIcon = "project-start";
@@ -182,7 +173,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 			      $scope.reportList[i].statusIcon = "project-complete";
 			    }
 			    break;
-		    } 
+		    }
 			  i ++;
 		  }
 		});
@@ -217,7 +208,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 				});
 				var userId = parseInt(user.userid);
 				var postId = change.id;
-				var formData =  { 
+				var formData =  {
 				                 user_id: userId,
 				                 post_id: postId,
 				                 change : false
@@ -241,7 +232,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 				 $ionicLoading.hide();
 				// Change List에서 Card 삭제
 				var changeIndex = $scope.changeList.indexOf(change);
-				$scope.changeList.splice(changeIndex, 1); 
+				$scope.changeList.splice(changeIndex, 1);
 
 				console.log(user.changes);
 				// User가 local storage에서 가지고 있는 change card id 삭제
@@ -263,7 +254,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 
 		window.localStorage['user'] = null;
 		if(mIsWebView){
-			Preferences.put('loginId', null); 
+			Preferences.put('loginId', null);
 		}
 
 		$state.go('fblogin');
@@ -272,7 +263,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 	$scope.editProfile = function() {
 		$state.go("tabs.editProfile");
 	}
-	
+
 	$scope.showReportList = function() {
 		$scope.reportTab = true;
 		$scope.changeTab = false;
@@ -314,7 +305,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
   $scope.AboutUs = function(){
   		$state.go('tabs.about_us');
   }
-  
+
   $scope.editDone = function() {
   	$ionicLoading.show({
 		template: '<ion-spinner icon="bubbles"></ion-spinner><br/>'
@@ -457,7 +448,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 						  console.log('resp : ' + JSON.stringify(resp));
 						}).error(function(error){
 							$ionicLoading.hide();
-						  // Handle error 
+						  // Handle error
 						  console.log("Ionic Push: Push error...");
 						  console.log('error : ' + JSON.stringify(error));
 						});
@@ -465,7 +456,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 						console.log('CANCEL SEND PUSH MESSAGE');
 					}
 				});
-				
+
 	     });
 	     request.error(function(error){
 	       $ionicLoading.hide();
@@ -474,6 +465,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 
 		});
 	}
+<<<<<<< HEAD
   /*
   *	fb 친구를 초대합니다
   */
@@ -508,13 +500,16 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 			);
 		}
   }
+=======
+
+>>>>>>> d83691de0ab239bbe52d29faf45bbe4700ac4805
 
   /*
   *	push를 받을지 안받을지 toggle합니다.
   * 현재 device uuid와 on/off를 보내서 device 테이블의 push를 수정합니다
   * 초기값은 true로 푸시를 받습니다
   */
-  
+
 	$scope.pushNotificationChange = function() {
     console.log('Push Notification Change', $scope.pushNotification.checked);
     if(mIsWebView){

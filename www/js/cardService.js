@@ -6,6 +6,9 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
   * @param id : watch 할 card id
   * @param user : watch할 user 정보
   */
+  this.scrollPosition;
+  this.sortType = 'registration';
+
   var toggleWatch = function(e, id, user, scope) {
     console.log('toggleWatch : ' + e);
     if(user != null){
@@ -265,9 +268,25 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
     } //f(mIsWebView) 끝
   }; // share 끝
 
+  var status = function(params, num) {
+    if (params[num].status === PROGRESS_START) {
+      params[num].statusDescription = PROGRESS_START_TEXT;
+      params[num].statusIcon = "project-start";
+    } else if (params[num].status === PROGRESS_ONGOING) {
+      params[num].statusDescription = PROGRESS_ONGOING_TEXT;
+      params[num].statusIcon = "project-ongoing";
+    } else {
+      params[num].statusDescription = PROGRESS_COMPLETED_TEXT;
+      params[num].statusIcon = "project-complete";
+    }
+  };
+
   return {
     toggleWatch: toggleWatch,
     weChange: weChange,
-    share: share
+    share: share,
+    scrollPosition: this.scrollPosition,
+    sortType: this.sortType,
+    status: status
   };
 })
