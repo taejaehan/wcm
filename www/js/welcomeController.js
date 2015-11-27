@@ -4,10 +4,22 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
 
   $scope.facebookLogin = function(){
     console.log('facebookLogin');
-    AuthService.login('kakao');
+    AuthService.login('facebook');
   }
 
   $scope.skipLogin =function() {
     AuthService.skipLogin();
+  }
+  
+  $scope.terms = function() {
+    $state.go("tabs.terms");
+  }
+
+  $scope.termsGps = function() {
+    $state.go("tabs.terms_gps");
+  }
+
+  $scope.privacy = function() {
+    $state.go("tabs.privacy");
   }
 });

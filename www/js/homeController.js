@@ -1,6 +1,6 @@
 wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth, $ionicSlideBoxDelegate, $cordovaPreferences, $ionicLoading, $ionicHistory, CardService) {
 
-  navigator.geolocation.watchPosition(showPosition);
+  navigator.geolocation.watchPosition(showPosition, showPositionError);
 
   var user = JSON.parse(window.localStorage['user'] || '{}');
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
@@ -418,7 +418,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   * $event 클릭된 event
   */
   $scope.openPopover = function ($event) {
-    console.log('openPopover');
+    // console.log('openPopover');
     $ionicPopover.fromTemplateUrl('templates/popover.html', {
       scope: $scope
     }).then(function(popover) {
@@ -427,10 +427,54 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     });
   };
 
-
   function showPosition(position) {
+    // console.log('showPosition ');
+    // console.log('position.coords.latitude : ' + position.coords.latitude);
+    // console.log('position.coords.longitude : ' + position.coords.longitude);
     $scope.currentLat = position.coords.latitude;
     $scope.currentLon = position.coords.longitude;
+
+    /** PUSH 메세지를 발송 **/
+   /* var tokens = ['APA91bHXSc8F6ld-11B1NvXa_LNId8jgDe6voQdcQwB_fBNSxDous59iQDkkF4OdbwSe4bHMUa7RZ2dlqeV7Qe1YNNRDeg2WnGup5CzWfVNlCL4ow3yWKPI'];
+    // Encode your key
+    var auth = btoa(mPrivateKey + ':');
+    // Build the request object
+    var req = {
+      method: 'POST',
+      url: 'https://push.ionic.io/api/v1/push',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Ionic-Application-Id': mAppId,
+        'Authorization': 'basic ' + auth
+      },
+      data: {
+        "tokens": tokens,
+        "notification": {
+          "alert": '$scope.currentLat : ' + $scope.currentLat + ', $scope.currentLon : ' + $scope.currentLon
+        },
+        // "scheduled" : 1447834020,
+        "production": true
+      }
+    };
+    $ionicLoading.show({
+      template: '<ion-spinner icon="bubbles"></ion-spinner>'
+    });
+    // Make the API call
+    $http(req).success(function(resp){
+      $ionicLoading.hide();
+      // Handle success
+      console.log("Ionic Push: Push success!");
+      console.log('resp : ' + JSON.stringify(resp));
+    }).error(function(error){
+      $ionicLoading.hide();
+      // Handle error 
+      console.log("Ionic Push: Push error...");
+      console.log('error : ' + JSON.stringify(error));
+    });*/
+  }
+
+  function showPositionError() {
+    console.log('showPositionError : (' + error.code + '): ' + error.message);
   }
 
   $scope.sortBy = function(sortType) {
@@ -552,7 +596,16 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       }
     }
   }
-
+  /*
+  * 해당 유저의 fb profile로 연결합니다
+  * @param : user_id 
+  */
+  $scope.showUser = function(user_id){
+    window.open(
+      'https://www.facebook.com/app_scoped_user_id/' + user_id,
+      '_blank' // <- This is what makes it open in a new window.
+    );
+  };
   // Delete Card
   $scope.deleteCard = function(id) {
     var confirmPopup = $ionicPopup.confirm({
@@ -605,7 +658,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   }
 
   $scope.showDialog = function (card) {
-    CardService.share('kakao', card);
+    CardService.share('facebook', card);
   }
 
 });

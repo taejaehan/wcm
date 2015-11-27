@@ -21,12 +21,13 @@ wcm.controller("TabController", function($scope, $state, $ionicPopup) {
         title: mAppName,
         cssClass: 'wcm-positive',
         buttons: [
-          { text: '나중에하기' },
+          { text: '나중에하기' 
+          },
           {
             text: '<b>로그인하기</b>',
             type: 'button-positive',
             onTap: function(e) {
-              $state.go("fblogin");
+              $state.go("tabs.fblogin");
             }
           }
         ]
