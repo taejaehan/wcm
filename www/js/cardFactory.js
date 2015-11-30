@@ -177,7 +177,6 @@ wcm.factory('CardBlockFactory', function($http, $ionicLoading, CardService) {
     });
     request.success(function() {
       $ionicLoading.hide();
-      CardService.temporaryPost = null;
     });
     request.error(function(error){
       console.log('error : ' + JSON.stringify(error));
@@ -199,7 +198,6 @@ wcm.factory('CardBlockFactory', function($http, $ionicLoading, CardService) {
     });
     request.success(function() {
       $ionicLoading.hide();
-      CardService.temporaryPost = null;
     });
     request.error(function(error){
       console.log('error : ' + JSON.stringify(error));
@@ -221,7 +219,6 @@ wcm.factory('CardBlockFactory', function($http, $ionicLoading, CardService) {
     });
     request.success(function() {
       $ionicLoading.hide();
-      CardService.temporaryPost = null;
     });
     request.error(function(error){
       console.log('error : ' + JSON.stringify(error));
