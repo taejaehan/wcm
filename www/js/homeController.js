@@ -666,8 +666,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   $scope.hidePost = function() {
     // 서버 db에 block 정보 저장
-    // CardBlockFactory.postHide(user.userid, CardService.temporaryPost.id);
-
+    CardBlockFactory.postHide(user.userid, CardService.temporaryPost.id);
     // local data에 block 정보 저장
     var hidePost = $rootScope.allData.cards.indexOf(CardService.temporaryPost);
     $rootScope.allData.cards.splice(hidePost, 1);
@@ -676,18 +675,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   $scope.blockUser = function() {
     CardBlockFactory.userBlock(user.userid, CardService.temporaryPost.user_id);
-    
-    // var hidePosts = [];
-    // for(var i=0 ; i < $rootScope.allData.cards.length; i++){
-    //   if($rootScope.allData.cards[i].user[0].id == CardService.temporaryPost.user_id){
-    //     var hidePost = $rootScope.allData.cards.indexOf($rootScope.allData.cards[i]);
-    //     hidePosts.push(hidePost);
-    //   };
-    // };
-    // hidePosts.reverse();
-    // for(var i=0 ; i < hidePosts.length; i++){
-    //   $rootScope.allData.cards.splice(hidePosts[i], 1);
-    // };
     $scope.reportPopover.hide();
     $scope.doRefresh('init');
   }
