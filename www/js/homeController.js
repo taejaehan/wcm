@@ -6,7 +6,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   $scope.welcome = true;
   $scope.noMoreItemsAvailable = false;
   $scope.logoTitle='<img class="title-image" src="img/logo.png" />';
-
   //sort type
   $scope.sortingTypeList = [
     { text: "최신순", value: "registration" },
@@ -27,18 +26,11 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   $rootScope.allData = { cards: [] };
 
   $scope.$on('$ionicView.beforeEnter', function(){
-    $scope.userLogin = function(card) {
-      if(user != null){
-        if (user.isAuthenticated === true) {
-          if ( card.user[0].user_id == user.userid ) {
-            return false;
-          } else {
-            return true;
-          }
-        } else {
-          return false;
-        }
-      }
+
+    if(user.isAuthenticated != null && user.isAuthenticated == true){
+      $scope.userLogin = true;
+    }else{
+      $scope.userLogin = false;
     }
     // 앱에서 열였다면
     if(mIsWebView){
@@ -319,8 +311,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
               data.cards[i].address = data.cards[i].location_name;
               data.cards[i].userId = data.cards[i].user[0].user_id;
-              console.log(data.cards[i].userId);
-              console.log(user.userid);
 
               var object =  data.cards[i];
               $rootScope.allData.cards.push(object);
@@ -686,18 +676,20 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   $scope.blockUser = function() {
     CardBlockFactory.userBlock(user.userid, CardService.temporaryPost.user_id);
-    var hidePosts = [];
-    for(var i=0 ; i < $rootScope.allData.cards.length; i++){
-      if($rootScope.allData.cards[i].user[0].id == CardService.temporaryPost.user_id){
-        var hidePost = $rootScope.allData.cards.indexOf($rootScope.allData.cards[i]);
-        hidePosts.push(hidePost);
-      };
-    };
-    hidePosts.reverse();
-    for(var i=0 ; i < hidePosts.length; i++){
-      $rootScope.allData.cards.splice(hidePosts[i], 1);
-    };
+    
+    // var hidePosts = [];
+    // for(var i=0 ; i < $rootScope.allData.cards.length; i++){
+    //   if($rootScope.allData.cards[i].user[0].id == CardService.temporaryPost.user_id){
+    //     var hidePost = $rootScope.allData.cards.indexOf($rootScope.allData.cards[i]);
+    //     hidePosts.push(hidePost);
+    //   };
+    // };
+    // hidePosts.reverse();
+    // for(var i=0 ; i < hidePosts.length; i++){
+    //   $rootScope.allData.cards.splice(hidePosts[i], 1);
+    // };
     $scope.reportPopover.hide();
+    $scope.doRefresh('init');
   }
 
   $scope.blockPost = function() {
