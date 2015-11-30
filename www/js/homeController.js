@@ -27,11 +27,11 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   $scope.$on('$ionicView.beforeEnter', function(){
 
-    if(user.isAuthenticated != null && user.isAuthenticated == true){
-      $scope.userLogin = true;
-    }else{
-      $scope.userLogin = false;
-    }
+    // if(user.isAuthenticated != null && user.isAuthenticated == true){
+    //   $scope.userLogin = true;
+    // }else{
+    //   $scope.userLogin = false;
+    // }
     // 앱에서 열였다면
     if(mIsWebView){
         var tryNum = 0;
@@ -176,6 +176,19 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     document.getElementById('sub_header_offline').setAttribute('style','display:block');
   }
 
+  $scope.userLogin = function(card) {
+    if(user != null){
+      if (user.isAuthenticated === true) {
+        if ( card.user[0].user_id == user.userid ) {
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        return false;
+      }
+    }
+  }
   /*
   * 현재 id보다 큰 card를 가져와서 메인에 추가함
   * 수정/삭제 된 card를 cover할 수 없으므로 현재 사용하지 않고 보류중
@@ -676,7 +689,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   $scope.blockUser = function() {
     CardBlockFactory.userBlock(user.userid, CardService.temporaryPost.user_id);
-    
+
     // var hidePosts = [];
     // for(var i=0 ; i < $rootScope.allData.cards.length; i++){
     //   if($rootScope.allData.cards[i].user[0].id == CardService.temporaryPost.user_id){
