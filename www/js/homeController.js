@@ -704,7 +704,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   }
 
   $scope.blockPost = function() {
-    CardBlockFactory.postBlock(user.userid, CardService.temporaryPost.id);
+    CardBlockFactory.postBlock(user.userid, CardService.temporaryPost.id, CardService.temporaryPost.user_id);
     var hidePost = $rootScope.allData.cards.indexOf(CardService.temporaryPost);
     $rootScope.allData.cards.splice(hidePost, 1);
     $scope.reportPopover.hide();

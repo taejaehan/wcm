@@ -46,7 +46,7 @@ var PROGRESS_ONGOING_TEXT = "위험요소가 해결되고 있습니다";
 var PROGRESS_COMPLETED_TEXT = "위험요소가 해결되었습니다";
 
 //부적절한 글로 신고된 갯수로 로그인을 금지 할 때 사용
-var BAD_REPORT_LOGIN_LIMIT = 3;
+var BAD_REPORT_LOGIN_LIMIT = 5;
 
 var wcm = angular.module('wcm', ['ionic', 'ngCordova', 'ng', 'pasvaz.bindonce', 'ngTouch'])
 
