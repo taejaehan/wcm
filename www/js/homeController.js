@@ -268,14 +268,26 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
           var postData = 'locationData='+JSON.stringify(formData);
 
-          var request = $http({
-              method: "post",
-              url: mServerAPI + "/card/" + $scope.page + '/' + $scope.data.sortingType,
-              crossDomain : true,
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-              data: postData,
-              cache: false
-          });
+
+          if (user.userid == null) {
+            var request = $http({
+                method: "post",
+                url: mServerAPI + "/card/" + $scope.page + '/' + $scope.data.sortingType,
+                crossDomain : true,
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+                data: postData,
+                cache: false
+            });
+          } else {
+            var request = $http({
+                method: "post",
+                url: mServerAPI + "/card/" + $scope.page + '/' + $scope.data.sortingType + '/' + user.userid,
+                crossDomain : true,
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+                data: postData,
+                cache: false
+            });
+          }
 
           request.error(function(error){
             $ionicLoading.hide();
@@ -411,6 +423,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   $scope.postReport = function ($event, card) {
     CardService.temporaryPost = card;
+    console.log($rootScope.allData.cards);
     $ionicPopover.fromTemplateUrl('templates/report.html', {
       scope: $scope
     }).then(function(reportPopover) {
@@ -483,14 +496,26 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
     var postData = 'locationData='+JSON.stringify(formData);
 
-    var request = $http({
-        method: "post",
-        url: mServerAPI + "/card/" + $scope.page + '/' + sortType,
-        crossDomain : true,
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-        data: postData,
-        cache: false
-    });
+    if (user.userid == null) {
+      var request = $http({
+          method: "post",
+          url: mServerAPI + "/card/" + $scope.page + '/' + sortType,
+          crossDomain : true,
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+          data: postData,
+          cache: false
+      });
+    } else {
+      var request = $http({
+          method: "post",
+          url: mServerAPI + "/card/" + $scope.page + '/' + sortType + '/' + user.userid,
+          crossDomain : true,
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+          data: postData,
+          cache: false
+      });
+    }
+
 
     $ionicLoading.show({
       template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
@@ -662,16 +687,26 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     // local data에 block 정보 저장
     var hidePost = $rootScope.allData.cards.indexOf(CardService.temporaryPost);
     $rootScope.allData.cards.splice(hidePost, 1);
+    console.log($rootScope.allData.cards);
     $scope.reportPopover.hide();
   }
 
   $scope.blockUser = function() {
     CardBlockFactory.userBlock(user.userid, CardService.temporaryPost.user_id);
+
+    for (var i = 0; i < $rootScope.allData.cards.length; i++) {
+      if($rootScope.allData.cards[i].user_id == CardService.temporaryPost.user_id) {
+        var blockPost = $rootScope.allData.cards.indexOf($rootScope.allData.cards[i]);
+        $rootScope.allData.cards.splice(blockPost, 1);
+      }
+    }
     $scope.reportPopover.hide();
   }
 
   $scope.blockPost = function() {
     CardBlockFactory.postBlock(user.userid, CardService.temporaryPost.id);
+    var hidePost = $rootScope.allData.cards.indexOf(CardService.temporaryPost);
+    $rootScope.allData.cards.splice(hidePost, 1);
     $scope.reportPopover.hide();
   }
 
