@@ -26,8 +26,8 @@
               <p class="username" ng-bind="card.user[0].username"></p>
               <p class="date" ng-bind="card.create_time"></p>
 
-              <div id="dropdown-btn" ng-click="postReport($event, card); $event.stopPropagation();" ng-if="userLogin">
-                <i class="ion-chevron-down"></i>
+              <div id="dropdown-btn" ng-if="userLogin">
+                <i class="ion-chevron-down" ng-click="postReport($event, card); $event.stopPropagation();" ></i>
               </div>
               <i class="ion-trash-a delete" ng-style="userChecked(card)" ng-click="deleteCard(card.id)"></i>
               <i class="ion-compose edit" ng-style="userChecked(card)" ng-click="editCard(card.id)"></i>
