@@ -176,6 +176,7 @@ button.logout {
 	padding-top: 15px;
 	text-decoration: none;
 	font-weight: 700;
+	font-size: 95%;
 }
 
 #profile_page a.menu-tab.non-active {
