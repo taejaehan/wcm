@@ -2,12 +2,19 @@
 /* flip in */
 
 .nav-bar-block, .bar {
-  background-color: #efae28 !important;
-  border-color : #efae28 !important;
+  background-color: #ffe000 !important;
+  border-color : #ffe000 !important;
+}
+.bar.bar-assertive .title{
+  color : #111 !important;
+  font-weight: bold;
+}
+.bar-assertive .button{
+  color : #333 !important;
 }
 .tabs-dark > .tabs, .tabs.tabs-dark {
-  background-color: #e0e0e0 !important;
-  border-color : #e0e0e0 !important;
+  background-color: #ffe000 !important;
+  border-color : #ffe000 !important;
 }
 
 .header-offline{

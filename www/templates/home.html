@@ -1,4 +1,4 @@
-<ion-view view-title="WCM">
+<ion-view view-title="{{logoTitle}}">
   <ion-nav-buttons side="right">
     <button type="submit" class="button button-icon" ng-click="openPopover($event)">
       <i class="icon ion-android-list"></i>
@@ -26,7 +26,7 @@
               <p class="username" ng-bind="card.user[0].username"></p>
               <p class="date" ng-bind="card.create_time"></p>
 
-              <div id="dropdown-btn" ng-click="postReport($event, card)">
+              <div id="dropdown-btn" ng-click="postReport($event, card)" ng-if="userLogin">
                 <i class="ion-chevron-down"></i>
               </div>
               <i class="ion-trash-a delete" ng-style="userChecked(card)" ng-click="deleteCard(card.id)"></i>
@@ -93,9 +93,9 @@
     <ion-popover-view class="report-popover">
       <ion-content>
         <ul class="list">
-          <li class="item" ng-click="hidePost()"><i class="ion-close-circled"></i><span>게시물 숨기기</span></li>
-          <li class="item" ng-click="blockUser()"><i class="ion-eye-disabled"></i><span>이 사람의 게시물 더이상 보지 않기</span></li>
-          <li class="item" ng-click="blockPost()"><i class="ion-alert-circled"></i><span>게시물 신고하기</span></li>
+          <li class="item" ng-click="hidePost(); $event.stopPropagation()"><i class="ion-close-circled"></i><span>게시물 숨기기</span></li>
+          <li class="item" ng-click="blockUser(); $event.stopPropagation()"><i class="ion-eye-disabled"></i><span>이 사람의 게시물 더이상 보지 않기</span></li>
+          <li class="item" ng-click="blockPost(); $event.stopPropagation()"><i class="ion-alert-circled"></i><span>게시물 신고하기</span></li>
         </ul>
       </ion-content>
     </ion-popover-view>

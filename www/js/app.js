@@ -475,6 +475,8 @@ wcm.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
   $ionicConfigProvider.form.toggle('large').checkbox('circle');
   //ios에서 swipe하여 back 하는 기능 false
   $ionicConfigProvider.views.swipeBackEnabled(false);
+  //backbutton text hide
+  $ionicConfigProvider.backButton.text('').previousTitleText(false);
 
   $stateProvider
   .state("tabs.fblogin", {

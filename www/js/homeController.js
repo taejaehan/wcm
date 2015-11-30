@@ -5,6 +5,8 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   var cardList = JSON.parse(window.localStorage['cardList'] || '{}');
   $scope.welcome = true;
   $scope.noMoreItemsAvailable = false;
+  $scope.logoTitle='<img class="title-image" src="img/logo.png" />';
+
   //sort type
   $scope.sortingTypeList = [
     { text: "최신순", value: "registration" },
@@ -26,6 +28,11 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   $scope.$on('$ionicView.beforeEnter', function(){
 
+    if(user.isAuthenticated != null && user.isAuthenticated == true){
+      $scope.userLogin = true;
+    }else{
+      $scope.userLogin = false;
+    }
     // 앱에서 열였다면
     if(mIsWebView){
         var tryNum = 0;
@@ -268,26 +275,18 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
           var postData = 'locationData='+JSON.stringify(formData);
 
-
-          if (user.userid == null) {
-            var request = $http({
-                method: "post",
-                url: mServerAPI + "/card/" + $scope.page + '/' + $scope.data.sortingType,
-                crossDomain : true,
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-                data: postData,
-                cache: false
-            });
-          } else {
-            var request = $http({
-                method: "post",
-                url: mServerAPI + "/card/" + $scope.page + '/' + $scope.data.sortingType + '/' + user.userid,
-                crossDomain : true,
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-                data: postData,
-                cache: false
-            });
+          var url = mServerAPI + "/card/" + $scope.page + '/' + $scope.data.sortingType
+          if(user.isAuthenticated === true){
+            url = url + '/' + user.userid;
           }
+          var request = $http({
+              method: "post",
+              url: url,
+              crossDomain : true,
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+              data: postData,
+              cache: false
+          });
 
           request.error(function(error){
             $ionicLoading.hide();
@@ -423,7 +422,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   $scope.postReport = function ($event, card) {
     CardService.temporaryPost = card;
-    console.log($rootScope.allData.cards);
     $ionicPopover.fromTemplateUrl('templates/report.html', {
       scope: $scope
     }).then(function(reportPopover) {
@@ -496,26 +494,14 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
     var postData = 'locationData='+JSON.stringify(formData);
 
-    if (user.userid == null) {
-      var request = $http({
-          method: "post",
-          url: mServerAPI + "/card/" + $scope.page + '/' + sortType,
-          crossDomain : true,
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-          data: postData,
-          cache: false
-      });
-    } else {
-      var request = $http({
-          method: "post",
-          url: mServerAPI + "/card/" + $scope.page + '/' + sortType + '/' + user.userid,
-          crossDomain : true,
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-          data: postData,
-          cache: false
-      });
-    }
-
+    var request = $http({
+        method: "post",
+        url: mServerAPI + "/card/" + $scope.page + '/' + sortType,
+        crossDomain : true,
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+        data: postData,
+        cache: false
+    });
 
     $ionicLoading.show({
       template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
@@ -595,7 +581,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   // Check current user & card user
   $scope.userChecked = function(card) {
-
     if(user != null){
       if (user.isAuthenticated === true) {
         if ( card.user[0].user_id === user.userid ) {
@@ -682,24 +667,27 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   $scope.hidePost = function() {
     // 서버 db에 block 정보 저장
-    CardBlockFactory.postHide(user.userid, CardService.temporaryPost.id);
+    // CardBlockFactory.postHide(user.userid, CardService.temporaryPost.id);
 
     // local data에 block 정보 저장
     var hidePost = $rootScope.allData.cards.indexOf(CardService.temporaryPost);
     $rootScope.allData.cards.splice(hidePost, 1);
-    console.log($rootScope.allData.cards);
     $scope.reportPopover.hide();
   }
 
   $scope.blockUser = function() {
     CardBlockFactory.userBlock(user.userid, CardService.temporaryPost.user_id);
-
-    for (var i = 0; i < $rootScope.allData.cards.length; i++) {
-      if($rootScope.allData.cards[i].user_id == CardService.temporaryPost.user_id) {
-        var blockPost = $rootScope.allData.cards.indexOf($rootScope.allData.cards[i]);
-        $rootScope.allData.cards.splice(blockPost, 1);
-      }
-    }
+    var hidePosts = [];
+    for(var i=0 ; i < $rootScope.allData.cards.length; i++){
+      if($rootScope.allData.cards[i].user[0].id == CardService.temporaryPost.user_id){
+        var hidePost = $rootScope.allData.cards.indexOf($rootScope.allData.cards[i]);
+        hidePosts.push(hidePost);
+      };
+    };
+    hidePosts.reverse();
+    for(var i=0 ; i < hidePosts.length; i++){
+      $rootScope.allData.cards.splice(hidePosts[i], 1);
+    };
     $scope.reportPopover.hide();
   }
 

@@ -9,6 +9,10 @@
 	display: block;
 }
 
+.title-image{
+	margin-top: 15px;
+	height: 16px;
+}
 /*popover height*/
 .home_popover{
 	height: 175px;
@@ -23,7 +27,7 @@
 }
 /*active 탭에 대한 icon과 글자 색*/
 .tab-item-active .icon, .tab-item-active .tab-title{
-	color : #EFAE28;
+	color : #000;
 }
 .tabs-striped.tabs-dark .tab-item.tab-item-active, .tabs-striped.tabs-dark .tab-item.active,
 .tabs-striped.tabs-dark .tab-item.activated{
