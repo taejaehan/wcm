@@ -475,7 +475,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     });*/
   }
 
-  function showPositionError() {
+  function showPositionError(error) {
     console.log('showPositionError : (' + error.code + '): ' + error.message);
   }
 
