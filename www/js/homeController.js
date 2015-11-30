@@ -261,20 +261,17 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
         // init이면 처음 페이지 데이터를 다시 가져옴
         if(init == 'init'){
           console.log("처음 init할 때만 실행");
-          $ionicLoading.show({
-            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
-          });
           $scope.page = 0;
           $rootScope.allData = { cards: [] };
 
           // CardsFactory.cards();
-        }
+        };
         if($scope.currentLat == null){
           $scope.currentLat = 37.574515;
           $scope.currentLon = 126.976930;
-        }
-        
-        if($ionicHistory.forwardView() == null || $ionicHistory.forwardView().historyId !== 'ion2') {
+        };
+
+        if($ionicHistory.forwardView() == null || $ionicHistory.forwardView().historyId !== 'ion2' || init == 'init') {
 
           $ionicLoading.show({
             template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
