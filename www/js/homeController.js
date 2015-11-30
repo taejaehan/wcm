@@ -269,17 +269,17 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
           // CardsFactory.cards();
         }
-
+        if($scope.currentLat == null){
+          $scope.currentLat = 37.574515;
+          $scope.currentLon = 126.976930;
+        }
+        
         if($ionicHistory.forwardView() == null || $ionicHistory.forwardView().historyId !== 'ion2') {
 
           $ionicLoading.show({
             template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
           });
-
-          if($scope.currentLat == null){
-            $scope.currentLat = 37.574515;
-            $scope.currentLon = 126.976930;
-          }
+          
           var formData = {
                           lat: $scope.currentLat,
                           lon: $scope.currentLon
@@ -371,8 +371,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
                }
              }
            }
-
-           $ionicScrollDelegate.scrollTo(0,CardService.scrollPosition.top,false);
+           if(CardService.scrollPosition != null){
+            $ionicScrollDelegate.scrollTo(0,CardService.scrollPosition.top,false);
+           }
         }
 
         //Stop the ion-refresher from spinning
