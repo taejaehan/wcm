@@ -27,6 +27,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   $scope.$on('$ionicView.beforeEnter', function(){
 
+    $scope.data.sortingType = 'registration';
     // if(user.isAuthenticated != null && user.isAuthenticated == true){
     //   $scope.userLogin = true;
     // }else{
@@ -369,7 +370,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
              }
            }
            if(CardService.scrollPosition != null){
-            $ionicScrollDelegate.scrollTo(0,CardService.scrollPosition.top,false);
+            if($ionicScrollDelegate.scrollTop != null){
+              $ionicScrollDelegate.scrollTo(0,CardService.scrollPosition.top,false);
+            }
            }
         }
 
