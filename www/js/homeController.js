@@ -493,9 +493,13 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
     var postData = 'locationData='+JSON.stringify(formData);
 
+    var url = mServerAPI + "/card/" + $scope.page + '/' + sortType
+    if(user.isAuthenticated === true){
+      url = url + '/' + user.userid;
+    }
     var request = $http({
         method: "post",
-        url: mServerAPI + "/card/" + $scope.page + '/' + sortType,
+        url: url,
         crossDomain : true,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
         data: postData,
