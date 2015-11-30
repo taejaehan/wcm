@@ -27,11 +27,18 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   $rootScope.allData = { cards: [] };
 
   $scope.$on('$ionicView.beforeEnter', function(){
-
-    if(user.isAuthenticated != null && user.isAuthenticated == true){
-      $scope.userLogin = true;
-    }else{
-      $scope.userLogin = false;
+    $scope.userLogin = function(card) {
+      if(user != null){
+        if (user.isAuthenticated === true) {
+          if ( card.user[0].user_id == user.userid ) {
+            return false;
+          } else {
+            return true;
+          }
+        } else {
+          return false;
+        }
+      }
     }
     // 앱에서 열였다면
     if(mIsWebView){
@@ -312,6 +319,8 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
               data.cards[i].address = data.cards[i].location_name;
               data.cards[i].userId = data.cards[i].user[0].user_id;
+              console.log(data.cards[i].userId);
+              console.log(user.userid);
 
               var object =  data.cards[i];
               $rootScope.allData.cards.push(object);
