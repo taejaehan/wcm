@@ -135,7 +135,7 @@ wcm.factory('CardsFactory', function($http, $ionicLoading) {
     } else {
       var request = $http({
           method: "get",
-          url: mServerAPI + "/cards" + userId,
+          url: mServerAPI + "/cards/" + userId,
           crossDomain : true,
           headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
           cache: false
@@ -207,9 +207,10 @@ wcm.factory('CardBlockFactory', function($http, $ionicLoading, CardService) {
     });
   }
 
-  function postBlock(userId, cardId) {
-    var postId = parseInt(cardId);
-    var formData = { user_id: userId, block_post_id: postId };
+  function postBlock(userId, blockCardId, blockUserId) {
+    console.log('postBlock');
+    var postId = parseInt(blockCardId);
+    var formData = { user_id: userId, block_post_id: postId, block_user_id: blockUserId};
     var postData = 'blockData='+JSON.stringify(formData);
     var request = $http({
         method: "post",

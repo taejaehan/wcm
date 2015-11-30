@@ -671,7 +671,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   }
 
   $scope.blockPost = function() {
-    CardBlockFactory.postBlock(user.userid, CardService.temporaryPost.id);
+    CardBlockFactory.postBlock(user.userid, CardService.temporaryPost.id, CardService.temporaryPost.user_id);
     $scope.reportPopover.hide();
   }
 

@@ -33,20 +33,6 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
                 console.log("api success : " + JSON.stringify(UserInfo));
                 console.log("user id : " + UserInfo.id);
                 console.log("user name : " + UserInfo.name);
-
-                if(parseInt(UserInfo.id) > BAD_REPORT_LOGIN_LIMIT){
-                  $ionicLoading.hide();
-                  //prefrences 초기화
-                  Preferences.put('loginId', '');
-                  //경고alert
-                  $ionicPopup.alert({
-                    title: mAppName,
-                    template: '당신의 게시물이 신고되어 현재 아이디로 로그인 하지 못합니다. 이의가 있을 시 wechangemakers@gamil.com으로 메일을 보내주세요',
-                    cssClass: 'wcm-error',
-                  });  
-                  return;
-                } 
-
                 var formData = {
                                  user_id: String(UserInfo.id),
                                  username: UserInfo.name,
@@ -116,6 +102,19 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
     request.success(function(data) {
 
       $ionicLoading.hide();
+      if(parseInt(data.users[0].bad_report) > BAD_REPORT_LOGIN_LIMIT){
+        if(mIsWebView){
+          //prefrences 초기화
+          Preferences.put('loginId', '');
+        };
+        //경고alert
+        $ionicPopup.alert({
+          title: mAppName,
+          template: '당신의 게시물이 신고되어 현재 아이디로 로그인 하지 못합니다. 이의가 있을 시 wechangemakers@gamil.com으로 메일을 보내주세요',
+          cssClass: 'wcm-error',
+        });  
+        return;
+      } 
       /* user data 넣어주기 시작 */
       var user = {
                     username: formData.username,
