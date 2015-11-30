@@ -26,7 +26,7 @@
               <p class="username" ng-bind="card.user[0].username"></p>
               <p class="date" ng-bind="card.create_time"></p>
 
-              <div id="dropdown-btn" ng-click="postReport($event, card)" ng-if="userLogin">
+              <div id="dropdown-btn" ng-click="postReport($event, card)" ng-if="userLogin(card)">
                 <i class="ion-chevron-down"></i>
               </div>
               <i class="ion-trash-a delete" ng-style="userChecked(card)" ng-click="deleteCard(card.id)"></i>
