@@ -33,26 +33,4 @@
       </ion-content>
     </ion-popover-view>
   </script>
-  <!--현재 사용하지 않고 google infoWindow로 사용중-->
-  <script id="templates/modal.html" type="text/ng-template">
-      <ion-modal-view class="marker-modal">
-        <ion-content>
-          <div class="header">
-            <div>
-              <h1 class="title" ng-bind="markerTitle"></h1>
-              <button class="button button-clear ion-close-round button-primary" ng-click="modal.hide()"></button>
-            </div>
-            <div>
-              <img class="location-icon" src="{{::markerLocationImg}}"/>
-              <span class="location-text" ng-bind="markerLocation"></span>
-            </div>
-          </div>
-          <div class="content">
-            <div class="center-cropped post-image" style="background-image: url('{{::markerImg}}');">
-            </div>
-            <div class="card-view">자세히 보기 &gt;</div>
-          </div>
-        </ion-content>
-      </ion-modal-view>
-    </script>
 </ion-view>

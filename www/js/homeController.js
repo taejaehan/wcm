@@ -27,12 +27,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
   $scope.$on('$ionicView.beforeEnter', function(){
 
-    $scope.data.sortingType = 'registration';
-    // if(user.isAuthenticated != null && user.isAuthenticated == true){
-    //   $scope.userLogin = true;
-    // }else{
-    //   $scope.userLogin = false;
-    // }
     // 앱에서 열였다면
     if(mIsWebView){
         var tryNum = 0;
@@ -86,13 +80,19 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
     });
 
-
-    if(user.isAuthenticated) {
-      CardsFactory.cards(user.userid);
-    } else {
-      CardsFactory.cards();
+    console.log('user.isAuthenticated : ' + user.isAuthenticated);
+    console.log('userId : ' + user.userid);
+    if($scope.data.sortingType == 'registration'){
+      if(user.isAuthenticated) {
+        CardsFactory.getCards(user.userid);
+      } else {
+        CardsFactory.getCards();
+      }
+    }else{
+      if(!($ionicHistory.forwardView() == null || $ionicHistory.forwardView().historyId !== 'ion2')) {
+        $scope.sortBy($scope.data.sortingType, true);
+      }
     }
-
 
     // card이미지를  file system에 저장하는 부분 넣으면 너무 느려서 임시로 주석처리 by tjhan 20151002
     /*app file system안에 폴더만들고 이미지 저장*/
@@ -285,7 +285,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
           var postData = 'locationData='+JSON.stringify(formData);
 
-          var url = mServerAPI + "/card/" + $scope.page + '/' + $scope.data.sortingType
+          var url = mServerAPI + "/card/" + $scope.page + '/' + $scope.data.sortingType;
           if(user.isAuthenticated === true){
             url = url + '/' + user.userid;
           }
@@ -300,10 +300,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
           request.error(function(error){
             $ionicLoading.hide();
-            console.log('error : ' + JSON.stringify(error))
+            console.log('error : ' + JSON.stringify(error));
           })
           request.success(function(data) {
-
             $ionicLoading.hide();
             for (var i = 0; i < data.cards.length; i++) {
 
@@ -312,7 +311,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
               if (data.cards[i].img_path == '') {
                 data.cards[i].img_path = mNoImageThumb;
-              } else {
+              } else if(data.cards[i].img_path.substr(0,4) == 'http'){
+                data.cards[i].img_path = data.cards[i].img_path;
+              }else{
                 data.cards[i].img_path = mServerUploadThumb + data.cards[i].img_path;
               }
 
@@ -340,17 +341,16 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             };
             $scope.page++;
             $scope.$broadcast('scroll.infiniteScrollComplete');
-            window.localStorage['cardList'] = JSON.stringify(data);
-            cardList = JSON.parse(window.localStorage['cardList']);
+            // window.localStorage['cardList'] = JSON.stringify(data);
+            // cardList = JSON.parse(window.localStorage['cardList']);
           });
         } else {
            // back from detail page
 
-           cardList = JSON.parse(window.localStorage['cardList']);
+           // cardList = JSON.parse(window.localStorage['cardList']);
 
            for (var i = 0; i < cardList.cards.length; i++) {
              CardService.status(cardList.cards, i);
-
              if (cardList.cards[i].img_path == '') {
                cardList.cards[i].img_path = mNoImageThumb;
              } else {
@@ -370,9 +370,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
              }
            }
            if(CardService.scrollPosition != null){
-            if($ionicScrollDelegate.scrollTop != null){
+            $timeout(function() {
               $ionicScrollDelegate.scrollTo(0,CardService.scrollPosition.top,false);
-            }
+            }, 200);
            }
         }
 
@@ -493,13 +493,17 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     console.log('showPositionError : (' + error.code + '): ' + error.message);
   }
 
-  $scope.sortBy = function(sortType) {
+  $scope.sortBy = function(sortType, sortedBefore) {
     console.log("sortBy sortType : " + sortType);
-
-    $scope.noMoreItemsAvailable =
-    $scope.popover.hide();
+    if($scope.popover != null){
+      $scope.popover.hide();
+    }
+    $scope.noMoreItemsAvailable = true;
     $scope.page = 0;
-
+    if($scope.currentLat == null){
+      $scope.currentLat = 37.574515;
+      $scope.currentLon = 126.976930;
+    };
     var formData = {
                       lat: $scope.currentLat,
                       lon: $scope.currentLon
@@ -546,7 +550,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
 
         if (data.cards[i].img_path == '') {
           data.cards[i].img_path = mNoImageThumb;
-        } else {
+        }else if(data.cards[i].img_path.substr(0,4) == 'http'){
+          data.cards[i].img_path = data.cards[i].img_path;
+        }else{
           data.cards[i].img_path = mServerUploadThumb + data.cards[i].img_path;
         }
 
@@ -571,7 +577,13 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             }
           }
         }
-
+        if(sortedBefore){
+          if(CardService.scrollPosition != null){
+            $timeout(function() {
+              $ionicScrollDelegate.scrollTo(0,CardService.scrollPosition.top,false);
+            }, 200);
+           }
+        }
       }
       $scope.page++;
       $scope.$broadcast('scroll.infiniteScrollComplete');
@@ -582,11 +594,12 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   // popover창에서 sort type을 변경 했을 때 호출됨
   $scope.sortingTypeChange = function(item) {
     CardService.sortType = item.value;
-    $scope.sortBy(item.value);
+    $scope.sortBy(item.value, false);
   };
 
   // warnings map show
   $scope.findWarning = function() {
+    CardService.scrollPosition = $ionicScrollDelegate.getScrollPosition();
     $state.go("tabs.map");
   }
 

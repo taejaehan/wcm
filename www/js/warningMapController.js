@@ -8,19 +8,6 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
     $scope.usegmm = { checked: true };
     $scope.warningTitle = ONGOING_TEXT;
 
-
-    //마커를 클릭했을 때 나오는 정보
-    $scope.markerTitle = '';
-    $scope.markerLocation = '';
-    $scope.markerImg = '';
-
-    //마커를 클릭했을 때 나오는 상세 정보 view modal
-    $ionicModal.fromTemplateUrl('templates/modal.html', {
-      scope: $scope
-    }).then(function(modal) {
-      $scope.modal = modal;
-    });
-
     $scope.$on('$ionicView.loaded', function(){
       $scope.init();
     });
@@ -258,6 +245,7 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
       // var numMarkers = document.getElementById('nummarkers').value;
       // if(numMarkers > $scope.cards.length) numMarkers = $scope.cards.length;
       if($scope.cards != null){
+        console.log('$scope.cards.length : ' + $scope.cards.length);
         for (var i = 0; i < $scope.cards.length; i++) {
 
           //card type에 따라 이미지/색을 변경 한다 index 0 - discoverd , 1 - ongoing,  2-completed

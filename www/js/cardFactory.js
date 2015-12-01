@@ -144,6 +144,8 @@ wcm.factory('CardsFactory', function($http, $ionicLoading) {
 
     request.success(function(data) {
       $ionicLoading.hide();
+      // console.log('success : ' + JSON.stringify(data));
+      console.log('success length : ' + data.cards.length);
       window.localStorage['cardList'] = JSON.stringify(data);
       // CardService.sortCardList = data;
     });
@@ -154,7 +156,7 @@ wcm.factory('CardsFactory', function($http, $ionicLoading) {
   }
 
   return {
-    cards: getCards
+    getCards: getCards
   };
 });
 

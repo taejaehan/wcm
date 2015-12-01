@@ -110,7 +110,7 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
         //경고alert
         $ionicPopup.alert({
           title: mAppName,
-          template: '당신의 게시물이 신고되어 현재 아이디로 로그인 하지 못합니다. 이의가 있을 시 wechangemakers@gamil.com으로 메일을 보내주세요',
+          template: '당신의 게시물이 신고되어 현재 아이디로 로그인 하지 못합니다. 이의가 있을 시 wechangemakers@gmail.com으로 메일을 보내주세요',
           cssClass: 'wcm-error',
         });  
         return;
@@ -239,7 +239,7 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
         window.localStorage.removeItem('user');
         // $state.go('fblogin');
       },
-      function loginError (error) {
+      function logoutError (error) {
         $ionicLoading.hide();
         console.log("logout error ");
         console.error("logout error : " + JSON.stringify(error));
