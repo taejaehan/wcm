@@ -58,9 +58,6 @@ buildContent funtion에 있는 href를 link로 바꾼다(2곳)
 \plugins\cordova-plugin-facebook4\src\android\ConnectPlugin.java
 \platforms\android\src\org\apache\cordova\facebook\ConnectPlugin.java
 
-Log.d(TAG, "onSuccess" + result);
-Log.d(TAG, "onSuccess" + result);
-
 share이후 callback이 null이 되므로 다시 pluginInitialize 해준다 by tjhan 151109
 shareDialog.show(content); 밑에 pluginInitialize(); 추가	(2곳)
 \plugins\cordova-plugin-facebook4\src\android\ConnectPlugin.java

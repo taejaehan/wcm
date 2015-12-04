@@ -173,6 +173,10 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
         template: '<ion-spinner icon="bubbles"></ion-spinner>'
       });
 
+      $timeout(function(){
+        $ionicLoading.hide();
+      }, 5000);
+
       appAvailability.check(
         scheme,       // URI Scheme or Package Name
         function() {  // Success callback
