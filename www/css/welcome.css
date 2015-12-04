@@ -3,44 +3,73 @@
 	height: 100%;
 	width: 100%;
 }
-
-.welcome_page figure.login {
-	background: url("../img/loginpage.png") no-repeat;
-	background-position: center;
-	margin:0 auto;
-	width: 85%;
+.login-page{
+	text-align: center;
 	height: 100%;
-	background-size: contain;
+	width: 100%;
+}
+.login-page img{
+	margin : 4% 0;
+	width : 55%;
+}
+.login-page button{
+	border: none;
+}
+.email-content{
+	background-color: #f0f0ee;
 }
 
-.welcome_page a.skip-btn {
+.tab{
+	width: 100%;
+}
+button.login-tab {
+	background-color: #fff;
+	width: 49%;
+	height: 50px;
+	text-align: center;
+	padding-top: 15px;
+	text-decoration: none;
+	font-weight: 700;
+	font-size: 95%;
+	border : 0;
+}
+
+button.login-tab.non-active {
+	background-color: #f0f0ee;
+	color: #858484;
+	font-weight: 400;
+}
+.welcome_page button.skip-btn {
 	background: url("../img/skip-btn.png") no-repeat;
 	background-size: contain;
 	background-position: center;
 	width: 70%;
 	height: 8%;
-	position: absolute;
-	top: 60%;
-	left: 15%;
+	margin-bottom : 2%;
+}
+.welcome_page button.email-btn {
+	background: url("../img/email-login-btn.png") no-repeat;
+	background-size: contain;
+	background-position: center;
+	width: 70%;
+	height: 8%;
+	margin-bottom : 2%;
 }
 
-.welcome_page a.fb-btn {
+.welcome_page button.fb-btn {
 	background: url("../img/fb-btn.png") no-repeat;
 	background-size: contain;
 	background-position: center;
 	width: 70%;
 	height: 8%;
-	position: absolute;
-	top: 69%;
-	left: 15%;
 }
 .welcome_page .terms{
 	width: 90%;
 	height: 8%;
-	position: absolute;
-	top: 78%;
-	left: 5%;
 	text-align: center;
+	font-size: 80%;
+	margin: 1% 5%;
+	padding : 5px;
 }
 .welcome_page .terms a{
 	color : #222;
@@ -49,49 +78,84 @@
 .welcome_page .terms-info{
 	width: 90%;
 	height: 8%;
-	position: absolute;
-	top: 86%;
-	left: 5%;
 	text-align: center;
-	font-size : 80%;
+	font-size: 70%;
+	margin: 0 5%;
 }
-
 .welcome_page .terms-middle{
 	border-right: 1px solid #888;
 	border-left: 1px solid #888;
 }
-
+@media only screen  and (min-width : 350px) {
+	.welcome_page .terms{
+		font-size: 100%;
+	}
+	.welcome_page .terms-info{
+		font-size: 90%;
+	}
+}
+@media only screen  and (min-width : 500px) {
+	.welcome_page .terms{
+		font-size: 130%;
+	}
+	.welcome_page .terms-info{
+		font-size: 100%;
+	}
+}
+@media only screen  and (min-width : 590px) {
+	.welcome_page .terms{
+		font-size: 160%;
+	}
+	.welcome_page .terms-info{
+		font-size: 140%;
+	}
+}
 @media only screen  and (min-width : 768px) {
 	.welcome_page figure.login {
 		width: 640px;
 		height: 1036px;
 	}
-
-	.welcome_page a.fb-btn {
-		width: 547px;
-		height: 90px;
-		top: 65%;
+	.welcome_page button.fb-btn {
+		width: 80%;
+		height: 10%;
 	}
-
-	.welcome_page a.skip-btn {
-		width: 547px;
-		height: 90px;
-		top: 76%;
+	.welcome_page button.skip-btn {
+		width: 80%;
+		height: 10%;
+	}
+	.welcome_page button.email-btn{
+		width: 80%;
+		height: 10%;
+	}
+	.welcome_page .terms{
+		font-size: 240%;
+		margin: 2% 5%;
+	}
+	.welcome_page .terms-info{
+		font-size: 170%;
+		margin: 0 5%;
 	}
 }
 
 @media only screen  and (min-width : 1200px) {
-	.welcome_page a.fb-btn {
-		width: 547px;
-		height: 90px;
-		top: 72%;
-		left: 30%;
+	.welcome_page button.fb-btn {
+		width: 80%;
+		height: 10%;
 	}
-
-	.welcome_page a.skip-btn {
-		width: 547px;
-		height: 90px;
-		top: 85%;
-		left: 30%;
+	.welcome_page button.skip-btn {
+		width: 80%;
+		height: 10%;
+	}
+	.welcome_page button.email-btn{
+		width: 80%;
+		height: 10%;
+	}
+	.welcome_page .terms{
+		font-size: 340%;
+		margin: 5% 5%;
+	}
+	.welcome_page .terms-info{
+		font-size: 270%;
+		margin: 0 5%;
 	}
 }

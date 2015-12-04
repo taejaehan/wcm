@@ -23,8 +23,15 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   $scope.notShowChecked = { checked: false };
   $scope.downloaded = false;
   $scope.page = 0;
-  $rootScope.allData = { cards: [] };
+  // $rootScope.allData = { cards: [] };
 
+  $scope.$on('$ionicView.afterLeave', function(){
+    console.log('aaa');
+  });
+
+  $scope.$on('$ionicView.beforeLeave', function(){
+    console.log('aaa');
+  });
   $scope.$on('$ionicView.beforeEnter', function(){
 
     // 앱에서 열였다면
@@ -79,20 +86,27 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     $ionicLoading.show({
       template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
     });
+    if(user.isAuthenticated) {
+      CardsFactory.getCards(user.userid);
+    } else {
+      CardsFactory.getCards();
+    };
 
-    console.log('user.isAuthenticated : ' + user.isAuthenticated);
-    console.log('userId : ' + user.userid);
-    if($scope.data.sortingType == 'registration'){
-      if(user.isAuthenticated) {
-        CardsFactory.getCards(user.userid);
-      } else {
-        CardsFactory.getCards();
+    //forwardView가 있거나 전에 탭이 ion2(home tab)이 아니라면
+    if($ionicHistory.forwardView() == null || $ionicHistory.forwardView().historyId !== 'ion2') {
+      if($scope.data.sortingType != 'registration'){
+        $scope.sortBy($scope.data.sortingType);
       }
     }else{
-      if(!($ionicHistory.forwardView() == null || $ionicHistory.forwardView().historyId !== 'ion2')) {
-        $scope.sortBy($scope.data.sortingType, true);
+      //forwardview가 없거나 다른 탭에서 왔다면 스크롤 
+      if(CardService.scrollPosition != null){
+        $timeout(function() {
+          $ionicScrollDelegate.scrollTo(0,CardService.scrollPosition.top,false);
+        }, 200);
       }
     }
+
+    
 
     // card이미지를  file system에 저장하는 부분 넣으면 너무 느려서 임시로 주석처리 by tjhan 20151002
     /*app file system안에 폴더만들고 이미지 저장*/
@@ -118,39 +132,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       });
     });*/
   });
-
-  /*
-  *   서버에서 이미지 가져와서 app file system안에 저장
-  */
-  $scope.fileDownload = function(){
-    if(!$scope.downloaded){
-      $scope.downloaded = true;
-      for (var i = 0; i < cardList.cards.length; i++) {
-        // if(i > 3) return;
-        var fileName = cardList.cards[i].img_path;
-        if(fileName != ''){
-          var filePath = mServerUploadThumb + fileName;
-          var targetPath = cordova.file.dataDirectory+ 'cardImage/' + fileName;
-          var options = {};
-          var trustHosts = true;
-
-          $cordovaFileTransfer.download(filePath, targetPath, options, trustHosts)
-          .then(function(result) {
-            // Success!
-            console.log('download success : ' + JSON.stringify(result));
-          }, function(err) {
-            // Error
-            console.log('download error : ' + JSON.stringify(err));
-          }, function (progress) {
-            $timeout(function () {
-              $scope.downloadProgress = (progress.loaded / progress.total) * 100;
-            })
-          });
-        }
-      }
-    }
-  }
-
   /*
   * welcome slider previous
   */
@@ -163,7 +144,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   $scope.sliderNext = function() {
     $ionicSlideBoxDelegate.next();
   }
-
   /*
   * 인터넷 연결 끊김 sub header 닫기
   */
@@ -176,7 +156,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   $scope.showSubHeader = function(){
     document.getElementById('sub_header_offline').setAttribute('style','display:block');
   }
-
+  /*
+  * 사용자가 로그인했는지 안했는지에 따라 버튼을 show를 설정
+  */
   $scope.userLogin = function(card) {
     if(user != null){
       if (user.isAuthenticated === true) {
@@ -191,67 +173,28 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     }
   }
   /*
-  * 현재 id보다 큰 card를 가져와서 메인에 추가함
-  * 수정/삭제 된 card를 cover할 수 없으므로 현재 사용하지 않고 보류중
+  * Check current user & card user
   */
-  $scope.getNewCards = function() {
-
-    //app에서 띄운 webview가 아니거나 online일 경우만
-    if (!(mIsWebView) || $cordovaNetwork.isOnline()) {
-
-      /* isOnline */
-      $timeout( function() {
-
-        //localStorage cardList 갱신
-        cardList = JSON.parse(window.localStorage['cardList'] || '{}');
-        console.log('getNewCards - latest id : '  + cardList.cards[0].id);
-
-        //id보다 최신 cards를 불러온다
-        var request = $http({
-            method: "get",
-            url: mServerAPI + "/cardsMore/" + cardList.cards[0].id,
-            crossDomain : true,
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-            cache: false
-        });
-
-        request.success(function(data) {
-          var temp = [];
-          temp.push(JSON.parse(localStorage.getItem('cardList')));
-          for (var i = 0; i < data.cards.length; i++) {
-            temp[0].cards.unshift(data.cards[i]);
-            if(data.cards[i].img_path == '') data.cards[i].img_path = mNoImageThumb;
-            $rootScope.allData.cards.unshift(data.cards[i]);
-          }
-          localStorage.setItem('cardList', JSON.stringify(temp[0]));
-        });
-
-        //Stop the ion-refresher from spinning
-        $scope.$broadcast('scroll.refreshComplete');
-      }, 1000);
-
-    } else {
-      /* isOffline */
-      $ionicPopup.alert({
-        title: mAppName,
-        template: '인터넷에 연결 상태를 확인하세요',
-        cssClass: 'wcm-error',
-      });
-
-      //미리 가져온 cardlist 사용
-      // $scope.offlineCard();
-
-      //Stop the ion-refresher from spinning
-      $scope.$broadcast('scroll.refreshComplete');
+  $scope.userChecked = function(card) {
+    if(user != null){
+      if (user.isAuthenticated === true) {
+        if ( card.user[0].user_id === user.userid ) {
+          return { 'display' : 'inline-block' };
+        } else {
+          return { 'display' : 'none' };
+        }
+      } else {
+        return { 'display' : 'none' }
+      }
     }
   }
-
-
   /*
   * card를 새로 가져옴
   * @param : init(String) 'init'이면 처음 페이지 데이터를 다시 가져옴
   */
   $scope.doRefresh = function(init) {
+
+    console.log('doRefresh : ' + init);
     $scope.noMoreItemsAvailable = true;
 
     $timeout( function() {
@@ -264,7 +207,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           console.log("처음 init할 때만 실행");
           $scope.page = 0;
           $rootScope.allData = { cards: [] };
-
           // CardsFactory.cards();
         };
         if($scope.currentLat == null){
@@ -272,109 +214,76 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           $scope.currentLon = 126.976930;
         };
 
-        if($ionicHistory.forwardView() == null || $ionicHistory.forwardView().historyId !== 'ion2' || init == 'init') {
+        $ionicLoading.show({
+          template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
+        });
+        
+        var formData = {
+                        lat: $scope.currentLat,
+                        lon: $scope.currentLon
+                      };
 
-          $ionicLoading.show({
-            template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
-          });
-          
-          var formData = {
-                          lat: $scope.currentLat,
-                          lon: $scope.currentLon
-                        };
+        var postData = 'locationData='+JSON.stringify(formData);
 
-          var postData = 'locationData='+JSON.stringify(formData);
+        var url = mServerAPI + "/card/" + $scope.page + '/' + $scope.data.sortingType;
+        if(user.isAuthenticated === true){
+          url = url + '/' + user.userid;
+        }
+        var request = $http({
+            method: "post",
+            url: url,
+            crossDomain : true,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+            data: postData,
+            cache: false
+        });
 
-          var url = mServerAPI + "/card/" + $scope.page + '/' + $scope.data.sortingType;
-          if(user.isAuthenticated === true){
-            url = url + '/' + user.userid;
-          }
-          var request = $http({
-              method: "post",
-              url: url,
-              crossDomain : true,
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-              data: postData,
-              cache: false
-          });
+        request.error(function(error){
+          $ionicLoading.hide();
+          console.log('error : ' + JSON.stringify(error));
+        })
+        request.success(function(data) {
+          $ionicLoading.hide();
+          for (var i = 0; i < data.cards.length; i++) {
 
-          request.error(function(error){
-            $ionicLoading.hide();
-            console.log('error : ' + JSON.stringify(error));
-          })
-          request.success(function(data) {
-            $ionicLoading.hide();
-            for (var i = 0; i < data.cards.length; i++) {
+            $scope.noMoreItemsAvailable = false;
+            CardService.status(data.cards, i);
 
-              $scope.noMoreItemsAvailable = false;
-              CardService.status(data.cards, i);
+            if (data.cards[i].img_path == '') {
+              data.cards[i].img_path = mNoImageThumb;
+            } else if(data.cards[i].img_path.substr(0,4) == 'http'){
+              data.cards[i].img_path = data.cards[i].img_path;
+            }else{
+              data.cards[i].img_path = mServerUploadThumb + data.cards[i].img_path;
+            }
 
-              if (data.cards[i].img_path == '') {
-                data.cards[i].img_path = mNoImageThumb;
-              } else if(data.cards[i].img_path.substr(0,4) == 'http'){
-                data.cards[i].img_path = data.cards[i].img_path;
-              }else{
-                data.cards[i].img_path = mServerUploadThumb + data.cards[i].img_path;
-              }
+            if(data.cards[i].user[0].userimage != null){
+              data.cards[i].user[0].userimage = data.cards[i].user[0].userimage;
+            }
 
-              if(data.cards[i].user[0].userimage != null){
-                data.cards[i].user[0].userimage = data.cards[i].user[0].userimage;
-              }
+            data.cards[i].address = data.cards[i].location_name;
+            data.cards[i].userId = data.cards[i].user[0].user_id;
 
-              data.cards[i].address = data.cards[i].location_name;
-              data.cards[i].userId = data.cards[i].user[0].user_id;
+            var object =  data.cards[i];
+            $rootScope.allData.cards.push(object);
 
-              var object =  data.cards[i];
-              $rootScope.allData.cards.push(object);
-
-              if(user != null){
-                if (user.isAuthenticated === true) {
-                  for(var j = 0; j < $rootScope.allData.cards.length; j ++) {
-                    if(user.watchs.indexOf($rootScope.allData.cards[j].id) != -1) {
-                      $rootScope.allData.cards[j].watch = true;
-                    } else {
-                      $rootScope.allData.cards[j].watch = false;
-                    }
+            if(user != null){
+              if (user.isAuthenticated === true) {
+                for(var j = 0; j < $rootScope.allData.cards.length; j ++) {
+                  if(user.watchs.indexOf($rootScope.allData.cards[j].id) != -1) {
+                    $rootScope.allData.cards[j].watch = true;
+                  } else {
+                    $rootScope.allData.cards[j].watch = false;
                   }
                 }
               }
-            };
-            $scope.page++;
-            $scope.$broadcast('scroll.infiniteScrollComplete');
-            // window.localStorage['cardList'] = JSON.stringify(data);
-            // cardList = JSON.parse(window.localStorage['cardList']);
-          });
-        } else {
-           // back from detail page
-
-           // cardList = JSON.parse(window.localStorage['cardList']);
-
-           for (var i = 0; i < cardList.cards.length; i++) {
-             CardService.status(cardList.cards, i);
-             if (cardList.cards[i].img_path == '') {
-               cardList.cards[i].img_path = mNoImageThumb;
-             } else {
-               cardList.cards[i].img_path = mServerUploadThumb + cardList.cards[i].img_path;
-             }
-           }
-           $rootScope.allData.cards = cardList.cards;
-           if(user != null){
-             if (user.isAuthenticated === true) {
-               for(var j = 0; j < $rootScope.allData.cards.length; j ++) {
-                 if(user.watchs.indexOf($rootScope.allData.cards[j].id) != -1) {
-                   $rootScope.allData.cards[j].watch = true;
-                 } else {
-                   $rootScope.allData.cards[j].watch = false;
-                 }
-               }
-             }
-           }
-           if(CardService.scrollPosition != null){
-            $timeout(function() {
-              $ionicScrollDelegate.scrollTo(0,CardService.scrollPosition.top,false);
-            }, 200);
-           }
-        }
+            }
+          };
+          $scope.page++;
+          $scope.$broadcast('scroll.infiniteScrollComplete');
+          // window.localStorage['cardList'] = JSON.stringify(data);
+          // cardList = JSON.parse(window.localStorage['cardList']);
+        });
 
         //Stop the ion-refresher from spinning
         $scope.$broadcast('scroll.refreshComplete');
@@ -396,32 +305,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     },100);
   }
 
-  /*
-  * offline일 경우 처음에 가져온 cardlist를 사용하여 보여준다
-  */
-  $scope.offlineCard = function(){
-
-    //data 비우고 push
-    $rootScope.allData = {
-                    cards: []
-                 };
-    //cardList 갱신
-    cardList = JSON.parse(window.localStorage['cardList'] || '{}');
-    //offline일 경우 미리 가져왔던 cardlist데이터와 file system에 저장되 있는 이미지를 보여줌
-    for (var i = 0; i < cardList.cards.length; i++) {
-      var fileName = cardList.cards[i].img_path.split("/").pop();
-      if(fileName != ''){
-        console.log('offline FileName : ' + fileName);
-        console.log('offline fullpath : ' + cordova.file.dataDirectory+ 'cardImage/' + fileName);
-        cardList.cards[i].img_path = cordova.file.dataDirectory+ 'cardImage/' + fileName;
-      }else{
-        cardList.cards[i].img_path = mNoImageThumb;
-      }
-      $rootScope.allData.cards.push(cardList.cards[i]);
-    }
-  }
-
-
   $scope.openPopover = function ($event) {
     // console.log('openPopover');
     $ionicPopover.fromTemplateUrl('templates/popover.html', {
@@ -431,8 +314,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       $scope.popover.show($event);
     });
   };
-
-
   $scope.postReport = function ($event, card) {
     CardService.temporaryPost = card;
     $ionicPopover.fromTemplateUrl('templates/report.html', {
@@ -442,7 +323,9 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       $scope.reportPopover.show($event);
     });
   };
-
+  /*
+  * 현재 계속 위치를 가져와서 위도/경도를 넣어줌
+  */
   function showPosition(position) {
     // console.log('showPosition ');
     // console.log('position.coords.latitude : ' + position.coords.latitude);
@@ -487,13 +370,15 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       console.log("Ionic Push: Push error...");
       console.log('error : ' + JSON.stringify(error));
     });*/
-  }
-
+  };
   function showPositionError(error) {
     console.log('showPositionError : (' + error.code + '): ' + error.message);
-  }
+  };
 
-  $scope.sortBy = function(sortType, sortedBefore) {
+  /*
+  * 분류 타입(최신,위험,위치)에 따라 데이터를 불러옴
+  */
+  $scope.sortBy = function(sortType) {
     console.log("sortBy sortType : " + sortType);
     if($scope.popover != null){
       $scope.popover.hide();
@@ -577,13 +462,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
             }
           }
         }
-        if(sortedBefore){
-          if(CardService.scrollPosition != null){
-            $timeout(function() {
-              $ionicScrollDelegate.scrollTo(0,CardService.scrollPosition.top,false);
-            }, 200);
-           }
-        }
       }
       $scope.page++;
       $scope.$broadcast('scroll.infiniteScrollComplete');
@@ -594,34 +472,18 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   // popover창에서 sort type을 변경 했을 때 호출됨
   $scope.sortingTypeChange = function(item) {
     CardService.sortType = item.value;
-    $scope.sortBy(item.value, false);
+    $scope.sortBy(item.value);
   };
-
   // warnings map show
   $scope.findWarning = function() {
     CardService.scrollPosition = $ionicScrollDelegate.getScrollPosition();
     $state.go("tabs.map");
   }
-
   // 각 card의 location map show
   $scope.showMap = function(lat, lon) {
+    CardService.scrollPosition = $ionicScrollDelegate.getScrollPosition();
     var latlng = new google.maps.LatLng(lat, lon);
     $state.go('tabs.location_h', { 'latlng': latlng});
-  }
-
-  // Check current user & card user
-  $scope.userChecked = function(card) {
-    if(user != null){
-      if (user.isAuthenticated === true) {
-        if ( card.user[0].user_id === user.userid ) {
-          return { 'display' : 'inline-block' };
-        } else {
-          return { 'display' : 'none' };
-        }
-      } else {
-        return { 'display' : 'none' }
-      }
-    }
   }
   /*
   * 해당 유저의 fb profile로 연결합니다
@@ -730,4 +592,108 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     $scope.reportPopover.hide();
   }
 
+  /******************************************사용하지 않고 보류중*************************************************/
+  /*
+  *   서버에서 이미지 가져와서 app file system안에 저장
+  */
+  // $scope.fileDownload = function(){
+  //   if(!$scope.downloaded){
+  //     $scope.downloaded = true;
+  //     for (var i = 0; i < cardList.cards.length; i++) {
+  //       // if(i > 3) return;
+  //       var fileName = cardList.cards[i].img_path;
+  //       if(fileName != ''){
+  //         var filePath = mServerUploadThumb + fileName;
+  //         var targetPath = cordova.file.dataDirectory+ 'cardImage/' + fileName;
+  //         var options = {};
+  //         var trustHosts = true;
+
+  //         $cordovaFileTransfer.download(filePath, targetPath, options, trustHosts)
+  //         .then(function(result) {
+  //           // Success!
+  //           console.log('download success : ' + JSON.stringify(result));
+  //         }, function(err) {
+  //           // Error
+  //           console.log('download error : ' + JSON.stringify(err));
+  //         }, function (progress) {
+  //           $timeout(function () {
+  //             $scope.downloadProgress = (progress.loaded / progress.total) * 100;
+  //           })
+  //         });
+  //       }
+  //     }
+  //   }
+  // }
+  /*
+  * 현재 id보다 큰 card를 가져와서 메인에 추가함
+  * 수정/삭제 된 card를 cover할 수 없으므로 현재 사용하지 않고 보류중
+  */
+  // $scope.getNewCards = function() {
+  //   //app에서 띄운 webview가 아니거나 online일 경우만
+  //   if (!(mIsWebView) || $cordovaNetwork.isOnline()) {
+
+  //     /* isOnline */
+  //     $timeout( function() {
+  //       //localStorage cardList 갱신
+  //       cardList = JSON.parse(window.localStorage['cardList'] || '{}');
+  //       console.log('getNewCards - latest id : '  + cardList.cards[0].id);
+  //       //id보다 최신 cards를 불러온다
+  //       var request = $http({
+  //           method: "get",
+  //           url: mServerAPI + "/cardsMore/" + cardList.cards[0].id,
+  //           crossDomain : true,
+  //           headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+  //           cache: false
+  //       });
+  //       request.success(function(data) {
+  //         var temp = [];
+  //         temp.push(JSON.parse(localStorage.getItem('cardList')));
+  //         for (var i = 0; i < data.cards.length; i++) {
+  //           temp[0].cards.unshift(data.cards[i]);
+  //           if(data.cards[i].img_path == '') data.cards[i].img_path = mNoImageThumb;
+  //           $rootScope.allData.cards.unshift(data.cards[i]);
+  //         }
+  //         localStorage.setItem('cardList', JSON.stringify(temp[0]));
+  //       });
+  //       //Stop the ion-refresher from spinning
+  //       $scope.$broadcast('scroll.refreshComplete');
+  //     }, 1000);
+  //   } else {
+  //     /* isOffline */
+  //     $ionicPopup.alert({
+  //       title: mAppName,
+  //       template: '인터넷에 연결 상태를 확인하세요',
+  //       cssClass: 'wcm-error',
+  //     });
+  //     //미리 가져온 cardlist 사용
+  //     // $scope.offlineCard();
+
+  //     //Stop the ion-refresher from spinning
+  //     $scope.$broadcast('scroll.refreshComplete');
+  //   }
+  // }
+  /*
+  * offline일 경우 처음에 가져온 cardlist를 사용하여 보여준다
+  */
+  // $scope.offlineCard = function(){
+  //   //data 비우고 push
+  //   $rootScope.allData = {
+  //                   cards: []
+  //                };
+  //   //cardList 갱신
+  //   cardList = JSON.parse(window.localStorage['cardList'] || '{}');
+  //   //offline일 경우 미리 가져왔던 cardlist데이터와 file system에 저장되 있는 이미지를 보여줌
+  //   for (var i = 0; i < cardList.cards.length; i++) {
+  //     var fileName = cardList.cards[i].img_path.split("/").pop();
+  //     if(fileName != ''){
+  //       console.log('offline FileName : ' + fileName);
+  //       console.log('offline fullpath : ' + cordova.file.dataDirectory+ 'cardImage/' + fileName);
+  //       cardList.cards[i].img_path = cordova.file.dataDirectory+ 'cardImage/' + fileName;
+  //     }else{
+  //       cardList.cards[i].img_path = mNoImageThumb;
+  //     }
+  //     $rootScope.allData.cards.push(cardList.cards[i]);
+  //   }
+  // }
+  /******************************************사용하지 않고 보류중*************************************************/
 });

@@ -321,27 +321,39 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 		$ionicLoading.hide();
 		console.log(error);
 	});
-	request.success(function() {
+	request.success(function(data) {
 		$ionicLoading.hide();
-		user.username = edit_name;
-		window.localStorage['user'] = JSON.stringify(user);
-		console.log(user);
+		if(data.error != null){
+			if(data.error == 'sameUserName'){
+				$ionicPopup.alert({
+					title: mAppName,
+					template: '중복된 사용자 이름입니다',
+					cssClass: 'wcm-negative',
+				});  
+				return;
+			}
+		}else{
+			var myPopup = $ionicPopup.show({
+			  template: "변경이 완료되었습니다",
+			  title: mAppName,
+			  cssClass: 'wcm-positive',
+			  buttons: [
+			    {
+			      text: '<b>OK</b>',
+			      type: 'button-positive',
+			      onTap: function(e) {
+			        $ionicHistory.goBack();
+			      }
+			    }
+			  ]
+			});
+			user.username = edit_name;
+			window.localStorage['user'] = JSON.stringify(user);
+			console.log(user);
+		}
 	});
 
-	var myPopup = $ionicPopup.show({
-	  template: "변경이 완료되었습니다",
-	  title: mAppName,
-	  cssClass: 'wcm-positive',
-	  buttons: [
-	    {
-	      text: '<b>OK</b>',
-	      type: 'button-positive',
-	      onTap: function(e) {
-	        $ionicHistory.goBack();
-	      }
-	    }
-	  ]
-	});
+	
   }
 
   /*

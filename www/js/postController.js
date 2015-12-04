@@ -155,7 +155,7 @@ wcm.controller("PostController", function($scope, $rootScope, $stateParams, $sta
         }
 
         var post_id = parseInt($stateParams.postId);
-        var user_app_id = parseInt(user.userid);
+        var user_app_id = user.userid;
 
         var formData = {
                           post_id: post_id,
@@ -216,7 +216,7 @@ wcm.controller("PostController", function($scope, $rootScope, $stateParams, $sta
   // 현재 로그인중인 user와 코멘트를 작성한 user 체크
   $scope.userChecked = function(comment) {
     if (user.isAuthenticated === true) {
-      if ( parseInt(comment.user[0].user_id) == user.userid ) {
+      if ( comment.user[0].user_id == user.userid ) {
         return { 'display' : 'inline-block' };
       } else {
         return { 'display' : 'none' };
@@ -272,7 +272,7 @@ wcm.controller("PostController", function($scope, $rootScope, $stateParams, $sta
         $ionicLoading.show({
           template: '<ion-spinner icon="bubbles"></ion-spinner>'
         });
-        var userId = parseInt(user.userid);
+        var userId = user.userid;
         var postId = parseInt($stateParams.postId);
         var formData =  {
                           user_id: userId,
