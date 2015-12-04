@@ -512,6 +512,7 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
             type: 'button-positive',
             onTap: function(e) {
               console.log('do share');
+              $ionicLoading.hide();
               card.img_path = mServerUpload + card.img_path;
               CardService.share('facebook', card);
             }
