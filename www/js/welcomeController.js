@@ -27,7 +27,7 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
    if(!(form.$valid) || (type == 'emailSignup' && $scope.data.password != $scope.data.password2)){
      var confirmPopup = $ionicPopup.alert({
         title: mAppName,
-        template: '형식에 맞게 입력해주세요',
+        template: '형식에 맞게 입력해주세요. </br> 이메일은 you@domain.com 형식으로, </br> 사용자 이름 3자 이상,  비밀번호 7자 이상, </br> 비밀번호와 비밀번호확인은 같아야 합니다',
         cssClass: 'wcm-negative',
       });
       return;
