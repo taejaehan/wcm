@@ -22,11 +22,11 @@
     "com.ionic.keyboard",
     "org.apache.cordova.file",
     "org.apache.cordova.file-transfer",
-    "phonegap-plugin-push",
-    "cordova-plugin-file-transfer"
+    "cordova-plugin-file-transfer",
+    "pushwoosh-cordova-plugin",
+    "phonegap-plugin-push"
   ],
   "cordovaPlatforms": [
-    "android",
     "ios"
   ]
 }
