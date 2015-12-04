@@ -48,7 +48,7 @@ var PROGRESS_COMPLETED_TEXT = "위험요소가 해결되었습니다";
 //부적절한 글로 신고된 갯수로 로그인을 금지 할 때 사용
 var BAD_REPORT_LOGIN_LIMIT = 5;
 
-var wcm = angular.module('wcm', ['ionic', 'ngCordova', 'ng', 'pasvaz.bindonce'])
+var wcm = angular.module('wcm', ['ionic', 'ngCordova', 'ng', 'pasvaz.bindonce', 'ngTouch'])
 
 //controller간 데이터를 전달하기 위해 사용한다
 wcm.factory('Scopes', function($rootScope) {
@@ -81,7 +81,6 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
 
     //메인홈에서 보여주는 cardData reset;
     $rootScope.allData = { cards: [] };
-    
     //localStorage 저장된 데이터 clear
     window.localStorage.clear();
 

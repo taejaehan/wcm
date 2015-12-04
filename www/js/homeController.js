@@ -92,10 +92,16 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       CardsFactory.getCards();
     };
 
-    //forwardView가 있거나 전에 탭이 ion2(home tab)이 아니라면
+    //forwardView가 없거나 전에 탭이 ion2(home tab)이 아니라면
     if($ionicHistory.forwardView() == null || $ionicHistory.forwardView().historyId !== 'ion2') {
-      if($scope.data.sortingType != 'registration'){
-        $scope.sortBy($scope.data.sortingType);
+      //forwardView가 없고 전에 탭이 ion2(home tab)이 아니라면 (카드 등록시 $ionicHistory.clearHistory()하면 실행 됨)
+      if($ionicHistory.forwardView() != null && $ionicHistory.forwardView().historyId !== 'ion2'){
+        if($scope.data.sortingType != 'registration'){
+          $scope.sortBy($scope.data.sortingType);
+        }
+      }else{
+        $scope.data.sortingType = 'registration';
+        $scope.doRefresh('init');
       }
     }else{
       //forwardview가 없거나 다른 탭에서 왔다면 스크롤 
@@ -413,7 +419,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
     });
 
-    $rootScope.allData.cards = [];
+    $rootScope.allData = { cards: [] };
 
     request.error(function(error){
       $ionicLoading.hide();
