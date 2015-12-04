@@ -1,0 +1,46 @@
+<ion-view title="이메일 로그인">
+    <ion-content padding="true" class="has-header email-content">
+        <div class="tab">
+            <button ng-click="showSignupTab()" class="right-tab" ng-class="{'login-tab active' : signupTab, 'login-tab non-active' : !signupTab}">가입하기</button>
+            <button ng-click="showLoginTab()" class="left-tab" ng-class="{'login-tab active' : loginTab, 'login-tab non-active' : !loginTab}">로그인</button>
+        </div>
+        <div ng-if="loginTab" class="tab-div">
+            <form name="loginForm" novalidate="" ng-submit="emailLogin(loginForm, 'emailLogin')">
+                <ion-list>
+                    <label class="item item-input">
+                        <span class="input-label">이메일</span>
+                        <input type="email" placeholder="you@domain.com" ng-model="data.email">
+                    </label>
+                    <label class="item item-input">
+                        <span class="input-label">비밀번호</span>
+                        <input type="password" placeholder="" ng-model="data.password">
+                    </label>
+                </ion-list>
+                <button class="button button-stable button-block" type="submit">Done</button>
+            </form>
+        </div>
+        <div ng-if="signupTab" class="tab-div">
+            <form name="signUpForm" novalidate="" ng-submit="emailLogin(signUpForm, 'emailSignup')">
+                <ion-list>
+                    <label class="item item-input">
+                        <span class="input-label">사용자 이름</span>
+                        <input type="text" ng-minlength="5" placeholder="5글자 이상 입력하세요" ng-model="data.username">
+                    </label>
+                    <label class="item item-input">
+                        <span class="input-label">이메일</span>
+                        <input type="email" placeholder="you@domain.com" ng-model="data.email">
+                    </label>
+                    <label class="item item-input">
+                        <span class="input-label">비밀번호</span>
+                        <input type="password" ng-minlength="7"  placeholder="7글자 이상 입력하세요" ng-model="data.password">
+                    </label>
+                    <label class="item item-input">
+                        <span class="input-label">비밀번호확인</span>
+                        <input type="password" ng-minlength="7" placeholder="7글자 이상 입력하세요" ng-model="data.password2">
+                    </label>
+                </ion-list>
+                <button class="button button-stable button-block" type="submit">Done</button>
+            </form>
+        </div>
+    </ion-content>
+</ion-view>

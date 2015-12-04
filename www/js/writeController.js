@@ -102,7 +102,10 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
   /*
   * 카메라 또는 앨범을 선택할 수 있는 시트를 보여준다
   */
-  $scope.showPictureSheet = function(){
+  $scope.showPictureSheet = function(event){
+
+    console.log('event :  ' + event);
+    console.log($ionicActionSheet.show);
     // Show the action sheet
    var hideSheet = $ionicActionSheet.show({
      buttons: [
@@ -116,7 +119,6 @@ wcm.controller("WriteController", function($scope, $rootScope, $state, $cordovaC
         // add cancel code..
       },
      buttonClicked: function(index) {
-        console.log('index :  ' + index);
         $scope.getPicture(index);
         return true;
      },

@@ -23,7 +23,7 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
         }, 5000);
 
         /********************watch 테이블에 추가 시작*******************/
-        var userId = parseInt(user.userid);
+        var userId = user.userid;
         var postId = parseInt(id);
         var formData = {
               user_id: userId,

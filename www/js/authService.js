@@ -4,14 +4,13 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
   * 유저 로그인 합니다 
   * @param snsType (String) (ex : 'facebook')
   */
-  var login = function(snsType) {
+  var login = function(snsType, emailUserData) {
     //webview 앱에서 실행했을 때만 facebook login
     if(mIsWebView){
 
       $ionicLoading.show({
-        template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로그인..'
+        template: '<ion-spinner icon="bubbles"></ion-spinner><br/>'
       });
-
       if(snsType == 'facebook'){
 
         /*
@@ -36,11 +35,12 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
                 var formData = {
                                  user_id: String(UserInfo.id),
                                  username: UserInfo.name,
+                                 password : null,
                                  userimage: 'https://graph.facebook.com/'+UserInfo.id+'/picture',
                                  sns: "fb",
-                                 device_uuid : mDeviceUuid
+                                 device_uuid : mDeviceUuid,
                                };
-                userLogin(formData);
+                userLogin(formData, snsType);
               }, 
               function loginError (error) {
                 $ionicLoading.hide();
@@ -66,18 +66,43 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
           }
         );
 
-      } // if(snsType == 'facebook'){ 끝
+      } else if(snsType == 'emailSignup'){
+        console.log('emailSignup emailUserData : ' + emailUserData);
+        var formData = {
+                user_id: emailUserData.email,
+                username: emailUserData.username,
+                password: Aes.Ctr.encrypt(emailUserData.password,'incross',256),
+                userimage: mServerUrl + '/images/email_user_pic.png',
+                sns: "email",
+                device_uuid : mDeviceUuid,
+        };
+        userLogin(formData, snsType);
+      } else if(snsType == 'emailLogin'){
+        console.log('emailSignup emailUserData : ' + emailUserData);
+        var formData = {
+                user_id: emailUserData.email,
+                username: null,
+                password: Aes.Ctr.encrypt(emailUserData.password,'incross',256),
+                userimage: mServerUrl + '/images/email_user_pic.png',
+                sns: "emailLogin",
+                device_uuid : mDeviceUuid,
+        };
+        userLogin(formData, snsType);
+      }// if(snsType == 'facebook'){ 끝
     } else {  //app에서 실행한게 아니면 테스트용도로 넣어줌 
-
+      if(mDeviceUuid == null){
+        mDeviceUuid  = 'd874c9de-b9f6-ef80-3542-570596882578';
+      }
       var formData = {
                          user_id: "1826451354247937",
                          username: "Dev Major",
+                         password: null,
                          userimage: 'https://graph.facebook.com/1826451354247937/picture',
                          sns: "fb",
-                         device_uuid : 'd874c9de-b9f6-ef80-3542-570596882578'
+                         device_uuid : mDeviceUuid
                        };
 
-      userLogin(formData);
+      userLogin(formData, snsType);
     }
   };
 
@@ -85,14 +110,14 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
   * 해당 user_id가 db에 없으면 넣고, 있으면 해당 user 정보를 가져온다
   * @param : formData {user_id:'', username:'',userimage:'',sns:''}
   */
-  var userLogin = function(formData)
+  var userLogin = function(formData, snsType)
   {
     console.log('userLogin formData : ' + formData.username);
     var userData = 'userData='+JSON.stringify(formData);
     
     var request = $http({
        method: "post",
-       url: mServerAPI + "/user",
+       url: mServerAPI + "/loginUser",
        crossDomain : true,
        data: userData,
        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
@@ -100,21 +125,28 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
     });
 
     request.success(function(data) {
-
       $ionicLoading.hide();
-      if(parseInt(data.users[0].bad_report) > BAD_REPORT_LOGIN_LIMIT){
-        if(mIsWebView){
-          //prefrences 초기화
-          Preferences.put('loginId', '');
-        };
-        //경고alert
+      if(data.error != null){
+        if(data.error == 'wrongPassword'){
+          var errorMsg = '';
+          if(snsType == 'emailSignup'){
+            errorMsg = '이미 등록된 이메일입니다';
+          }else if(snsType == 'emailLogin'){
+            errorMsg = '비밀번호가 틀렸습니다';
+          }
+        }else if(data.error == 'wrongEmail'){
+          errorMsg = '등록된 이메일이 아닙니다';
+        }else if(data.error == 'sameUserName'){
+          errorMsg = '중복된 사용자 이름입니다';
+        }
+
         $ionicPopup.alert({
           title: mAppName,
-          template: '당신의 게시물이 신고되어 현재 아이디로 로그인 하지 못합니다. 이의가 있을 시 wechangemakers@gmail.com으로 메일을 보내주세요',
-          cssClass: 'wcm-error',
+          template: errorMsg,
+          cssClass: 'wcm-negative',
         });  
         return;
-      } 
+      };
       /* user data 넣어주기 시작 */
       var user = {
                     username: formData.username,
@@ -126,6 +158,21 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
                   };
       //로그인 했었던 유저라면(db에 user_id가 있다면) watch와 change를 push
       if(data.users != null){
+        //로그인 했었던 유저의 bad_report가 BAD_REPORT_LOGIN_LIMIT보다 크면 retrun;
+        if(parseInt(data.users[0].bad_report) > BAD_REPORT_LOGIN_LIMIT){
+          if(mIsWebView){
+            //prefrences 초기화
+            Preferences.put('loginId', '');
+          };
+          //경고alert
+          $ionicPopup.alert({
+            title: mAppName,
+            template: '당신의 게시물이 신고되어 현재 아이디로 로그인 하지 못합니다. 이의가 있을 시 wechangemakers@gmail.com으로 메일을 보내주세요',
+            cssClass: 'wcm-error',
+          });  
+          return;
+        };
+
         console.log('Existent User : ' + data.users[0].username);
         //로그인 했던 유저라면 db에 있는 이름을 넣어준다
         user.username = data.users[0].username;
