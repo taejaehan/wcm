@@ -1,7 +1,7 @@
 //==============================================================================
 // * Card Detail Factory *
 //==============================================================================
-wcm.factory('CardDetailFactory', function($http, $ionicLoading) {
+wcm.factory('CardDetailFactory', function($http, $ionicLoading, $rootScope) {
 
   function getCard(cardId, callback) {
     var request = $http({
@@ -84,7 +84,27 @@ wcm.factory('CardDetailFactory', function($http, $ionicLoading) {
   }
 
 
-  function changeMakers(postData, callback) {
+  // function changeMakers(postData, callback) {
+  //   var request = $http({
+  //       method: "post",
+  //       url: mServerAPI + "/toggleChange",
+  //       crossDomain : true,
+  //       data: postData,
+  //       headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+  //       cache: false
+  //   });
+
+  //   request.success(function(data) {
+  //     $ionicLoading.hide();
+  //     callback(data);
+  //   });
+  //   request.error(function(error){
+  //     console.log('add change ERROR : ' + error);
+  //     $ionicLoading.hide();
+  //   });
+  // }
+  function changeMakers(formData, scope, user, change) {
+    var postData = 'changeData='+JSON.stringify(formData);
     var request = $http({
         method: "post",
         url: mServerAPI + "/toggleChange",
@@ -96,7 +116,56 @@ wcm.factory('CardDetailFactory', function($http, $ionicLoading) {
 
     request.success(function(data) {
       $ionicLoading.hide();
-      callback(data);
+      console.log('data.status : ' + data.status);
+      if(formData.change){
+        var changerObject = {
+                              user_id: String(user.userid),
+                              changeUser: [{
+                                            userimage: user.userimage,
+                                            username: user.username
+                                          }]
+                            };
+
+        user.changes.push(formData.post_id+'');
+        window.localStorage['user'] = JSON.stringify(user);
+        scope.changers.push(changerObject);
+        scope.changerImage = true;
+        if(data.status == PROGRESS_START || data.status == PROGRESS_ONGOING){
+          document.getElementsByClassName("progress-bar")[0].className =
+           document.getElementsByClassName("progress-bar")[0].className.replace
+              ( 'progress-'+scope.card.status, 'progress-'+data.status );
+          document.getElementsByClassName("change-button")[0].className =
+           document.getElementsByClassName("change-button")[0].className.replace
+              ( 'status-'+scope.card.status, 'status-'+data.status );
+          scope.card.status = data.status
+          if (data.status === PROGRESS_START) {
+            scope.card.statusDescription = PROGRESS_START_TEXT;
+            scope.statusIcon = "project-start";
+          } else if (data.status ===PROGRESS_ONGOING) {
+            scope.card.statusDescription = PROGRESS_ONGOING_TEXT;
+            scope.statusIcon = "project-ongoing";
+          };
+        };
+      }else{
+        // Change List에서 Card 삭제
+        var changeIndex = scope.changeList.indexOf(change);
+        scope.changeList.splice(changeIndex, 1);
+        // User가 local storage에서 가지고 있는 change card id 삭제
+        var postIndex = user.changes.indexOf(change.id);
+        user.changes.splice(postIndex, 1);
+        window.localStorage['user'] = JSON.stringify(user);
+      };
+
+      if(data.status == PROGRESS_START || data.status == PROGRESS_ONGOING){
+        var i = 0;
+        while( i < $rootScope.allData.cards.length) {
+          if ($rootScope.allData.cards[i].id == formData.post_id) {
+            $rootScope.allData.cards[i].status = data.status;
+            break;
+          }
+          i ++;
+        }
+      }
     });
     request.error(function(error){
       console.log('add change ERROR : ' + error);

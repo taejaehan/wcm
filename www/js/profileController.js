@@ -1,4 +1,5 @@
-wcm.controller("ProfileController", function($scope, $state, $http, AuthService, $window, $ionicPopup, $ionicHistory, $ionicLoading, $timeout, CardService) {
+wcm.controller("ProfileController", function($scope, $state, $http, AuthService, $window, 
+	$ionicPopup, $ionicHistory, $ionicLoading, $timeout, CardService, CardDetailFactory) {
 
 	var user = JSON.parse(window.localStorage['user'] || '{}');
 
@@ -193,53 +194,27 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 
 	$scope.cancelChanger = function(change) {
 		var confirmPopup = $ionicPopup.confirm({
-	    title: mAppName,
-	    template: 'Change Supporters 활동을 취소하시겠습니까?',
-	    cssClass: 'wcm-negative',
-	  });
+			title: mAppName,
+			template: 'Change Supporters 활동을 취소하시겠습니까?',
+			cssClass: 'wcm-negative',
+		});
 
-	  confirmPopup.then(function(res) {
+		confirmPopup.then(function(res) {
 			if(res) {
-				$ionicLoading.show({
-				 template: '<ion-spinner icon="bubbles"></ion-spinner>'
-				});
-				var userId = parseInt(user.userid);
-				var postId = change.id;
-				var formData =  {
-				                 user_id: userId,
-				                 post_id: postId,
-				                 change : false
-				               };
-				var postData = 'changeData='+JSON.stringify(formData);
-
-				var request = $http({
-				   method: "post",
-				   url: mServerAPI + "/toggleChange",
-				   crossDomain : true,
-				   data: postData,
-				   headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-				   cache: false
-				});
-				request.error(function(error){
-				 console.log('add change ERROR : ' + error);
-				 $ionicLoading.hide();
-				});
-				request.success(function(data) {
-				 console.log('add change SUCCESS : ' + data);
-				 $ionicLoading.hide();
-				// Change List에서 Card 삭제
-				var changeIndex = $scope.changeList.indexOf(change);
-				$scope.changeList.splice(changeIndex, 1);
-
-				console.log(user.changes);
-				// User가 local storage에서 가지고 있는 change card id 삭제
-				var postIndex = user.changes.indexOf(change.id);
-				user.changes.splice(postIndex, 1);
-				window.localStorage['user'] = JSON.stringify(user);
-				console.log(user.changes);
-				});
+			$ionicLoading.show({
+				template: '<ion-spinner icon="bubbles"></ion-spinner>'
+			});
+			var userId = parseInt(user.userid);
+			var postId = change.id;
+			var formData =  {
+				user_id: userId,
+				post_id: postId,
+				change : false
+			};
+			
+			CardDetailFactory.changeMakers(formData, $scope, user, change);
 			}
-	  });
+		});
 	}
 
 	$scope.goLogin = function() {

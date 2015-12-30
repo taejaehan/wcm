@@ -1,7 +1,8 @@
 <ion-view view-title="{{cardTitle}}">
   <ion-content overflow-scroll="true">
-
-    <img id="post_img" ng-src="{{ ::card.img_path }}" class="posting-image" onError="this.src='img/default.png'">
+    <!--<figure>  --> <!--background image넣을것 -->
+      <img id="post_img" ng-src="{{ ::card.img_path }}" class="posting-image" onError="this.src='img/default.png'">
+    <!--</figure> -->
     <div id="detail_page">
 
       <span class="timeago" ng-bind="createTime"></span>

@@ -10,7 +10,7 @@
 
   <ion-content overflow-scroll="true">
 
-  <ion-refresher on-refresh="doRefresh('init')">
+  <ion-refresher on-refresh="doRefresh()">
   </ion-refresher>
     <ion-list>
 
@@ -69,7 +69,7 @@
 
         </ion-item>
 
-        <ion-infinite-scroll ng-if="!noMoreItemsAvailable" on-infinite="doRefresh()" distance="10%">
+        <ion-infinite-scroll ng-if="!noMoreItemsAvailable" on-infinite="loadMore()" distance="10%">
         </ion-infinite-scroll>
 
       </div>

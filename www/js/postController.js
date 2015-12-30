@@ -279,30 +279,13 @@ wcm.controller("PostController", function($scope, $rootScope, $stateParams, $sta
                           post_id: postId,
                           change : true
                         };
-        var postData = 'changeData='+JSON.stringify(formData);
-
-        CardDetailFactory.changeMakers(postData, function(data) {
-          console.log('add change SUCCESS : ' + data);
-          user.changes.push($stateParams.postId);
-          window.localStorage['user'] = JSON.stringify(user);
-          $scope.changers.push(changerObject);
-          $scope.changerImage = true;
-        });
+        CardDetailFactory.changeMakers(formData, $scope, user);
       }
     });
   }
 
-  var changerObject = {
-                        user_id: String(user.userid),
-                        changeUser: [{
-                                      userimage: user.userimage,
-                                      username: user.username
-                                    }]
-                      };
-
   // Change Supporters 버튼 눌렀을때
   $scope.weChange = function() {
-
     if (user.isAuthenticated === true) {
 
       if ($scope.card.status == 100) {

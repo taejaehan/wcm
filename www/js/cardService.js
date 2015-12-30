@@ -7,6 +7,7 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
   * @param user : watch할 user 정보
   */
   this.scrollPosition;
+  this.page;
   this.sortType = 'registration';
   this.temporaryPost;
 
@@ -291,6 +292,7 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
     weChange: weChange,
     share: share,
     scrollPosition: this.scrollPosition,
+    page: this.page,
     sortType: this.sortType,
     status: status,
     temporaryPost: this.temporaryPost
