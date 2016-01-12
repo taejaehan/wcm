@@ -286,7 +286,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           cssClass: 'wcm-error',
         });
       }
-    }, 200);
+    }, 150);
   };
 
   /*
