@@ -198,6 +198,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
             userid: data.users[0].user_id,
             userimage: data.users[0].userimage.split("amp;").join("&"),
             isAuthenticated: true,
+            snsType : data.sns,
             watchs : [],
             changes : [],
           };
@@ -667,11 +668,19 @@ function handleOpenURL(url) {
   console.log('appjs handleOpenURL url : ' + url);
 
   setTimeout(function() {
-    // alert("received url: " + url);
-    var postId = url.split("post")[1];
-    if(postId != null) {
+    var postId = '';
+    if(url.indexOf('fb.me') != -1) {
+      // alert("received url: " + url);
+      var postBack = url.split("post")[1];
+      console.log('postBack : ' + postBack);
+      postId = postBack.split("%")[0];
+    }else if(url.indexOf('kakao') != -1) {
+      postId = url.split("postId=")[1];
+    };
+    
+    console.log('postId : ' + postId);
+    if(postId != null && postId != '') {
       window.location.href = '#/tab/home/' + postId;
     }
-    console.log('postId : ' + postId);
   }, 10);
 };

@@ -39,30 +39,26 @@ button.login-tab.non-active {
 	color: #858484;
 	font-weight: 400;
 }
-.welcome_page button.skip-btn {
-	background: url("../img/skip-btn.png") no-repeat;
-	background-size: contain;
-	background-position: center;
+.welcome_page button{
+	background-size: contain !important;
+	background-position: center !important;
 	width: 70%;
 	height: 8%;
-	margin-bottom : 2%;
+	margin-bottom : 10px;
+}	
+.welcome_page button.skip-btn {
+	background: url("../img/skip-btn.png") no-repeat;
 }
 .welcome_page button.email-btn {
 	background: url("../img/email-login-btn.png") no-repeat;
-	background-size: contain;
-	background-position: center;
-	width: 70%;
-	height: 8%;
-	margin-bottom : 2%;
 }
-
 .welcome_page button.fb-btn {
 	background: url("../img/fb-btn.png") no-repeat;
-	background-size: contain;
-	background-position: center;
-	width: 70%;
-	height: 8%;
 }
+.welcome_page button.kakao-btn {
+	background: url("../img/kakao-btn.png") no-repeat;
+}
+
 .welcome_page .terms{
 	width: 90%;
 	height: 8%;
@@ -111,22 +107,19 @@ button.login-tab.non-active {
 	}
 }
 @media only screen  and (min-width : 768px) {
+	.login-page img{
+		margin : 2% 0;
+		width : 45%;
+	}
 	.welcome_page figure.login {
 		width: 640px;
 		height: 1036px;
 	}
-	.welcome_page button.fb-btn {
-		width: 80%;
+	.welcome_page button{
+		width: 70%;
 		height: 10%;
 	}
-	.welcome_page button.skip-btn {
-		width: 80%;
-		height: 10%;
-	}
-	.welcome_page button.email-btn{
-		width: 80%;
-		height: 10%;
-	}
+	
 	.welcome_page .terms{
 		font-size: 240%;
 		margin: 2% 5%;
@@ -138,15 +131,11 @@ button.login-tab.non-active {
 }
 
 @media only screen  and (min-width : 1200px) {
-	.welcome_page button.fb-btn {
-		width: 80%;
-		height: 10%;
+	.login-page img{
+		margin : 6% 0;
+		width : 45%;
 	}
-	.welcome_page button.skip-btn {
-		width: 80%;
-		height: 10%;
-	}
-	.welcome_page button.email-btn{
+	.welcome_page button{
 		width: 80%;
 		height: 10%;
 	}

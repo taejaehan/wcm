@@ -61,7 +61,7 @@
               </a>
               <a ng-href="#/tab/home/{{::card.id}}#comment"><i class="ion-chatbubble-working"></i> 댓글달기 <span ng-bind="card.comments_count"></span>
               </a>
-              <a ng-click="showDialog(card)"><i class="ion-forward"></i> 공유하기 <span ng-bind="card.share_count"></span></a>
+              <a ng-click="showDialog($event, card)"><i class="ion-forward"></i> 공유하기 <span ng-bind="card.share_count"></span></a>
 
             </div>
 
@@ -69,7 +69,7 @@
 
         </ion-item>
 
-        <ion-infinite-scroll ng-if="!noMoreItemsAvailable" on-infinite="loadMore()" distance="10%">
+        <ion-infinite-scroll ng-if="!noMoreItemsAvailable" on-infinite="loadMore()" distance="10%" immediate-check="false">
         </ion-infinite-scroll>
 
       </div>

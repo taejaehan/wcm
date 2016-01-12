@@ -11,7 +11,7 @@
     <div id="profile_page">
 
 	    <form class="form-horizontal profile-form" ng-class="{'user active' : userCheck, 'user non-active' : !userCheck}">
-		    <img ng-src="{{ ::user.userimage }}">
+		    <img ng-src="{{ ::user.userimage }}" onError="this.src='img/default_user_pic.png'">
 
 			  <div class="form-group username">
 			    <a ng-click="config()"><label > {{user.username}}<i class="profile-setting-icon"></i></label></a>

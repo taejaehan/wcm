@@ -18,7 +18,11 @@ wcm.controller("WelcomeController", function($scope, $state, $http ,$cordovaOaut
   }
   $scope.facebookLogin = function(){
     console.log('facebookLogin');
-    AuthService.login('facebook');
+    AuthService.login('fb');
+  }
+  $scope.kakaoLogin = function(){
+    console.log('kakaoLogin');
+    AuthService.login('kakao');
   }
   $scope.showEmailPage = function(){
     $state.go("tabs.emaillogin");

@@ -1,4 +1,5 @@
-wcm.controller("PostController", function($scope, $rootScope, $stateParams, $state, $ionicPopup, $ionicModal, CardService, $interval, $ionicLoading, $window, CardDetailFactory, $timeout) {
+wcm.controller("PostController", function($scope, $rootScope, $stateParams, $state, $ionicPopup, $ionicModal, 
+  CardService, $interval, $ionicLoading, $window, CardDetailFactory, $timeout, $ionicPopover) {
 
   var latlng, progress;
   var user = JSON.parse(window.localStorage['user'] || '{}');
@@ -353,10 +354,25 @@ wcm.controller("PostController", function($scope, $rootScope, $stateParams, $sta
   $scope.showMap = function() {
     $state.go('tabs.location_h', { 'latlng': latlng, 'progress' : progress});
   }
-
-  $scope.showDialog = function (card) {
-    var  result = CardService.share('facebook', card, $scope);
+  //sns공유 선택 창을 띄움
+  $scope.showDialog = function ($event, card) {
+    // CardService.share('facebook', card);
+    // CardService.share('kakao', card);
+    $rootScope.shareCard = card;
+    $ionicPopover.fromTemplateUrl('templates/share.html', {
+      scope: $scope,
+    }).then(function(popover) {
+      $scope.popover = popover;
+      $scope.popover.show($event);
+    });
   }
+  //sns type에 따라 share fucntion호출
+  $scope.shareCard = function (type) {
+    console.log('shareCard : '  + $rootScope.shareCard);
+    CardService.share(type, $rootScope.shareCard);
+    $scope.popover.hide();
+  }
+
 
   /*
   * 해당 유저의 fb profile로 연결합니다

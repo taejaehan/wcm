@@ -24,7 +24,8 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   $scope.downloaded = false;
   // $scope.page = 0;
   // $rootScope.allData = { cards: [] };
-  // 
+  $rootScope.shareCard = '';
+
   $scope.$on('$ionicView.beforeEnter', function(){
 
     // 앱에서 열였다면
@@ -189,99 +190,103 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   * card를 새로 가져옴
   */
   $scope.doRefresh = function() {
+
     console.log('doRefresh');
     //noMoreItemsAvailable를 true로 하여 처음에 loadMore가 실행되지 않게 함
     $scope.noMoreItemsAvailable = true;
 
-    //app에서 띄운 webview가 아니거나 online일 경우만
-    if (!(mIsWebView) || $cordovaNetwork.isOnline()) {
-       $ionicLoading.show({
-        template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
-      });
+    //timeout으로 처음 view가 load되는 시간동안 request하지 않음 by tjhan 160112
+    $timeout( function() {
+      //app에서 띄운 webview가 아니거나 online일 경우만
+      if (!(mIsWebView) || $cordovaNetwork.isOnline()) {
+         $ionicLoading.show({
+          template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
+        });
 
-      $scope.page = 0;
-      $rootScope.allData = { cards: [] };
-      if($scope.currentLat == null){
-        $scope.currentLat = 37.574515;
-        $scope.currentLon = 126.976930;
-      };
-      var formData = {
-                      lat: $scope.currentLat,
-                      lon: $scope.currentLon
-                    };
-      var postData = 'locationData='+JSON.stringify(formData);
+        $scope.page = 0;
+        $rootScope.allData = { cards: [] };
+        if($scope.currentLat == null){
+          $scope.currentLat = 37.574515;
+          $scope.currentLon = 126.976930;
+        };
+        var formData = {
+                        lat: $scope.currentLat,
+                        lon: $scope.currentLon
+                      };
+        var postData = 'locationData='+JSON.stringify(formData);
 
-      var url = mServerAPI + "/card/" + $scope.page + '/' + $scope.data.sortingType;
-      if(user.isAuthenticated === true){
-        url = url + '/' + user.userid;
-      }
-      console.log('url : ' + url);
-      var request = $http({
-          method: "post",
-          url: url,
-          crossDomain : true,
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-          data: postData,
-          cache: false
-      });
+        var url = mServerAPI + "/card/" + $scope.page + '/' + $scope.data.sortingType;
+        if(user.isAuthenticated === true){
+          url = url + '/' + user.userid;
+        }
+        console.log('url : ' + url);
+        var request = $http({
+            method: "post",
+            url: url,
+            crossDomain : true,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+            data: postData,
+            cache: false
+        });
 
-      request.error(function(error){
-        $ionicLoading.hide();
-        console.log('error : ' + JSON.stringify(error));
-      })
-      request.success(function(data) {
-        $ionicLoading.hide();
+        request.error(function(error){
+          $ionicLoading.hide();
+          console.log('error : ' + JSON.stringify(error));
+        })
+        request.success(function(data) {
+          $ionicLoading.hide();
 
-        for (var i = 0; i < data.cards.length; i++) {
+          for (var i = 0; i < data.cards.length; i++) {
 
-          CardService.status(data.cards, i);
+            CardService.status(data.cards, i);
 
-          if (data.cards[i].img_path == '') {
-            data.cards[i].img_path = mNoImageThumb;
-          } else if(data.cards[i].img_path.substr(0,4) == 'http'){
-            data.cards[i].img_path = data.cards[i].img_path;
-          }else{
-            data.cards[i].img_path = mServerUploadThumb + data.cards[i].img_path;
-          }
+            if (data.cards[i].img_path == '') {
+              data.cards[i].img_path = mNoImageThumb;
+            } else if(data.cards[i].img_path.substr(0,4) == 'http'){
+              data.cards[i].img_path = data.cards[i].img_path;
+            }else{
+              data.cards[i].img_path = mServerUploadThumb + data.cards[i].img_path;
+            }
 
-          if(data.cards[i].user[0].userimage != null){
-            data.cards[i].user[0].userimage = data.cards[i].user[0].userimage;
-          }
+            if(data.cards[i].user[0].userimage != null){
+              data.cards[i].user[0].userimage = data.cards[i].user[0].userimage;
+            }
 
-          data.cards[i].address = data.cards[i].location_name;
-          data.cards[i].userId = data.cards[i].user[0].user_id;
+            data.cards[i].address = data.cards[i].location_name;
+            data.cards[i].userId = data.cards[i].user[0].user_id;
 
-          var object =  data.cards[i];
-          $rootScope.allData.cards.push(object);
+            var object =  data.cards[i];
+            $rootScope.allData.cards.push(object);
 
-          if(user != null){
-            if (user.isAuthenticated === true) {
-              for(var j = 0; j < $rootScope.allData.cards.length; j ++) {
-                if(user.watchs.indexOf($rootScope.allData.cards[j].id) != -1) {
-                  $rootScope.allData.cards[j].watch = true;
-                } else {
-                  $rootScope.allData.cards[j].watch = false;
+            if(user != null){
+              if (user.isAuthenticated === true) {
+                for(var j = 0; j < $rootScope.allData.cards.length; j ++) {
+                  if(user.watchs.indexOf($rootScope.allData.cards[j].id) != -1) {
+                    $rootScope.allData.cards[j].watch = true;
+                  } else {
+                    $rootScope.allData.cards[j].watch = false;
+                  }
                 }
               }
             }
-          }
-        };
-        
-        $scope.$broadcast('scroll.refreshComplete');
-        $timeout( function() {
-          //dorefresh가 끝나고 2초 뒤에 noMoreItemsAvailable를 false로 하여 loadMore를 가능하게 함
-          $scope.page = 1;
-          $scope.noMoreItemsAvailable = false;
-        }, 2000);
-      });
-    } else {
-      /* isOffline */
-      $ionicPopup.alert({
-        title: mAppName,
-        template: '인터넷에 연결 상태를 확인하세요',
-        cssClass: 'wcm-error',
-      });
-    }
+          };
+          
+          $scope.$broadcast('scroll.refreshComplete');
+          $timeout( function() {
+            //dorefresh가 끝나고 2초 뒤에 noMoreItemsAvailable를 false로 하여 loadMore를 가능하게 함
+            $scope.page = 1;
+            $scope.noMoreItemsAvailable = false;
+          }, 2000);
+        });
+      } else {
+        /* isOffline */
+        $ionicPopup.alert({
+          title: mAppName,
+          template: '인터넷에 연결 상태를 확인하세요',
+          cssClass: 'wcm-error',
+        });
+      }
+    }, 200);
   };
 
   /*
@@ -410,6 +415,7 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   */
   $scope.sortBy = function(sortType) {
     console.log("sortBy sortType : " + sortType);
+    $scope.noMoreItemsAvailable = true;
     if($scope.popover != null){
       $scope.popover.hide();
     }
@@ -452,8 +458,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
       $ionicLoading.hide();
       for (var i = 0; i < data.cards.length; i++) {
 
-        $scope.noMoreItemsAvailable = false;
-
         if (data.cards[i].status === PROGRESS_REGISTER || data.cards[i].status === PROGRESS_START) {
           data.cards[i].statusDescription = PROGRESS_START_TEXT;
         } else if (data.cards[i].status === PROGRESS_ONGOING) {
@@ -492,8 +496,12 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
           }
         }
       }
-      $scope.page++;
       $scope.$broadcast('scroll.infiniteScrollComplete');
+      $timeout( function() {
+          //sortBy가 끝나고 2초 뒤에 noMoreItemsAvailable를 false로 하여 loadMore를 가능하게 함
+          $scope.page = 1;
+          $scope.noMoreItemsAvailable = false;
+        }, 2000);
     });
 
   }
@@ -568,7 +576,6 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   $scope.toggleWatchHome = function(e, id) {
     CardService.toggleWatch(e,id,user);
   }
-
   $scope.overlayClose = function() {
     $scope.welcome = false;
     if(mIsWebView){
@@ -578,8 +585,23 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     }
   }
 
-  $scope.showDialog = function (card) {
-    CardService.share('facebook', card);
+  //sns공유 선택 창을 띄움
+  $scope.showDialog = function ($event, card) {
+    // CardService.share('facebook', card);
+    // CardService.share('kakao', card);
+    $rootScope.shareCard = card;
+    $ionicPopover.fromTemplateUrl('templates/share.html', {
+      scope: $scope,
+    }).then(function(popover) {
+      $scope.popover = popover;
+      $scope.popover.show($event);
+    });
+  }
+  //sns type에 따라 share fucntion호출
+  $scope.shareCard = function (type) {
+    console.log('shareCard : '  + $rootScope.shareCard);
+    CardService.share(type, $rootScope.shareCard);
+    $scope.popover.hide();
   }
 
   $scope.getPosition = function(cardId) {

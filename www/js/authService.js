@@ -2,7 +2,7 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
   
   /*
   * 유저 로그인 합니다 
-  * @param snsType (String) (ex : 'facebook')
+  * @param snsType (String) (ex : 'fb', 'kakao')
   */
   var login = function(snsType, emailUserData) {
     //webview 앱에서 실행했을 때만 facebook login
@@ -11,7 +11,7 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
       $ionicLoading.show({
         template: '<ion-spinner icon="bubbles"></ion-spinner><br/>'
       });
-      if(snsType == 'facebook'){
+      if(snsType == 'fb'){
 
         /*
         * cordova-plugin-facebook4 플러그인을 이용하여 native앱으로 wcm앱을 인증받아 로그인한다 
@@ -37,10 +37,10 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
                                  username: UserInfo.name,
                                  password : null,
                                  userimage: 'https://graph.facebook.com/'+UserInfo.id+'/picture',
-                                 sns: "fb",
+                                 sns: snsType,
                                  device_uuid : mDeviceUuid,
                                };
-                userLogin(formData, snsType);
+                userLogin(formData);
               }, 
               function loginError (error) {
                 $ionicLoading.hide();
@@ -73,10 +73,10 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
                 username: emailUserData.username,
                 password: Aes.Ctr.encrypt(emailUserData.password,'incross',256),
                 userimage: mServerUrl + '/images/email_user_pic.png',
-                sns: "email",
+                sns: snsType,
                 device_uuid : mDeviceUuid,
         };
-        userLogin(formData, snsType);
+        userLogin(formData);
       } else if(snsType == 'emailLogin'){
         console.log('emailSignup emailUserData : ' + emailUserData);
         var formData = {
@@ -84,11 +84,35 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
                 username: null,
                 password: Aes.Ctr.encrypt(emailUserData.password,'incross',256),
                 userimage: mServerUrl + '/images/email_user_pic.png',
-                sns: "emailLogin",
+                sns: snsType,
                 device_uuid : mDeviceUuid,
         };
-        userLogin(formData, snsType);
-      }// if(snsType == 'facebook'){ 끝
+        userLogin(formData);
+      }else if(snsType == 'kakao'){
+        //카카오 로그인 추가 by tjhan 2016011
+        KakaoTalk.login(
+            function (result) {
+                console.log('Successful login!');
+                console.log(JSON.stringify(result));
+                if(result.profile_image == '' || result.profile_image == null){
+                  result.profile_image = 'https://wcm.major-apps-1.com/images/email_user_pic.png';
+                }
+                var formData = {
+                                 user_id: String(result.id),
+                                 username: result.nickname,
+                                 password : null,
+                                 userimage: result.profile_image,
+                                 sns: snsType,
+                                 device_uuid : mDeviceUuid,
+                               };
+                userLogin(formData);
+            },
+            function (message) {
+                console.log('Error logging in');
+                console.log(message);
+            }
+        );    
+      }// if(snsType == 'kakao'){ 끝
     } else {  //app에서 실행한게 아니면 테스트용도로 넣어줌 
       if(mDeviceUuid == null){
         mDeviceUuid  = 'd874c9de-b9f6-ef80-3542-570596882578';
@@ -110,7 +134,7 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
   * 해당 user_id가 db에 없으면 넣고, 있으면 해당 user 정보를 가져온다
   * @param : formData {user_id:'', username:'',userimage:'',sns:''}
   */
-  var userLogin = function(formData, snsType)
+  var userLogin = function(formData)
   {
     console.log('userLogin formData : ' + formData.username);
     var userData = 'userData='+JSON.stringify(formData);
@@ -129,9 +153,9 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
       if(data.error != null){
         if(data.error == 'wrongPassword'){
           var errorMsg = '';
-          if(snsType == 'emailSignup'){
+          if(formData.sns == 'emailSignup'){
             errorMsg = '이미 등록된 이메일입니다';
-          }else if(snsType == 'emailLogin'){
+          }else if(formData.sns == 'emailLogin'){
             errorMsg = '비밀번호가 틀렸습니다';
           }
         }else if(data.error == 'wrongEmail'){
@@ -147,12 +171,16 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
         });  
         return;
       };
+      if(formData.sns.indexOf('email') != -1){
+        formData.sns = 'email';
+      };
       /* user data 넣어주기 시작 */
       var user = {
                     username: formData.username,
                     userid: formData.user_id,
                     userimage: formData.userimage,
                     isAuthenticated: true,
+                    snsType : formData.sns,
                     watchs : [],
                     changes : []
                   };
@@ -278,33 +306,54 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
       $ionicLoading.show({
         template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로그아웃..'
       });
-      facebookConnectPlugin.logout(function (success) {
-        $ionicLoading.hide();
-        console.log("logout success ");
-        console.log("logout : ", success);
-        isAuthenticated = false;
-        window.localStorage.removeItem('user');
-        // $state.go('fblogin');
-      },
-      function logoutError (error) {
-        $ionicLoading.hide();
-        console.log("logout error ");
-        console.error("logout error : " + JSON.stringify(error));
-        $ionicPopup.alert({
-          title: mAppName,
-          template: JSON.stringify(error),
-          cssClass: 'wcm-error'
+      var user = JSON.parse(window.localStorage['user'] || '{}');
+      if(user.snsType == 'fb'){
+        facebookConnectPlugin.logout(function (success) {
+          console.log("facebook logout success : " + success);
+          logoutSuccess();
+        },
+        function(error) {
+          console.error("facebook logout error : " + error);
+          logoutError();
         });
-      });
+      }else if(user.snsType == 'kakao'){
+        KakaoTalk.logout(
+          function(success) {
+            console.log("kakao logout success : " + success);
+            logoutSuccess();
+          }, function(error) {
+            console.error("kakao logout error : " + error);
+            logoutError();
+          }
+        );
+      }else{
+        logoutSuccess();
+      }
     }else{    //web 테스트 용도
       console.log("web logout");
-      isAuthenticated = false;
-      window.localStorage.removeItem('user');
-      // $state.go('fblogin');
+      logoutSuccess();
     }
-   
   };
-
+  /**
+   * [로그아웃 성공시 호출]
+   */
+  function logoutSuccess(){
+    isAuthenticated: true; 
+    $ionicLoading.hide();
+    window.localStorage.removeItem('user');
+  };
+  /**
+   * [로그아웃 에러시 호출]
+   */
+  function logoutError(){
+    isAuthenticated: false; 
+    $ionicLoading.hide();
+    $ionicPopup.alert({
+      title: mAppName,
+      template: JSON.stringify(error),
+      cssClass: 'wcm-error'
+    });
+  };
   var skipLogin = function() {
     var user = { isAuthenticated: false };
     window.localStorage['user'] = JSON.stringify(user);
