@@ -26,6 +26,49 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   // $rootScope.allData = { cards: [] };
   $rootScope.shareCard = '';
 
+
+  // Get plugin
+  var bgLocationServices =  window.plugins.backgroundLocationServices;
+
+  //Congfigure Plugin
+  bgLocationServices.configure({
+       //Both
+       desiredAccuracy: 20, // Desired Accuracy of the location updates (lower means more accurate but more battery consumption)
+       distanceFilter: 5, // (Meters) How far you must move from the last point to trigger a location update
+       debug: true, // <-- Enable to show visual indications when you receive a background location update
+       interval: 9000, // (Milliseconds) Requested Interval in between location updates.
+       //Android Only
+       notificationTitle: 'BG Plugin', // customize the title of the notification
+       notificationText: 'Tracking', //customize the text of the notification
+       fastestInterval: 5000, // <-- (Milliseconds) Fastest interval your app / server can handle updates
+       useActivityDetection: true // Uses Activitiy detection to shut off gps when you are still (Greatly enhances Battery Life)
+
+  });
+
+  //Register a callback for location updates, this is where location objects will be sent in the background
+  bgLocationServices.registerForLocationUpdates(function(location) {
+       console.log("We got an BG Update" + JSON.stringify(location));
+  }, function(err) {
+       console.log("Error: Didnt get an update", err);
+  });
+
+  //Register for Activity Updates (ANDROID ONLY)
+  //Uses the Detected Activies API to send back an array of activities and their confidence levels
+  //See here for more information: //https://developers.google.com/android/reference/com/google/android/gms/location/DetectedActivity
+  bgLocationServices.registerForActivityUpdates(function(acitivites) {
+       console.log("We got an BG Update" + activities);
+  }, function(err) {
+       console.log("Error: Something went wrong", err);
+  });
+
+  //Start the Background Tracker. When you enter the background tracking will start, and stop when you enter the foreground.
+  bgLocationServices.start();
+
+
+  ///later, to stop
+  // bgLocationServices.stop();
+
+
   $scope.$on('$ionicView.beforeEnter', function(){
 
     // 앱에서 열였다면
@@ -195,47 +238,47 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     //noMoreItemsAvailable를 true로 하여 처음에 loadMore가 실행되지 않게 함
     $scope.noMoreItemsAvailable = true;
 
-    //timeout으로 처음 view가 load되는 시간동안 request하지 않음 by tjhan 160112
-    $timeout( function() {
-      //app에서 띄운 webview가 아니거나 online일 경우만
-      if (!(mIsWebView) || $cordovaNetwork.isOnline()) {
-         $ionicLoading.show({
-          template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
-        });
+    
+    //app에서 띄운 webview가 아니거나 online일 경우만
+    if (!(mIsWebView) || $cordovaNetwork.isOnline()) {
+      $ionicLoading.show({
+        template: '<ion-spinner icon="bubbles"></ion-spinner><br/>로딩중..'
+      });
 
-        $scope.page = 0;
-        $rootScope.allData = { cards: [] };
-        if($scope.currentLat == null){
-          $scope.currentLat = 37.574515;
-          $scope.currentLon = 126.976930;
-        };
-        var formData = {
-                        lat: $scope.currentLat,
-                        lon: $scope.currentLon
-                      };
-        var postData = 'locationData='+JSON.stringify(formData);
+      $scope.page = 0;
+      $rootScope.allData = { cards: [] };
+      if($scope.currentLat == null){
+        $scope.currentLat = 37.574515;
+        $scope.currentLon = 126.976930;
+      };
+      var formData = {
+                      lat: $scope.currentLat,
+                      lon: $scope.currentLon
+                    };
+      var postData = 'locationData='+JSON.stringify(formData);
 
-        var url = mServerAPI + "/card/" + $scope.page + '/' + $scope.data.sortingType;
-        if(user.isAuthenticated === true){
-          url = url + '/' + user.userid;
-        }
-        console.log('url : ' + url);
-        var request = $http({
-            method: "post",
-            url: url,
-            crossDomain : true,
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-            data: postData,
-            cache: false
-        });
+      var url = mServerAPI + "/card/" + $scope.page + '/' + $scope.data.sortingType;
+      if(user.isAuthenticated === true){
+        url = url + '/' + user.userid;
+      }
+      console.log('url : ' + url);
+      var request = $http({
+          method: "post",
+          url: url,
+          crossDomain : true,
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+          data: postData,
+          cache: false
+      });
 
-        request.error(function(error){
+      request.error(function(error){
+        $ionicLoading.hide();
+        console.log('error : ' + JSON.stringify(error));
+      })
+      request.success(function(data) {
+        //timeout으로 처음 view가 load되는 시간동안 card를 넣어주지 않음 by tjhan 160112
+        $timeout( function() {
           $ionicLoading.hide();
-          console.log('error : ' + JSON.stringify(error));
-        })
-        request.success(function(data) {
-          $ionicLoading.hide();
-
           for (var i = 0; i < data.cards.length; i++) {
 
             CardService.status(data.cards, i);
@@ -270,23 +313,23 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
               }
             }
           };
-          
-          $scope.$broadcast('scroll.refreshComplete');
-          $timeout( function() {
-            //dorefresh가 끝나고 2초 뒤에 noMoreItemsAvailable를 false로 하여 loadMore를 가능하게 함
-            $scope.page = 1;
-            $scope.noMoreItemsAvailable = false;
-          }, 2000);
-        });
-      } else {
-        /* isOffline */
-        $ionicPopup.alert({
-          title: mAppName,
-          template: '인터넷에 연결 상태를 확인하세요',
-          cssClass: 'wcm-error',
-        });
-      }
-    }, 150);
+        }, 500);
+        
+        $scope.$broadcast('scroll.refreshComplete');
+        $timeout( function() {
+          //dorefresh가 끝나고 2초 뒤에 noMoreItemsAvailable를 false로 하여 loadMore를 가능하게 함
+          $scope.page = 1;
+          $scope.noMoreItemsAvailable = false;
+        }, 2000);
+      });
+    } else {
+      /* isOffline */
+      $ionicPopup.alert({
+        title: mAppName,
+        template: '인터넷에 연결 상태를 확인하세요',
+        cssClass: 'wcm-error',
+      });
+    }
   };
 
   /*
@@ -400,9 +443,10 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
     });
   };
   /*
-  * 현재 계속 위치를 가져와서 위도/경도를 넣어줌
+  *  계속 현재 위치를 가져와서 위도/경도를 넣어줌
   */
   function showPosition(position) {
+    console.log('showPosition position.coords.latitude : '+position.coords.latitude);
     $scope.currentLat = position.coords.latitude;
     $scope.currentLon = position.coords.longitude;
   };
@@ -513,9 +557,48 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   };
   // warnings map show
   $scope.findWarning = function() {
-    CardService.scrollPosition = $ionicScrollDelegate.getScrollPosition();
-    CardService.page = $scope.page;
-    $state.go("tabs.map");
+    // CardService.scrollPosition = $ionicScrollDelegate.getScrollPosition();
+    // CardService.page = $scope.page;
+    // $state.go("tabs.map");
+    /** PUSH 메세지를 발송 **/
+    // Encode your key
+    var auth = btoa(mPrivateKey + ':');
+    var tokens = ['65e2a1edbd4017063adfc1169307f1e4e8d84aa84eb366b02e732b2daf57588c',
+    'dbWek7yZiRY:APA91bE4iqe4OCaeQYb50yD0wRIMjOSn9nQ8grjMyIhTdUSrE241JufagHrVmlgL_T0jmhOew-YrRpCFlwnnt_6RLT8BYRJddGp-Y1Xhk2WUwE3jhb9r9AQbwHN6NV8567Rj5SKsTB4j'];
+    var message = "hey baby whats up";
+    // Build the request object
+    var req = {
+      method: 'POST',
+      url: 'https://push.ionic.io/api/v1/push',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Ionic-Application-Id': mAppId,
+        'Authorization': 'basic ' + auth
+      },
+      data: {
+        "tokens": tokens,
+        "notification": {
+          "alert": message
+        },
+        // "scheduled" : 1447834020,
+        "production": true
+      }
+    };
+    $ionicLoading.show({
+      template: '<ion-spinner icon="bubbles"></ion-spinner>'
+    });
+    // Make the API call
+    $http(req).success(function(resp){
+      $ionicLoading.hide();
+      // Handle success
+      console.log("Ionic Push: Push success!");
+      console.log('resp : ' + JSON.stringify(resp));
+    }).error(function(error){
+      $ionicLoading.hide();
+      // Handle error
+      console.log("Ionic Push: Push error...");
+      console.log('error : ' + JSON.stringify(error));
+    });
   }
   // 각 card의 location map show
   $scope.showMap = function(lat, lon) {

@@ -322,9 +322,41 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 			    }
 			  ]
 			});
+			var user = JSON.parse(window.localStorage['user'] || '{}');
 			user.username = edit_name;
 			window.localStorage['user'] = JSON.stringify(user);
 			console.log(user);
+			if(Ionic != null){
+				console.log('Ionic OK');
+				Ionic.io();
+				var user = Ionic.User.current();
+				var saveUser = function(){
+				  user.set('name', edit_name);
+				  user.save().then(function(success) {
+				    console.log("saveUser success: " + JSON.stringify(success));
+				  }, function(error) {
+				    console.log("saveUser Error: " + JSON.stringify(error));
+				  });
+				};
+				//facebook 로그인 후 ionic user를 수정한다
+				Ionic.User.load(mDeviceUuid).then(function(success) {
+				  console.log('loadUser success : ' + JSON.stringify(success));
+				  Ionic.User.current(success);
+				  user = Ionic.User.current();
+				  saveUser();
+				}, function(error) {
+				  if (!user.id) {
+				    console.log('loadUser error : ' + JSON.stringify(error));
+				    //ionic플랫폼에 저장되는 user id로 device uuid를 사용한다 by tjhan 151023
+				    console.log('deviceUuid : ' + mDeviceUuid);
+				    user.id = mDeviceUuid;
+				  }
+				  saveUser();
+				});
+			}else{
+				console.log('Ionic NO');
+				$ionicLoading.hide();
+			}
 		}
 	});
 
@@ -391,55 +423,55 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 	       	tokens.push(data.devices[i].device_token);
 	       }
 
-	       //psuh 최종 확인 컨펌
-				var confirmPopup = $ionicPopup.confirm({
-				title: receiverNum + ' 명에게 Push 메세지를 보냅니다',
-				template: message,
-				cssClass: 'wcm-negative',
-				});
-				confirmPopup.then(function(res) {
-					if(res) {
-						console.log('START SEND PUSH MESSAGE');
-				     /** PUSH 메세지를 발송 **/
-				     // Encode your key
-						var auth = btoa(mPrivateKey + ':');
-						// Build the request object
-						var req = {
-						  method: 'POST',
-						  url: 'https://push.ionic.io/api/v1/push',
-						  headers: {
-						    'Content-Type': 'application/json',
-						    'X-Ionic-Application-Id': mAppId,
-						    'Authorization': 'basic ' + auth
-						  },
-						  data: {
-						    "tokens": tokens,
-						    "notification": {
-						      "alert": message
-						    },
-						    // "scheduled" : 1447834020,
-						    "production": true
-						  }
-						};
-						$ionicLoading.show({
-							template: '<ion-spinner icon="bubbles"></ion-spinner>'
-						});
-						// Make the API call
-						$http(req).success(function(resp){
-							$ionicLoading.hide();
-						  // Handle success
-						  console.log("Ionic Push: Push success!");
-						  console.log('resp : ' + JSON.stringify(resp));
-						}).error(function(error){
-							$ionicLoading.hide();
-						  // Handle error
-						  console.log("Ionic Push: Push error...");
-						  console.log('error : ' + JSON.stringify(error));
-						});
-					} else {
-						console.log('CANCEL SEND PUSH MESSAGE');
-					}
-				});
+			//psuh 최종 확인 컨펌
+			var confirmPopup = $ionicPopup.confirm({
+			title: receiverNum + ' 명에게 Push 메세지를 보냅니다',
+			template: message,
+			cssClass: 'wcm-negative',
+			});
+			confirmPopup.then(function(res) {
+				if(res) {
+					console.log('START SEND PUSH MESSAGE');
+					/** PUSH 메세지를 발송 **/
+					// Encode your key
+					var auth = btoa(mPrivateKey + ':');
+					// Build the request object
+					var req = {
+					  method: 'POST',
+					  url: 'https://push.ionic.io/api/v1/push',
+					  headers: {
+					    'Content-Type': 'application/json',
+					    'X-Ionic-Application-Id': mAppId,
+					    'Authorization': 'basic ' + auth
+					  },
+					  data: {
+					    "tokens": tokens,
+					    "notification": {
+					      "alert": message
+					    },
+					    // "scheduled" : 1447834020,
+					    "production": true
+					  }
+					};
+					$ionicLoading.show({
+						template: '<ion-spinner icon="bubbles"></ion-spinner>'
+					});
+					// Make the API call
+					$http(req).success(function(resp){
+						$ionicLoading.hide();
+					  // Handle success
+					  console.log("Ionic Push: Push success!");
+					  console.log('resp : ' + JSON.stringify(resp));
+					}).error(function(error){
+						$ionicLoading.hide();
+					  // Handle error
+					  console.log("Ionic Push: Push error...");
+					  console.log('error : ' + JSON.stringify(error));
+					});
+				} else {
+					console.log('CANCEL SEND PUSH MESSAGE');
+				}
+			});
 
 	     });
 	     request.error(function(error){

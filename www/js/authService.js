@@ -176,11 +176,11 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
       };
       /* user data 넣어주기 시작 */
       var user = {
-                    username: formData.username,
-                    userid: formData.user_id,
-                    userimage: formData.userimage,
+                    username: data.users[0].username,
+                    userid: data.users[0].user_id,
+                    userimage: data.users[0].userimage,
                     isAuthenticated: true,
-                    snsType : formData.sns,
+                    snsType : data.users[0].sns,
                     watchs : [],
                     changes : []
                   };
@@ -215,7 +215,7 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
           }
         }
       }else{  //새로 가입한 유저라면
-        console.log('New User : ' + formData.username);
+        console.log('New User : ' + data.users[0].username);
       }
       window.localStorage['user'] = JSON.stringify(user);
       /* user data 넣어주기 끝 */
@@ -239,7 +239,7 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
           });
 
           //로그인 아이디 저장
-          Preferences.put('loginId', formData.user_id);
+          Preferences.put('loginId', data.users[0].user_id);
 
           Preferences.get('loginId', function(loginId) {
            console.log('success after: : ' +  loginId);
@@ -253,8 +253,8 @@ wcm.service('AuthService', function($state, $ionicPopup, $http, $window, $ionicL
 
             var user = Ionic.User.current();
             var saveUser = function(){
-              user.set('name', formData.username);
-              user.set('image', formData.userimage);
+              user.set('name', data.users[0].username);
+              user.set('image', data.users[0].userimage);
               user.save().then(function(success) {
                 console.log("saveUser success: " + JSON.stringify(success));
               }, function(error) {

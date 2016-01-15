@@ -70,7 +70,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
   mIsWebView = ionic.Platform.isWebView();
   mIsIOS = ionic.Platform.isIOS();
   mIsAndroid = ionic.Platform.isAndroid();
-
+  
   $ionicPlatform.ready(function() {
 
     console.log('$ionicPlatform ready');
@@ -223,6 +223,15 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
     };
 
     if(mIsWebView){
+
+      // config에 AutoHideSplashScreen를 false로 설정함
+      // IOS의 splash screen을 2초뒤에 없애줍니다 by tjhan 160113
+      // android는 config에 설정된 SplashScreenDelay 값으로 작동됨
+      setTimeout(function(){
+        console.log('splashscreen hide');
+        navigator.splashscreen.hide();
+      }, 2000);
+
       /******************************************************************************
       * IONIC PUSH를 위한 SETTING by tjhan 151023
       * prefrences에 deviceUuid가 있다면 해당 device는 ionic user와 wcm db에
@@ -296,7 +305,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
                    }
                 },
                 // notification왔을 때 alert 주석처리 by tjhan 151112
-                /*"onNotification": function(notification) {
+                "onNotification": function(notification) {
                   var payload = notification.payload;
                   console.log('notification : ' + notification);
                   console.log('payload : ' + notification.payload);
@@ -306,7 +315,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
                     template: payload.message,
                     cssClass: 'wcm-negative'
                   });
-                },*/
+                },
                 //push가 등록되면 해당 push token을 위에 설정한 user에 넣고 db에도 넣는다
                 "onRegister": function(data) {
                   console.log('************2.onRegister token************ : ' + data.token);
@@ -346,41 +355,53 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
                     });
                   }, function(error) {
                     $ionicLoading.hide();
-                    console.log('************2.user addTokenToUser was NOT saved************');
+                    console.log('************2.user addTokenToUser was NOT saved************' + error);
                   });
                 }
               });
 
               /*************user************/
-              //현재 device uuid로 등록된 user가 있다면 load하고 없다면 새로 추가한다
+              
               var user = Ionic.User.current();
-              Ionic.User.load(mDeviceUuid).then(function(success) {
-                //이미 유저가 있으면(해당 디바이스의 uuid가 등록되어 있다면) 해당 유저 load
-                console.log('************1.loadedUser user is registered Already************');
-                Ionic.User.current(success);
-                user = Ionic.User.current();
-
-                push.register();
-              }, function(error) {
-                 //유저가 없다면(등록되어 있지 않다면)
-                console.log('************1.loadedUser No registered User************ : ' + JSON.stringify(error));
-
-
-                if (!user.id) {
-                  // user.id = Ionic.User.anonymousId();
-                  //ionic플랫폼에 저장되는 user id로 device uuid를 사용한다 by tjhna 151022
-                  console.log('deviceUuid : ' + mDeviceUuid);
-                  user.id = mDeviceUuid;
-                }
+              //android일 경우 load후 save하면 token이 여러개 생기므로 바로 user를 save한다 160115
+              if(mIsAndroid){
+                user.id = mDeviceUuid;
                 //새로운 user를 등록한다
                 user.save().then(function(success) {
-                  console.log('************1.New user was saved************');
+                  console.log('************1.New user was saved************ ' + success);
                   push.register();
                 }, function(error) {
                   $ionicLoading.hide();
-                  console.log('************1.New user was NOT saved************');
+                  console.log('************1.New user was NOT saved************ ' + error);
                 });
-              });
+              }else if(mIsIOS){
+                //ios일 경우 현재 device uuid로 등록된 user가 있다면 load하고 없다면 새로 추가한다
+                Ionic.User.load(mDeviceUuid).then(function(success) {
+                  //이미 유저가 있으면(해당 디바이스의 uuid가 등록되어 있다면) 해당 유저 load
+                  console.log('************1.loadedUser user is registered Already************');
+                  Ionic.User.current(success);
+                  user = Ionic.User.current();
+
+                  push.register();
+                }, function(error) {
+                   //유저가 없다면(등록되어 있지 않다면)
+                  console.log('************1.loadedUser No registered User************ : ' + JSON.stringify(error));
+                  if (!user.id) {
+                    // user.id = Ionic.User.anonymousId();
+                    //ionic플랫폼에 저장되는 user id로 device uuid를 사용한다 by tjhna 151022
+                    console.log('deviceUuid : ' + mDeviceUuid);
+                    user.id = mDeviceUuid;
+                  }
+                  //새로운 user를 등록한다
+                  user.save().then(function(success) {
+                    console.log('************1.New user was saved************');
+                    push.register();
+                  }, function(error) {
+                    $ionicLoading.hide();
+                    console.log('************1.New user was NOT saved************' + error);
+                  });
+                });
+              }
               /*****************************************************************************
               *********************** user추가 및 push 등록 끝  *************************
               *****************************************************************************/
