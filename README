@@ -17,6 +17,7 @@ cordova plugin add cordova-plugin-file-transfer
 cordova plugin add cordova-plugin-geolocation
 cordova plugin add cordova-plugin-inappbrowser
 cordova plugin add cordova-plugin-kakaotalk (dmajor git)
+cordova plugin add cordova-plugin-mauron85-background-geolocation
 cordova plugin add cordova-plugin-network-information
 cordova plugin add cordova-plugin-screen-orientation
 cordova plugin add cordova-plugin-splashscreen

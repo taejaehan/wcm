@@ -9,9 +9,9 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
     $scope.warningTitle = ONGOING_TEXT;
 
     $scope.$on('$ionicView.loaded', function(){
+      console.log('WarningMapController loaded ');
       $scope.init();
     });
-      
     $scope.$on('$ionicView.beforeLeave', function(){
       console.log('beforeLeave');
       if($scope.popover != null && $scope.popover._isShown){
@@ -46,7 +46,7 @@ wcm.controller('WarningMapController', function($scope, $stateParams, $cordovaGe
     * WarningMap을 초기화합니다
     */
     $scope.init = function() {
-      console.log('init!!!');
+      console.log('WarningMapController init!!!');
       var latlng = new google.maps.LatLng(37.574515, 126.976930);
       var options = {
         'zoom': 11,

@@ -3,7 +3,7 @@ var mServerUrl, mServerUpload, mServerAPI = '';
 var mLocalServer = false; //local serve 여부
 
 if (mLocalServer) {
-  mServerUrl = 'http://192.168.20.8:3000';
+  mServerUrl = 'http://192.168.100.171:3000';
   mServerUpload = mServerUrl + '/uploads/';
   mServerUploadThumb = mServerUrl + '/uploads/thumb/';
   mServerAPI = mServerUrl + '/index.php';
@@ -232,15 +232,6 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
         navigator.splashscreen.hide();
       }, 2000);
 
-      /******************************************************************************
-      * IONIC PUSH를 위한 SETTING by tjhan 151023
-      * prefrences에 deviceUuid가 있다면 해당 device는 ionic user와 wcm db에
-      * (device uuid와 해당 device의 token이) 등록되어 있고 push가 가능한 상태이다
-      * prefrences에 없다면 새롭게 user와 device를 등록하는데
-      * ionic user에 해당 device uuid가 이미 있다면(깔았다가 지웠다면)
-      * 새롭게 등록하지 않고 해당 ionic user와 wcm db의 token을 수정한다
-      ******************************************************************************/
-
       /*
       * ionic.Platform.device().uuid가 android에서는 유지되나 ios에서 매번 변경되어
       * window.plugins.uniqueDeviceID 플러그인으로 교체
@@ -249,7 +240,7 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
       function success(uuid)
       {
           console.log('ionic.Platform.device().uuid : ' + ionic.Platform.device().uuid);
-          console.error('uniqueDeviceID success uuid : ' + uuid);
+          console.log('uniqueDeviceID success uuid : ' + uuid);
           mDeviceUuid = uuid;
       };
       function fail()
@@ -257,7 +248,123 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
           console.error('uuid fail');
       };
 
-      // //웹 앱에서 facebookConnectPlugin를 사용하기 위해 facebook app id를 init한다
+// Your app must execute AT LEAST ONE call for the current position via standard Cordova geolocation,
+//  in order to prompt the user for Location permission.
+window.navigator.geolocation.getCurrentPosition(function(location) {
+    console.log('Location from Phonegap');
+});
+
+var num = 0;
+var user = JSON.parse(window.localStorage['user'] || '{}');
+/**
+* This callback will be executed every time a geolocation is recorded in the background.
+*/
+var callbackFn = function(location) {
+    console.log('[js] '+ num + ' BackgroundGeoLocation callback:  ' + location.latitude + ',' + location.longitude);
+
+    // Do your HTTP request here to POST location to your server. 
+    // jQuery.post(url, JSON.stringify(location)); 
+    if(user == null || user.userid == null)user = JSON.parse(window.localStorage['user'] || '{}');
+    var formData = {
+                    lat: location.latitude,
+                    lon: location.longitude,
+                    user_id : user.userid,
+                    user_name : user.username,
+                    device_uuid : mDeviceUuid,
+                    num : num++
+                  };
+    if(formData.user_id == null) formData.user_id = '12345678';
+    if(formData.user_name == null) formData.user_name = 'test';
+    // console.log('formData.user_id : ' + formData.user_id);
+    // if(formData.user_id == null) return;
+    console.log('formData : '  + JSON.stringify(formData));
+    var postData = 'checkLocation='+JSON.stringify(formData);
+    var request = $http({
+        method: "post",
+        url: mServerAPI + "/watchPosition",
+        crossDomain : true,
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+        data: postData,
+        cache: false
+    });
+    request.error(function(error){
+      console.log('error : ' + JSON.stringify(error));
+      backgroundGeoLocation.finish();
+      // if(mIsAndroid){
+      //   backgroundGeoLocation.finish();
+      //   backgroundGeoLocation.stop(); 
+      //   backgroundGeoLocation.start();
+      // }else if(mIsIOS){
+      //   backgroundGeoLocation.finish();
+      //   // backgroundGeoLocation.start();
+      // }
+    })
+    request.success(function(data) {
+      console.log('success : ' + JSON.stringify(data));
+      backgroundGeoLocation.finish();
+      // if(mIsAndroid){
+      //   backgroundGeoLocation.finish();
+      //   backgroundGeoLocation.stop(); 
+      //   backgroundGeoLocation.start();
+      // }else if(mIsIOS){
+      //   backgroundGeoLocation.finish();
+      //   // backgroundGeoLocation.start();
+      // }
+    });
+    /*
+    IMPORTANT:  You must execute the finish method here to inform the native plugin that you're finished,
+    and the background-task may be completed.  You must do this regardless if your HTTP request is successful or not.
+    IF YOU DON'T, ios will CRASH YOUR APP for spending too much time in the background.
+    */
+    // backgroundGeoLocation.finish();
+};
+
+var failureFn = function(error) {
+    console.log('BackgroundGeoLocation error');
+};
+
+if(mIsAndroid){
+  backgroundGeoLocation.configure(callbackFn, failureFn, {
+      desiredAccuracy: 10,
+      notificationIconColor: '#4CAF50',
+      notificationTitle: 'Background tracking',
+      notificationText: 'ENABLED',
+      notificationIcon: 'notification_icon',
+      debug: false, // <-- enable this hear sounds for background-geolocation life-cycle.
+      stopOnTerminate: false, // <-- enable this to clear background location settings when the app terminates
+      // locationService: backgroundGeoLocation.service.ANDROID_FUSED_LOCATION,
+      // interval: 60000, // <!-- poll for position every minute
+      // fastestInterval: 120000
+  });
+}else if(mIsIOS){
+  backgroundGeoLocation.configure(callbackFn, failureFn, {
+      desiredAccuracy: 10,
+      stationaryRadius: 20,
+      distanceFilter: 30,
+      activityType: 'Fitness',
+      debug: false, // <-- enable this hear sounds for background-geolocation life-cycle.
+      stopOnTerminate: false // <-- enable this to clear background location settings when the app terminates
+  });
+}
+
+// Turn ON the background-geolocation system.  The user will be tracked whenever they suspend the app. 
+backgroundGeoLocation.start();
+
+// If you wish to turn OFF background-tracking, call the #stop method. 
+// backgroundGeoLocation.stop(); 
+
+
+
+
+      /******************************************************************************
+      * IONIC PUSH를 위한 SETTING by tjhan 151023
+      * prefrences에 deviceUuid가 있다면 해당 device는 ionic user와 wcm db에
+      * (device uuid와 해당 device의 token이) 등록되어 있고 push가 가능한 상태이다
+      * prefrences에 없다면 새롭게 user와 device를 등록하는데
+      * ionic user에 해당 device uuid가 이미 있다면(깔았다가 지웠다면)
+      * 새롭게 등록하지 않고 해당 ionic user와 wcm db의 token을 수정한다
+      ******************************************************************************/
+      // 웹 앱에서 facebookConnectPlugin를 사용하기 위해 facebook app id를 init한다
       // facebookConnectPlugin.browserInit('1020667507964480');
 
       var tryNum = 0;
@@ -305,17 +412,17 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
                    }
                 },
                 // notification왔을 때 alert 주석처리 by tjhan 151112
-                "onNotification": function(notification) {
-                  var payload = notification.payload;
-                  console.log('notification : ' + notification);
-                  console.log('payload : ' + notification.payload);
-                  console.log('title : ' + notification.title);
-                  $ionicPopup.alert({
-                    title: mAppName,
-                    template: payload.message,
-                    cssClass: 'wcm-negative'
-                  });
-                },
+                // "onNotification": function(notification) {
+                //   var payload = notification.payload;
+                //   console.log('notification : ' + notification);
+                //   console.log('payload : ' + notification.payload);
+                //   console.log('title : ' + notification.title);
+                //   $ionicPopup.alert({
+                //     title: mAppName,
+                //     template: payload.message,
+                //     cssClass: 'wcm-negative'
+                //   });
+                // },
                 //push가 등록되면 해당 push token을 위에 설정한 user에 넣고 db에도 넣는다
                 "onRegister": function(data) {
                   console.log('************2.onRegister token************ : ' + data.token);
@@ -386,12 +493,12 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
                 }, function(error) {
                    //유저가 없다면(등록되어 있지 않다면)
                   console.log('************1.loadedUser No registered User************ : ' + JSON.stringify(error));
-                  if (!user.id) {
-                    // user.id = Ionic.User.anonymousId();
-                    //ionic플랫폼에 저장되는 user id로 device uuid를 사용한다 by tjhna 151022
-                    console.log('deviceUuid : ' + mDeviceUuid);
-                    user.id = mDeviceUuid;
-                  }
+                  
+                  // user.id = Ionic.User.anonymousId();
+                  //ionic플랫폼에 저장되는 user id로 device uuid를 사용한다 by tjhna 151022
+                  console.log('deviceUuid : ' + mDeviceUuid);
+                  user.id = mDeviceUuid;
+
                   //새로운 user를 등록한다
                   user.save().then(function(success) {
                     console.log('************1.New user was saved************');
@@ -683,7 +790,7 @@ Object.toparams = function ObjecttoParams(obj)
 };
 
 /*
-* facebook에서 link를 눌러 들어왔을 때 호출됩니다
+* facebook, kakao에서 link를 눌러 들어왔을 때 호출됩니다
 */
 function handleOpenURL(url) {
   console.log('appjs handleOpenURL url : ' + url);

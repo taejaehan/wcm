@@ -217,10 +217,12 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
                 },
                 function (success) {
                   console.log('facebook share success');
+                  console.log('kakao share success ' + success);
+                  console.log('kakao share success ' + JSON.stringify(success));
                   shareSuccess(card, scope, snsName);
                 },
                 function (error) {
-                  console.log('facebook share error');
+                  console.log('facebook share error ' + error);
                   shareError(snsName);
                 });
               },
@@ -244,7 +246,7 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
                 shareSuccess(card, scope, snsName);
               },
               function (error) {
-                console.log('kakao share error');
+                console.log('kakao share error ' + error);
                 shareError(snsName);
               });
           } //if(type =='facebook') 끝
@@ -280,11 +282,14 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
         request.success(function(data) {
           console.log('shareCountPost success : ' + JSON.stringify(data));
           $ionicLoading.hide();
-          $ionicPopup.alert({
-            title: mAppName,
-            template: snsName + '에 공유 되었습니다',
-            cssClass: 'wcm-positive',
-          });
+          //카카오톡은 취소해도 성공 callback이 오기때문에 페이스북일 때만 alert한다 by tjhan 160121
+          if(snsName == '페이스북'){
+            $ionicPopup.alert({
+              title: mAppName,
+              template: snsName + '에 공유 되었습니다',
+              cssClass: 'wcm-positive',
+            });
+          };
           //postController에서 넘어온 scope이 있을 경우 해당 scope의 share_count를 증가
           if(scope != null){
             scope.share_count ++;
