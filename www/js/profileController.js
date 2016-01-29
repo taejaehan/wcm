@@ -20,6 +20,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 		$scope.watchEmptyMessage = '';
 
 		$scope.pushNotification = { checked: true };
+		$scope.backgroundLocation = { checked: true };
 
 		//dmjor 페이스북으로 로그인한 경우는 adminUser true
 		$scope.adminUser = user.userid == "1826451354247937";
@@ -124,11 +125,27 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 			}
 
 		});
-
 	} else {
 		$scope.userCheck = false;
 	}
-
+	$scope.$on('$ionicView.beforeEnter', function(){
+		if(mIsWebView){
+			if(typeof Preferences != 'undefined'){
+			  Preferences.get('backgroundLocation', function(backgroundLocation) {
+			  	console.log('get Preferences BackgroundGeoLocation : ' +  backgroundLocation);
+			  	console.log('$scope.backgroundLocation.checked : ' +  $scope.backgroundLocation.checked);
+			  	if(backgroundLocation == 'true' || backgroundLocation == true){
+			  		$scope.backgroundLocation.checked = true;
+			  	}else{
+			  		$scope.backgroundLocation.checked = false;
+			  	}
+			  	console.log('$scope.backgroundLocation.checked : ' +  $scope.backgroundLocation.checked);
+			  }, function(error){
+			    console.log('get Preferences BackgroundGeoLocation error : ' +  error);
+			  }); 
+			}
+		}
+	});
 	$scope.toggleWatchProfile = function(e,id){
 		CardService.toggleWatch(e,id,user);
 	};
@@ -522,7 +539,7 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
   * 초기값은 true로 푸시를 받습니다
   */
 
-	$scope.pushNotificationChange = function() {
+  $scope.pushNotificationChange = function() {
     console.log('Push Notification Change', $scope.pushNotification.checked);
     if(mIsWebView){
 		var pushStatus;
@@ -547,6 +564,22 @@ wcm.controller("ProfileController", function($scope, $state, $http, AuthService,
 		 	$ionicLoading.hide();
 		   console.log('success : ' + JSON.stringify(data));
 		 });
+    }
+  };
+
+  $scope.backgroundLocationChange = function() {
+    console.log('backgroundLocation Change', $scope.backgroundLocation.checked);
+    if(mIsWebView){
+		//backgroundLocation Prefrences에 저장
+		if(typeof Preferences != 'undefined'){
+			Preferences.put('backgroundLocation', $scope.backgroundLocation.checked);
+			console.log('backgroundLocation : ' + $scope.backgroundLocation.checked);
+			if($scope.backgroundLocation.checked){
+				startBackgroundLocation($http);
+			}else{
+				stopBackgroundLocation();
+			}
+		}
     }
   };
 });

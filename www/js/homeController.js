@@ -1,4 +1,8 @@
-wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, $ionicPopup, $cordovaCamera, $http, $timeout, $cordovaFile, $cordovaFileTransfer, $ionicPopover, $cordovaGeolocation, $cordovaOauth, $ionicSlideBoxDelegate, $cordovaPreferences, $ionicLoading, $ionicHistory, CardService, CardsFactory, CardBlockFactory, $ionicScrollDelegate) {
+wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $state, 
+  $ionicPopup, $cordovaCamera, $http, $timeout, $cordovaFile, $cordovaFileTransfer, 
+  $ionicPopover, $cordovaGeolocation, $cordovaOauth, $ionicSlideBoxDelegate, 
+  $cordovaPreferences, $ionicLoading, $ionicHistory, CardService, CardsFactory, 
+  CardBlockFactory, $ionicScrollDelegate) {
 
   navigator.geolocation.watchPosition(showPosition, showPositionError);
   var user = JSON.parse(window.localStorage['user'] || '{}');
@@ -561,9 +565,23 @@ wcm.controller("HomeController", function($scope, $rootScope, $cordovaNetwork, $
   };
   // warnings map show
   $scope.findWarning = function() {
-    CardService.scrollPosition = $ionicScrollDelegate.getScrollPosition();
-    CardService.page = $scope.page;
-    $state.go("tabs.map");
+    // CardService.scrollPosition = $ionicScrollDelegate.getScrollPosition();
+    // CardService.page = $scope.page;
+    // $state.go("tabs.map");
+    var request = $http({
+        method: "get",
+        url: mServerAPI + "/",
+        crossDomain : true,
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+        cache: false
+    });
+
+    request.error(function(error){
+      console.log('error : ' + JSON.stringify(error));
+    })
+    request.success(function(data) {
+      console.log('data : ' + JSON.stringify(data));
+    });
   }
   // 각 card의 location map show
   $scope.showMap = function(lat, lon) {

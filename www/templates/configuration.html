@@ -2,26 +2,42 @@
   <ion-content>
   	<div class="list">
 
-		  <div class="item item-divider">
-		    개인 정보
-		  </div>
-		  <a class="item" ng-click="editProfile()">이름 편집<i class="ion-chevron-right"></i></a>
-		  <ion-toggle ng-model="pushNotification.checked" ng-change="pushNotificationChange()">
-          푸시 받기
-        </ion-toggle>
+		<div class="item item-divider">
+			개인 정보
+		</div>
+		<a class="item" ng-click="editProfile()">
+			이름 편집<i class="ion-chevron-right"></i>
+		</a>
+		<ion-toggle ng-model="pushNotification.checked" ng-change="pushNotificationChange()">
+			푸시 받기
+		</ion-toggle>
 
-		  <div class="item item-divider">
-		    약관 및 정책
-		  </div>
-		  <a class="item" ng-click="terms()">이용약관<i class="ion-chevron-right"></i></a>
-		  <a class="item" ng-click="termsGps()">이용약관 (위치서비스)<i class="ion-chevron-right"></i></a>
-		  <a class="item" ng-click="privacy()">개인정보 취급방침<i class="ion-chevron-right"></i></a>
+		<ion-toggle ng-model="backgroundLocation.checked" ng-change="backgroundLocationChange()">
+			주변 위험 감지하기
+		</ion-toggle>
 
-		  <div class="item item-divider">
-		    
-		  </div>
-		  <a class="item" ng-click="AboutUs()">About Us<i class="ion-chevron-right"></i></a>
-		  <a class="item" ng-click="logOut()">로그아웃<i class="ion-chevron-right"></i></a>
+		<div class="item item-divider">
+			약관 및 정책
+		</div>
+		<a class="item" ng-click="terms()">
+			이용약관<i class="ion-chevron-right"></i>
+		</a>
+		<a class="item" ng-click="termsGps()">
+			이용약관 (위치서비스)<i class="ion-chevron-right"></i>
+		</a>
+		<a class="item" ng-click="privacy()">
+			개인정보 취급방침<i class="ion-chevron-right"></i>
+		</a>
+
+		<div class="item item-divider">
+
+		</div>
+		<a class="item" ng-click="AboutUs()">
+			About Us<i class="ion-chevron-right"></i>
+		</a>
+		<a class="item" ng-click="logOut()">
+			로그아웃<i class="ion-chevron-right"></i>
+		</a>
 
 		</div>
   </ion-content>

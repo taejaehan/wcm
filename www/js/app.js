@@ -1,9 +1,9 @@
 var mAppName = "'WeChangeMakers'";
 var mServerUrl, mServerUpload, mServerAPI = '';
-var mLocalServer = false; //local serve 여부
+var mLocalServer = true; //local serve 여부
 
 if (mLocalServer) {
-  mServerUrl = 'http://192.168.100.171:3000';
+  mServerUrl = 'http://192.168.10.210:3000';
   mServerUpload = mServerUrl + '/uploads/';
   mServerUploadThumb = mServerUrl + '/uploads/thumb/';
   mServerAPI = mServerUrl + '/index.php';
@@ -63,7 +63,8 @@ wcm.factory('Scopes', function($rootScope) {
     };
 })
 
-wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup, $rootScope) {
+wcm.run(function($ionicPlatform, $http, $cordovaFile, 
+  $ionicLoading, $ionicPopup, $rootScope) {
 
   console.log('wcm RUN');
   //$ionicPlatform이 ready되면 연결된 device에 대한 정보를 저장 (boolean)
@@ -248,112 +249,40 @@ wcm.run(function($ionicPlatform, $http, $cordovaFile, $ionicLoading, $ionicPopup
           console.error('uuid fail');
       };
 
-// Your app must execute AT LEAST ONE call for the current position via standard Cordova geolocation,
-//  in order to prompt the user for Location permission.
-window.navigator.geolocation.getCurrentPosition(function(location) {
-    console.log('Location from Phonegap');
-});
-
-var num = 0;
-var user = JSON.parse(window.localStorage['user'] || '{}');
-/**
-* This callback will be executed every time a geolocation is recorded in the background.
-*/
-var callbackFn = function(location) {
-    console.log('[js] '+ num + ' BackgroundGeoLocation callback:  ' + location.latitude + ',' + location.longitude);
-
-    // Do your HTTP request here to POST location to your server. 
-    // jQuery.post(url, JSON.stringify(location)); 
-    if(user == null || user.userid == null)user = JSON.parse(window.localStorage['user'] || '{}');
-    var formData = {
-                    lat: location.latitude,
-                    lon: location.longitude,
-                    user_id : user.userid,
-                    user_name : user.username,
-                    device_uuid : mDeviceUuid,
-                    num : num++
-                  };
-    if(formData.user_id == null) formData.user_id = '12345678';
-    if(formData.user_name == null) formData.user_name = 'test';
-    // console.log('formData.user_id : ' + formData.user_id);
-    // if(formData.user_id == null) return;
-    console.log('formData : '  + JSON.stringify(formData));
-    var postData = 'checkLocation='+JSON.stringify(formData);
-    var request = $http({
-        method: "post",
-        url: mServerAPI + "/watchPosition",
-        crossDomain : true,
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
-        data: postData,
-        cache: false
-    });
-    request.error(function(error){
-      console.log('error : ' + JSON.stringify(error));
-      backgroundGeoLocation.finish();
-      // if(mIsAndroid){
-      //   backgroundGeoLocation.finish();
-      //   backgroundGeoLocation.stop(); 
-      //   backgroundGeoLocation.start();
-      // }else if(mIsIOS){
-      //   backgroundGeoLocation.finish();
-      //   // backgroundGeoLocation.start();
-      // }
-    })
-    request.success(function(data) {
-      console.log('success : ' + JSON.stringify(data));
-      backgroundGeoLocation.finish();
-      // if(mIsAndroid){
-      //   backgroundGeoLocation.finish();
-      //   backgroundGeoLocation.stop(); 
-      //   backgroundGeoLocation.start();
-      // }else if(mIsIOS){
-      //   backgroundGeoLocation.finish();
-      //   // backgroundGeoLocation.start();
-      // }
-    });
-    /*
-    IMPORTANT:  You must execute the finish method here to inform the native plugin that you're finished,
-    and the background-task may be completed.  You must do this regardless if your HTTP request is successful or not.
-    IF YOU DON'T, ios will CRASH YOUR APP for spending too much time in the background.
-    */
-    // backgroundGeoLocation.finish();
-};
-
-var failureFn = function(error) {
-    console.log('BackgroundGeoLocation error');
-};
-
-if(mIsAndroid){
-  backgroundGeoLocation.configure(callbackFn, failureFn, {
-      desiredAccuracy: 10,
-      notificationIconColor: '#4CAF50',
-      notificationTitle: 'Background tracking',
-      notificationText: 'ENABLED',
-      notificationIcon: 'notification_icon',
-      debug: false, // <-- enable this hear sounds for background-geolocation life-cycle.
-      stopOnTerminate: false, // <-- enable this to clear background location settings when the app terminates
-      // locationService: backgroundGeoLocation.service.ANDROID_FUSED_LOCATION,
-      // interval: 60000, // <!-- poll for position every minute
-      // fastestInterval: 120000
-  });
-}else if(mIsIOS){
-  backgroundGeoLocation.configure(callbackFn, failureFn, {
-      desiredAccuracy: 10,
-      stationaryRadius: 20,
-      distanceFilter: 30,
-      activityType: 'Fitness',
-      debug: false, // <-- enable this hear sounds for background-geolocation life-cycle.
-      stopOnTerminate: false // <-- enable this to clear background location settings when the app terminates
-  });
+//backgroundLocation Prefrences 가져오기
+if(typeof Preferences != 'undefined'){
+  Preferences.get('backgroundLocation', function(backgroundLocation) {
+    //backgroundLocation값이 없다면 background location 컨펌창 띄우기 
+    if(backgroundLocation == '' || backgroundLocation == null){
+      $ionicPopup.confirm({
+        title: mAppName,
+        template: 'WCM앱을 사용하지 않을 때도 위치정보를 가져와 주변 위험을 알려줍니다. OK를 누르면 배터리 소모가 늘어납니다. 사용 하시겠습니끼? </br> (설정 창에서 언제든지 변경이 가능합니다)',
+        cssClass: 'wcm-negative',
+      }).then(function(res) {
+        if(res) {
+          //backgroundLocation Prefrences에 저장
+          if(typeof Preferences != 'undefined'){
+            Preferences.put('backgroundLocation', true);
+            console.log('backgroundLocation TRUE ');
+            startBackgroundLocation($http);
+          }
+        }else{
+          //backgroundLocation Prefrences에 저장
+          if(typeof Preferences != 'undefined'){
+            Preferences.put('backgroundLocation', false);
+            console.log('backgroundLocation FALSE ');
+          }
+        }
+      });
+    }else if(backgroundLocation == 'true' || backgroundLocation == true){
+      startBackgroundLocation($http);
+    }else{
+      stopBackgroundLocation();
+    }
+  }, function(error){
+    console.log('get Preferences BackgroundGeoLocation error: : ' +  error);
+  }); 
 }
-
-// Turn ON the background-geolocation system.  The user will be tracked whenever they suspend the app. 
-backgroundGeoLocation.start();
-
-// If you wish to turn OFF background-tracking, call the #stop method. 
-// backgroundGeoLocation.stop(); 
-
-
 
 
       /******************************************************************************
@@ -812,3 +741,113 @@ function handleOpenURL(url) {
     }
   }, 10);
 };
+
+function stopBackgroundLocation(){
+  // If you wish to turn OFF background-tracking, call the #stop method. 
+  backgroundGeoLocation.stop(); 
+}
+function startBackgroundLocation(http) {
+  // Your app must execute AT LEAST ONE call for the current position via standard Cordova geolocation,
+  //  in order to prompt the user for Location permission.
+  window.navigator.geolocation.getCurrentPosition(function(location) {
+      console.log('Location from Phonegap');
+  });
+
+  var num = 0;
+  var user = JSON.parse(window.localStorage['user'] || '{}');
+  /**
+  * This callback will be executed every time a geolocation is recorded in the background.
+  */
+  var callbackFn = function(location) {
+      console.log('[js] '+ num + ' BackgroundGeoLocation callback:  ' + location.latitude + ',' + location.longitude);
+
+      // Do your HTTP request here to POST location to your server. 
+      // jQuery.post(url, JSON.stringify(location)); 
+      if(user == null || user.userid == null)user = JSON.parse(window.localStorage['user'] || '{}');
+      var formData = {
+                      lat: location.latitude,
+                      lon: location.longitude,
+                      user_id : user.userid,
+                      user_name : user.username,
+                      device_uuid : mDeviceUuid,
+                      num : num++
+                    };
+      if(formData.user_id == null) formData.user_id = '12345678';
+      if(formData.user_name == null) formData.user_name = 'test';
+      // console.log('formData.user_id : ' + formData.user_id);
+      // if(formData.user_id == null) return;
+      console.log('formData : '  + JSON.stringify(formData));
+      var postData = 'checkLocation='+JSON.stringify(formData);
+      var request = http({
+          method: "post",
+          url: mServerAPI + "/watchPosition",
+          crossDomain : true,
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+          data: postData,
+          cache: false
+      });
+      request.error(function(error){
+        console.log('error : ' + JSON.stringify(error));
+        backgroundGeoLocation.finish();
+        // if(mIsAndroid){
+        //   backgroundGeoLocation.finish();
+        //   backgroundGeoLocation.stop(); 
+        //   backgroundGeoLocation.start();
+        // }else if(mIsIOS){
+        //   backgroundGeoLocation.finish();
+        //   // backgroundGeoLocation.start();
+        // }
+      })
+      request.success(function(data) {
+        console.log('success : ' + JSON.stringify(data));
+        backgroundGeoLocation.finish();
+        // if(mIsAndroid){
+        //   backgroundGeoLocation.finish();
+        //   backgroundGeoLocation.stop(); 
+        //   backgroundGeoLocation.start();
+        // }else if(mIsIOS){
+        //   backgroundGeoLocation.finish();
+        //   // backgroundGeoLocation.start();
+        // }
+      });
+      /*
+      IMPORTANT:  You must execute the finish method here to inform the native plugin that you're finished,
+      and the background-task may be completed.  You must do this regardless if your HTTP request is successful or not.
+      IF YOU DON'T, ios will CRASH YOUR APP for spending too much time in the background.
+      */
+      // backgroundGeoLocation.finish();
+  };
+  var failureFn = function(error) {
+      console.log('BackgroundGeoLocation error');
+  };
+
+  if(mIsAndroid){
+    backgroundGeoLocation.configure(callbackFn, failureFn, {
+        desiredAccuracy: 10,
+        notificationIconColor: '#4CAF50',
+        notificationTitle: 'Background tracking',
+        notificationText: 'ENABLED',
+        notificationIcon: 'notification_icon',
+        debug: false, // <-- enable this hear sounds for background-geolocation life-cycle.
+        stopOnTerminate: false, // <-- enable this to clear background location settings when the app terminates
+        // locationService: backgroundGeoLocation.service.ANDROID_FUSED_LOCATION,
+        // interval: 60000, // <!-- poll for position every minute
+        // fastestInterval: 120000
+    });
+  }else if(mIsIOS){
+    backgroundGeoLocation.configure(callbackFn, failureFn, {
+        desiredAccuracy: 10,
+        stationaryRadius: 20,
+        distanceFilter: 30,
+        activityType: 'Fitness',
+        debug: false, // <-- enable this hear sounds for background-geolocation life-cycle.
+        stopOnTerminate: false // <-- enable this to clear background location settings when the app terminates
+    });
+  }
+
+  // Turn ON the background-geolocation system.  The user will be tracked whenever they suspend the app. 
+  backgroundGeoLocation.start();
+
+  // If you wish to turn OFF background-tracking, call the #stop method. 
+  // backgroundGeoLocation.stop(); 
+}
