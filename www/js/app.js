@@ -1,6 +1,6 @@
 var mAppName = "'WeChangeMakers'";
 var mServerUrl, mServerUpload, mServerAPI = '';
-var mLocalServer = true; //local serve 여부
+var mLocalServer = false; //local serve 여부
 
 if (mLocalServer) {
   mServerUrl = 'http://192.168.10.210:3000';
@@ -64,7 +64,7 @@ wcm.factory('Scopes', function($rootScope) {
 })
 
 wcm.run(function($ionicPlatform, $http, $cordovaFile, 
-  $ionicLoading, $ionicPopup, $rootScope) {
+  $ionicLoading, $ionicPopup, $rootScope, $timeout) {
 
   console.log('wcm RUN');
   //$ionicPlatform이 ready되면 연결된 device에 대한 정보를 저장 (boolean)
@@ -470,7 +470,7 @@ if(typeof Preferences != 'undefined'){
           //Preferences를 찾아서 3번 시도한다
           if(tryNum < 4 ){
             $timeout( function() {
-              tryLogin();
+              tryRegisterAndLogin();
               tryNum++;
             }, 1000);
           }

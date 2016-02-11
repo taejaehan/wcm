@@ -50,7 +50,7 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
 
           //현재 card의 index를 찾음
           var i = 0;
-          var cardIndex = '';
+          var cardIndex = null;
           while( i < $rootScope.allData.cards.length) {
             if ($rootScope.allData.cards[i].id === id) {
               cardIndex = i;
@@ -73,9 +73,11 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
             if(scope != null){
               scope.watch_count ++;
             };
-            if(cardIndex != ''){
+            if(cardIndex != null){
+              console.log($rootScope.allData.cards[cardIndex].watch_count);
               $rootScope.allData.cards[cardIndex].watch_count ++;
               $rootScope.allData.cards[cardIndex].watch = true;
+              console.log($rootScope.allData.cards[cardIndex].watch_count);
             }
           } else{
             //user의 watch에서 삭제
@@ -90,9 +92,11 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
             if(scope != null){
               scope.watch_count --;
             };
-            if(cardIndex != ''){
+            if(cardIndex != null){
+              console.log($rootScope.allData.cards[cardIndex].watch_count);
               $rootScope.allData.cards[cardIndex].watch_count --;
               $rootScope.allData.cards[cardIndex].watch = false;
+              console.log($rootScope.allData.cards[cardIndex].watch_count);
             }
           }
         });
