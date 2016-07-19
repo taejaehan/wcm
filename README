@@ -1,8 +1,8 @@
 plugin 설치 (20개)
 
 ************Plugins************
-cordova plugin add com.ionic.keyboard
-cordova plugin add com.portnou.cordova.plugin.preferences
+cordova plugin add ionic-plugin-keyboard
+cordova plugin add https://github.com/alexportnoy/cordova-prefs-plugin
 cordova plugin add cordova-plugin-appavailability
 cordova plugin add cordova-plugin-camera
 cordova plugin add cordova-plugin-console (for debug)
@@ -15,23 +15,36 @@ cordova plugin add cordova-plugin-facebook4 --save --variable APP_ID="1020667507
 cordova plugin add cordova-plugin-file
 cordova plugin add cordova-plugin-file-transfer
 cordova plugin add cordova-plugin-geolocation
-cordova plugin add cordova-plugin-inappbrowser
-cordova plugin add cordova-plugin-kakaotalk (dmajor git)
 cordova plugin add cordova-plugin-mauron85-background-geolocation
+cordova plugin add cordova-plugin-inappbrowser
+cordova plugin add https://github.com/taejaehan/cordova-kakaotalk.git --variable KAKAO_APP_KEY=1dac427ea8667799e438c5a8a8b1382a (dmajor git)
 cordova plugin add cordova-plugin-network-information
 cordova plugin add cordova-plugin-screen-orientation
 cordova plugin add cordova-plugin-splashscreen
 cordova plugin add cordova-plugin-whitelist
 cordova plugin add https://github.com/Paldom/UniqueDeviceID
 cordova plugin add phonegap-plugin-push
+(ionic plugin add phonegap-plugin-push --variable SENDER_ID="373754456846")
 
 ******************************common 20151029******************************
 1. phonegap-plugin-push 
 bower와 web-client를 설치 후 세팅 필요
 npm install -g bower
 ionic add ionic-platform-web-client
+
+(android, ios 각각 세팅 후)
 ionic io init
 ionic config set dev_push false
+
+(android) http://docs.ionic.io/docs/push-android-setup
+ionic push --google-api-key AIzaSyBnn4hGrccvUgKnKTE0L-rM8qcwSFb1ajQ
+ionic config set gcm_key 492745546197
+
+(ios) http://docs.ionic.io/docs/push-ios-setup
+(ios push 인증서는 암호 없이 할 것)
+ionic push --ios-dev-cert
+ionic push --ios-prod-cert
+ionic push --production-mode=y
 
 ******************************Android 20151029******************************
 

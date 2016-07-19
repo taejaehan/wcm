@@ -243,16 +243,47 @@ wcm.service('CardService', function($state, $ionicPopup, $http, $window, $ionicL
             ); // appAvailability.check 끝
           }else if(type == 'kakao'){
             // 카카오 공유 추가 by tjhan 20160112
-            snsName = '카카오톡';
-            KakaoTalk.call(card.description,card.title,'http://wechangemakers.org/', card.img_path, 'kakao[1dac427ea8667799e438c5a8a8b1382a]://kakaolink', card.id,
-              function (success) {
-                console.log('kakao share success');
-                shareSuccess(card, scope, snsName);
+            // snsName = '카카오톡';
+            // KakaoTalk.call(card.description,card.title,'http://wechangemakers.org/', card.img_path, 'kakao[1dac427ea8667799e438c5a8a8b1382a]://kakaolink', card.id,
+            // function (success) {
+            //   console.log('kakao share success');
+            //   shareSuccess(card, scope, snsName);
+            // },
+            // function (error) {
+            //   console.log('kakao share error ' + error);
+            //   shareError(snsName);
+            // });
+
+            KakaoTalk.share({
+              text : card.description,
+              image : {
+                src : card.img_path,
+                width : 138, 
+                height : 90,
               },
-              function (error) {
-                console.log('kakao share error ' + error);
-                shareError(snsName);
-              });
+              weblink :{
+                url : 'http://wechangemakers.org/',
+                text : 'web사이트로 이동'
+              },
+              applink :{
+                url : 'http://wechangemakers.org/',
+                text : card.title,
+              },
+              params :{
+                postId : card.id,
+                param2 : '55',
+                param3 : '66',
+                param4 : '77'
+              }
+            },
+            function (success) {
+              console.log('kakao share success');
+              shareSuccess(card, scope, snsName);
+            },
+            function (error) {
+              console.log('kakao share error ' + error);
+              shareError(snsName);
+            });
           } //if(type =='facebook') 끝
         
     } //(mIsWebView) 끝

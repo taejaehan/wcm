@@ -48,7 +48,7 @@ var PROGRESS_COMPLETED_TEXT = "위험요소가 해결되었습니다";
 //부적절한 글로 신고된 갯수로 로그인을 금지 할 때 사용
 var BAD_REPORT_LOGIN_LIMIT = 5;
 
-var wcm = angular.module('wcm', ['ionic', 'ngCordova', 'ng', 'pasvaz.bindonce'])
+var wcm = angular.module('wcm', ['ionic','ionic.service.core', 'ngCordova', 'ng', 'pasvaz.bindonce'])
 
 //controller간 데이터를 전달하기 위해 사용한다
 wcm.factory('Scopes', function($rootScope) {
@@ -732,7 +732,7 @@ function handleOpenURL(url) {
       console.log('postBack : ' + postBack);
       postId = postBack.split("%")[0];
     }else if(url.indexOf('kakao') != -1) {
-      postId = url.split("postId=")[1];
+      postId = url.split("postId=")[1].split("&")[0];
     };
     
     console.log('postId : ' + postId);
