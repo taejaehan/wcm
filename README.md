@@ -1,4 +1,4 @@
-#WeChangeMakers
+# WeChangeMakers
 
 WeChangeMakers는 2014년 한국에서 일어난 사건으로 인해 태어났습니다. 
 2014년 4월 16일의 세월호참사를 경험한 우리는 슬픔, 분노, 무력감 등등을 느꼈던 사람들이 모여있습니다.
